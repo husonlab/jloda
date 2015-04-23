@@ -1,0 +1,351 @@
+/**
+ * Copyright 2015, Daniel Huson
+ * Author Daniel Huson
+ *(Some files contain contributions from other authors, who are then mentioned separately)
+ * 
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ * 
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+*/
+
+package jloda.graphview;
+
+import gnu.jpdf.PDFGraphics;
+import jloda.graph.Node;
+import jloda.util.Geometry;
+
+import java.awt.*;
+import java.awt.geom.AffineTransform;
+import java.awt.geom.Point2D;
+import java.io.IOException;
+
+/**
+ * default node drawer
+ * Daniel Huson, 1.2013
+ */
+public class DefaultNodeDrawer implements INodeDrawer {
+    private GraphView graphView;
+    private Transform trans;
+    private Graphics2D gc;
+
+    /**
+     * constructor
+     *
+     * @param graphView
+     */
+    public DefaultNodeDrawer(GraphView graphView) {
+        this.graphView = graphView;
+        this.trans = graphView.trans;
+    }
+
+    /**
+     * setup data
+     *
+     * @param graphView
+     * @param gc
+     */
+    public void setup(GraphView graphView, Graphics2D gc) {
+        this.graphView = graphView;
+        this.trans = graphView.trans;
+        this.gc = gc;
+    }
+
+    /**
+     * draw the node
+     *
+     * @param selected
+     */
+    public void draw(Node v, boolean selected) {
+        NodeView nv = graphView.getNV(v);
+        draw(nv);
+        if (selected)
+            hilite(nv);
+    }
+
+    /**
+     * draw the label of the node
+     *
+     * @param selected
+     */
+    public void drawLabel(Node v, boolean selected) {
+        NodeView nv = graphView.getNV(v);
+        drawLabel(nv, graphView.getFont(), selected);
+    }
+
+    /**
+     * draw the node and the label
+     *
+     * @param hilited
+     */
+    public void drawNodeAndLabel(Node v, boolean hilited) {
+        NodeView nv = graphView.getNV(v);
+        draw(nv, hilited);
+        drawLabel(nv, graphView.getFont(), hilited);
+    }
+
+    /**
+     * Draw the node.
+     *
+     * @param hilited
+     */
+    private void draw(NodeView nv, boolean hilited) {
+        draw(nv);
+        if (hilited)
+            hilite(nv);
+    }
+
+    /**
+     * Draw the node.
+     */
+    private void draw(NodeView nv) {
+        if (nv.getLocation() == null)
+            return; // no location, don't draw
+        Point apt = trans.w2d(nv.getLocation());
+
+        int scaledWidth;
+        int scaledHeight;
+        if (nv.getFixedSize()) {
+            scaledWidth = nv.getWidth();
+            scaledHeight = nv.getHeight();
+        } else {
+            scaledWidth = NodeView.computeScaledWidth(trans, nv.getWidth());
+            scaledHeight = NodeView.computeScaledHeight(trans, nv.getHeight());
+        }
+
+        apt.x -= (scaledWidth >> 1);
+        apt.y -= (scaledHeight >> 1);
+
+        if (nv.getBorderColor() != null) {   // selected
+            if (nv.isEnabled())
+                gc.setColor(nv.getBorderColor());
+            else
+                gc.setColor(NodeView.DISABLED_COLOR);
+            if (nv.getShape() == NodeView.OVAL_NODE) {
+                gc.drawOval(apt.x - 2, apt.y - 2, scaledWidth + 4, scaledHeight + 4);
+                gc.drawOval(apt.x - 3, apt.y - 3, scaledWidth + 6, scaledHeight + 6);
+            } else if (nv.getShape() == NodeView.RECT_NODE) {
+                // default shape==GraphView.RECT_NODE
+                gc.drawRect(apt.x - 2, apt.y - 2, scaledWidth + 4, scaledHeight + 4);
+                gc.drawRect(apt.x - 3, apt.y - 3, scaledWidth + 6, scaledHeight + 6);
+            } else if (nv.getShape() == NodeView.TRIANGLE_NODE) {
+                Shape polygon = new Polygon(new int[]{apt.x - 2, apt.x + scaledWidth + 2, apt.x + scaledHeight / 2},
+                        new int[]{apt.y + scaledHeight + 2, apt.y + scaledHeight + 2, apt.y - 2}, 3);
+                gc.draw(polygon);
+            } else if (nv.getShape() == NodeView.DIAMOND_NODE) {
+                Shape polygon = new Polygon(new int[]{apt.x - 2, apt.x + scaledWidth / 2, apt.x + scaledWidth + 2, apt.x + scaledHeight / 2},
+                        new int[]{apt.y + scaledHeight / 2, apt.y + scaledHeight + 2, apt.y + scaledHeight / 2, apt.y - 2}, 4);
+                gc.draw(polygon);
+            }
+
+            // else draw nothing
+        }
+
+        if (nv.getBackgroundColor() != null) {
+            if (nv.isEnabled())
+                gc.setColor(nv.getBackgroundColor());
+            else
+                gc.setColor(Color.WHITE);
+            if (nv.getShape() == NodeView.OVAL_NODE)
+                gc.fillOval(apt.x, apt.y, scaledWidth, scaledHeight);
+            else if (nv.getShape() == NodeView.RECT_NODE)
+                gc.fillRect(apt.x, apt.y, scaledWidth, scaledHeight);
+            else if (nv.getShape() == NodeView.TRIANGLE_NODE) {
+                Shape polygon = new Polygon(new int[]{apt.x, apt.x + scaledWidth, apt.x + scaledHeight / 2},
+                        new int[]{apt.y + scaledHeight, apt.y + scaledHeight, apt.y}, 3);
+                gc.fill(polygon);
+            } else if (nv.getShape() == NodeView.DIAMOND_NODE) {
+                Shape polygon = new Polygon(new int[]{apt.x, apt.x + scaledWidth / 2, apt.x + scaledWidth, apt.x + scaledHeight / 2},
+                        new int[]{apt.y + scaledHeight / 2, apt.y + scaledHeight, apt.y + scaledHeight / 2, apt.y}, 4);
+                gc.fill(polygon);
+            }
+        }
+        if (nv.getColor() != null) {
+            if (nv.isEnabled())
+                gc.setColor(nv.getColor());
+            else
+                gc.setColor(NodeView.DISABLED_COLOR);
+            if (nv.getShape() == NodeView.OVAL_NODE)
+                gc.drawOval(apt.x, apt.y, scaledWidth, scaledHeight);
+            else if (nv.getShape() == NodeView.RECT_NODE)
+                gc.drawRect(apt.x, apt.y, scaledWidth, scaledHeight);
+            else if (nv.getShape() == NodeView.TRIANGLE_NODE) {
+                Shape polygon = new Polygon(new int[]{apt.x, apt.x + scaledWidth, apt.x + scaledHeight / 2},
+                        new int[]{apt.y + scaledHeight, apt.y + scaledHeight, apt.y}, 3);
+                gc.draw(polygon);
+            } else if (nv.getShape() == NodeView.DIAMOND_NODE) {
+                Shape polygon = new Polygon(new int[]{apt.x, apt.x + scaledWidth / 2, apt.x + scaledWidth, apt.x + scaledHeight / 2},
+                        new int[]{apt.y + scaledHeight / 2, apt.y + scaledHeight, apt.y + scaledHeight / 2, apt.y}, 4);
+                gc.draw(polygon);
+            }
+        }
+    }
+
+    /**
+     * Highlights the node.
+     */
+    private void hilite(NodeView nv) {
+        if (nv.getLocation() == null)
+            return;
+        int scaledWidth;
+        int scaledHeight;
+        if (nv.getShape() == NodeView.NONE_NODE) {
+            scaledWidth = scaledHeight = 2;
+        } else {
+            if (nv.getFixedSize()) {
+                scaledWidth = nv.getWidth();
+                scaledHeight = nv.getHeight();
+            } else {
+                scaledWidth = NodeView.computeScaledWidth(trans, nv.getWidth());
+                scaledHeight = NodeView.computeScaledHeight(trans, nv.getHeight());
+            }
+        }
+
+        Point apt = trans.w2d(nv.getLocation());
+        apt.x -= (scaledWidth >> 1);
+        apt.y -= (scaledHeight >> 1);
+
+        if (nv.getColor() != null && nv.getColor().equals(Color.red))
+            gc.setColor(Color.yellow);
+        else
+            gc.setColor(Color.red);
+
+        gc.drawRect(apt.x - 2, apt.y - 2, scaledWidth + 4, scaledHeight + 4);
+    }
+
+
+    /**
+     * Highlights the node label
+     *
+     * @param defaultFont font to use if node has no font set
+     */
+    public void hiliteLabel(NodeView nv, Font defaultFont) {
+        if (nv.getLocation() == null)
+            return;
+
+        if (nv.getLabelColor() != null && nv.getLabel() != null && nv.isLabelVisible() && nv.getLabel().length() > 0) {
+            final Stroke oldStroke = gc.getStroke();
+            gc.setStroke(NodeView.widthOneStroke);
+            if (nv.getFont() != null)
+                gc.setFont(nv.getFont());
+            else
+                gc.setFont(defaultFont);
+            if (nv.getColor() != null && nv.getColor().equals(Color.red))
+                gc.setColor(Color.yellow);
+            else
+                gc.setColor(Color.red);
+            if (nv.getLabelAngle() == 0) {
+                gc.draw(nv.getLabelRect(trans));
+            } else {
+                gc.draw(nv.getLabelShape(trans));
+            }
+            gc.setStroke(oldStroke);
+        }
+    }
+
+    /**
+     * Draws the node's label and the image, if set
+     */
+    private void drawLabel(NodeView nv, Font defaultFont, boolean hilited) {
+        if (nv.getLocation() == null)
+            return;
+
+        if (nv.getLabelColor() != null && nv.getLabel() != null && nv.getLabel().length() > 0) {
+            //labelShape = null;
+            //gc.setColor(Color.WHITE);
+            //gc.fill(getLabelRect(trans));
+            if (nv.getLabelBackgroundColor() != null && nv.isLabelVisible() && nv.isEnabled()) {
+                gc.setColor(nv.getLabelBackgroundColor());
+                gc.fill(nv.getLabelShape(trans));
+            }
+
+            if (nv.getFont() != null)
+                gc.setFont(nv.getFont());
+            else
+                gc.setFont(defaultFont);
+
+            if (nv.isEnabled())
+                gc.setColor(nv.getLabelColor());
+            else
+                gc.setColor(NodeView.DISABLED_COLOR);
+
+            Point2D apt = nv.getLabelPosition(trans);
+
+            if (apt != null) {
+                if (nv.isLabelVisible()) {
+                    if (nv.getLabelAngle() == 0) {
+                        gc.drawString(nv.getLabel(), (int) apt.getX(), (int) apt.getY());
+                    } else {
+                        float labelAngle = nv.getLabelAngle() + 0.00001f; // to ensure that labels all get same orientation in
+
+                        Dimension labelSize = nv.getLabelSize();
+                        if (gc instanceof PDFGraphics) {
+                            if (labelAngle >= 0.5 * Math.PI && labelAngle <= 1.5 * Math.PI) {
+                                apt = Geometry.translateByAngle(apt, labelAngle, labelSize.getWidth());
+                                ((PDFGraphics) gc).drawString(nv.getLabel(), (float) (apt.getX()), (float) (apt.getY()), (float) (labelAngle - Math.PI));
+                            } else {
+                                ((PDFGraphics) gc).drawString(nv.getLabel(), (float) (apt.getX()), (float) (apt.getY()), labelAngle);
+                            }
+                        } else {
+                            // save current transform:
+                            AffineTransform saveTransform = gc.getTransform();
+                            // a vertical phylogram view
+
+                            /*
+                            AffineTransform localTransform =  gc.getTransform();
+                            // rotate label to desired angle
+                            if (labelAngle >= 0.5 * Math.PI && labelAngle <= 1.5 * Math.PI) {
+                                double d = getLabelSize().getWidth();
+                                apt = Geometry.translateByAngle(apt, labelAngle, d);
+                                localTransform.rotate(Geometry.moduloTwoPI(labelAngle - Math.PI), apt.getX(), apt.getY());
+                            } else
+                                localTransform.rotate(labelAngle, apt.getX(), apt.getY());
+                           gc.setTransform(localTransform);
+                            */
+                            // todo: this doesn't work well as the angles aren't drawn correctly
+
+                            // rotate label to desired angle
+                            if (labelAngle >= 0.5 * Math.PI && labelAngle <= 1.5 * Math.PI) {
+                                apt = Geometry.translateByAngle(apt, labelAngle, nv.getLabelSize().getWidth());
+                                gc.rotate(Geometry.moduloTwoPI(labelAngle - Math.PI), apt.getX(), apt.getY());
+                            } else {
+                                gc.rotate(labelAngle, apt.getX(), apt.getY());
+                            }
+                            gc.drawString(nv.getLabel(), (int) apt.getX(), (int) apt.getY());
+                            gc.setTransform(saveTransform);
+                        }
+                    }
+                }
+            }
+        }
+        // draw the image:
+        if (nv.getImage() != null && nv.getImage().isVisible()) {
+            nv.getImage().draw(nv, trans, gc, hilited);
+        }
+        if (hilited)
+            hiliteLabel(nv, defaultFont);
+
+        if (NodeView.descriptionWriter != null && nv.getLabelVisible() && nv.getLabel() != null
+                && nv.getLabel().length() > 0) {
+            Rectangle bounds;
+            if (nv.getLabelAngle() == 0) {
+                bounds = nv.getLabelRect(trans).getBounds();
+            } else {
+                bounds = nv.getLabelShape(trans).getBounds();
+            }
+            try {
+                NodeView.descriptionWriter.write(String.format("%s; x=%d y=%d w=%d h=%d\n", nv.getLabel(),
+                        bounds.x, bounds.y, bounds.width, bounds.height));
+            } catch (IOException e) {
+                // silently ignore
+            }
+        }
+    }
+}

@@ -1,0 +1,208 @@
+/**
+ * Copyright 2015, Daniel Huson
+ * Author Daniel Huson
+ *(Some files contain contributions from other authors, who are then mentioned separately)
+ * 
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ * 
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+*/
+
+package jloda.progs;
+
+import jloda.graph.*;
+import jloda.util.CommandLineOptions;
+import jloda.util.UsageException;
+
+import java.io.*;
+import java.util.Arrays;
+import java.util.Comparator;
+import java.util.LinkedList;
+import java.util.List;
+
+/**
+ * greedily finds paths in a distance graph
+ * Daniel Huson, 5.2011
+ */
+public class GraphPather {
+    static public void main(String[] args) throws UsageException, IOException {
+        CommandLineOptions options = new CommandLineOptions(args);
+        options.setDescription("GraphPather - finds paths in the graph of a distance matrix");
+
+        String infileName = options.getMandatoryOption("-i", "Input file", "");
+        String outFileName = options.getOption("-o", "Output file (or stdout)", "");
+        double threshold = options.getOption("-t", "max distance threshold", Float.MAX_VALUE);
+        options.done();
+
+        BufferedReader r = new BufferedReader(new FileReader(infileName));
+        int n = 0;
+        int lineNumber = 0;
+
+
+        BufferedWriter out;
+        if (outFileName.length() > 0)
+            out = new BufferedWriter(new FileWriter(outFileName));
+        else
+            out = new BufferedWriter(new OutputStreamWriter(System.out));
+
+
+        final Graph graph = new Graph();
+        Node[] id2node = null;
+
+        int a = 0;
+
+        System.err.println("Parsing distances:");
+        String aLine;
+        while ((aLine = r.readLine()) != null) {
+            lineNumber++;
+            aLine = aLine.trim();
+            if (aLine.length() > 0 && !aLine.startsWith("#")) {
+                String[] tokens = aLine.split(" ");
+
+                if (n == 0) {
+                    n = tokens.length;
+                    id2node = new Node[n];
+                    for (int b = 0; b < n; b++) {
+                        id2node[b] = graph.newNode();
+                        id2node[b].setInfo(b);
+                    }
+                } else if (tokens.length != n) {
+                    throw new IOException("Line " + lineNumber + ": wrong number of tokens: " + tokens.length);
+                }
+                for (int b = 0; b < n; b++) {
+                    if (a != b) {
+                        float value = Float.parseFloat(tokens[b]);
+                        if (value <= threshold) {
+                            graph.newEdge(id2node[a], id2node[b], value);
+                        }
+                    }
+                }
+                a++;
+            }
+            if (a > n)
+                throw new IOException("Line " + lineNumber + ": too many lines");
+
+        }
+        if (a < n)
+            throw new IOException("Line " + lineNumber + ": too few lines");
+
+        System.err.println("done (" + n + " x " + n + ")");
+
+        System.err.println("Sorting edges:");
+
+        Edge[] edges = new Edge[graph.getNumberOfEdges()];
+
+        int count = 0;
+        for (Edge e = graph.getFirstEdge(); e != null; e = e.getNext()) {
+            edges[count++] = e;
+        }
+
+        Arrays.sort(edges, new Comparator<Edge>() {
+            public int compare(Edge edge1, Edge edge2) {
+                if ((Float) edge1.getInfo() < (Float) edge2.getInfo())
+                    return -1;
+                else if ((Float) edge1.getInfo() > (Float) edge2.getInfo())
+                    return 1;
+                else if (edge1.getId() < edge2.getId())
+                    return -1;
+                else if (edge1.getId() > edge2.getId())
+                    return 1;
+                else
+                    return 0;
+            }
+        });
+        System.err.println("done (" + edges.length + ")");
+
+        System.err.println("Selecting edges:");
+
+        NodeArray<Node> other = new NodeArray<>(graph);
+        NodeArray<Integer> degree = new NodeArray<>(graph, 0);
+
+        EdgeSet selected = new EdgeSet(graph);
+
+        for (Edge e : edges) {
+            Node v = e.getSource();
+            Node w = e.getTarget();
+
+            if (degree.get(v) == 0 && degree.get(w) == 0) {
+                selected.add(e);
+                degree.set(v, 1);
+                degree.set(w, 1);
+                other.set(v, w);
+                other.set(w, v);
+            } else if (degree.get(v) == 0 && degree.get(w) == 1) {
+                selected.add(e);
+                degree.set(v, 1);
+                degree.set(w, 2);
+                Node u = other.get(w);
+                other.set(u, v);
+                other.set(v, u);
+            } else if (degree.get(v) == 1 && degree.get(w) == 0) {
+                selected.add(e);
+                degree.set(v, 2);
+                degree.set(w, 1);
+                Node u = other.get(v);
+                other.set(u, w);
+                other.set(w, u);
+            } else if (degree.get(v) == 1 && degree.get(w) == 1 && other.get(v) != w) {
+                selected.add(e);
+                degree.set(v, 2);
+                degree.set(w, 2);
+                Node uv = other.get(v);
+                Node uw = other.get(w);
+                other.set(uv, uw);
+                other.set(uw, uv);
+            }
+        }
+        List<Edge> toDelete = new LinkedList<>();
+        for (Edge e = graph.getFirstEdge(); e != null; e = e.getNext()) {
+            if (!selected.contains(e))
+                toDelete.add(e);
+        }
+        for (Edge e : toDelete) {
+            graph.deleteEdge(e);
+        }
+
+        System.err.println("done (" + selected.size() + ")");
+
+
+        System.err.println("Building paths:");
+
+        NodeSet used = new NodeSet(graph);
+
+        int countPaths = 0;
+
+        for (Node v = graph.getFirstNode(); v != null; v = v.getNext()) {
+            if (v.getDegree() == 1 && !used.contains(v)) {
+                countPaths++;
+                Edge e = null;
+                do {
+                    out.write(" " + ((Integer) v.getInfo() + 1));
+                    Edge f = v.getFirstAdjacentEdge();
+                    if (f == e) {
+                        f = v.getLastAdjacentEdge();
+                    }
+                    if (f != e) {
+                        v = f.getOpposite(v);
+                        e = f;
+                    } else
+                        e = null;
+                    used.add(v);
+                }
+                while (e != null);
+                out.write("\n");
+            }
+        }
+        out.close();
+        System.err.println("done (" + countPaths + ")");
+
+    }
+}
