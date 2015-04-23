@@ -21,7 +21,8 @@
 
     <target name="compile" depends="init">
         <!-- Compile the java code from ${src} into ${build} -->
-        <javac srcdir="${src}"
+	<javac  includeantruntime="false"
+		srcdir="${src}"
                destdir="${build}"
                debug="on"
                classpathref="build.classpath"/>
