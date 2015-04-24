@@ -8,8 +8,10 @@ hs_err_pid*
 .iml
 .idea
 
-# LaTeX auxiliary files 
+# MacOS
+.DS_Store
 
+# LaTeX auxiliary files 
 .aux
 .blg
 .idx
