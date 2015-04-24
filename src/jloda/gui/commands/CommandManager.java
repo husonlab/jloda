@@ -57,10 +57,6 @@ public class CommandManager {
 
     /**
      * construct a parser and load all commands found for the given path
-     *
-     * @param dir
-     * @param viewer
-     * @param commandsPath
      */
     public CommandManager(IDirector dir, IDirectableViewer viewer, String commandsPath) {
         this(dir, viewer, new String[]{commandsPath}, false);
@@ -68,10 +64,7 @@ public class CommandManager {
 
     /**
      * construct a parser and load all commands found for the given paths
-     *
-     * @param dir
-     * @param viewer        - usually an IDirectableViewer, but sometimes a JDialog
-     * @param commandsPaths
+     * @param viewer  usually an IDirectableViewer, but sometimes a JDialog
      */
     public CommandManager(IDirector dir, Object viewer, String[] commandsPaths) {
         this(dir, viewer, commandsPaths, false);
@@ -79,11 +72,6 @@ public class CommandManager {
 
     /**
      * construct a parser and load all commands found for the given path
-     *
-     * @param dir
-     * @param viewer
-     * @param commandsPath
-     * @param returnOnCommandNotFound
      */
     public CommandManager(IDirector dir, IDirectableViewer viewer, String commandsPath, boolean returnOnCommandNotFound) {
         this(dir, viewer, new String[]{commandsPath}, returnOnCommandNotFound);
@@ -92,10 +80,7 @@ public class CommandManager {
     /**
      * construct a parser and load all commands found for the given paths
      *
-     * @param dir
-     * @param viewer                  - usually an IDirectableViewer, but sometimes a JDialog
-     * @param commandsPaths
-     * @param returnOnCommandNotFound
+     * @param viewer  usually an IDirectableViewer, but sometimes a JDialog
      */
     public CommandManager(IDirector dir, Object viewer, String[] commandsPaths, boolean returnOnCommandNotFound) {
         this.dir = dir;
@@ -119,8 +104,6 @@ public class CommandManager {
     /**
      * add the given list of commands
      *
-     * @param viewer
-     * @param commands
      * @param mustWrap commands that are defined globally but used locally must be wrapped so as to preserve the correct command manager, director and viewer
      */
     public void addCommands(Object viewer, Collection<ICommand> commands, boolean mustWrap) {

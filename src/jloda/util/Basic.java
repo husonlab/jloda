@@ -3485,6 +3485,21 @@ public class Basic {
             return string.substring(0, length - 1) + ".";
 
     }
+
+    /**
+     * skip the first line in a string
+     *
+     * @param string
+     * @return first line
+     */
+    public static String skipFirstLine(String string) {
+        int pos = string.indexOf('\n');
+        if (pos != -1)
+            return string.substring(pos + 1);
+        else
+            return string;
+
+    }
 }
 
 /**

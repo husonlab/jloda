@@ -44,7 +44,7 @@ public class ProgramProperties {
     private static ImageIcon programIcon = null;
     private static final boolean macOS = (System.getProperty("os.name") != null && System.getProperty("os.name").toLowerCase().startsWith("mac"));
     private static boolean useGUI = false;
-
+    private static IStateChecker stateChecker = null;
     public static final String OPENFILE = "OpenFile";
     public static final String SAVEFILE = "SaveFile";
     public static final String FINDFILE = "FindFile";
@@ -82,8 +82,6 @@ public class ProgramProperties {
 
     /**
      * load properties from specified file
-     *
-     * @param fileName
      */
     public static void load(String fileName) {
         setPropertiesFileName(fileName);
@@ -95,9 +93,9 @@ public class ProgramProperties {
      */
     public static void store() {
         try {
-            OutputStream fos = new FileOutputStream(getDefaultFileName());
-            props.store(fos, programName);
-            fos.close();
+            try (OutputStream fos = new FileOutputStream(getDefaultFileName())) {
+                props.store(fos, programName);
+            }
             //System.err.println("Stored properties to: " + getDefaultFileName());
         } catch (Exception ex) {
             //Basic.caught(ex);
@@ -106,8 +104,6 @@ public class ProgramProperties {
 
     /**
      * save properties to specified file
-     *
-     * @param fileName
      */
     public static void store(String fileName) {
         setPropertiesFileName(fileName);
@@ -116,9 +112,6 @@ public class ProgramProperties {
 
     /**
      * gets a int property
-     *
-     * @param name
-     * @param def
      * @return set property or default
      */
     public static int get(Object name, int def) {
@@ -131,9 +124,6 @@ public class ProgramProperties {
 
     /**
      * gets a int[] property
-     *
-     * @param name
-     * @param def
      * @return set property or default
      */
     public static int[] get(Object name, int[] def) {
@@ -163,9 +153,6 @@ public class ProgramProperties {
 
     /**
      * gets a color property
-     *
-     * @param name
-     * @param def
      * @return set property or default
      */
     public static Color get(Object name, Color def) {
@@ -180,8 +167,6 @@ public class ProgramProperties {
     /**
      * gets a double property
      *
-     * @param name
-     * @param def
      * @return set property or default
      */
     public static double get(Object name, double def) {
@@ -195,8 +180,6 @@ public class ProgramProperties {
     /**
      * gets a boolean property
      *
-     * @param name
-     * @param def
      * @return set property or default
      */
     public static boolean get(Object name, boolean def) {
@@ -211,8 +194,6 @@ public class ProgramProperties {
     /**
      * gets a string property
      *
-     * @param name
-     * @param def
      * @return set property or default
      */
     public static String get(String name, String def) {
@@ -222,8 +203,6 @@ public class ProgramProperties {
     /**
      * gets a font property
      *
-     * @param name
-     * @param def
      * @return font or default
      */
     public static Font get(String name, Font def) {
@@ -239,8 +218,6 @@ public class ProgramProperties {
     /**
      * gets a list of string pairs
      *
-     * @param name
-     * @param def
      * @return list of string pairs
      */
     public static Collection<Pair<String, String>> get(String name, Collection<Pair<String, String>> def) {
@@ -259,8 +236,6 @@ public class ProgramProperties {
     /**
      * gets a list of strings
      *
-     * @param name
-     * @param def
      * @return list of string pairs
      */
     public static String[] get(String name, String[] def) {
@@ -287,7 +262,6 @@ public class ProgramProperties {
     /**
      * set the default properties file name
      *
-     * @param defaultFileName
      */
     public static void setPropertiesFileName(String defaultFileName) {
         ProgramProperties.defaultFileName = defaultFileName;
@@ -303,7 +277,6 @@ public class ProgramProperties {
     /**
      * remove a property
      *
-     * @param key
      */
     public static void remove(String key) {
         props.remove(key);
@@ -312,8 +285,6 @@ public class ProgramProperties {
     /**
      * put a property
      *
-     * @param key
-     * @param value
      */
     public static void put(String key, int value) {
         props.setProperty(key, "" + value);
@@ -322,8 +293,6 @@ public class ProgramProperties {
     /**
      * put a property
      *
-     * @param key
-     * @param value
      */
     public static void put(String key, int[] value) {
         StringBuilder buf = new StringBuilder();
@@ -334,8 +303,6 @@ public class ProgramProperties {
     /**
      * put a property
      *
-     * @param key
-     * @param value
      */
     public static void put(String key, double value) {
         props.setProperty(key, "" + value);
@@ -344,8 +311,6 @@ public class ProgramProperties {
     /**
      * put a property
      *
-     * @param key
-     * @param value
      */
     public static void put(String key, boolean value) {
         props.setProperty(key, "" + value);
@@ -354,8 +319,6 @@ public class ProgramProperties {
     /**
      * put a property
      *
-     * @param key
-     * @param value
      */
     public static void put(String key, String value) {
         props.setProperty(key, value);
@@ -364,8 +327,6 @@ public class ProgramProperties {
     /**
      * put a file property
      *
-     * @param key
-     * @param value
      */
     public static void put(String key, File value) {
         props.setProperty(key, value.getAbsolutePath());
@@ -375,8 +336,6 @@ public class ProgramProperties {
     /**
      * put a property
      *
-     * @param key
-     * @param value
      */
     public static void put(String key, Color value) {
         if (value == null)
@@ -389,8 +348,6 @@ public class ProgramProperties {
     /**
      * put a property
      *
-     * @param key
-     * @param value
      */
     public static void put(String key, Font value) {
         put(key, value.getFamily(), value.getStyle(), value.getSize());
@@ -398,8 +355,6 @@ public class ProgramProperties {
 
     /**
      * put a property
-     *
-     * @param key
      */
     public static void put(String key, String family, Integer style0, Integer size0) {
         Font def = get(key, (Font) null);
@@ -441,8 +396,6 @@ public class ProgramProperties {
     /**
      * put a property
      *
-     * @param key
-     * @param value
      */
     public static void put(String key, Collection<Pair<String, String>> value) {
         StringBuilder buf = new StringBuilder();
@@ -456,8 +409,6 @@ public class ProgramProperties {
     /**
      * put a property
      *
-     * @param key
-     * @param value
      */
     public static void put(String key, String[] value) {
         StringBuilder buf = new StringBuilder();
@@ -476,7 +427,6 @@ public class ProgramProperties {
     /**
      * get a property
      *
-     * @param key
      * @return property for key
      */
     public static String get(String key) {
@@ -486,7 +436,6 @@ public class ProgramProperties {
     /**
      * sets the name of the program generating these properties
      *
-     * @param programName
      */
     public static void setProgramName(String programName) {
         ProgramProperties.programName = programName;
@@ -504,7 +453,6 @@ public class ProgramProperties {
     /**
      * sets the program version string
      *
-     * @param version
      */
     public static void setProgramVersion(String version) {
         ProgramProperties.programVersion = version;
@@ -522,7 +470,6 @@ public class ProgramProperties {
     /**
      * sets the program title string
      *
-     * @param title
      */
     public static void setProgramTitle(String title) {
         ProgramProperties.programTitle = title;
@@ -531,7 +478,6 @@ public class ProgramProperties {
     /**
      * gets the program titles string
      *
-     * @return title
      */
     public static String getProgramTitle() {
         return programTitle;
@@ -558,7 +504,6 @@ public class ProgramProperties {
     /**
      * sets the program icon
      *
-     * @param icon
      */
     public static void setProgramIcon(ImageIcon icon) {
         ProgramProperties.programIcon = icon;
@@ -575,9 +520,7 @@ public class ProgramProperties {
     /**
      * returns the given text, if the key has been set, otherwise returns ""
      *
-     * @param key
-     * @param text
-     * @return text of ""
+     * @return text or ""
      */
     public static String getIfEnabled(String key, String text) {
         if (get(key, false))
@@ -592,5 +535,14 @@ public class ProgramProperties {
 
     public static void setUseGUI(boolean useGUI) {
         ProgramProperties.useGUI = useGUI;
+    }
+
+    public static void checkState() {
+        if (stateChecker != null)
+            stateChecker.check();
+    }
+
+    public static void setStateChecker(IStateChecker stateChecker) {
+        ProgramProperties.stateChecker = stateChecker;
     }
 }

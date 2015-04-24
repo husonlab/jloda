@@ -364,7 +364,6 @@ public class ProjectManager {
                 }
             }
             if (isQuitting()) {
-                ProgramProperties.store();
                 System.exit(0);
             }
         } catch (CanceledException ex) {

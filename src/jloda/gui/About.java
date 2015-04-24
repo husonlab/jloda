@@ -19,12 +19,15 @@
 package jloda.gui;
 
 import jloda.util.Basic;
+import jloda.util.ProgramProperties;
 
 import javax.imageio.ImageIO;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
 import java.awt.image.BufferedImage;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 /**
  * splashes an about window on the screen
@@ -33,11 +36,13 @@ import java.awt.image.BufferedImage;
  *         Date: 11-Feb-2004
  */
 public class About {
-    private String version;
+    private String versionString;
+    static Point versionStringOffset = new Point(20, 20);
     private final BufferedImage aboutImage;
     private final JDialog aboutDialog;
     boolean hasPainted = false;
-    static Point versionStringOffset = new Point(20, 20);
+    private String additionalString;
+    private int additionalStringVerticalPosition = 100;
 
     static private About instance=null;
 
@@ -80,7 +85,7 @@ public class About {
      * @param closeOperation default close operation, e.g. JDialog.HIDE_ON_CLOSE
      */
     private About(String packageName, String fileName, String version0, int closeOperation) {
-        this.version = version0;
+        this.versionString = version0;
 
         BufferedImage image = null;
         //MZ: 2006-01-28
@@ -101,9 +106,9 @@ public class About {
 //
 //                if (aboutImage == null)
 //                    aboutImage = ImageIO.read(file);
-        aboutDialog = new JDialog();
+        aboutDialog = new JDialog(null, Dialog.ModalityType.APPLICATION_MODAL);
         aboutDialog.setUndecorated(true);
-        aboutDialog.setTitle("About " + version);
+        aboutDialog.setTitle("About " + versionString);
         aboutDialog.setDefaultCloseOperation(closeOperation);
         int width = (aboutImage != null ? aboutImage.getWidth() : 200);
         int height = (aboutImage != null ? aboutImage.getHeight() : 200);
@@ -123,8 +128,16 @@ public class About {
                     ((Graphics2D) gc).fill(this.getBounds());
                 }
                 gc.setColor(Color.BLACK);
-                if (version != null)
-                    gc.drawString(version, versionStringOffset.x, versionStringOffset.y);
+                if (versionString != null) {
+                    String[] tokens = Basic.split(versionString, '\n');
+                    for (int i = 0; i < tokens.length; i++) {
+                        gc.drawString(tokens[i], versionStringOffset.x, versionStringOffset.y + 14 * i);
+                    }
+                }
+                if (additionalString != null) {
+                    Dimension labelSize = Basic.getStringSize(gc, additionalString, gc.getFont()).getSize();
+                    gc.drawString(additionalString, (getWidth() - labelSize.width) / 2, additionalStringVerticalPosition);
+                }
                 if (!hasPainted) {
                     hasPainted = true;
                     synchronized (aboutDialog) {
@@ -153,7 +166,7 @@ public class About {
             }
 
             public void windowLostFocus(WindowEvent event) {
-                hideSplash();
+                if (false) hideSplash();
             }
         });
     }
@@ -162,6 +175,8 @@ public class About {
      * shows the about message on the screen
      */
     public void showAboutModal() {
+        ProgramProperties.checkState();
+
         if (aboutDialog != null) {
             hasPainted = false;
             aboutDialog.setModal(true);
@@ -169,7 +184,7 @@ public class About {
             aboutDialog.toFront();
             aboutDialog.setAlwaysOnTop(true);
         } else
-            JOptionPane.showMessageDialog(null, version);
+            JOptionPane.showMessageDialog(null, versionString);
     }
 
     /**
@@ -179,7 +194,6 @@ public class About {
         if (aboutDialog != null) {
             hasPainted = false;
             aboutDialog.setModal(false);
-
             aboutDialog.setVisible(true);
             aboutDialog.toFront();
             aboutDialog.setAlwaysOnTop(true);
@@ -195,6 +209,7 @@ public class About {
                     }
                 }
             }
+            hideAfter(4000);
         }
     }
 
@@ -208,19 +223,52 @@ public class About {
 
     /**
      * set the version string offset
-     *
-     * @param x
-     * @param y
      */
     static public void setVersionStringOffset(int x, int y) {
         versionStringOffset = new Point(x, y);
     }
 
     public void setVersion(String version) {
-        this.version = version;
+        this.versionString = version;
     }
 
     public static boolean isSet() {
         return instance!=null;
+    }
+
+    public String getAdditionalString() {
+        return additionalString;
+    }
+
+    public void setAdditionalString(String additionalString) {
+        this.additionalString = additionalString;
+    }
+
+    public int getAdditionalStringVerticalPosition() {
+        return additionalStringVerticalPosition;
+    }
+
+    public void setAdditionalStringVerticalPosition(int additionalStringVerticalPosition) {
+        this.additionalStringVerticalPosition = additionalStringVerticalPosition;
+    }
+
+    /**
+     * hide after given number of milliseconds
+     *
+     * @param millis time to wait before hiding
+     */
+    public void hideAfter(final int millis) {
+        final ExecutorService executor = Executors.newSingleThreadExecutor();
+        executor.execute(new Runnable() {
+            public void run() {
+                try {
+                    Thread.sleep(millis);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+                hideSplash();
+                executor.shutdown();
+            }
+        });
     }
 }
