@@ -88,7 +88,7 @@ public class SaveImageDialog extends JDialog {
         formatComboBox = new JComboBox();
 
         for (ExportGraphicType exportGraphicType : exportManager.getGraphicTypes()) {
-            if (allowEPS || !exportGraphicType.getFileExtension().endsWith("eps"))
+            if (true)
                 formatComboBox.addItem(exportGraphicType);
         }
         panel1.add(formatComboBox, BorderLayout.CENTER);

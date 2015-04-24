@@ -198,7 +198,7 @@ public class GraphViewListener implements IGraphViewListener {
             }
         } else {
             viewer.setCursor(Cursor.getDefaultCursor());
-            if (viewer.getAllowEdit() == true && numHitNodes == 1 && me.isAltDown() && me.isShiftDown() == false)
+            if (viewer.getAllowEdit() && numHitNodes == 1 && me.isAltDown() && !me.isShiftDown())
                 current = inNewEdge;
             else if (numHitNodes == 0 && numHitEdges == 0 && numHitNodeLabels > 0) {
                 Node v = hitNodeLabels.getFirstElement();
@@ -209,12 +209,12 @@ public class GraphViewListener implements IGraphViewListener {
                 viewer.setCursor(Cursor.getPredefinedCursor(Cursor.MOVE_CURSOR));
             } else if (numHitNodes == 0 && numHitEdges == 0 && numHitNodeLabels == 0 && numHitEdgeLabels > 0) {
                 Edge e = hitEdgeLabels.getFirstElement();
-                if (viewer.getSelected(e) == false || viewer.getLabel(e) == null)
+                if (!viewer.getSelected(e) || viewer.getLabel(e) == null)
                     return; // move labels only of selected edges
                 current = inMoveEdgeLabel;
                 viewer.setCursor(Cursor.getPredefinedCursor(Cursor.MOVE_CURSOR));
 
-            } else if (numHitNodes > 0 && me.isAltDown() == false && me.isShiftDown() == false) {
+            } else if (numHitNodes > 0 && !me.isAltDown() && !me.isShiftDown()) {
                 if (!viewer.getAllowMoveNodes() && viewer.getNumberSelectedNodes() <
                         viewer.getGraph().getNumberOfNodes())
                     return;
@@ -222,7 +222,7 @@ public class GraphViewListener implements IGraphViewListener {
                 boolean found = false;
                 for (Node v = hitNodes.getFirstElement(); v != null;
                      v = hitNodes.getNextElement(v)) {
-                    if (viewer.getSelectedNodes().contains(v) == true) {
+                    if (viewer.getSelectedNodes().contains(v)) {
                         found = true;
                         break;
                     }
@@ -445,7 +445,7 @@ public class GraphViewListener implements IGraphViewListener {
                 v = hitNodes.getLastElement();
             String label = viewer.getLabel(v);
             label = JOptionPane.showInputDialog(viewer, "Edit Node Label:", label);
-            if (label != null && label.equals(viewer.getLabel(v)) == false) {
+            if (label != null && !label.equals(viewer.getLabel(v))) {
                 viewer.setLabel(v, label);
                 viewer.setLabelVisible(v, label.length() > 0);
                 viewer.repaint();
@@ -460,7 +460,7 @@ public class GraphViewListener implements IGraphViewListener {
                 e = hitEdges.getLastElement();
             String label = viewer.getLabel(e);
             label = JOptionPane.showInputDialog(viewer, "Edit Edge Label:", label);
-            if (label != null && label.equals(viewer.getLabel(e)) == false) {
+            if (label != null && !label.equals(viewer.getLabel(e))) {
                 viewer.setLabel(e, label);
                 viewer.setLabelVisible(e, label.length() > 0);
                 viewer.repaint();
@@ -538,7 +538,7 @@ public class GraphViewListener implements IGraphViewListener {
             boolean moveAll = false;
             double origLength = -1; // use in maintain edge lengths
 
-            if (viewer.getMaintainEdgeLengths() == true) {
+            if (viewer.getMaintainEdgeLengths()) {
                 origLength = canMaintainEdgeLengths();
                 if (origLength == -1)
                     //moveAll = true;
@@ -550,7 +550,7 @@ public class GraphViewListener implements IGraphViewListener {
             try {
                 Graph G = viewer.getGraph();
                 for (Node v = G.getFirstNode(); v != null; v = G.getNextNode(v)) {
-                    if (viewer.selectedNodes.contains(v) == true || moveAll == true) {
+                    if (viewer.selectedNodes.contains(v) || moveAll) {
                         Point2D p = viewer.getLocation(v);
                         viewer.setLocation(v, p.getX() + diff.getX(),
                                 p.getY() + diff.getY());
@@ -592,7 +592,7 @@ public class GraphViewListener implements IGraphViewListener {
         } else if (current == inMoveNodeLabel) {
             if (hitNodeLabels.size() > 0) {
                 Node v = hitNodeLabels.getFirstElement();
-                if (viewer.getSelected(v) == false)
+                if (!viewer.getSelected(v))
                     return; // move labels only of selected node
                 NodeView nv = viewer.getNV(v);
                 INodeDrawer nodeDrawer = viewer.getGraphDrawer().getNodeDrawer();
@@ -634,7 +634,7 @@ public class GraphViewListener implements IGraphViewListener {
             if (hitEdgeLabels.size() > 0) {
                 try {
                     final Edge e = hitEdgeLabels.getFirstElement();
-                    if (viewer.getSelected(e) == false)
+                    if (!viewer.getSelected(e))
                         return; // move labels only of selected edges
                     EdgeView ev = viewer.getEV(e);
 
@@ -1036,7 +1036,7 @@ public class GraphViewListener implements IGraphViewListener {
                     Point2D q = new Point2D.Double(pw.getX() - pv.getX(), pw.getY() - pv.getY());
                     double angle = Geometry.computeAngle(q);
                     double length = pv.distance(pw);
-                    if (first == true) {
+                    if (first) {
                         firstAngle = angle;
                         firstLength = length;
                         first = false;

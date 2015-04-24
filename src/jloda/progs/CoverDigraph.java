@@ -98,7 +98,7 @@ public class CoverDigraph {
         for (GeneOccurrences gene : genes) {
             w.write(gene.label + " ");
             for (int t = 1; t <= ntax; t++)
-                if (gene.taxa.get(t) == true)
+                if (gene.taxa.get(t))
                     w.write(" " + t);
             w.write("\n");
         }
@@ -134,7 +134,7 @@ public class CoverDigraph {
             // prepare label
             String label = "" + genes[i].label + ":";
             for (int t = 1; t <= ntax; t++)
-                if (genes[i].taxa.get(t) == true)
+                if (genes[i].taxa.get(t))
                     label += " " + t;
 
             // check whether gene has same profile as a previous one:
@@ -150,7 +150,7 @@ public class CoverDigraph {
                     found = true;
                 }
             }
-            if (found == false) {
+            if (!found) {
 
                 Node v = graph.newNode(genes[i].taxa);
 
@@ -279,9 +279,9 @@ class BitSetComparator implements Comparator {
         int top = Math.max(bs1.length(), bs2.length()) + 1;
 
         for (int t = 1; t <= top; t++) {
-            if (bs1.get(t) == true && bs2.get(t) == false)
+            if (bs1.get(t) && !bs2.get(t))
                 return 1;
-            else if (bs1.get(t) == false && bs2.get(t) == true)
+            else if (!bs1.get(t) && bs2.get(t))
                 return -1;
         }
         return 0;
@@ -298,7 +298,7 @@ class BitSetComparator implements Comparator {
         int top = bs1.length() + 1;
 
         for (int t = 1; t <= top; t++) {
-            if (bs1.get(t) == true && bs2.get(t) == false)
+            if (bs1.get(t) && !bs2.get(t))
                 return false;
         }
         return true;

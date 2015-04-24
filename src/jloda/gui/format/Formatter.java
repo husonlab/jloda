@@ -185,7 +185,7 @@ public class Formatter implements IDirectableViewer {
             newTitle = "Format - " + dir.getTitle() + " - " + ProgramProperties.getProgramName();
         else
             newTitle = "Format - " + dir.getTitle() + " [" + dir.getID() + "] - " + ProgramProperties.getProgramName();
-        if (frame.getTitle().equals(newTitle) == false)
+        if (!frame.getTitle().equals(newTitle))
             frame.setTitle(newTitle);
     }
 

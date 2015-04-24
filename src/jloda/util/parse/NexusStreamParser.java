@@ -198,7 +198,7 @@ public class NexusStreamParser extends NexusStreamTokenizer {
                 lines.add(lineno());
 
                 flag = toString().equalsIgnoreCase(sst.toString());
-                if (flag == false)
+                if (!flag)
                     break;
             }
             pushBack(svals, nvals, ttypes, lines);
@@ -237,7 +237,7 @@ public class NexusStreamParser extends NexusStreamTokenizer {
                 ttypes.add(ttype);
                 lines.add(lineno());
                 flag = toString().equals(sst.toString());
-                if (flag == false)
+                if (!flag)
                     break;
             }
             pushBack(svals, nvals, ttypes, lines);
@@ -315,7 +315,7 @@ public class NexusStreamParser extends NexusStreamTokenizer {
             matchIgnoreCase(first);
         final LinkedList<String> list = new LinkedList<String>();
         nextToken();
-        while (last == null || toString().equals(last) == false) {
+        while (last == null || !toString().equals(last)) {
             if (ttype == TT_EOF) {
                 if (last == null)
                     break;
@@ -343,7 +343,7 @@ public class NexusStreamParser extends NexusStreamTokenizer {
             matchIgnoreCase(first);
         final LinkedList<String> list = new LinkedList<String>();
         nextToken();
-        while (last == null || toString().equals(last) == false) {
+        while (last == null || !toString().equals(last)) {
             if (ttype == TT_EOF) {
                 if (last == null)
                     break;
@@ -540,7 +540,7 @@ public class NexusStreamParser extends NexusStreamTokenizer {
         tokens.clear();
 
         while (s.ttype != NexusStreamParser.TT_EOF) {
-            if (!found && s.peekMatchIgnoreCase(query) == true) {
+            if (!found && s.peekMatchIgnoreCase(query)) {
                 result = value;
                 found = true;
                 s.matchIgnoreCase(query);
@@ -576,7 +576,7 @@ public class NexusStreamParser extends NexusStreamTokenizer {
         tokens.clear();
 
         while (s.ttype != NexusStreamParser.TT_EOF) {
-            if (!found && s.peekMatchIgnoreCase(query) == true) {
+            if (!found && s.peekMatchIgnoreCase(query)) {
                 found = true;
                 s.matchIgnoreCase(query);
 
@@ -622,7 +622,7 @@ public class NexusStreamParser extends NexusStreamTokenizer {
         tokens.clear();
 
         while (s.ttype != NexusStreamParser.TT_EOF) {
-            if (!found && s.peekMatchIgnoreCase(token) == true) {
+            if (!found && s.peekMatchIgnoreCase(token)) {
                 s.matchIgnoreCase(token + leftDelimiter);
                 while (true) {
                     s.nextToken();
@@ -631,7 +631,7 @@ public class NexusStreamParser extends NexusStreamTokenizer {
 
                     if (word.equalsIgnoreCase(rightDelimiter))
                         break;
-                    if (result.equals("") == false)
+                    if (!result.equals(""))
                         result += " ";
                     result += word;
                 }
@@ -666,7 +666,7 @@ public class NexusStreamParser extends NexusStreamTokenizer {
         tokens.clear();
 
         while (s.ttype != NexusStreamParser.TT_EOF) {
-            if (!found && s.peekMatchIgnoreCase(token) == true) {
+            if (!found && s.peekMatchIgnoreCase(token)) {
                 s.matchIgnoreCase(token);
                 s.nextToken();
                 result = s.toString();
@@ -703,7 +703,7 @@ public class NexusStreamParser extends NexusStreamTokenizer {
         tokens.clear();
 
         while (s.ttype != NexusStreamParser.TT_EOF) {
-            if (!found && s.peekMatchIgnoreCase(token) == true) {
+            if (!found && s.peekMatchIgnoreCase(token)) {
                 s.matchIgnoreCase(token);
                 s.nextToken();
                 String str = s.toString();
@@ -744,7 +744,7 @@ public class NexusStreamParser extends NexusStreamTokenizer {
         tokens.clear();
 
         while (s.ttype != NexusStreamParser.TT_EOF) {
-            if (!found && s.peekMatchIgnoreCase(token) == true) {
+            if (!found && s.peekMatchIgnoreCase(token)) {
                 s.matchIgnoreCase(token);
                 s.nextToken();
                 try {
@@ -788,7 +788,7 @@ public class NexusStreamParser extends NexusStreamTokenizer {
         tokens.clear();
 
         while (s.ttype != NexusStreamParser.TT_EOF) {
-            if (!found && s.peekMatchIgnoreCase(token) == true) {
+            if (!found && s.peekMatchIgnoreCase(token)) {
                 s.matchIgnoreCase(token);
                 s.nextToken();
                 try {
@@ -829,7 +829,7 @@ public class NexusStreamParser extends NexusStreamTokenizer {
         tokens.clear();
 
         while (s.ttype != NexusStreamParser.TT_EOF) {
-            if (!found && s.peekMatchIgnoreCase(token) == true) {
+            if (!found && s.peekMatchIgnoreCase(token)) {
                 s.matchIgnoreCase(token);
                 try {
                     result = s.getColor();
@@ -861,7 +861,7 @@ public class NexusStreamParser extends NexusStreamTokenizer {
         tokens.clear();
 
         while (s.ttype != NexusStreamParser.TT_EOF) {
-            if (s.peekMatchIgnoreCase(token) == true) {
+            if (s.peekMatchIgnoreCase(token)) {
                 result = true;
                 s.matchIgnoreCase(token);
             } else {
@@ -883,7 +883,7 @@ public class NexusStreamParser extends NexusStreamTokenizer {
     public boolean findIgnoreCase(String vals, String token) throws IOException {
         final NexusStreamParser s = new NexusStreamParser(new StringReader(vals));
         while (s.ttype != NexusStreamParser.TT_EOF) {
-            if (s.peekMatchIgnoreCase(token) == true)
+            if (s.peekMatchIgnoreCase(token))
                 return true;
             s.nextToken();
         }
@@ -1240,7 +1240,7 @@ public class NexusStreamParser extends NexusStreamTokenizer {
             String label = it.next();
 
             if (label.equalsIgnoreCase("none")) {
-                if (it.hasNext() == false)
+                if (!it.hasNext())
                     throw new IOException("line " + lineno() + ": unexcepted: " + label);
                 return result; // return empty list
             }
@@ -1252,7 +1252,7 @@ public class NexusStreamParser extends NexusStreamTokenizer {
                         inState = 2;
                         break; // end of case 1
                     }
-                    if (seen.get(firstNumber) == false) {
+                    if (!seen.get(firstNumber)) {
                         result.add(firstNumber);
                         seen.set(firstNumber);
                     }
@@ -1278,7 +1278,7 @@ public class NexusStreamParser extends NexusStreamTokenizer {
                     int imin = Math.min(firstNumber, secondNumber);
                     int imax = Math.max(firstNumber, secondNumber);
                     for (int i = imin; i <= imax; i++) {
-                        if (seen.get(i) == false) {
+                        if (!seen.get(i)) {
                             result.add(i);
                             seen.set(i);
                         }
@@ -1291,7 +1291,7 @@ public class NexusStreamParser extends NexusStreamTokenizer {
         }
         switch (inState) {
             case 1:
-                if (seen.get(firstNumber) == false) {
+                if (!seen.get(firstNumber)) {
                     result.add(firstNumber);
                     seen.set(firstNumber);
                 }
@@ -1315,7 +1315,7 @@ public class NexusStreamParser extends NexusStreamTokenizer {
         try {
             final NexusStreamParser np = new NexusStreamParser(new StringReader(ex.toString()));
             while (np.peekNextToken() != NexusStreamParser.TT_EOF
-                    && np.peekMatchIgnoreCase("line") == false)
+                    && !np.peekMatchIgnoreCase("line"))
                 np.getWordRespectCase();
             np.getWordRespectCase();
             return np.getInt();

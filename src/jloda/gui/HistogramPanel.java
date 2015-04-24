@@ -321,7 +321,7 @@ public class HistogramPanel extends JPanel {
     }
 
     public int getThresholdInt() {
-        if (reverse == false)
+        if (!reverse)
             return (int) Math.ceil(getThreshold());
         else
             return (int) Math.floor(getThreshold());

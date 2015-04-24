@@ -1248,7 +1248,7 @@ public class Graph extends GraphBase {
         NodeSet used = new NodeSet(this);
 
         for (Node v = getFirstNode(); v != null; v = v.getNext()) {
-            if (used.contains(v) == false) {
+            if (!used.contains(v)) {
                 visitConnectedComponent(v, used);
                 result++;
             }

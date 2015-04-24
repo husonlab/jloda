@@ -70,7 +70,7 @@ public class QuasiMedianClosure {
                 char[] i2j = new char[256];
                 char[] j2i = new char[256];
 
-                for (Iterator it = oldSequences.iterator(); ok == false && it.hasNext(); ) {
+                for (Iterator it = oldSequences.iterator(); !ok && it.hasNext(); ) {
                     String sequence = (String) it.next();
                     char chari = sequence.charAt(i);
                     char charj = sequence.charAt(j);
@@ -84,7 +84,7 @@ public class QuasiMedianClosure {
                     } else if (i2j[chari] != charj)
                         ok = true; // differ
                 }
-                if (ok == false)
+                if (!ok)
                     throw new IOException("Input has identical pattern in columns: " + i + " and " + j);
             }
         }

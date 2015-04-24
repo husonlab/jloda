@@ -70,7 +70,7 @@ public class NodeSet extends GraphBase implements Set<Node> {
      * @return true, if new
      */
     public boolean add(Node v) {
-        if (bits.get(getOwner().getId(v)) == true)
+        if (bits.get(getOwner().getId(v)))
             return false;
         else {
             bits.set(getOwner().getId(v), true);
@@ -205,7 +205,7 @@ public class NodeSet extends GraphBase implements Set<Node> {
         Iterator<Node> it = getOwner().nodeIterator();
         while (it.hasNext()) {
             Node v = it.next();
-            if (contains(v) == true)
+            if (contains(v))
                 result[i++] = v;
         }
         return result;

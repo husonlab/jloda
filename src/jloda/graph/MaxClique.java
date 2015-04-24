@@ -121,7 +121,7 @@ public class MaxClique {
             maxClique.or(clique);
         }
         // this is the bound step in branch and bound:
-        if (checkBoundCondition(matrix, clique, possible, maxClique.cardinality()) == false)
+        if (!checkBoundCondition(matrix, clique, possible, maxClique.cardinality()))
             return;
 
         for (int p = possible.nextSetBit(0); p >= 0; p = possible.nextSetBit(p + 1)) {
@@ -267,7 +267,7 @@ public class MaxClique {
         BitSet seen = new BitSet();
         BitSet maxComponent = new BitSet();
         for (int p = nodes.nextSetBit(0); p >= 0; p = nodes.nextSetBit(p + 1)) {
-            if (seen.get(p) == false) {
+            if (!seen.get(p)) {
                 BitSet component = new BitSet();
                 visitComponent(matrix, p, nodes, component);
                 if (component.cardinality() > maxComponent.cardinality())
@@ -286,7 +286,7 @@ public class MaxClique {
      * @param component
      */
     private static void visitComponent(int[][] matrix, int p, BitSet nodes, BitSet component) {
-        if (component.get(p) == false) {
+        if (!component.get(p)) {
             component.set(p);
             for (int q = nodes.nextSetBit(0); q >= 0; q = nodes.nextSetBit(q + 1)) {
                 if (matrix[p][q] != 0)

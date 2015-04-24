@@ -87,7 +87,7 @@ public class EPSExportType extends FileFilter implements ExportGraphicType {
      */
     public void stream(JPanel imagePanel, JScrollPane imageScrollPane, boolean showWholeImage, OutputStream out) {
         JPanel panel;
-        if (showWholeImage == true || imageScrollPane == null)
+        if (showWholeImage || imageScrollPane == null)
             panel = imagePanel;
         else
             panel = ExportManager.makePanelFromScrollPane(imagePanel, imageScrollPane);

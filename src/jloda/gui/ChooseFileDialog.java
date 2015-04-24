@@ -205,7 +205,7 @@ public class ChooseFileDialog {
         File file = null;
 
         boolean okToWrite = false;
-        while (okToWrite == false) {
+        while (!okToWrite) {
             if (ProgramProperties.isMacOS() && (event == null || (event.getModifiers() & Event.SHIFT_MASK) == 0)) {
                 //Use native file dialog on mac
                 java.awt.FileDialog dialog;
@@ -272,7 +272,7 @@ public class ChooseFileDialog {
                         file = new File(file.getParent(), file.getName() + defaultSuffix);
                     }
                 }
-                if (file.exists() == true) {
+                if (file.exists()) {
                     switch (
                             JOptionPane.showConfirmDialog(parent,
                                     "This file already exists. Overwrite the existing file?",

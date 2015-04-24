@@ -254,7 +254,7 @@ public class Basic {
         boolean prevWasSpace = false;
         for (int i = 0; i < str.length(); i++) {
             if (Character.isWhitespace(str.charAt(i))) {
-                if (prevWasSpace == false) {
+                if (!prevWasSpace) {
                     buf.append(c);
                     prevWasSpace = true;
                 }
@@ -319,7 +319,7 @@ public class Basic {
         while (it.hasNext())
             list.add(it.next());
         java.util.List<T> result = new LinkedList<T>();
-        while (list.isEmpty() == false) {
+        while (!list.isEmpty()) {
             int r = random.nextInt(list.size());
             result.add(list.get(r));
             list.remove(r);
@@ -339,7 +339,7 @@ public class Basic {
         java.util.List<T> list = new LinkedList<T>();
         list.addAll(Arrays.asList(array));
         java.util.List<T> result = new LinkedList<T>();
-        while (list.isEmpty() == false) {
+        while (!list.isEmpty()) {
             int r = random.nextInt(list.size());
             result.add(list.get(r));
             list.remove(r);
@@ -481,7 +481,7 @@ public class Basic {
             else
                 newName = prefix + "_cpy" + count + suffix;
             File newFile = new File(newName);
-            if (newFile.exists() == false && usedFileNames.contains(newName) == false) {
+            if (!newFile.exists() && !usedFileNames.contains(newName)) {
                 usedFileNames.add(newName);
                 return newFile;
             }
@@ -632,11 +632,11 @@ public class Basic {
         boolean inComment = false;
         for (int i = 0; i < str.length(); i++) {
             char ch = str.charAt(i);
-            if (inComment == true && ch == rightDelimiter) {
+            if (inComment && ch == rightDelimiter) {
                 inComment = false;
             } else if (ch == leftDelimiter) {
                 inComment = true;
-            } else if (inComment == false)
+            } else if (!inComment)
                 buf.append(ch);
         }
         return buf.toString();
@@ -661,7 +661,7 @@ public class Basic {
                 buf.append("\n");
                 lineLength = 0;
             } else {
-                if (first == false) {
+                if (!first) {
                     buf.append(" ");
                     lineLength++;
                 } else
@@ -744,7 +744,7 @@ public class Basic {
         for (int i = 0; i < a.length(); i++) {
             if (a.charAt(i) == b.charAt(i)) {
                 if (diffStart > -1) {
-                    if (first == true)
+                    if (first)
                         first = false;
                     else
                         buf.append(",");
@@ -1299,7 +1299,7 @@ public class Basic {
         StringBuilder buf = new StringBuilder();
         for (int i = 0; i < str.length(); i++) {
             char ch = str.charAt(i);
-            if (Character.isLetterOrDigit(ch) == true)
+            if (Character.isLetterOrDigit(ch))
                 buf.append(ch);
         }
         return buf.toString();

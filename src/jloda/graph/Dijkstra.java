@@ -52,7 +52,7 @@ public class Dijkstra {
             dist.set(source, 0);
 
             // main loop:
-            while (priorityQueue.isEmpty() == false) {
+            while (!priorityQueue.isEmpty()) {
                 int size = priorityQueue.size();
                 Node u = priorityQueue.first();
                 priorityQueue.remove(u);

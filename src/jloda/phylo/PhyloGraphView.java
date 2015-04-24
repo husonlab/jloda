@@ -119,7 +119,7 @@ public class PhyloGraphView extends GraphView {
                         if (2 * getSelectedNodes().size() > getGraph().getNumberOfNodes()) {
                             // invert selection of nodes:
                             for (Node v = getGraph().getFirstNode(); v != null; v = getGraph().getNextNode(v)) {
-                                if (getSelected(v) == true)
+                                if (getSelected(v))
                                     selectedNodes.remove(v);
                                 else
                                     selectedNodes.add(v);
@@ -174,11 +174,11 @@ public class PhyloGraphView extends GraphView {
      */
     private void selectGraphComponent(Node v, int id) {
         try {
-            if (getSelected(v) == false) {
+            if (!getSelected(v)) {
                 selectedNodes.add(v);  // don't use setSelected, infinite loop!
 
                 for (Edge e = getGraph().getFirstAdjacentEdge(v); e != null; e = getGraph().getNextAdjacentEdge(e, v)) {
-                    if (getSelected(e) == false) {
+                    if (!getSelected(e)) {
                         if (getPhyloGraph().getSplit(e) == id)
                             selectedEdges.add(e);
                         else {
@@ -256,7 +256,7 @@ public class PhyloGraphView extends GraphView {
                 continue;
 
             for (Object aL : L) {
-                if (taxaSet.get((Integer) aL) == true) {
+                if (taxaSet.get((Integer) aL)) {
                     selectedNodes.add(v);
                     if (++count == taxaSet.cardinality())
                         allFound = true;
@@ -298,7 +298,7 @@ public class PhyloGraphView extends GraphView {
             if (one != null) {
                 List<Pair<Node, Edge>> separators = new LinkedList<>();
                 graph.getAllSeparators(splitId, one, null, new NodeSet(graph), separators);
-                    if (updateNodePositions == true) {
+                if (updateNodePositions) {
                         // move all the nodes on one side of the split:
                         Pair separator = (Pair) separators.get(0);
                         Node v = (Node) separator.getFirst();
@@ -337,7 +337,7 @@ public class PhyloGraphView extends GraphView {
      * @throws NotOwnerException
      */
     private void moveNodes(int splitId, Point2D offset, Node v, Edge e, NodeSet seen) throws NotOwnerException {
-        if (seen.contains(v) == false) {
+        if (!seen.contains(v)) {
             seen.add(v);
             Point2D origLocation = getLocation(v);
             Point2D newLocation = new Point2D.Double(origLocation.getX() + offset.getX(), origLocation.getY() + offset.getY());
@@ -395,7 +395,7 @@ public class PhyloGraphView extends GraphView {
                     out.write(":" + (float) (weight / 2.0) + "):0;");
                 } else
                     out.write(");");
-                if (ok == false || seen.size() != getPhyloGraph().getNumberOfNodes())
+                if (!ok || seen.size() != getPhyloGraph().getNumberOfNodes())
                     return null;
             } catch (IOException ex) {
                 Basic.caught(ex);
@@ -440,7 +440,7 @@ public class PhyloGraphView extends GraphView {
                         out.write(",");
 
                     Node v = getPhyloGraph().getOpposite(r, f);
-                    if (writeRec(seen, out, v, f, wgts) == false)
+                    if (!writeRec(seen, out, v, f, wgts))
                         return false;
                     if (wgts) {
                         double weight = getPhyloGraph().getWeight(f);

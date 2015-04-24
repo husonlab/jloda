@@ -2043,7 +2043,7 @@ public class GraphView extends JPanel implements Printable, Scrollable, INodeEdg
      * @param gc0 the Graphics
      */
     public void paint(Graphics gc0) {
-        boolean inDrawOnScreen = (ExportManager.inWriteToFileOrGetData() == false && !inPrint);
+        boolean inDrawOnScreen = (!ExportManager.inWriteToFileOrGetData() && !inPrint);
 
         Graphics2D gc = (Graphics2D) gc0;
 

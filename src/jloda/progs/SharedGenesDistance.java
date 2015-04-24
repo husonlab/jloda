@@ -61,7 +61,7 @@ public class SharedGenesDistance {
 
         float[][] dist;
 
-        if (useMLDistance == false)
+        if (!useMLDistance)
             dist = computeSnelBorkDistance(ntax, genes);
         else
             dist = computeMLDistance(ntax, genes);

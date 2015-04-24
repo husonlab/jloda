@@ -84,7 +84,7 @@ public class FormatterActions {
                     && (((Boolean) action.getValue(CRITICAL))).equals(Boolean.TRUE))
                 action.setEnabled(on);
         }
-        if (on == true)
+        if (on)
             updateEnableState();
     }
 
@@ -167,7 +167,7 @@ public class FormatterActions {
 
         action = new AbstractAction() {
             public void actionPerformed(ActionEvent event) {
-                if (ignore == false) {
+                if (!ignore) {
                     Object selectedValue = ((JComboBox) event.getSource()).getSelectedItem();
                     if (selectedValue != null) {
                         byte size = 1;
@@ -200,7 +200,7 @@ public class FormatterActions {
 
         action = new AbstractAction() {
             public void actionPerformed(ActionEvent event) {
-                if (ignore == false) {
+                if (!ignore) {
                     viewer.setLabelVisibleSelectedNodes(cbox.isSelected());
                     formatter.fireNodeFormatChanged(viewer.getSelectedNodes());
                     viewer.setLabelVisibleSelectedEdges(cbox.isSelected());
@@ -226,7 +226,7 @@ public class FormatterActions {
 
         action = new AbstractAction() {
             public void actionPerformed(ActionEvent event) {
-                if (ignore == false) {
+                if (!ignore) {
                     Object selectedValue = ((JComboBox) event.getSource()).getSelectedItem();
                     if (selectedValue != null) {
                         String family = selectedValue.toString();
@@ -259,7 +259,7 @@ public class FormatterActions {
 
         action = new AbstractAction() {
             public void actionPerformed(ActionEvent event) {
-                if (ignore == false && event != null && (event.getActionCommand() == null || event.getActionCommand().equals("comboBoxChanged"))) {
+                if (!ignore && event != null && (event.getActionCommand() == null || event.getActionCommand().equals("comboBoxChanged"))) {
                     Object source = event.getSource();
                     if (source != null && source instanceof JComboBox) {
                         Object selectedValue = ((JComboBox) event.getSource()).getSelectedItem();
@@ -302,7 +302,7 @@ public class FormatterActions {
 
         action = new AbstractAction() {
             public void actionPerformed(ActionEvent event) {
-                if (ignore == false) {
+                if (!ignore) {
                     int state = ((JCheckBox) event.getSource()).isSelected() ? 1 : 0;
                     boolean changed = false;
                     if (setNodeFont(null, state, -1, -1))
@@ -332,7 +332,7 @@ public class FormatterActions {
 
         action = new AbstractAction() {
             public void actionPerformed(ActionEvent event) {
-                if (ignore == false) {
+                if (!ignore) {
                     int state = ((JCheckBox) event.getSource()).isSelected() ? 1 : 0;
                     boolean changed = false;
                     if (setNodeFont(null, -1, state, -1))
@@ -362,7 +362,7 @@ public class FormatterActions {
 
         action = new AbstractAction() {
             public void actionPerformed(ActionEvent event) {
-                if (ignore == false) {
+                if (!ignore) {
                     Object selectedValue = ((JComboBox) event.getSource()).getSelectedItem();
                     if (selectedValue != null) {
                         Byte size = 1;
@@ -396,7 +396,7 @@ public class FormatterActions {
 
         action = new AbstractAction() {
             public void actionPerformed(ActionEvent event) {
-                if (ignore == false) {
+                if (!ignore) {
                     Object selectedValue = ((JComboBox) event.getSource()).getSelectedItem();
                     if (selectedValue != null) {
                         byte shape = -1;
@@ -430,7 +430,7 @@ public class FormatterActions {
 
         action = new AbstractAction() {
             public void actionPerformed(ActionEvent event) {
-                if (ignore == false) {
+                if (!ignore) {
                     Object selectedValue = ((JComboBox) event.getSource()).getSelectedItem();
                     if (selectedValue != null) {
                         // todo: this kind of operation should only apply to uncollapsed nodes

@@ -111,7 +111,7 @@ public class PDFExportType extends SVGExportType implements ExportGraphicType {
      */
     public void stream(JPanel imagePanel, JScrollPane imageScrollPane, boolean showWholeImage, OutputStream out) throws IOException {
         JPanel panel;
-        if (showWholeImage == true || imageScrollPane == null)
+        if (showWholeImage || imageScrollPane == null)
             panel = imagePanel;
         else {
             // panel=(JPanel)((JViewport)imageScrollPane.getComponent(0)).getComponent(0) ;

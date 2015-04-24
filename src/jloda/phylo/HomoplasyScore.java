@@ -72,11 +72,11 @@ public class HomoplasyScore {
             }
             int aValue = 0;
             int bValue = 0;
-            if (hasA == true && hasB == false)
+            if (hasA && !hasB)
                 bValue = Integer.MAX_VALUE;
-            else if (hasA == false && hasB == true)
+            else if (!hasA && hasB)
                 aValue = Integer.MAX_VALUE;
-            else if (hasA == true && hasB == true)
+            else if (hasA && hasB)
                 aValue = bValue = 1; // TODO: is this really correct?
             scoreA.set(v, aValue);
             scoreB.set(v, bValue);

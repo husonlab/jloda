@@ -73,7 +73,7 @@ public class ProjectManager {
             currentIDs.clear(dir.getID());
         }
 
-        if (isExitOnEmpty() && projects.isEmpty() == true) {
+        if (isExitOnEmpty() && projects.isEmpty()) {
             ProgramProperties.store();
             System.exit(0);
         }
@@ -144,7 +144,7 @@ public class ProjectManager {
      * close all projects
      */
     public static void closeAll() throws CanceledException {
-        while (projects.isEmpty() == false) {
+        while (!projects.isEmpty()) {
             synchronized (projects) {
                 // close in reverse order to save the geometry of older windows later
                 IDirector dir = projects.get(projects.size() - 1);
@@ -165,7 +165,7 @@ public class ProjectManager {
         List<IDirectableViewer> viewers0 = viewersList.get(dir);
 
         if (viewers0 != null) {
-            if (opened == true)
+            if (opened)
                 viewers0.add(viewer0);
             else
                 viewers0.remove(viewer0);
@@ -241,7 +241,7 @@ public class ProjectManager {
                                     action.putValue(AbstractAction.NAME, "  " + title);
                                 action.putValue(AbstractAction.SMALL_ICON, ResourceManager.getIcon("Empty16.gif"));
                                 action.putValue(AbstractAction.SHORT_DESCRIPTION, "Bring to front: " + title);
-                                if (first == true) {
+                                if (first) {
                                     menu.addSeparator();
                                     first = false;
                                 }

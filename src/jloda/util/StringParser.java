@@ -139,7 +139,7 @@ public class StringParser implements Iterator {
         if (pushedBack != null)
             return pushedBack;
         else {
-            if (strTok.hasMoreTokens() == false)
+            if (!strTok.hasMoreTokens())
                 return null;
             pushedBack = strTok.nextToken();
             return pushedBack;

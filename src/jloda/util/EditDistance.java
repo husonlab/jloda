@@ -120,11 +120,11 @@ public class EditDistance {
         StringBuilder buffer1 = new StringBuilder();
         StringBuilder buffer2 = new StringBuilder();
 
-        while (stack1.empty() == false)
+        while (!stack1.empty())
             buffer1.append(((Character) stack1.pop()).charValue());
         setAligned1(buffer1.toString());
 
-        while (stack2.empty() == false)
+        while (!stack2.empty())
             buffer2.append(((Character) stack2.pop()).charValue());
         setAligned2(buffer2.toString());
 

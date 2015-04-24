@@ -178,7 +178,7 @@ public class EdgeSet extends GraphBase implements Set<Edge> {
         Iterator<Edge> it = getOwner().edgeIterator();
         while (it.hasNext()) {
             Edge e = it.next();
-            if (contains(e) == true)
+            if (contains(e))
                 result[i++] = e;
         }
         return result;
@@ -190,7 +190,7 @@ public class EdgeSet extends GraphBase implements Set<Edge> {
         Iterator<Edge> it = getOwner().edgeIterator();
         while (it.hasNext()) {
             Edge e = it.next();
-            if (contains(e) == true)
+            if (contains(e))
                 ts[i++] = (T) e;
         }
         return ts;

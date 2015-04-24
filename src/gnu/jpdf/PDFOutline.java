@@ -211,7 +211,7 @@ public class PDFOutline extends PDFObject implements Serializable {
             os.write("\n/Dest [".getBytes());
             os.write(dest.toString().getBytes());
 
-            if (destMode == FITPAGE) {
+            if (!destMode) {
                 //os.write(" null null null]\n/Parent ".getBytes());
                 os.write(" /Fit]\n/Parent ".getBytes());
             } else {

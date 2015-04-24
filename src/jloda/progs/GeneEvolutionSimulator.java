@@ -72,7 +72,7 @@ public class GeneEvolutionSimulator {
         }
 
         /** Gaussian initial number */
-        if (gaussianInitialNumber == true) {
+        if (gaussianInitialNumber) {
             RandomGaussian randGaussian = new RandomGaussian(initNumber, Math.sqrt(initNumber));
             if (seed >= 0)
                 randGaussian.setSeed(seed);
@@ -234,7 +234,7 @@ public class GeneEvolutionSimulator {
         int ntax = 0;
         BitSet genes = new BitSet();
         for (Node v = tree.getFirstNode(); v != null; v = tree.getNextNode(v)) {
-            if (tree.getLabel(v) != null && tree.getLabel(v).equals("root") == false) {
+            if (tree.getLabel(v) != null && !tree.getLabel(v).equals("root")) {
                 ntax++;
                 genes.or((BitSet) tree.getInfo(v));
             }
@@ -242,7 +242,7 @@ public class GeneEvolutionSimulator {
         out.println(ntax + " " + genes.cardinality());
 
         for (Node v = tree.getFirstNode(); v != null; v = tree.getNextNode(v)) {
-            if (tree.getLabel(v) != null && tree.getLabel(v).equals("root") == false) {
+            if (tree.getLabel(v) != null && !tree.getLabel(v).equals("root")) {
                 // int count=0;
                 out.print(PhylipUtils.padLabel(tree.getLabel(v), 10) + " ");
                 BitSet genesV = (BitSet) tree.getInfo(v);

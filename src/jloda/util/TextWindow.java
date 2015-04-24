@@ -135,7 +135,7 @@ public class TextWindow extends JFrame {
                         == JFileChooser.APPROVE_OPTION) {
                     File file = chooser.getSelectedFile();
 
-                    if (file.exists() == true &&
+                    if (file.exists() &&
                             JOptionPane.showConfirmDialog(null,
                                     "This file already exists. " +
                                             "Would you like to overwrite the existing file?",
@@ -213,7 +213,7 @@ public class TextWindow extends JFrame {
                         "Font Size...", "Input",
                         JOptionPane.INFORMATION_MESSAGE, null,
                         possibleValues, def);
-                if (selectedValue != null && selectedValue.equals(def) == false) {
+                if (selectedValue != null && !selectedValue.equals(def)) {
                     textArea.setFont(Font.decode("Monospaced-NORMAL-" + selectedValue));
                     textArea.repaint();
                 }

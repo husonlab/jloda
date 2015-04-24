@@ -202,7 +202,7 @@ public class EPSGraphics extends Graphics2D {
      */
     public void setFont(Font font) {
 
-        if (drawTextAsOutlines == FONT_TEXT) {
+        if (!drawTextAsOutlines) {
 
             if (fonts.containsKey(font.getFontName())) {
                 this.font = font;
@@ -445,12 +445,12 @@ public class EPSGraphics extends Graphics2D {
 
     public void drawString(String str, float x, float y) {
 
-        if (drawTextAsOutlines == FONT_OUTLINES) {
+        if (drawTextAsOutlines) {
             //System.err.println("rendering outlines: font="+font);
             TextLayout layout = new TextLayout(str, font, fontRenderContext);
             Shape s = layout.getOutline(AffineTransform.getTranslateInstance(x, y));
             fill(s);
-        } else if (drawTextAsOutlines == FONT_TEXT) {
+        } else if (!drawTextAsOutlines) {
             //System.err.println("rendering text");
             AffineTransform m = getTransform();
             m.rotate(Math.PI);

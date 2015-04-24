@@ -125,7 +125,7 @@ public class About {
                 gc.setColor(Color.BLACK);
                 if (version != null)
                     gc.drawString(version, versionStringOffset.x, versionStringOffset.y);
-                if (hasPainted == false) {
+                if (!hasPainted) {
                     hasPainted = true;
                     synchronized (aboutDialog) {
                         aboutDialog.notifyAll();
@@ -185,7 +185,7 @@ public class About {
             aboutDialog.setAlwaysOnTop(true);
 
             // give user chance to see splash screen:
-            while (hasPainted == false) {
+            while (!hasPainted) {
                 synchronized (aboutDialog) {
                     try {
                         aboutDialog.wait();

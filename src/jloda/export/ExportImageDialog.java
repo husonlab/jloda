@@ -259,7 +259,7 @@ public class ExportImageDialog extends JDialog {
      */
     private boolean checkOkToWriteFile(String fileName) {
         File file = new File(fileName);
-        if (file.exists() == true) {
+        if (file.exists()) {
             switch (
                     JOptionPane.showConfirmDialog(this,
                             "This file already exists. Overwrite the existing file?", "Save File", JOptionPane.YES_NO_CANCEL_OPTION)) {

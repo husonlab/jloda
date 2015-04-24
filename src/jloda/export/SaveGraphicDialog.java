@@ -111,13 +111,13 @@ public class SaveGraphicDialog {
             try {
                 if (ext != null) {
                     if (ext.equalsIgnoreCase("jpg") || ext.equalsIgnoreCase("jpeg")) {
-                        if (isOkToWrite(owner, file) == true)
+                        if (isOkToWrite(owner, file))
                             JPGExportType.writeToFile(file, panel);
                     } else if (ext.equalsIgnoreCase("gif")) {
-                        if (isOkToWrite(owner, file) == true)
+                        if (isOkToWrite(owner, file))
                             GIFExportType.writeToFile(file, panel);
                     } else if (ext.equalsIgnoreCase("eps")) {
-                        if (isOkToWrite(owner, file) == true) {
+                        if (isOkToWrite(owner, file)) {
                             String msg = "Convert text to shapes?";
                             int reply = JOptionPane.showConfirmDialog(owner, msg, "EPS export",
                                     JOptionPane.YES_NO_CANCEL_OPTION, JOptionPane.QUESTION_MESSAGE);
@@ -134,10 +134,10 @@ public class SaveGraphicDialog {
                             }
                         }
                     } else if (ext.equalsIgnoreCase("svg")) {
-                        if (isOkToWrite(owner, file) == true)
+                        if (isOkToWrite(owner, file))
                             SVGExportType.writeToFile(file, panel);
                     } else if (ext.equalsIgnoreCase("png")) {
-                        if (isOkToWrite(owner, file) == true)
+                        if (isOkToWrite(owner, file))
                             PNGExportType.writeToFile(file, panel);
                     } else {
                         System.err.println("file type not supported: " + ext);
@@ -148,11 +148,11 @@ public class SaveGraphicDialog {
                     FileFilter filter = chooser.getFileFilter();
                     if (filter.getClass().isAssignableFrom(GraphicsFileFilters.SvgFilter.class)) {
                         fileName += ".svg";
-                        if (isOkToWrite(owner, file) == true)
+                        if (isOkToWrite(owner, file))
                             SVGExportType.writeToFile(new File(fileName), panel);
                     } else if (filter.getClass().isAssignableFrom(GraphicsFileFilters.EpsFilter.class)) {
                         fileName += ".eps";
-                        if (isOkToWrite(owner, file) == true) {
+                        if (isOkToWrite(owner, file)) {
                             String msg = "Convert text to shapes?";
                             int reply = JOptionPane.showConfirmDialog(owner, msg, "EPS export",
                                     JOptionPane.YES_NO_CANCEL_OPTION, JOptionPane.QUESTION_MESSAGE);
@@ -170,15 +170,15 @@ public class SaveGraphicDialog {
                         }
                     } else if (filter.getClass().isAssignableFrom(GraphicsFileFilters.PngFilter.class)) {
                         fileName += ".png";
-                        if (isOkToWrite(owner, file) == true)
+                        if (isOkToWrite(owner, file))
                             PNGExportType.writeToFile(new File(fileName), panel);
                     } else if (filter.getClass().isAssignableFrom(GraphicsFileFilters.GifFilter.class)) {
                         fileName += ".gif";
-                        if (isOkToWrite(owner, file) == true)
+                        if (isOkToWrite(owner, file))
                             GIFExportType.writeToFile(new File(fileName), panel);
                     } else if (filter.getClass().isAssignableFrom(GraphicsFileFilters.JpgFilter.class)) {
                         fileName += ".jpg";
-                        if (isOkToWrite(owner, file) == true)
+                        if (isOkToWrite(owner, file))
                             JPGExportType.writeToFile(new File(fileName), panel);
                     } else {
                         new Alert(owner, "Unknown filetype");
@@ -206,7 +206,7 @@ public class SaveGraphicDialog {
      * @return false, if file exists and user doesn't want to overwrite
      */
     private static boolean isOkToWrite(JFrame owner, File file) throws CanceledException {
-        if (file.exists() == false ||
+        if (!file.exists() ||
                 JOptionPane.showConfirmDialog(owner,
                         "This file already exists. " +
                                 "Would you like to overwrite the existing file?",

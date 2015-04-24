@@ -156,10 +156,10 @@ public class CommandLineOptions {
             usage.add(null);
         String val = getStringOption(label, def, describe, false);
         boolean ok = false;
-        for (int i = 0; ok == false && i < legalValues.length; i++)
+        for (int i = 0; !ok && i < legalValues.length; i++)
             if (legalValues[i].equalsIgnoreCase(val))
                 ok = true;
-        if (ok == false)
+        if (!ok)
             throw new UsageException("Option " + label + ": illegal value: " + val);
 
         if (describe.charAt(0) != '!') {
@@ -387,7 +387,7 @@ public class CommandLineOptions {
             String arg = args[i];
             if (arg.length() > 1 && arg.charAt(0) == '+' && label.length() > 1 && arg.substring(1, arg.length()).equals(label.substring(1, label.length())))
                 args[i] = "-" + arg.substring(1, arg.length());
-            if (seen[i] == false && args[i].equals(label)) {
+            if (!seen[i] && args[i].equals(label)) {
                 seen[i] = true;
                 if (describe.charAt(0) != '!') {
                     settings.add("" + result);
@@ -438,13 +438,13 @@ public class CommandLineOptions {
 
         boolean found = false;
         for (int i = 0; i < seen.length; i++) {
-            if (found == false && seen[i] == false && args[i].equals(label)) {
+            if (!found && !seen[i] && args[i].equals(label)) {
                 seen[i] = true;
                 found = true;
-            } else if (found && seen[i] == false && args[i].startsWith("-") == false) {
+            } else if (found && !seen[i] && !args[i].startsWith("-")) {
                 result.add(args[i]);
                 seen[i] = true;
-            } else if (found && (seen[i] == true || args[i].startsWith("-") == true))
+            } else if (found && (seen[i] || args[i].startsWith("-")))
                 break;
         }
         if (found) {
@@ -506,13 +506,13 @@ public class CommandLineOptions {
 
         boolean found = false;
         for (int i = 0; i < seen.length; i++) {
-            if (found == false && seen[i] == false && args[i].equals(label)) {
+            if (!found && !seen[i] && args[i].equals(label)) {
                 seen[i] = true;
                 found = true;
-            } else if (found && seen[i] == false && args[i].startsWith("-") == false && args[i].startsWith("+") == false) {
+            } else if (found && !seen[i] && !args[i].startsWith("-") && !args[i].startsWith("+")) {
                 result.add(args[i]);
                 seen[i] = true;
-            } else if (found && (seen[i] == true || args[i].startsWith("-") == true || args[i].startsWith("+") == true))
+            } else if (found && (seen[i] || args[i].startsWith("-") || args[i].startsWith("+")))
                 break;
         }
         if (found || stage == 1) {
@@ -558,9 +558,9 @@ public class CommandLineOptions {
     private String getStringOption(String label, String def, String describe, boolean mandatory) throws
             UsageException {
         for (int i = 0; i < seen.length; i++) {
-            if (seen[i] == false && args[i].equals(label)) {
+            if (!seen[i] && args[i].equals(label)) {
                 seen[i] = true;
-                if (i + 1 == seen.length || seen[i + 1] == true)
+                if (i + 1 == seen.length || seen[i + 1])
                     throw new UsageException
                             ("option " + label + ": missing argument" + " (" + describe + ")");
                 else {
@@ -569,7 +569,7 @@ public class CommandLineOptions {
                 }
             }
         }
-        if (mandatory == true && stage != 1) {
+        if (mandatory && stage != 1) {
             if (doHelp)
                 exitOnHelp = true;
             else
@@ -600,7 +600,7 @@ public class CommandLineOptions {
         if (stage == 0 || stage == 2) {
             try {
                 boolean help = getOption("-h", "Show usage", true, false);
-                if (help == true) {
+                if (help) {
                     String str = "\n" + description + "\n";
                     str += "\nProgram usage:\n";
                     for (String anUsage : usage)
@@ -885,7 +885,7 @@ public class CommandLineOptions {
                     missingOption = label;
             }
             args = list.toArray(new String[list.size()]);
-            if (ok == false)
+            if (!ok)
                 throw new RuntimeException("Internal error: not setup for -arggui option");
             return missingOption;
         }

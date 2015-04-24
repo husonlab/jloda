@@ -203,7 +203,7 @@ public class TreeView {
                                 if (tree.getDegree(v) == 2 && tree.getLabel(v) == null) {
                                     Edge g = tree.delDivertex(v);
                                     treeView.setDirection(g, EdgeView.UNDIRECTED);
-                                    if (showEdgeWeights == true) {
+                                    if (showEdgeWeights) {
                                         treeView.setLabel(g, "" + tree.getWeight(g));
                                         treeView.setLabelVisible(g, true);
                                     }

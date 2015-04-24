@@ -923,7 +923,7 @@ public class PhyloGraph extends Graph {
                 for (Edge f = getFirstAdjacentEdge(w); f != null; f = getNextAdjacentEdge(f, w)) {
                     if (f != e) {
                         Node u = getOpposite(w, f);
-                        if (u != v && opposites.contains(u) == false) {
+                        if (u != v && !opposites.contains(u)) {
                             Edge g = null;
                             try {
                                 g = newEdge(u, v);
@@ -970,7 +970,7 @@ public class PhyloGraph extends Graph {
      * @throws NotOwnerException
      */
     public void getAllSeparators(int splitId, Node v, Edge e, NodeSet seen, List<Pair<Node, Edge>> separators) {
-        if (seen.contains(v) == false) {
+        if (!seen.contains(v)) {
             seen.add(v);
             for (Edge f = getFirstAdjacentEdge(v); f != null; f = getNextAdjacentEdge(f, v)) {
                 if (f != e) {
@@ -994,7 +994,7 @@ public class PhyloGraph extends Graph {
      * @throws NotOwnerException
      */
     public Pair<Node, Edge> getSeparator(int splitId, Node v, Edge e, NodeSet seen) {
-        if (seen.contains(v) == false) {
+        if (!seen.contains(v)) {
             seen.add(v);
             for (Edge f = getFirstAdjacentEdge(v); f != null; f = getNextAdjacentEdge(f, v)) {
                 if (f != e) {
@@ -1055,7 +1055,7 @@ public class PhyloGraph extends Graph {
             labels.set(v, label.toString());
             for (Edge e = v.getFirstAdjacentEdge(); e != null; e = v.getNextAdjacentEdge(e)) {
                 int s = getSplit(e);
-                if (used.get(s) == false) {
+                if (!used.get(s)) {
                     used.set(s);
                     labelNodesBySequencesRec(v.getOpposite(e), used, split2chars, firstChars, labels);
                     used.set(s, false);

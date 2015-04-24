@@ -125,13 +125,13 @@ public class ResourceManager {
      */
     public static ImageIcon getIcon(String name) {
 
-        if (iconMap.containsKey(name) == false) {
+        if (!iconMap.containsKey(name)) {
             Image iconImage = getImageResource(iconPackagePath, name);
             if (iconImage != null) {
                 ImageIcon icon = new ImageIcon(iconImage);
                 iconMap.put(name, icon);
             } else {
-                if (Basic.getDebugMode() == true)
+                if (Basic.getDebugMode())
                     System.err.println("ICON NOT FOUND: " + name + ", path: " + iconPackagePath);
                 Image image = getImageResource(iconPackagePath, "sun/toolbarButtonGraphics/general/Help16.gif");
                 if (image != null)
@@ -147,7 +147,7 @@ public class ResourceManager {
      * Returns the file with name specified by the parameter, or <code>null</code> if there is none.
      */
     public static File getFile(String name) {
-        if (dataMap.containsKey(name) == false) {
+        if (!dataMap.containsKey(name)) {
             File data = getFileResource(filePackagePath, name);
             dataMap.put(name, data);
         }
@@ -158,7 +158,7 @@ public class ResourceManager {
      * Returns the path with name specified by the parameter, or just the name, else
      */
     public static String getFileName(String name) {
-        if (dataMap.containsKey(name) == false) {
+        if (!dataMap.containsKey(name)) {
             File data = getFileResource(filePackagePath, name);
             dataMap.put(name, data);
         }
@@ -209,7 +209,7 @@ public class ResourceManager {
      * Returns the cursor with name specified by the parameter, or <code>null</code> if there is none.
      */
     public static Cursor getCursor(String name) {
-        if (cursorMap.containsKey(name) == false) {
+        if (!cursorMap.containsKey(name)) {
             final Toolkit toolkit = Toolkit.getDefaultToolkit();
             final Dimension dim = toolkit.getBestCursorSize(20, 20);
             final int x = dim.width / 2;

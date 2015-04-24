@@ -378,7 +378,7 @@ public class PhyloTree extends PhyloGraph {
                             setInputHasBootstrapValuesOnNodes(true);
 
                         if (label.length() > 0 && !isBootstrapValue) {
-                            if (!getAllowMultiLabeledNodes() && seen.containsKey(label) && !(ALLOW_READ_RETICULATE && PhyloTreeUtils.findReticulateLabel(label) != null))
+                            if (!getAllowMultiLabeledNodes() && seen.containsKey(label) && !(PhyloTreeUtils.findReticulateLabel(label) != null))
                             // if label already used, make unique, unless this is a reticulate node
                             {
                                 if (label.startsWith("'") && label.endsWith("'") && label.length() > 1)
@@ -430,7 +430,7 @@ public class PhyloTree extends PhyloGraph {
                         setInputHasBootstrapValuesOnNodes(true);
 
                     if (label.length() > 0 && !isBootstrapValue) {
-                        if (!getAllowMultiLabeledNodes() && seen.containsKey(label) && !(ALLOW_READ_RETICULATE && PhyloTreeUtils.findReticulateLabel(label) != null)) {
+                        if (!getAllowMultiLabeledNodes() && seen.containsKey(label) && !(PhyloTreeUtils.findReticulateLabel(label) != null)) {
                             // give first occurence of this label the suffix .1
                             Node old = seen.get(label);
                             if (old != null) // change label of node
@@ -502,7 +502,7 @@ public class PhyloTree extends PhyloGraph {
                 // adjust edge weights for reticulate edges
                 if (e != null) {
                     try {
-                        if (ALLOW_READ_RETICULATE && label != null && PhyloTreeUtils.isReticulateNode(label)) {
+                        if (label != null && PhyloTreeUtils.isReticulateNode(label)) {
                             // if an instance of a reticulate node is marked ##, then we will set the weight of the edge to the node to a number >0
                             // to indicate that edge should be drawn as a tree node
                             if (PhyloTreeUtils.isReticulateAcceptorEdge(label)) {
@@ -525,7 +525,7 @@ public class PhyloTree extends PhyloGraph {
                     else
                         throw new IOException("Unexpected end of line");
                 }
-                if (ALLOW_READ_WRITE_EDGE_LABELS && str.charAt(i) == '[') // edge label
+                if (str.charAt(i) == '[') // edge label
                 {
                     int x = str.indexOf('[', i + 1);
                     int j = str.indexOf(']', i + 1);
@@ -755,7 +755,7 @@ public class PhyloTree extends PhyloGraph {
             boolean first = true;
             for (Edge f = v.getFirstAdjacentEdge(); f != null; f = v.getNextAdjacentEdge(f)) {
                 if (f != e) {
-                    if (ALLOW_WRITE_RETICULATE && node2reticulateNumber.getInt(v) > 0 && isSpecial(f))
+                    if (node2reticulateNumber.getInt(v) > 0 && isSpecial(f))
                         continue; // don't climb back up a special edge
 
                     if (edgeId2Number != null)
@@ -770,7 +770,7 @@ public class PhyloTree extends PhyloGraph {
                     boolean inEdgeHasWeight = (getWeight(f) > 0);
 
 
-                    if (ALLOW_WRITE_RETICULATE && isSpecial(f)) {
+                    if (isSpecial(f)) {
                         if (node2reticulateNumber.getInt(w) == 0) {
                             node2reticulateNumber.set(w, ++reticulateNodeNumber);
                             String label;
@@ -792,7 +792,7 @@ public class PhyloTree extends PhyloGraph {
                                     outs.write("" + (float) (100 * getConfidence(e)));
                                 if (getWeight(f) >= 0)
                                     outs.write(":" + (float) (getWeight(f)));
-                                if (ALLOW_READ_WRITE_EDGE_LABELS && writeEdgeLabels && getLabel(f) != null) {
+                                if (writeEdgeLabels && getLabel(f) != null) {
                                     outs.write("[" + getLabelForWriting(f) + "]");
                                 }
                             }
@@ -813,7 +813,7 @@ public class PhyloTree extends PhyloGraph {
                 outs.write("" + (float) (100 * getConfidence(e)));
             if (getWeight(e) >= 0)
                 outs.write(":" + (float) (getWeight(e)));
-            if (ALLOW_READ_WRITE_EDGE_LABELS && writeEdgeLabels && getLabel(e) != null) {
+            if (writeEdgeLabels && getLabel(e) != null) {
                 outs.write("[" + getLabelForWriting(e) + "]");
             }
         }

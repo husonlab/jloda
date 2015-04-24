@@ -161,7 +161,7 @@ public class MessageWindowActions {
                         == JFileChooser.APPROVE_OPTION) {
                     File file = chooser.getSelectedFile();
 
-                    if (file.exists() == true &&
+                    if (file.exists() &&
                             JOptionPane.showConfirmDialog(null,
                                     "This file already exists. " +
                                             "Would you like to overwrite the existing file?",

@@ -118,7 +118,7 @@ final public class NodeView extends ViewBase implements Cloneable {
             return null;
 
         Point apt = trans.w2d(getLocation());
-        if (shape == NONE_NODE || !END_EDGES_AT_BORDER_OF_NODES)
+        if (shape == NONE_NODE)
             return apt;
 
         int scaledWidth;
