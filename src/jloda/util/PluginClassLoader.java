@@ -18,19 +18,15 @@
 
 package jloda.util;
 
-import java.io.File;
-import java.io.FileFilter;
 import java.io.IOException;
 import java.lang.reflect.Modifier;
-import java.net.MalformedURLException;
-import java.net.URL;
 import java.net.URLClassLoader;
 import java.util.*;
 
 /**
  * Finds all classes in the named package, of the given type
  *
- * @author huson Date: 04-Dec-2003
+ * 2003
  */
 public class PluginClassLoader {
     // Extended the PluginClassLoader to include the Plugins from the pluginFolder
@@ -43,10 +39,10 @@ public class PluginClassLoader {
      * @param type
      * @return instances
      */
-    public static List getInstances(String packageName, Class type) {
-        List<Object> plugins = new LinkedList<>();
+    public static List<Object> getInstances(String packageName, Class type) {
+        final List<Object> plugins = new LinkedList<>();
 
-        LinkedList<String> packageNameQueue = new LinkedList<>();
+        final LinkedList<String> packageNameQueue = new LinkedList<>();
         packageNameQueue.add(packageName);
         while (packageNameQueue.size() > 0) {
             packageName = packageNameQueue.remove(0);
@@ -92,93 +88,6 @@ public class PluginClassLoader {
                     }
                 }
             }
-        }
-
-        try {
-            String dir = ProgramProperties.get("PluginDir");
-            if (dir != null) {
-                File pluginDir = new File(dir);
-                if (pluginDir.exists() && pluginDir.isDirectory()) {
-                    File[] externalPlugins = pluginDir.listFiles(new FileFilter() {
-                        public boolean accept(File in) {
-                            if (in.isDirectory() && !in.toString().endsWith("offline")) {
-                                File[] classes = in.listFiles(new FileFilter() {
-                                    public boolean accept(File in) {
-                                        return in.toString().endsWith(".class");
-                                    }
-                                });
-                                if (classes.length == 1)
-                                    return true;
-                                else {
-                                    System.err.println("No class found for pluginFolder: " + in.toString());
-                                    return false;
-                                }
-                            } else
-                                return false;
-                        }
-                    });
-                    for (File externalPlugin : externalPlugins) {
-                        //System.err.println("externalPlugin: " + externalPlugins[i]);
-                        ArrayList<URL> externalPluginUrls = new ArrayList<>();
-                        boolean add = true;
-                        try {    // first add basic folder
-                            externalPluginUrls.add(externalPlugin.toURI().toURL());
-                        } catch (MalformedURLException e) {
-                            Basic.caught(e);
-                            add = false;
-                        }
-                        // second add all jars from the basic folder
-                        File[] jars = externalPlugin.listFiles(new FileFilter() {
-                            public boolean accept(File in) {
-                                return in.toString().endsWith(".jar");
-                            }
-                        });
-
-                        for (File jar : jars) {
-                            try {
-                                externalPluginUrls.add(jar.toURI().toURL());
-                            } catch (MalformedURLException e) {
-                                Basic.caught(e);
-                                add = false;
-                            }
-                        }
-                        if (add) {
-                            //System.err.println("Loading plugin: " + externalPlugins[i]);
-                            // load class
-                            File[] classes = externalPlugin.listFiles(new FileFilter() {
-                                public boolean accept(File in) {
-                                    return in.toString().endsWith(".class");
-                                }
-                            });
-                            URLClassLoader ucl = new URLClassLoader(externalPluginUrls.toArray(new URL[1]), ClassLoader.getSystemClassLoader());
-                            for (File aClass : classes) {
-                                String className = aClass.getName().substring(0, aClass.getName().lastIndexOf("."));
-                                Class c = Class.forName(className, true, ucl);
-                                pluginName2URLClassLoader.put(className, ucl);
-                                if (!c.isInterface()
-                                        && !Modifier.isAbstract(c.getModifiers())
-                                        && type.isAssignableFrom(c)) {
-                                    System.err.println("Loading pluging: " + className + " successful");
-                                    Object obj;
-                                    try {
-                                        obj = c.newInstance();
-                                        plugins.add(obj);
-                                    } catch (InstantiationException ex) {
-                                        //  continue; //Must be an abstract class
-                                    }
-                                }
-                            }
-                        }
-                    }
-                }
-                /*
-                else {
-                    System.err.println("PluginClassLoader: Pluginfolder " + pluginDir + " not found!");
-                }
-                */
-            }
-        } catch (Exception ex) {
-            Basic.caught(ex);
         }
         return plugins;
     }

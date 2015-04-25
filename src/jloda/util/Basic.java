@@ -2036,31 +2036,6 @@ public class Basic {
     }
 
     /**
-     * compute number of days since 1 Jan, 2011
-     *
-     * @param additionalDaysFromNow
-     * @return days
-     */
-    public static int getDaysSince1Jan2011(int additionalDaysFromNow) {
-        // 1293836400000L jan 1, 2011
-        // 86400000L milliSecondsPerDay
-        long date = System.currentTimeMillis() + additionalDaysFromNow * 86400000L;
-        return (int) ((date - 1293836400000L) / 86400000);
-    }
-
-    /**
-     * compute time in milliseconds given the number of days since jan 1, 2011
-     *
-     * @param daysSince1Jan2011
-     * @return time in milliseconds
-     */
-    public static long getTimeFromDaysSince1Jan2011(int daysSince1Jan2011) {
-        // 1293836400000L jan 1, 2011
-        // 86400000L milliSecondsPerDay
-        return 1293836400000L + daysSince1Jan2011 * 86400000L;
-    }
-
-    /**
      * replace the suffix of a file
      *
      * @param fileName
@@ -2723,15 +2698,15 @@ public class Basic {
     /**
      * gets the compile time version of the given class
      *
-     * @param classe
+     * @param clazz
      * @return compile time version
      */
-    public static String getVersion(final Class classe) {
+    public static String getVersion(final Class clazz) {
         String version;
-        final String shortClassName = classe.getName().substring(classe.getName().lastIndexOf(".") + 1);
+        final String shortClassName = clazz.getName().substring(clazz.getName().lastIndexOf(".") + 1);
         try {
-            final ClassLoader classLoader = classe.getClassLoader();
-            String threadContexteClass = classe.getName().replace('.', '/');
+            final ClassLoader classLoader = clazz.getClassLoader();
+            String threadContexteClass = clazz.getName().replace('.', '/');
             URL url = classLoader.getResource(threadContexteClass + ".class");
             if (url == null) {
                 version = shortClassName + " $ (no manifest) $";
