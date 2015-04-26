@@ -36,16 +36,27 @@ public class PluginClassLoader {
      * get an instance of each class of the given type in the given package
      *
      * @param packageName
-     * @param type
+     * @param clazz
      * @return instances
      */
-    public static List<Object> getInstances(String packageName, Class type) {
+    public static List<Object> getInstances(String packageName, Class clazz) {
+        return getInstances(new String[]{packageName}, clazz);
+    }
+
+    /**
+     * get an instance of each class of the given type in the given packages
+     *
+     * @param packageNames
+     * @param clazz
+     * @return instances
+     */
+    public static List<Object> getInstances(String[] packageNames, Class clazz) {
         final List<Object> plugins = new LinkedList<>();
 
         final LinkedList<String> packageNameQueue = new LinkedList<>();
-        packageNameQueue.add(packageName);
+        packageNameQueue.addAll(Arrays.asList(packageNames));
         while (packageNameQueue.size() > 0) {
-            packageName = packageNameQueue.remove(0);
+            String packageName = packageNameQueue.remove(0);
             // System.err.println("packageName: " + packageName);
 
             String[] resources = null;
@@ -61,7 +72,7 @@ public class PluginClassLoader {
                         try {
                             resources[i] = resources[i].substring(0, resources[i].length() - 6);
                             Class c = Basic.classForName(packageName.concat(".").concat(resources[i]));
-                            if (!c.isInterface() && !Modifier.isAbstract(c.getModifiers()) && type.isAssignableFrom(c)) {
+                            if (!c.isInterface() && !Modifier.isAbstract(c.getModifiers()) && clazz.isAssignableFrom(c)) {
                                 Object obj;
                                 try {
                                     obj = c.newInstance();

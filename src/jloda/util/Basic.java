@@ -3475,6 +3475,56 @@ public class Basic {
             return string;
 
     }
+
+    /**
+     * convert a string with spaces and/or underscores to camel case
+     *
+     * @param string
+     * @return camel case
+     */
+    public static String toCamelCase(String string) {
+        int pos = 0;
+        while (pos < string.length() && (Character.isWhitespace(string.charAt(pos)) || string.charAt(pos) == '_'))
+            pos++;
+        boolean afterWhiteSpace = false;
+        StringBuilder buf = new StringBuilder();
+        while (pos < string.length()) {
+            final char ch = string.charAt(pos);
+            if (Character.isWhitespace(ch) || ch == '_')
+                afterWhiteSpace = true;
+            else if (afterWhiteSpace) {
+                buf.append(Character.toUpperCase(ch));
+                afterWhiteSpace = false;
+            } else
+                buf.append(Character.toLowerCase(ch));
+            pos++;
+        }
+        return buf.toString();
+    }
+
+    /**
+     * convert a string with spaces and/or underscores to camel case
+     *
+     * @param string
+     * @return camel case
+     */
+    public static String fromCamelCase(String string) {
+        boolean afterWhiteSpace = true;
+        StringBuilder buf = new StringBuilder();
+        for (int pos = 0; pos < string.length(); pos++) {
+            final char ch = string.charAt(pos);
+            if (Character.isUpperCase(ch)) {
+                if (!afterWhiteSpace) {
+                    buf.append(" ");
+                }
+            }
+            buf.append(ch);
+            afterWhiteSpace = (Character.isWhitespace(ch));
+        }
+        return buf.toString();
+    }
+
+
 }
 
 /**

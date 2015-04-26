@@ -88,7 +88,6 @@ public class CommandManager {
         this.setReturnOnCommandNotFound(returnOnCommandNotFound);
         this.commands = new LinkedList<>();
 
-
         List<ICommand> commands = new LinkedList<>();
         for (String commandsPath : commandsPaths) {
             for (Object obj : PluginClassLoader.getInstances(commandsPath, ICommand.class)) {

@@ -36,6 +36,7 @@ import java.util.List;
  */
 public class MenuCreator {
     public final static String MENUBAR_TAG = "MenuBar";
+    static MenuModifier menuModifer;
 
     private final CommandManager commandManager;
 
@@ -140,27 +141,36 @@ public class MenuCreator {
                         continue;
                     boolean done = false;
                     if (ProgramProperties.isMacOS()) {
-                        if (label.equals("Quit")) {
-                            final Action action = createAction(command);
-                            AppleStuff.getInstance().setQuitAction(action);
-                            if (menu.getItemCount() > 0 && menu.getItem(menu.getItemCount() - 1) == null) {
-                                skipNextSeparator = true;
+                        switch (label) {
+                            case "Quit": {
+                                final Action action = createAction(command);
+                                AppleStuff.getInstance().setQuitAction(action);
+                                if (menu.getItemCount() > 0 && menu.getItem(menu.getItemCount() - 1) == null) {
+                                    skipNextSeparator = true;
+                                }
+                                done = true;
+                                break;
                             }
-                            done = true;
-                        } else if (label.equals("About") || label.equals("About...")) {
-                            final Action action = createAction(command);
-                            AppleStuff.getInstance().setAboutAction(action);
-                            if (menu.getItemCount() > 0 && menu.getItem(menu.getItemCount() - 1) == null) {
-                                skipNextSeparator = true;
+                            case "About":
+                            case "About...": {
+                                final Action action = createAction(command);
+                                AppleStuff.getInstance().setAboutAction(action);
+                                if (menu.getItemCount() > 0 && menu.getItem(menu.getItemCount() - 1) == null) {
+                                    skipNextSeparator = true;
+                                }
+                                done = true;
+                                break;
                             }
-                            done = true;
-                        } else if (label.equals("Preferences") || label.equals("Preferences...")) {
-                            final Action action = createAction(command);
-                            AppleStuff.getInstance().setPreferencesAction(action);
-                            if (menu.getItemCount() > 0 && menu.getItem(menu.getItemCount() - 1) == null) {
-                                skipNextSeparator = true;
+                            case "Preferences":
+                            case "Preferences...": {
+                                final Action action = createAction(command);
+                                AppleStuff.getInstance().setPreferencesAction(action);
+                                if (menu.getItemCount() > 0 && menu.getItem(menu.getItemCount() - 1) == null) {
+                                    skipNextSeparator = true;
+                                }
+                                done = true;
+                                break;
                             }
-                            done = true;
                         }
                     }
                     if (!done) {
@@ -180,6 +190,8 @@ public class MenuCreator {
                 }
             }
         }
+        if (menuModifer != null)
+            menuModifer.apply(menu);
         if (ProgramProperties.get("showtex", false)) {
             System.out.println(TeXGenerator.getMenuLaTeX(commandManager, menuBarConfiguration, menusConfigurations));
         }
@@ -307,4 +319,16 @@ public class MenuCreator {
         return action;
     }
 
+    /**
+     * if set, the menu modifier is applied to each menu after it is built
+     *
+     * @param menuModifier
+     */
+    public static void setMenuModifier(MenuModifier menuModifier) {
+        menuModifer = menuModifier;
+    }
+
+    public interface MenuModifier {
+        void apply(JMenu menu);
+    }
 }
