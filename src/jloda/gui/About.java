@@ -88,7 +88,6 @@ public class About {
         this.versionString = version0;
 
         BufferedImage image = null;
-        //MZ: 2006-01-28
         try {
             image = ImageIO.read(Basic.getBasicClassLoader().getResourceAsStream(packageName.replaceAll("\\.", "/") + "/" + fileName));
         } catch (Exception e) {
