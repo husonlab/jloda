@@ -18,6 +18,7 @@
 
 package jloda.util;
 
+import java.io.Closeable;
 import java.io.IOException;
 import java.util.Iterator;
 
@@ -25,7 +26,7 @@ import java.util.Iterator;
  * A closeable iterator, e.g. based on a file or database
  * Daniel Huson, 4.2010
  */
-public interface ICloseableIterator<T> extends Iterator<T> {
+public interface ICloseableIterator<T> extends Iterator<T>, Closeable {
     /**
      * close associated file or database
      */

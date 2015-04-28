@@ -3524,7 +3524,28 @@ public class Basic {
         return buf.toString();
     }
 
+    /**
+     * gets next word after given first word
+     *
+     * @param aLine
+     * @return second word or null
+     */
+    public static String getWordAfter(String first, String aLine) {
+        int start = aLine.indexOf(first);
+        if (start == -1)
+            return null;
+        start += first.length();
+        while (start < aLine.length() && Character.isWhitespace(aLine.charAt(start)))
+            start++;
+        int finish = start;
+        while (finish < aLine.length() && !Character.isWhitespace(aLine.charAt(finish)))
+            finish++;
+        if (finish < aLine.length())
+            return aLine.substring(start, finish);
+        else
+            return aLine.substring(start);
 
+    }
 }
 
 /**
