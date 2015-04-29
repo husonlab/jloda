@@ -20,12 +20,14 @@
     </target>
 
     <target name="compile" depends="init">
-        <!-- Compile the java code from ${src} into ${build} -->
-	<javac  includeantruntime="false"
-		srcdir="${src}"
+	    <!-- Compile the java code from ${src} into ${build} -->
+	     <javac  includeantruntime="false"
+        	srcdir="${src}"
                destdir="${build}"
                debug="on"
-               classpathref="build.classpath"/>
+	       classpathref="build.classpath">
+	       <compilerarg value="-XDignore.symbol.file=true"/> 
+        </javac>
     </target>
 
     <target name="jar" depends="compile">
@@ -58,9 +60,6 @@
                  use="true"
                  windowtitle="JLODA">
             <doctitle><![CDATA[<h1>JLODA API</h1>]]></doctitle>
-            <bottom>
-                <![CDATA[<i>Copyright &#169; 2015 WSI-AB T&uuml;bingen.</i>]]>
-            </bottom>
         </javadoc>
     </target>
 </project>

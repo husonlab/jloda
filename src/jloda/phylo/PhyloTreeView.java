@@ -249,7 +249,7 @@ public class PhyloTreeView extends GraphView {
             if (root != null) {
                 tarTree.setRoot(root);
 
-                while (root != null && root.getOutDegree() == 1)  // delete path from original root down to first branching node
+                while (false && root != null && root.getOutDegree() == 1)  // delete path from original root down to first branching node
                 {
                     root = root.getFirstOutEdge().getTarget();
                     tarTree.deleteNode(tarTree.getRoot());
