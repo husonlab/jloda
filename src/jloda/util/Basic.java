@@ -2783,6 +2783,25 @@ public class Basic {
     }
 
     /**
+     * write a stream to a file
+     *
+     * @param inputStream
+     * @param outputFile
+     * @throws IOException
+     */
+    public static void writeStreamToFile(InputStream inputStream, File outputFile) throws IOException {
+        try (BufferedOutputStream outs = new BufferedOutputStream(new FileOutputStream(outputFile))) {
+            while (true) {
+                int a = inputStream.read();
+                if (a == -1)
+                    break;
+                else
+                    outs.write(a);
+            }
+        }
+    }
+
+    /**
      * append a file
      *
      * @param source
@@ -3546,7 +3565,8 @@ public class Basic {
             return aLine.substring(start);
 
     }
-}
+
+ }
 
 /**
  * silent stream
