@@ -20,7 +20,7 @@ package jloda.map;
 
 /**
  * A read and write long-indexed array of ints
- * Daniel Huson, 3.2015
+ * Daniel Huson, 4.2015
  */
 public interface IIntPutter {
     /**

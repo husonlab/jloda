@@ -25,7 +25,7 @@ import java.nio.ByteBuffer;
 /**
  * Open and read file of bytes. File can be arbitrarily large, uses memory mapping. Also supports reading of ints
  * <p/>
- * Daniel Huson, 3.2015
+ * Daniel Huson, 4.2015
  */
 public class ByteFileGetter extends FileGetterPutterBase implements IByteGetter {
 

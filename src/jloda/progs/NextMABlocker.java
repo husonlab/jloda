@@ -40,7 +40,7 @@ import java.util.*;
 public class NextMABlocker {
     static public void main(String[] args) throws Exception {
         CommandLineOptions options = new CommandLineOptions(args);
-        String fname = options.getMandatoryOption("-i", "input file", "");
+        String cname = options.getMandatoryOption("-i", "input file", "");
         int minLength = options.getOption("-l", "min length of block", 200);
         int gaps2Break = options.getOption("-g", "min number of gaps to break a segment", 20);
         boolean generateFastA = options.getOption("+f", "create FastASequences files", false, true);
@@ -52,7 +52,7 @@ public class NextMABlocker {
         System.err.println("Options: " + options);
 
         FastA fasta = new FastA();
-        fasta.read(new FileReader(new File(fname)));
+        fasta.read(new FileReader(new File(cname)));
         int numSequences = fasta.getSize();
 
         int length = 0;
@@ -96,9 +96,9 @@ public class NextMABlocker {
         System.err.println(blocks.size());
 
         if (generateFastA)
-            writeFastAFiles(fname, fasta, blocks);
+            writeFastAFiles(cname, fasta, blocks);
         if (generateCGViz)
-            writeCGVizFiles(fname, fasta, blocks);
+            writeCGVizFiles(cname, fasta, blocks);
 
         writeOverview(numSequences, seq2segments, blocks);
     }
@@ -391,9 +391,9 @@ public class NextMABlocker {
             BitSet taxa = block.taxa;
             int startPos = block.start;
             int stopPos = block.stop;
-            String fname = inFile + ":" + nf.format(startPos) + "_" + nf.format(stopPos);
-            System.err.println("# Writing " + fname);
-            FileWriter w = new FileWriter(new File(fname));
+            String cname = inFile + ":" + nf.format(startPos) + "_" + nf.format(stopPos);
+            System.err.println("# Writing " + cname);
+            FileWriter w = new FileWriter(new File(cname));
 
 
             for (int s = taxa.nextSetBit(0); s >= 0; s = taxa.nextSetBit(s + 1)) {
@@ -423,12 +423,12 @@ public class NextMABlocker {
             BitSet taxa = block.taxa;
             int startPos = block.start;
             int stopPos = block.stop;
-            String fname = inFile + ":" + nf.format(startPos) + "_" + nf.format(stopPos) + ".cgv";
+            String cname = inFile + ":" + nf.format(startPos) + "_" + nf.format(stopPos) + ".cgv";
 
-            System.err.println("# Writing " + fname);
-            FileWriter w = new FileWriter(new File(fname));
+            System.err.println("# Writing " + cname);
+            FileWriter w = new FileWriter(new File(cname));
 
-            w.write("{DATA " + fname + "\n");
+            w.write("{DATA " + cname + "\n");
             w.write("[__GLOBAL__] tracks=" + fasta.getSize() + " dimension=1:\n");
 
             for (int s = taxa.nextSetBit(0); s >= 0; s = taxa.nextSetBit(s + 1)) {

@@ -34,7 +34,7 @@ public class MASampler {
     static public void main(String[] args) throws Exception {
         CommandLineOptions options = new CommandLineOptions(args);
         options.setDescription("Sample fragments from a multiple alignment");
-        String fname = options.getMandatoryOption("-i", "input file in Phylip format", "");
+        String cname = options.getMandatoryOption("-i", "input file in Phylip format", "");
         int meanLength = options.getOption("-m", "mean length of a fragment", 500);
         int percentStdDev = options.getOption("-d", "standard deviation in percent", 10);
         int seed = options.getOption("-s", "random number seed", 666);
@@ -48,11 +48,11 @@ public class MASampler {
         //System.err.println("# Options: " + options);
 
         String[][] inData = new String[2][0];
-        FileReader r = new FileReader(fname);
+        FileReader r = new FileReader(cname);
         PhylipUtils.read(inData, r);
         int numSequences = inData[0].length - 1;
         int length = inData[1][1].length();
-        System.err.println("# Input <" + fname + ">: " + numSequences + " sequences of length " + length);
+        System.err.println("# Input <" + cname + ">: " + numSequences + " sequences of length " + length);
 
         String[][] outData = new String[2][numSequences + 1];
         for (int i = 1; i <= numSequences; i++) {

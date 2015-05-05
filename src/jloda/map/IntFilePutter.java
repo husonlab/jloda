@@ -25,7 +25,7 @@ import java.nio.ByteBuffer;
 /**
  * Open a file for reading and writing
  * <p/>
- * Daniel Huson, 3.2015
+ * Daniel Huson, 4.2015
  */
 public class IntFilePutter extends FileGetterPutterBase implements IIntPutter, IIntGetter {
     /**

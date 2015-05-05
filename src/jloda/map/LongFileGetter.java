@@ -25,7 +25,7 @@ import java.nio.ByteBuffer;
 /**
  * Open and read file of longs. File can be arbitrarily large, uses memory mapping.
  * <p/>
- * Daniel Huson, 3.2015
+ * Daniel Huson, 4.2015
  */
 public class LongFileGetter extends FileGetterPutterBase implements ILongGetter {
     /**

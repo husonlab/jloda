@@ -30,7 +30,7 @@ import java.util.Map;
 
 /**
  * map based int putter
- * Daniel Huson, 3.2015
+ * Daniel Huson, 4.2015
  */
 public class IntMapPutter implements IIntGetter, IIntPutter {
     private final Map<Long, Integer> map;

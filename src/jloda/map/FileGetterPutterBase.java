@@ -30,7 +30,7 @@ import java.util.List;
 
 /**
  * Base for memory-mapped file-based getters or putters
- * Daniel Huson, 3.2015
+ * Daniel Huson, 4.2015
  */
 public abstract class FileGetterPutterBase {
 

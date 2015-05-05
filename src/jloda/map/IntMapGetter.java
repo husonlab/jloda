@@ -27,7 +27,7 @@ import java.util.Map;
 
 /**
  * map-based int getter
- * Daniel 3.2015
+ * Daniel 4.2015
  */
 public class IntMapGetter implements IIntGetter {
     private final Map<Long, Integer> map;
