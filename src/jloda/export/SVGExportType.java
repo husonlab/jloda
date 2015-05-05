@@ -33,7 +33,7 @@ import java.io.*;
 /**
  * The export filetype for svg images.
  *
- * @author huson, schr�der, 2007
+ * @author huson, schroeder, 2007
  */
 public class SVGExportType extends FileFilter implements ExportGraphicType {
 

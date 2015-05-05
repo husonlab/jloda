@@ -28,7 +28,6 @@ import java.io.OutputStream;
 
 /**
  * @author huson, schroeder
- * @version $Id: SVGStringExportType.java,v 1.6 2007-03-11 07:38:17 huson Exp $
  */
 public class SVGStringExportType implements ExportGraphicType {
 

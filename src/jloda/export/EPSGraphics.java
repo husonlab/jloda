@@ -38,8 +38,7 @@ import java.util.Map;
  * A basic implementation of Graphics2D for output of the
  * <i>encapsulated post script</i> file type.
  *
- * @author Daniel Huson, Michael Schr?der
- * @version $Id: EPSGraphics.java,v 1.17 2006-05-30 04:30:38 huson Exp $
+ * @author Daniel Huson, Michael Schroeder
  */
 public class EPSGraphics extends Graphics2D {
 

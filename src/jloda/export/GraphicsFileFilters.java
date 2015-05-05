@@ -22,8 +22,7 @@ import javax.swing.filechooser.FileFilter;
 import java.io.File;
 
 /**
- * @author Daniel Huson, Michael Schr�der
- * @version $Id: GraphicsFileFilters.java,v 1.4 2006-05-15 03:34:46 huson Exp $
+ * @author Daniel Huson, Michael Schroeder
  */
 public class GraphicsFileFilters {
 

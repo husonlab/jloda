@@ -29,8 +29,7 @@ import java.awt.image.BufferedImage;
 import java.io.*;
 
 /**
- * @author Daniel Huson, Michael Schr�der
- * @version $Id: GIFExportType.java,v 1.8 2006-05-16 23:26:14 huson Exp $
+ * @author Daniel Huson, Michael Schroeder
  */
 public class GIFExportType extends FileFilter implements ExportGraphicType {
 

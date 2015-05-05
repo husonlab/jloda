@@ -29,8 +29,7 @@ import java.io.*;
  * Export using the <i>encapsulated postscript</i> file format.
  * The export itself is done by {@link jloda.export.EPSGraphics}.
  *
- * @author Daniel Huson, Michael Schr�der
- * @version $Id: EPSExportType.java,v 1.11 2007-07-15 11:02:36 huson Exp $
+ * @author Daniel Huson, Michael Schroeder
  * @see jloda.export.EPSGraphics
  */
 public class EPSExportType extends FileFilter implements ExportGraphicType {

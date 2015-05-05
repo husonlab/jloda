@@ -30,8 +30,7 @@ import java.io.*;
 /**
  * The export filetype for jpg images.
  *
- * @author Daniel Huson, Michael Schr�der
- * @version $Id: JPGExportType.java,v 1.9 2006-05-16 23:26:14 huson Exp $
+ * @author Daniel Huson, Michael Schroeder
  */
 public class JPGExportType extends FileFilter implements ExportGraphicType {
 

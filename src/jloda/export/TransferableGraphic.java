@@ -31,8 +31,7 @@ import java.util.Map;
  * To add a new export type, implement the <code>jloda.export.ExportGraphicType</code>
  * interface and add it to the addCommonTypes or addCustomTypes() method.
  *
- * @author huson, schr�der
- * @version $Id: TransferableGraphic.java,v 1.9 2006-06-08 04:17:38 huson Exp $
+ * @author huson, schroeder
  */
 public class TransferableGraphic implements ClipboardOwner, Transferable {
 

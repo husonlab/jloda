@@ -36,7 +36,6 @@ import java.io.IOException;
  * A Dialog for saving the image in various graphic file formats.
  *
  * @author Daniel Huson, Michael Schroeder, 2005
- * @deprecated
  */
 public class SaveImageDialog extends JDialog {
     static public boolean useAWTDialog = false; // by default, use Swing file dialog to save file

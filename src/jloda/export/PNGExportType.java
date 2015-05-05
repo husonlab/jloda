@@ -28,8 +28,7 @@ import java.awt.image.BufferedImage;
 import java.io.*;
 
 /**
- * @author Daniel Huson, Michael Schr�der
- * @version $Id: PNGExportType.java,v 1.7 2006-05-16 23:26:14 huson Exp $
+ * @author Daniel Huson, Michael Schroeder
  */
 public class PNGExportType extends FileFilter implements ExportGraphicType {
 

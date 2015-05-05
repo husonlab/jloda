@@ -32,8 +32,7 @@ import java.io.*;
  * Since the DataFlavor is DataFlavor.imageFlavor, the JVM will
  * take care of the mapping to native clipboard types (e.g. WIN32: BMP, MAC OS: PICT).
  *
- * @author huson, schr�der
- * @version $Id: RenderedExportType.java,v 1.9 2006-05-23 05:47:53 huson Exp $
+ * @author huson, schroeder
  */
 public class RenderedExportType extends FileFilter implements ExportGraphicType {
 
