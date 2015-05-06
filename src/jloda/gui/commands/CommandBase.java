@@ -51,6 +51,18 @@ public abstract class CommandBase {
     }
 
     /**
+     * constructor
+     * @param commandManager
+     */
+    public CommandBase(CommandManager commandManager) {
+        setCommandManager(commandManager);
+        setDir(commandManager.getDir());
+        setParent(commandManager.getParent());
+        if (commandManager.getParent() instanceof IDirectableViewer)
+            setViewer((IDirectableViewer) commandManager.getParent());
+    }
+
+    /**
      * set the director
      *
      * @param dir

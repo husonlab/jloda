@@ -567,6 +567,7 @@ public class CommandManager {
                 action.putValue(AbstractAction.ACCELERATOR_KEY, command.getAcceleratorKey());
             cbox.setAction(action);
             cbox.setSelected(checkBoxCommand.isSelected());
+            cbox.setEnabled(checkBoxCommand.isApplicable());
             menuItem2Command.put(cbox, checkBoxCommand);
             return cbox;
         } else {
@@ -587,6 +588,7 @@ public class CommandManager {
             if (command.getAcceleratorKey() != null)
                 action.putValue(AbstractAction.ACCELERATOR_KEY, command.getAcceleratorKey());
             JMenuItem menuItem = new JMenuItem(action);
+            menuItem.setEnabled(command.isApplicable());
             menuItem2Command.put(menuItem, command);
             return menuItem;
         }

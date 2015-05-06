@@ -173,35 +173,35 @@ public class ResourceManager {
      * Gets stream from package resources.files, else attempts to open
      * stream from named file in file system
      *
-     * @param cname the name of the file
+     * @param fileName the name of the file
      */
-    public static InputStream getFileAsStream(String cname) {
-        if (cname == null)
+    public static InputStream getFileAsStream(String fileName) {
+        if (fileName == null)
             return null;
-        cname = cname.trim();
-        if (cname.length() == 0)
+        fileName = fileName.trim();
+        if (fileName.length() == 0)
             return null;
-        return getFileAsStream(filePackagePath, cname);
+        return getFileAsStream(filePackagePath, fileName);
     }
 
     /**
      * Returns file resource as stream, unless the string contains a slash, in which case returns Stream from the file system
      *
      * @param filePackage the package containing file
-     * @param cname       the name of the file
+     * @param fileName       the name of the file
      */
-    public static InputStream getFileAsStream(String filePackage, String cname) {
-        if (cname.contains("/") || cname.contains("\\")) {
-            File file = new File(cname);
+    public static InputStream getFileAsStream(String filePackage, String fileName) {
+        if (fileName.contains("/") || fileName.contains("\\")) {
+            File file = new File(fileName);
             try {
                 return Basic.getInputStreamPossiblyZIPorGZIP(file.getPath());
             } catch (IOException e) {
-                if (!cname.endsWith(".info")) // don't complain about missing info files
+                if (!fileName.endsWith(".info")) // don't complain about missing info files
                     System.err.println(e.getMessage());
                 return null;
             }
         } else
-            return getFileResourceAsStream(filePackage, cname);
+            return getFileResourceAsStream(filePackage, fileName);
 
     }
 
@@ -229,12 +229,12 @@ public class ResourceManager {
      * Returns an Image (icon) with specified file name at the location specified by <code>packageName</code>.
      *
      * @param packageName the path through a package (the name of the subpackage) where to look for the icon
-     * @param cname       the name of the icon file
+     * @param fileName       the name of the icon file
      */
-    public static Image getImageResource(String packageName, String cname) {
+    public static Image getImageResource(String packageName, String fileName) {
         Image ret = null;
         try {
-            String resname = "/" + packageName.replace('.', '/') + "/" + cname;
+            String resname = "/" + packageName.replace('.', '/') + "/" + fileName;
             resname = resname.replaceAll(" ", "\\ ");
             InputStream is = ResourceManager.class.getResourceAsStream(resname);
             if (is != null) {
@@ -334,12 +334,12 @@ public class ResourceManager {
      * gets an image from the named package
      *
      * @param packageName
-     * @param cname
+     * @param fileName
      * @return image
      * @throws IOException
      */
-    public static Image getImage(String packageName, String cname) throws IOException {
-        return getImageResource(packageName, cname);
+    public static Image getImage(String packageName, String fileName) throws IOException {
+        return getImageResource(packageName, fileName);
     }
 
     /**

@@ -120,6 +120,7 @@ public class About {
         pane.setLayout(new BorderLayout());
         pane.add(new Component() {
             public void paint(Graphics gc) {
+                gc.setFont(new Font(Font.DIALOG, Font.PLAIN, 11));
                 if (aboutImage != null)
                     gc.drawImage(aboutImage, 0, 0, this);
                 else {

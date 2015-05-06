@@ -34,6 +34,8 @@ import java.awt.event.MouseEvent;
  * Daniel Huson, 16.2010
  */
 public class ToolBar extends JToolBar {
+    static private IToolBarModifier toolBarModifier;
+
     /**
      * construct a tool bar using the given configuation
      * Example:  New...;Save...;|;Print...;|;Select All;
@@ -123,8 +125,20 @@ public class ToolBar extends JToolBar {
                 }
             }
         }
+        if (toolBarModifier != null)
+            toolBarModifier.apply(this, commandManager);
+
         if (ProgramProperties.get("showtex", false)) {
             System.out.println(TeXGenerator.getToolBarLaTeX(configuration, commandManager));
         }
     }
+
+    public static IToolBarModifier getToolBarModifier() {
+        return toolBarModifier;
+    }
+
+    public static void setToolBarModifier(IToolBarModifier toolBarModifier) {
+        ToolBar.toolBarModifier = toolBarModifier;
+    }
+
 }

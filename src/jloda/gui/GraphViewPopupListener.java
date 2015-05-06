@@ -126,4 +126,15 @@ public class GraphViewPopupListener implements IPopupListener {
         panelMenu.show(me.getComponent(), me.getX(), me.getY());
     }
 
+    public JPopupMenu getNodeMenu() {
+        return nodeMenu;
+    }
+
+    public JPopupMenu getEdgeMenu() {
+        return edgeMenu;
+    }
+
+    public JPopupMenu getPanelMenu() {
+        return panelMenu;
+    }
 }

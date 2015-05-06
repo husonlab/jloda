@@ -19,6 +19,7 @@
 package jloda.gui.commands;
 
 import jloda.gui.AppleStuff;
+import jloda.gui.IMenuModifier;
 import jloda.util.MenuMnemonics;
 import jloda.util.ProgramProperties;
 import jloda.util.ResourceManager;
@@ -36,7 +37,7 @@ import java.util.List;
  */
 public class MenuCreator {
     public final static String MENUBAR_TAG = "MenuBar";
-    static MenuModifier menuModifer;
+    static IMenuModifier menuModifer;
 
     private final CommandManager commandManager;
 
@@ -191,7 +192,7 @@ public class MenuCreator {
             }
         }
         if (menuModifer != null)
-            menuModifer.apply(menu);
+            menuModifer.apply(menu, commandManager);
         if (ProgramProperties.get("showtex", false)) {
             System.out.println(TeXGenerator.getMenuLaTeX(commandManager, menuBarConfiguration, menusConfigurations));
         }
@@ -324,11 +325,8 @@ public class MenuCreator {
      *
      * @param menuModifier
      */
-    public static void setMenuModifier(MenuModifier menuModifier) {
+    public static void setMenuModifier(IMenuModifier menuModifier) {
         menuModifer = menuModifier;
     }
 
-    public interface MenuModifier {
-        void apply(JMenu menu);
-    }
 }
