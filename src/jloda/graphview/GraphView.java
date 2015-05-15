@@ -2351,8 +2351,12 @@ public class GraphView extends JPanel implements Printable, Scrollable, INodeEdg
     public void removeNodeActionListener(NodeActionListener nal) {
         nodeActionListeners.remove(nal);
     }
-    /* Fire doNew */
 
+    public void removeAllNodeActionListeners() {
+        nodeActionListeners.clear();
+    }
+
+    /* Fire doNew */
     public void fireDoNew(Node v) {
         for (NodeActionListener lis : nodeActionListeners) {
             if (v.getOwner() == null) break; // has been deleted
@@ -2513,6 +2517,9 @@ public class GraphView extends JPanel implements Printable, Scrollable, INodeEdg
         edgeActionListeners.remove(eal);
     }
 
+    public void removeAllEdgeActionListeners() {
+        edgeActionListeners.clear();
+    }
 
     /**
      * Fire doNew
