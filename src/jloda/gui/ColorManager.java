@@ -120,7 +120,7 @@ public class ColorManager {
         //      return new Color(150,150,150);
 
         Color color = class2color.get(className);
-        if (color == null) {
+        if (color == null && className != null) {
             if (className.equals("GRAY"))
                 color = Color.GRAY;
             else {

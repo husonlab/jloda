@@ -37,9 +37,9 @@ public class Statistics {
      *
      * @param data
      */
-    public Statistics(Collection data) {
-        for (Object aData : data) {
-            double value = ((Number) aData).doubleValue();
+    public Statistics(Collection<? extends Number> data) {
+        for (Number aData : data) {
+            double value = aData.doubleValue();
             sum += value;
             count++;
             if (value < min)
@@ -51,8 +51,8 @@ public class Statistics {
             mean = sum / count;
             if (data.size() > 1) {
                 double sum2 = 0;
-                for (Object aData : data) {
-                    double value = ((Number) aData).doubleValue();
+                for (Number aData : data) {
+                    double value = aData.doubleValue();
                     sum2 += (value - mean) * (value - mean);
                 }
                 stdDev = Math.sqrt(sum2 / (data.size() - 1));
@@ -93,5 +93,12 @@ public class Statistics {
 
     public double getMax() {
         return max;
+    }
+
+    public double getNormalized(double value) {
+        if (stdDev > 0)
+            return (value - mean) / stdDev;
+        else
+            return value;
     }
 }

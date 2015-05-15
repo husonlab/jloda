@@ -79,7 +79,7 @@ public class LabelLayouter {
                 sign = -1;
             ok = true;
             for (Rectangle brect : rects) {
-                if (arect.intersects(brect)) {
+                if (brect != null && arect.intersects(brect)) {
                     arect.translate(0, sign * count * 5);
                     ok = false;
                     break;

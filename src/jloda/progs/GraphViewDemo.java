@@ -78,7 +78,7 @@ public class GraphViewDemo {
         }
 
         // setup jframe with graphView and quit button:
-        JFrame frame = new JFrame("GraphViewDemo");
+        final JFrame frame = new JFrame("GraphViewDemo");
         frame.setSize(graphView.getSize());
         frame.addKeyListener(graphView.getGraphViewListener());
 
@@ -88,13 +88,17 @@ public class GraphViewDemo {
 
         graphView.trans.addChangeListener(new ITransformChangeListener() {
             public void hasChanged(Transform trans) {
-                final Dimension ps = trans.getPreferredSize();
-                int x = Math.max(ps.width, graphView.getScrollPane().getWidth() - 20);
-                int y = Math.max(ps.height, graphView.getScrollPane().getHeight() - 20);
-                ps.setSize(x, y);
-                graphView.setPreferredSize(ps);
-                graphView.getScrollPane().getViewport().setViewSize(new Dimension(x, y));
-                graphView.repaint();
+                if (false) {
+                    final Dimension ps = trans.getPreferredSize();
+                    //int x = Math.max(ps.width, graphView.getScrollPane().getWidth() - 20);//
+                    //int y = Math.max(ps.height, graphView.getScrollPane().getHeight() - 20);//
+                    int x = frame.getWidth();
+                    int y = frame.getHeight();
+                    ps.setSize(x, y);
+                    graphView.setPreferredSize(trans.getPreferredSize());
+                    graphView.getScrollPane().getViewport().setViewSize(trans.getPreferredSize());
+                    graphView.repaint();
+                }
             }
         });
         graphView.getScrollPane().addComponentListener(new ComponentAdapter() {
@@ -113,6 +117,7 @@ public class GraphViewDemo {
         frame.setVisible(true);
 
         graphView.setSize(400, 400);
+
         graphView.fitGraphToWindow();
 
 

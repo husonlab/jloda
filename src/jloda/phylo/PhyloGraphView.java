@@ -16,12 +16,6 @@
  * limitations under the License.
 */
 
-/**
- * given a phylogenetic Graph, computes a graph embedding.
- * @author <a href='mailto:micschro@informatik.uni-tuebingen.de'>Michael Schr?der</a>
- * @version $Id: PhyloGraphView.java,v 1.62 2009-07-21 14:23:35 huson Exp $
- */
-
 package jloda.phylo;
 
 import jloda.graph.*;
@@ -43,7 +37,8 @@ import java.util.*;
 import java.util.List;
 
 /**
- * given a phylogenetic Graph, computes a graph embedding.
+ * PhyloGraph view
+ * Daniel Huson, 2002
  */
 
 public class PhyloGraphView extends GraphView {

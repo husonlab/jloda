@@ -230,7 +230,7 @@ public class PhyloTree extends PhyloGraph {
      * @return tree PhyloTree
      */
     static public PhyloTree valueOf(String str, boolean keepRoot) throws IOException {
-        PhyloTree tree = new PhyloTree();
+        final PhyloTree tree = new PhyloTree();
         tree.parseBracketNotation(str, keepRoot);
         return tree;
     }
@@ -251,11 +251,13 @@ public class PhyloTree extends PhyloGraph {
      * @param r      the reader
      * @param rooted read as rooted tree
      */
-    public void read(Reader r, boolean rooted) throws IOException {
-        String str;
-        BufferedReader br = new BufferedReader(r);
-        str = br.readLine();
-        parseBracketNotation(str, rooted);
+    public void read(final Reader r, final boolean rooted) throws IOException {
+        final BufferedReader br;
+        if (r instanceof BufferedReader)
+            br = (BufferedReader) r;
+        else
+            br = new BufferedReader(r);
+        parseBracketNotation(br.readLine(), rooted);
     }
 
     /**

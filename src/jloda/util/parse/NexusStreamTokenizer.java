@@ -51,10 +51,10 @@ public class NexusStreamTokenizer extends StreamTokenizer {
     private boolean squareBracketsSurroundComments = true;
 
     private String punctchars = NEGATIVE_INTEGER_PUNCTUATION;
-    private final Stack<String> punctCharsStack = new Stack<String>();
+    private final Stack<String> punctCharsStack = new Stack<>();
 
     private String spaceChars = SPACE;
-    private final Stack<String> spaceCharsStack = new Stack<String>();
+    private final Stack<String> spaceCharsStack = new Stack<>();
     private boolean eolsignificant = false;
 
     public double nval = 0;
@@ -66,10 +66,10 @@ public class NexusStreamTokenizer extends StreamTokenizer {
     private String comment = null;
 
     // we need these so that we can peek ahead as far as we like
-    private final LinkedList<Double> nvals = new LinkedList<Double>();
-    private final LinkedList<String> svals = new LinkedList<String>();
-    private final LinkedList<Integer> ttypes = new LinkedList<Integer>();
-    private final LinkedList<Integer> lines = new LinkedList<Integer>();
+    private final LinkedList<Double> nvals = new LinkedList<>();
+    private final LinkedList<String> svals = new LinkedList<>();
+    private final LinkedList<Integer> ttypes = new LinkedList<>();
+    private final LinkedList<Integer> lines = new LinkedList<>();
 
     /**
      * Construct a new NexusBlock object for the specified reader

@@ -1586,6 +1586,111 @@ public class Graph extends GraphBase {
             lastNode = previousNode;
         }
     }
+
+
+    /**
+     * write a graph in GML
+     *
+     * @param w
+     * @param comment
+     * @param directed
+     * @param label
+     * @param graphId
+     * @throws IOException
+     */
+    public void writeGML(Writer w, String comment, boolean directed, String label, int graphId) throws IOException {
+        w.write("graph [\n");
+        if (comment != null)
+            w.write("\tcomment \"" + comment + "\"\n");
+        w.write("\tdirected " + (directed ? 1 : 0) + "\n");
+        w.write("\tid " + graphId + "\n");
+        if (label != null)
+            w.write("\tlabel \"" + label + "\"\n");
+        for (Node v = getFirstNode(); v != null; v = getNextNode(v)) {
+            w.write("\tnode [\n");
+            w.write("\t\tid " + v.getId() + "\n");
+            if (getInfo(v) != null)
+                w.write("\t\tlabel \"" + getInfo(v).toString() + "\"\n");
+            w.write("\t]\n");
+        }
+        for (Edge e = getFirstEdge(); e != null; e = getNextEdge(e)) {
+            w.write("\tedge [\n");
+            w.write("\t\tsource " + e.getSource().getId() + "\n");
+            w.write("\t\ttarget " + e.getTarget().getId() + "\n");
+            if (getInfo(e) != null)
+                w.write("\t\tlabel \"" + getInfo(e).toString() + "\"\n");
+            w.write("\t]\n");
+        }
+        w.write("]\n");
+        w.flush();
+    }
+
+    /**
+     * read a graph in GML for that was previously saved using writeGML. This is not a general parser.
+     *
+     * @param r
+     */
+    public void readGML(Reader r) throws IOException {
+        final NexusStreamParser np = new NexusStreamParser(r);
+        np.setSquareBracketsSurroundComments(false);
+
+        clear();
+
+        np.matchIgnoreCase("graph [");
+        if (np.peekMatchIgnoreCase("comment")) {
+            np.matchIgnoreCase("comment");
+            System.err.println("Comment: " + getQuotedString(np));
+        }
+        np.matchIgnoreCase("directed");
+        System.err.println("directed: " + (np.getInt(0, 1) == 1));
+        np.matchIgnoreCase("id");
+        System.err.println("id: " + np.getInt());
+        if (np.peekMatchIgnoreCase("label")) {
+            np.matchIgnoreCase("label");
+            System.err.println("Label: " + getQuotedString(np));
+        }
+
+
+        Map<Integer, Node> id2node = new HashMap<>();
+        while (np.peekMatchIgnoreCase("node")) {
+            np.matchIgnoreCase("node [");
+            np.matchIgnoreCase("id");
+            int id = np.getInt();
+            Node v = newNode();
+            id2node.put(id, v);
+            if (np.peekMatchIgnoreCase("label")) {
+                np.matchIgnoreCase("label");
+                v.setInfo(getQuotedString(np));
+            }
+            np.matchIgnoreCase("]");
+        }
+        while (np.peekMatchIgnoreCase("edge")) {
+            np.matchIgnoreCase("edge [");
+            np.matchIgnoreCase("source");
+            int sourceId = np.getInt();
+            np.matchIgnoreCase("target");
+            int targetId = np.getInt();
+            if (!id2node.keySet().contains(sourceId))
+                throw new IOException("Undefined node id: " + sourceId);
+            if (!id2node.keySet().contains(targetId))
+                throw new IOException("Undefined node id: " + targetId);
+            Edge e = newEdge(id2node.get(sourceId), id2node.get(targetId));
+            if (np.peekMatchIgnoreCase("label")) {
+                np.matchIgnoreCase("label");
+                e.setInfo(getQuotedString(np));
+            }
+            np.matchIgnoreCase("]");
+        }
+        np.matchIgnoreCase("]");
+    }
+
+    public static String getQuotedString(NexusStreamParser np) throws IOException {
+        np.matchIgnoreCase("\"");
+        ArrayList<String> words = new ArrayList<>();
+        while (!np.peekMatchIgnoreCase("\""))
+            words.add(np.getWordRespectCase());
+        return Basic.toString(words, " ");
+    }
 }
 
 // EOF

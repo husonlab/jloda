@@ -57,6 +57,7 @@ public class NexusStreamParser extends NexusStreamTokenizer {
      */
     public void matchIgnoreCase(String str) throws IOException {
         NexusStreamTokenizer sst = new NexusStreamTokenizer(new StringReader(str));
+        sst.setSquareBracketsSurroundComments(isSquareBracketsSurroundComments());
         while (sst.nextToken() != NexusStreamParser.TT_EOF) {
             nextToken();
             if (!toString().equalsIgnoreCase(sst.toString())) {
@@ -72,6 +73,7 @@ public class NexusStreamParser extends NexusStreamTokenizer {
      */
     public void matchRespectCase(String str) throws IOException {
         NexusStreamTokenizer sst = new NexusStreamTokenizer(new StringReader(str));
+        sst.setSquareBracketsSurroundComments(isSquareBracketsSurroundComments());
 
         while (sst.nextToken() != NexusStreamParser.TT_EOF) {
             nextToken();
@@ -178,6 +180,8 @@ public class NexusStreamParser extends NexusStreamTokenizer {
      */
     public boolean peekMatchIgnoreCase(String s) {
         NexusStreamTokenizer sst = new NexusStreamTokenizer(new StringReader(s));
+        sst.setSquareBracketsSurroundComments(isSquareBracketsSurroundComments());
+
         LinkedList<Double> nvals = new LinkedList<Double>();
         LinkedList<String> svals = new LinkedList<String>();
         LinkedList<Integer> ttypes = new LinkedList<Integer>();
@@ -218,6 +222,8 @@ public class NexusStreamParser extends NexusStreamTokenizer {
      */
     public boolean peekMatchRespectCase(String s) {
         final NexusStreamTokenizer sst = new NexusStreamTokenizer(new StringReader(s));
+        sst.setSquareBracketsSurroundComments(isSquareBracketsSurroundComments());
+
         final LinkedList<Double> nvals = new LinkedList<Double>();
         final LinkedList<String> svals = new LinkedList<String>();
         final LinkedList<Integer> ttypes = new LinkedList<Integer>();
@@ -1107,6 +1113,8 @@ public class NexusStreamParser extends NexusStreamTokenizer {
     public boolean peekMatchAnyTokenIgnoreCase(String s) {
         try {
             final NexusStreamTokenizer sst = new NexusStreamTokenizer(new StringReader(s));
+            sst.setSquareBracketsSurroundComments(isSquareBracketsSurroundComments());
+
             while (sst.nextToken() != NexusStreamParser.TT_EOF) {
                 if (peekMatchIgnoreCase(sst.toString()))
                     return true;
@@ -1126,6 +1134,8 @@ public class NexusStreamParser extends NexusStreamTokenizer {
     public void matchAnyTokenIgnoreCase(String s) throws IOException {
         try {
             final NexusStreamTokenizer sst = new NexusStreamTokenizer(new StringReader(s));
+            sst.setSquareBracketsSurroundComments(isSquareBracketsSurroundComments());
+
             while (sst.nextToken() != NexusStreamParser.TT_EOF) {
                 if (peekMatchIgnoreCase(sst.toString())) {
                     matchIgnoreCase(sst.toString());
@@ -1148,6 +1158,8 @@ public class NexusStreamParser extends NexusStreamTokenizer {
     public boolean peekMatchAnyTokenRespectCase(String s) {
         try {
             final NexusStreamTokenizer sst = new NexusStreamTokenizer(new StringReader(s));
+            sst.setSquareBracketsSurroundComments(isSquareBracketsSurroundComments());
+
             while (sst.nextToken() != NexusStreamParser.TT_EOF) {
                 if (peekMatchRespectCase(sst.toString()))
                     return true;

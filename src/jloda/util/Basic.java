@@ -3065,6 +3065,21 @@ public class Basic {
     }
 
     /**
+     * copy an Integer array to an int array
+     *
+     * @param array
+     * @return int array copy
+     */
+    public static int[] copyAsIntArray(Collection<Integer> array) {
+        int[] result = new int[array.size()];
+        int i = 0;
+        for (Integer value : array) {
+            result[i++] = value;
+        }
+        return result;
+    }
+
+    /**
      * Finds the value of the given enumeration by name, case-insensitive.
      * Throws an IllegalArgumentException if no match is found.
      */

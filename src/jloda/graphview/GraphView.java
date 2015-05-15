@@ -191,9 +191,7 @@ public class GraphView extends JPanel implements Printable, Scrollable, INodeEdg
 
         getScrollPane().addComponentListener(new ComponentAdapter() {
             public void componentResized(ComponentEvent event) {
-                {
                     //centerGraph();
-                }
             }
         });
 
