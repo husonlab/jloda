@@ -21,8 +21,6 @@ package jloda.progs;
 import jloda.graph.*;
 import jloda.graphview.EdgeView;
 import jloda.graphview.GraphView;
-import jloda.graphview.ITransformChangeListener;
-import jloda.graphview.Transform;
 
 import javax.swing.*;
 import java.awt.*;
@@ -42,6 +40,31 @@ public class GraphViewDemo {
         Graph graph = new Graph();
         final GraphView graphView = new GraphView(graph);
 
+        graphView.getScrollPane().getViewport().setScrollMode(JViewport.SIMPLE_SCROLL_MODE);
+        graphView.getScrollPane().setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_ALWAYS);
+        graphView.getScrollPane().setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
+        graphView.getScrollPane().addKeyListener(graphView.getGraphViewListener());
+
+        graphView.setSize(800, 800);
+        graphView.setAllowMoveNodes(true);
+        graphView.setAllowRubberbandNodes(true);
+        graphView.setAutoLayoutLabels(true);
+        graphView.setFixedNodeSize(true);
+        graphView.setMaintainEdgeLengths(false);
+        graphView.setAllowEdit(false);
+        graphView.setCanvasColor(Color.WHITE);
+
+        graphView.getScrollPane().addComponentListener(new ComponentAdapter() {
+            public void componentResized(ComponentEvent event) {
+                final Dimension ps = graphView.trans.getPreferredSize();
+                int x = Math.max(ps.width, graphView.getScrollPane().getWidth() - 20);
+                int y = Math.max(ps.height, graphView.getScrollPane().getHeight() - 20);
+                ps.setSize(x, y);
+                graphView.setPreferredSize(ps);
+                graphView.getScrollPane().getViewport().setViewSize(new Dimension(x, y));
+                graphView.repaint();
+            }
+        });
 
         Random rand = new Random(666);
         Node[] nodes = new Node[500];
@@ -85,32 +108,6 @@ public class GraphViewDemo {
         frame.getContentPane().setLayout(new BorderLayout());
         frame.getContentPane().add(graphView.getScrollPane(), BorderLayout.CENTER);
         frame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
-
-        graphView.trans.addChangeListener(new ITransformChangeListener() {
-            public void hasChanged(Transform trans) {
-                if (false) {
-                    final Dimension ps = trans.getPreferredSize();
-                    //int x = Math.max(ps.width, graphView.getScrollPane().getWidth() - 20);//
-                    //int y = Math.max(ps.height, graphView.getScrollPane().getHeight() - 20);//
-                    int x = frame.getWidth();
-                    int y = frame.getHeight();
-                    ps.setSize(x, y);
-                    graphView.setPreferredSize(trans.getPreferredSize());
-                    graphView.getScrollPane().getViewport().setViewSize(trans.getPreferredSize());
-                    graphView.repaint();
-                }
-            }
-        });
-        graphView.getScrollPane().addComponentListener(new ComponentAdapter() {
-            public void componentResized(ComponentEvent event) {
-                {
-                    if (graphView.getScrollPane().getSize().getHeight() > 400 && graphView.getScrollPane().getSize().getWidth() > 400)
-                        graphView.fitGraphToWindow();
-                    else
-                        graphView.trans.fireHasChanged();
-                }
-            }
-        });
 
 
         // show the frame:
