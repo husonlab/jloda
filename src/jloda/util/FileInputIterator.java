@@ -40,6 +40,9 @@ public class FileInputIterator implements ICloseableIterator<String>, Closeable 
 
     private String pushedBackLine = null;
 
+    private String fileName;
+    private ProgressPercentage progress;
+
     /**
      * constructor
      *
@@ -47,7 +50,17 @@ public class FileInputIterator implements ICloseableIterator<String>, Closeable 
      * @throws java.io.FileNotFoundException
      */
     public FileInputIterator(String fileName) throws IOException {
-        this(new File(fileName));
+        this(new File(fileName), false);
+    }
+
+    /**
+     * constructor
+     *
+     * @param fileName
+     * @throws java.io.FileNotFoundException
+     */
+    public FileInputIterator(String fileName, boolean reportProgress) throws IOException {
+        this(new File(fileName), reportProgress);
     }
 
     /**
@@ -57,6 +70,19 @@ public class FileInputIterator implements ICloseableIterator<String>, Closeable 
      * @throws java.io.FileNotFoundException
      */
     public FileInputIterator(Reader r, String fileName) throws IOException {
+        this(r, fileName, false);
+    }
+
+    /**
+     * constructor
+     *
+     * @param r
+     * @throws java.io.FileNotFoundException
+     */
+    public FileInputIterator(Reader r, String fileName, boolean reportProgress) throws IOException {
+        this.fileName = fileName;
+        setReportProgress(reportProgress);
+
         reader = new BufferedReader(r, bufferSize);
         endOfLineBytes = System.getProperty("line.separator").length();
 
@@ -74,6 +100,19 @@ public class FileInputIterator implements ICloseableIterator<String>, Closeable 
      * @throws java.io.FileNotFoundException
      */
     public FileInputIterator(File file) throws IOException {
+        this(file, false);
+    }
+
+    /**
+     * constructor
+     *
+     * @param file
+     * @throws java.io.FileNotFoundException
+     */
+    public FileInputIterator(File file, boolean reportProgress) throws IOException {
+        this.fileName = file.getPath();
+        setReportProgress(reportProgress);
+
         if (Basic.isZIPorGZIPFile(file.getPath())) {
             reader = new BufferedReader(new InputStreamReader(Basic.getInputStreamPossiblyZIPorGZIP(file.getPath())));
             endOfLineBytes = 1;
@@ -84,6 +123,21 @@ public class FileInputIterator implements ICloseableIterator<String>, Closeable 
             maxProgress = file.length();
         }
         done = (file.length() == 0);
+    }
+
+    /**
+     * report progress
+     */
+    public void setReportProgress(boolean reportProgress) {
+        if (reportProgress) {
+            if (progress == null)
+                progress = new ProgressPercentage("Processing file: " + fileName, getMaximumProgress());
+        } else {
+            if (progress != null) {
+                progress.close();
+                progress = null;
+            }
+        }
     }
 
     /**
@@ -109,6 +163,8 @@ public class FileInputIterator implements ICloseableIterator<String>, Closeable 
      */
     public void close() throws IOException {
         reader.close();
+        if (progress != null)
+            progress.close();
     }
 
     /**
@@ -178,6 +234,9 @@ public class FileInputIterator implements ICloseableIterator<String>, Closeable 
             String result = nextLine;
             nextLine = null;
             lineNumber++;
+            if (progress != null) {
+                progress.incrementProgress();
+            }
             return result;
         }
         return null;

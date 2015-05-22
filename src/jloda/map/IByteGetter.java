@@ -24,7 +24,7 @@ import java.io.IOException;
  * A readonly long-indexed array of bytes
  * Daniel Huson, 4.2015
  */
-public interface IByteGetter {
+public interface IByteGetter extends AutoCloseable {
     /**
      * gets value for given index
      *

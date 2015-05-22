@@ -25,7 +25,7 @@ package jloda.util;
  * @author huson
  *         Date: 02-Dec-2003
  */
-public interface ProgressListener {
+public interface ProgressListener extends AutoCloseable {
     /**
      * set the total number of steps to be done
      *

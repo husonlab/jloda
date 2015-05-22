@@ -24,7 +24,7 @@ import java.io.IOException;
  * A readonly long-indexed array of ints
  * Daniel Huson, 4.2015
  */
-public interface IIntGetter {
+public interface IIntGetter extends AutoCloseable {
     /**
      * gets value for given index
      *

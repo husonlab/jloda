@@ -22,7 +22,7 @@ package jloda.map;
  * A read and write long-indexed array of longs
  * Daniel Huson, 4.2015
  */
-public interface ILongPutter {
+public interface ILongPutter extends AutoCloseable {
     /**
      * gets value for given index
      *
