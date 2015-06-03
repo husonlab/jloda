@@ -1587,7 +1587,6 @@ public class Graph extends GraphBase {
         }
     }
 
-
     /**
      * write a graph in GML
      *
@@ -1599,6 +1598,21 @@ public class Graph extends GraphBase {
      * @throws IOException
      */
     public void writeGML(Writer w, String comment, boolean directed, String label, int graphId) throws IOException {
+        writeGML(w, comment, directed, label, graphId, null, null);
+    }
+
+
+    /**
+     * write a graph in GML
+     *
+     * @param w
+     * @param comment
+     * @param directed
+     * @param label
+     * @param graphId
+     * @throws IOException
+     */
+    public void writeGML(Writer w, String comment, boolean directed, String label, int graphId, Map<String, NodeArray<?>> label2nodes, Map<String, EdgeArray<?>> label2edges) throws IOException {
         w.write("graph [\n");
         if (comment != null)
             w.write("\tcomment \"" + comment + "\"\n");
@@ -1606,19 +1620,43 @@ public class Graph extends GraphBase {
         w.write("\tid " + graphId + "\n");
         if (label != null)
             w.write("\tlabel \"" + label + "\"\n");
+        boolean hasNodeLabels=(label2nodes != null && label2nodes.keySet().contains("label"));
         for (Node v = getFirstNode(); v != null; v = getNextNode(v)) {
             w.write("\tnode [\n");
             w.write("\t\tid " + v.getId() + "\n");
-            if (getInfo(v) != null)
-                w.write("\t\tlabel \"" + getInfo(v).toString() + "\"\n");
+            if(label2nodes!=null) {
+                for (String aLabel : label2nodes.keySet()) {
+                    NodeArray<?> array = label2nodes.get(aLabel);
+                    if (array != null) {
+                        Object obj = array.get(v);
+                        w.write("\t\t" + aLabel + " \"" + (obj != null ? obj.toString() : "null") + "\"\n");
+                    }
+                }
+            }
+            if (!hasNodeLabels)
+                w.write("\t\tlabel \"" + (v.getInfo() != null ? v.getInfo().toString() : "null") + "\"\n");
+
             w.write("\t]\n");
         }
+        boolean hasEdgeLabels=(label2edges != null && label2edges.keySet().contains("label"));
+
         for (Edge e = getFirstEdge(); e != null; e = getNextEdge(e)) {
             w.write("\tedge [\n");
             w.write("\t\tsource " + e.getSource().getId() + "\n");
             w.write("\t\ttarget " + e.getTarget().getId() + "\n");
-            if (getInfo(e) != null)
-                w.write("\t\tlabel \"" + getInfo(e).toString() + "\"\n");
+
+            if(label2edges!=null) {
+                for (String aLabel : label2edges.keySet()) {
+                    EdgeArray<?> array = label2edges.get(aLabel);
+                    if (array != null) {
+                        Object obj = array.get(e);
+                        w.write("\t\t" + aLabel + " \"" + (obj != null ? obj.toString() : "null") + "\"\n");
+                    }
+                }
+            }
+            if (!hasEdgeLabels)
+                w.write("\t\tlabel \"" + (e.getInfo() != null ? e.getInfo().toString() : "null") + "\"\n");
+
             w.write("\t]\n");
         }
         w.write("]\n");

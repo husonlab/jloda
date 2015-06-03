@@ -60,7 +60,7 @@ final public class NodeView extends ViewBase implements Cloneable {
     private NodeImage image = null;
     protected Color bgColor = Color.WHITE;
 
-    public static final boolean END_EDGES_AT_BORDER_OF_NODES = true;
+    public static boolean END_EDGES_AT_BORDER_OF_NODES = true;
 
 
     public static Writer descriptionWriter = null;

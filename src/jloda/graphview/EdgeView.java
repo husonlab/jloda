@@ -278,7 +278,7 @@ final public class EdgeView extends ViewBase implements Cloneable { //, IEdgeVie
             } else if (shape == ROUNDED_EDGE && getInternalPoints().size() == 1) {
                 final Point vp1 = trans.w2d(getInternalPoints().get(0));
                 final int dist = (int) trans.w2d(ROUNDED_EDGE_INCREMENT, 0).getX() - (int) trans.w2d(0, 0).getX();
-                final Point center = new Point(vp.x + dist, wp.y);
+                final Point center = new Point(dist < wp.x - vp.x ? vp.x + dist : wp.x, wp.y);
 
                 gc.draw(new QuadCurve2D.Double(vp.x - 1, vp.y - 1, vp1.x - 1, vp1.y - 1, center.x - 1, center.y - 1));
                 gc.draw(new QuadCurve2D.Double(vp.x - 1, vp.y + 1, vp1.x - 1, vp1.y + 1, center.x - 1, center.y + 1));
@@ -389,7 +389,7 @@ final public class EdgeView extends ViewBase implements Cloneable { //, IEdgeVie
             } else if (shape == ROUNDED_EDGE && getInternalPoints().size() == 1) {
                 vp1 = wp1 = trans.w2d(getInternalPoints().get(0));
                 final int dist = (int) trans.w2d(ROUNDED_EDGE_INCREMENT, 0).getX() - (int) trans.w2d(0, 0).getX();
-                final Point center = new Point(vp.x + dist, wp.y);
+                final Point center = new Point(dist < wp.x - vp.x ? vp.x + dist : wp.x, wp.y);
                 gc.draw(new QuadCurve2D.Double(vp.x, vp.y, vp1.x, vp1.y, center.x, center.y));
                 gc.drawLine(center.x, center.y, wp.x, wp.y);
             } else if (shape == QUAD_EDGE && getInternalPoints().size() == 1) {
@@ -513,7 +513,7 @@ final public class EdgeView extends ViewBase implements Cloneable { //, IEdgeVie
         } else if (shape == ROUNDED_EDGE && getInternalPoints().size() == 1) {
             final Point vp1 = trans.w2d(getInternalPoints().get(0));
             final int dist = (int) trans.w2d(ROUNDED_EDGE_INCREMENT, 0).getX() - (int) trans.w2d(0, 0).getX();
-            final Point center = new Point(vp.x + dist, wp.y);
+            final Point center = new Point(dist < wp.x - vp.x ? vp.x + dist : wp.x, wp.y);
             return (new QuadCurve2D.Double(vp.x, vp.y, vp1.x, vp1.y, center.x, center.y)).contains(x, y) ||
                     (new Line2D.Double(center.x, center.y, wp.x, wp.y)).contains(x, y);
         } else if (shape == QUAD_EDGE && getInternalPoints().size() == 1) {

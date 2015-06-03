@@ -65,7 +65,7 @@ public class LabelLayouter {
         if (arect == null)
             return 0;
 
-        if (nv.getLabelSize() != null)
+        if (nv != null)
             arect.y -= nv.getLabelSize().height;
 
         int count = 0;
@@ -92,7 +92,8 @@ public class LabelLayouter {
 
         rects.add((Rectangle) arect.clone());
 
-        arect.y += nv.getLabelSize().height;
+        if (nv.getLabelSize() != null)
+            arect.y += nv.getLabelSize().height;
 
         apt.x = arect.x - apt.x;
         apt.y = arect.y - apt.y;

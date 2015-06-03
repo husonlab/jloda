@@ -328,23 +328,25 @@ public class Basic {
     }
 
     /**
-     * given an array, returns it randomized
+     * given an array, returns it randomized (Durstenfeld 1964)
      *
      * @param array
      * @param seed
      * @return array in random order
      */
     public static <T> T[] randomize(T[] array, int seed) {
-        Random random = new Random(seed);
-        java.util.List<T> list = new LinkedList<T>();
-        list.addAll(Arrays.asList(array));
-        java.util.List<T> result = new LinkedList<T>();
-        while (!list.isEmpty()) {
-            int r = random.nextInt(list.size());
-            result.add(list.get(r));
-            list.remove(r);
+        final Random random = new Random(seed);
+        T[] result = (T[]) new Object[array.length];
+        System.arraycopy(array, 0, result, 0, array.length);
+
+        for (int i = result.length - 1; i >= 1; i--) {
+            int j = random.nextInt(i + 1);
+            T tmp = result[i];
+            result[i] = result[j];
+            result[j] = tmp;
         }
-        return result.toArray((T[]) (new Object[array.length]));
+        return result;
+
     }
 
     /**
