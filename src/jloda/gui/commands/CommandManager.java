@@ -56,6 +56,21 @@ public class CommandManager {
     private final Object parent;
 
     /**
+     * construct a parser
+     *
+     * @param dir
+     */
+    public CommandManager(IDirector dir, List<ICommand> commands) {
+        this.dir = dir;
+        this.parent = null;
+        this.commands = commands;
+        for (ICommand command : commands) {
+            command.setDir(dir);
+        }
+    }
+
+
+    /**
      * construct a parser and load all commands found for the given path
      */
     public CommandManager(IDirector dir, IDirectableViewer viewer, String commandsPath) {
@@ -144,20 +159,7 @@ public class CommandManager {
                 } else
                     startsWith2Command.put(startsWith, command);
             }
-        }
-    }
-
-    /**
-     * construct a parser
-     *
-     * @param dir
-     */
-    public CommandManager(IDirector dir, List<ICommand> commands) {
-        this.dir = dir;
-        this.parent = null;
-        this.commands = commands;
-        for (ICommand command : commands) {
-            command.setDir(dir);
+            this.commands.add(command);
         }
     }
 
