@@ -65,6 +65,8 @@ public abstract class FileGetterPutterBase {
      * @throws java.io.IOException
      */
     protected FileGetterPutterBase(File file, long fileLength, Mode mode) throws IOException {
+        System.err.println("Opening file: " + file);
+
         this.file = file;
         this.inMemory = (mode == Mode.CREATE_READ_WRITE_IN_MEMORY);
 

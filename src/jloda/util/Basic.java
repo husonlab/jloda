@@ -2792,13 +2792,14 @@ public class Basic {
      * @throws IOException
      */
     public static void writeStreamToFile(InputStream inputStream, File outputFile) throws IOException {
-        try (BufferedOutputStream outs = new BufferedOutputStream(new FileOutputStream(outputFile))) {
+        System.err.println("Writing file: " + outputFile);
+        try (BufferedOutputStream outs = new BufferedOutputStream(new FileOutputStream(outputFile), 1048576)) {
             while (true) {
                 int a = inputStream.read();
                 if (a == -1)
                     break;
                 else
-                    outs.write(a);
+                    outs.write((byte) a);
             }
         }
     }

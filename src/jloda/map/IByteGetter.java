@@ -18,8 +18,6 @@
 
 package jloda.map;
 
-import java.io.IOException;
-
 /**
  * A readonly long-indexed array of bytes
  * Daniel Huson, 4.2015
@@ -62,5 +60,5 @@ public interface IByteGetter extends AutoCloseable {
     /**
      * close the file
      */
-    void close() throws IOException;
+    void close();
 }
