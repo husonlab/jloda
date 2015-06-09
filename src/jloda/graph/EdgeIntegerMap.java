@@ -26,7 +26,9 @@ package jloda.graph;
 
 
 /**
- * Edge integer mao
+ * Edge integer map
+ *
+ *  @author Daniel Huson, 2003
  */
 
 public class EdgeIntegerMap extends EdgeMap<Integer> {

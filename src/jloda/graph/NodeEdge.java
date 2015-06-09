@@ -26,6 +26,7 @@ package jloda.graph;
 
 /**
  * NodeEdge: util class for both Node and Edge
+ * Daniel Huson, 2003
  */
 
 public class NodeEdge extends GraphBase {

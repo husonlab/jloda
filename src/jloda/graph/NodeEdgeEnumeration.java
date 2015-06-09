@@ -28,6 +28,7 @@ package jloda.graph;
 
 /**
  * NodeEdgeEnumeration implements a Enumeration for nodes and edges
+ * Daniel Huson, 2003
  */
 
 class NodeEdgeItem {

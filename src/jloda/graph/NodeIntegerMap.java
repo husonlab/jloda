@@ -26,7 +26,8 @@ package jloda.graph;
 
 
 /**
- * Node array
+ * Node map
+ * Daniel Huson, 2003
  */
 
 public class NodeIntegerMap extends NodeMap<Integer> {

@@ -27,6 +27,7 @@ package jloda.graph;
 
 /**
  * Edge int array
+ * Daniel Huson, 2003
  */
 
 public class EdgeIntegerArray extends EdgeArray<Integer> {

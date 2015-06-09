@@ -27,6 +27,7 @@ package jloda.graph;
 
 /**
  * Edge double array
+ * Daniel Huson, 2003
  */
 
 public class EdgeDoubleArray extends EdgeArray<Double> {

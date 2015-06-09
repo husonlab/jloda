@@ -31,6 +31,7 @@ import java.util.*;
 
 /**
  * Node class used by Graph class
+ * Daniel Huson, 2003
  */
 public class Node extends NodeEdge implements Comparable {
     private Edge firstAdjacentEdge;

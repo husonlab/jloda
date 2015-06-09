@@ -29,6 +29,7 @@ import java.util.Map;
 
 /**
  * Edge map
+ * @author Daniel Huson, 2003
  */
 
 public class EdgeMap<T> extends GraphBase implements EdgeAssociation<T> {

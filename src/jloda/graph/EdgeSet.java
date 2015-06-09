@@ -17,9 +17,8 @@
 */
 
 /**
- * @version $Id: EdgeSet.java,v 1.11 2007-02-06 17:48:53 huson Exp $
- *
- * @author Daniel Huson
+ * Edge set
+ * @author Daniel Huson, 2003
  *
  */
 package jloda.graph;

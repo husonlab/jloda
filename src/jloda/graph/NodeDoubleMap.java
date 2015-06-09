@@ -27,6 +27,7 @@ package jloda.graph;
 
 /**
  * Node map
+ * Daniel Huson, 2003
  */
 
 public class NodeDoubleMap extends NodeMap<Double> {

@@ -25,6 +25,7 @@
 package jloda.graph;
 
 /** Extend this to get a GraphUpdateListener
+ * Daniel Huson, 2003
  */
 public class GraphUpdateAdapter implements GraphUpdateListener {
     /** A node has been created

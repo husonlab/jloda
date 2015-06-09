@@ -24,6 +24,10 @@
  */
 package jloda.graph;
 
+/**
+ * graph update listener
+ * Daniel Huson, 2003
+ */
 public interface GraphUpdateListener {
     /** A node has been created
      *@param v the new node

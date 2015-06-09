@@ -29,6 +29,7 @@ import java.util.Map;
 
 /**
  * Node map
+ * Daniel Huson, 2003
  */
 
 public class NodeMap<T> extends GraphBase implements NodeAssociation<T> {

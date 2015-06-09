@@ -27,7 +27,9 @@ package jloda.graph;
 import jloda.util.NotOwnerException;
 
 /**
- * Edge class used by Graph class.
+ * Edge class used by Graph class
+ *
+ * @author Daniel Huson, 2003
  */
 public class Edge extends NodeEdge implements Comparable {
     /**

@@ -27,6 +27,7 @@ package jloda.graph;
 
 /**
  * Node array
+ * Daniel Huson, 2003
  */
 
 public class NodeArray<T> extends GraphBase implements NodeAssociation<T> {

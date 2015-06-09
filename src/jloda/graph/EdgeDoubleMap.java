@@ -27,6 +27,7 @@ package jloda.graph;
 
 /**
  * Edge double map
+ * Daniel Huson, 2003
  */
 
 public class EdgeDoubleMap extends EdgeMap {
