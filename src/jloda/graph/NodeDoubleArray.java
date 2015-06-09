@@ -29,7 +29,7 @@ package jloda.graph;
  * Node array
  */
 
-public class NodeDoubleArray extends NodeArray {
+public class NodeDoubleArray extends NodeArray<Double> {
     /**
      * Construct a node double array for the given graph and initialize all
      * entries to value.

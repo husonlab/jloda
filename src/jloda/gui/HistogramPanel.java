@@ -27,7 +27,6 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.geom.Rectangle2D;
 import java.util.BitSet;
-import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -134,8 +133,7 @@ public class HistogramPanel extends JPanel {
      */
     public void setValues(int[] values) {
         data.clear();
-        for (int i = 0; i < values.length; i++)
-            data.add(new Float(values[i]));
+        for (int value : values) data.add((float) value);
         computeBuckets();
     }
 
@@ -147,7 +145,7 @@ public class HistogramPanel extends JPanel {
     public void setValues(BitSet values) {
         data.clear();
         for (int i = values.nextSetBit(0); i >= 0; i = values.nextSetBit(i + 1))
-            data.add(new Float(i));
+            data.add((float) i);
     }
 
     /**
@@ -157,8 +155,7 @@ public class HistogramPanel extends JPanel {
      */
     public void setValues(float[] values) {
         data.clear();
-        for (int i = 0; i < values.length; i++)
-            data.add(new Float(values[i]));
+        for (float value : values) data.add(value);
         computeBuckets();
     }
 
@@ -169,8 +166,7 @@ public class HistogramPanel extends JPanel {
      */
     public void setValues(double[] values) {
         data.clear();
-        for (int i = 0; i < values.length; i++)
-            data.add(new Float(values[i]));
+        for (double value : values) data.add(new Float(value));
         computeBuckets();
     }
 
@@ -207,8 +203,8 @@ public class HistogramPanel extends JPanel {
             maxValue = -Float.MAX_VALUE;
             minCount = 0;
             maxCount = 0;
-            for (Iterator it = data.iterator(); it.hasNext(); ) {
-                float f = (Float) it.next();
+            for (Object aData1 : data) {
+                float f = (Float) aData1;
                 if (f < minValue)
                     minValue = f;
                 if (f > maxValue)
@@ -220,8 +216,8 @@ public class HistogramPanel extends JPanel {
 
 
             bucketWidth = (maxValue - minValue) / (numberOfBuckets - 1);
-            for (Iterator it = data.iterator(); it.hasNext(); ) {
-                float f = (Float) it.next();
+            for (Object aData : data) {
+                float f = (Float) aData;
                 int i = getBucketForValue(f);
                 buckets[i]++;
                 if (buckets[i] < minCount)

@@ -35,26 +35,26 @@ public interface IDirectableViewer extends IDirectorListener {
      *
      * @return uptodate
      */
-    public boolean isUptoDate();
+    boolean isUptoDate();
 
     /**
      * return the frame associated with the viewer
      *
      * @return frame
      */
-    public JFrame getFrame();
+    JFrame getFrame();
 
     /**
      * gets the title
      *
      * @return title
      */
-    public String getTitle();
+    String getTitle();
 
     /**
      * gets the associated command manager
      *
      * @return command manager
      */
-    public CommandManager getCommandManager();
+    CommandManager getCommandManager();
 }

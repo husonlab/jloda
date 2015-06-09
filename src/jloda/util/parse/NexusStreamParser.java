@@ -182,10 +182,10 @@ public class NexusStreamParser extends NexusStreamTokenizer {
         NexusStreamTokenizer sst = new NexusStreamTokenizer(new StringReader(s));
         sst.setSquareBracketsSurroundComments(isSquareBracketsSurroundComments());
 
-        LinkedList<Double> nvals = new LinkedList<Double>();
-        LinkedList<String> svals = new LinkedList<String>();
-        LinkedList<Integer> ttypes = new LinkedList<Integer>();
-        LinkedList<Integer> lines = new LinkedList<Integer>();
+        LinkedList<Double> nvals = new LinkedList<>();
+        LinkedList<String> svals = new LinkedList<>();
+        LinkedList<Integer> ttypes = new LinkedList<>();
+        LinkedList<Integer> lines = new LinkedList<>();
 
         svals.add(sval);
         nvals.add(nval);
@@ -224,10 +224,10 @@ public class NexusStreamParser extends NexusStreamTokenizer {
         final NexusStreamTokenizer sst = new NexusStreamTokenizer(new StringReader(s));
         sst.setSquareBracketsSurroundComments(isSquareBracketsSurroundComments());
 
-        final LinkedList<Double> nvals = new LinkedList<Double>();
-        final LinkedList<String> svals = new LinkedList<String>();
-        final LinkedList<Integer> ttypes = new LinkedList<Integer>();
-        final LinkedList<Integer> lines = new LinkedList<Integer>();
+        final LinkedList<Double> nvals = new LinkedList<>();
+        final LinkedList<String> svals = new LinkedList<>();
+        final LinkedList<Integer> ttypes = new LinkedList<>();
+        final LinkedList<Integer> lines = new LinkedList<>();
 
         svals.add(sval);
         nvals.add(nval);
@@ -260,10 +260,10 @@ public class NexusStreamParser extends NexusStreamTokenizer {
      * @return next word
      */
     public String peekNextWord() {
-        final LinkedList<Double> nvals = new LinkedList<Double>();
-        final LinkedList<String> svals = new LinkedList<String>();
-        final LinkedList<Integer> ttypes = new LinkedList<Integer>();
-        final LinkedList<Integer> lines = new LinkedList<Integer>();
+        final LinkedList<Double> nvals = new LinkedList<>();
+        final LinkedList<String> svals = new LinkedList<>();
+        final LinkedList<Integer> ttypes = new LinkedList<>();
+        final LinkedList<Integer> lines = new LinkedList<>();
 
         svals.add(sval);
         nvals.add(nval);
@@ -319,7 +319,7 @@ public class NexusStreamParser extends NexusStreamTokenizer {
     public List<String> getTokensLowerCase(String first, String last) throws IOException {
         if (first != null)
             matchIgnoreCase(first);
-        final LinkedList<String> list = new LinkedList<String>();
+        final LinkedList<String> list = new LinkedList<>();
         nextToken();
         while (last == null || !toString().equals(last)) {
             if (ttype == TT_EOF) {
@@ -347,7 +347,7 @@ public class NexusStreamParser extends NexusStreamTokenizer {
     public List<String> getTokensRespectCase(String first, String last) throws IOException {
         if (first != null)
             matchIgnoreCase(first);
-        final LinkedList<String> list = new LinkedList<String>();
+        final LinkedList<String> list = new LinkedList<>();
         nextToken();
         while (last == null || !toString().equals(last)) {
             if (ttype == TT_EOF) {
@@ -1181,7 +1181,7 @@ public class NexusStreamParser extends NexusStreamTokenizer {
     public List<String> getWordsRespectCase(String first, String last) throws IOException {
         pushPunctuationCharacters(SEMICOLON_PUNCTUATION);
 
-        LinkedList<String> list = new LinkedList<String>();
+        LinkedList<String> list = new LinkedList<>();
         try {
             if (first != null)
                 matchIgnoreCase(first);
@@ -1209,7 +1209,7 @@ public class NexusStreamParser extends NexusStreamTokenizer {
      */
     public List getWordsRespectCase(int n) throws IOException {
         pushPunctuationCharacters(SEMICOLON_PUNCTUATION);
-        LinkedList<String> list = new LinkedList<String>();
+        LinkedList<String> list = new LinkedList<>();
 
         try {
             for (int i = 0; i < n; i++)
@@ -1241,7 +1241,7 @@ public class NexusStreamParser extends NexusStreamTokenizer {
             popPunctuationCharacters();
         }
 
-        List<Integer> result = new LinkedList<Integer>();
+        List<Integer> result = new LinkedList<>();
         BitSet seen = new BitSet();
 
         int inState = 0; // 0: expecting first number, 1: expecting new number or -2: expecting second number

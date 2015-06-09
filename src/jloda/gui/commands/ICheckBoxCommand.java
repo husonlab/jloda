@@ -29,12 +29,12 @@ public interface ICheckBoxCommand extends ICommand {
      *
      * @return selected
      */
-    public boolean isSelected();
+    boolean isSelected();
 
     /**
      * set the selected status of this command
      *
      * @param selected
      */
-    public void setSelected(boolean selected);
+    void setSelected(boolean selected);
 }

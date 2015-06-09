@@ -30,12 +30,12 @@ public interface IMainViewer extends IDirectableViewer {
      *
      * @return window menu
      */
-    public JMenu getWindowMenu();
+    JMenu getWindowMenu();
 
     /**
      * get the quit action
      *
      * @return quit action
      */
-    public AbstractAction getQuit();
+    AbstractAction getQuit();
 }

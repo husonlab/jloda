@@ -72,8 +72,8 @@ public class JListSearcher implements IObjectSearcher {
         this.frame = frame;
         this.name = name;
         this.jList = jList;
-        toSelect = new HashSet<Integer>();
-        toDeselect = new HashSet<Integer>();
+        toSelect = new HashSet<>();
+        toDeselect = new HashSet<>();
     }
 
     /**

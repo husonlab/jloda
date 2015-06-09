@@ -56,7 +56,7 @@ public class FindToolBar extends JPanel implements IFindDialog {
     private final JComboBox targetCBox = new JComboBox();
     private final SearchActions actions;
 
-    private final Map<Component, ISearcher> parent2active = new HashMap<Component, ISearcher>();   // keeps a mapping of windows to active searcher
+    private final Map<Component, ISearcher> parent2active = new HashMap<>();   // keeps a mapping of windows to active searcher
 
     private JFrame frame;
 

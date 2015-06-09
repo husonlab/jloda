@@ -29,7 +29,7 @@ package jloda.graph;
  * Node map
  */
 
-public class NodeDoubleMap extends NodeMap {
+public class NodeDoubleMap extends NodeMap<Double> {
     /**
      * Construct a node double map for the given graph and initialize all
      * entries to value.
@@ -78,7 +78,7 @@ public class NodeDoubleMap extends NodeMap {
         if (super.get(v) == null)
             return 0;
         else
-            return (Double) super.get(v);
+            return super.get(v);
     }
 
     /**
@@ -97,7 +97,7 @@ public class NodeDoubleMap extends NodeMap {
      * @param val double
      */
     public void setAll(double val) {
-        setAll(val);
+        super.setAll(val);
     }
 }
 

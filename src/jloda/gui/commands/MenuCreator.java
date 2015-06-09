@@ -286,7 +286,7 @@ public class MenuCreator {
             int pos = str.indexOf("=");
             str = str.substring(pos + 1).trim();
             StringTokenizer tokenizer = new StringTokenizer(str, ";");
-            List<String> result = new LinkedList<String>();
+            List<String> result = new LinkedList<>();
             while (tokenizer.hasMoreTokens())
                 result.add(tokenizer.nextToken());
             return result;

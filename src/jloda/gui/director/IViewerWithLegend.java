@@ -25,11 +25,11 @@ import javax.swing.*;
  * Daniel Huson, 32013
  */
 public interface IViewerWithLegend {
-    public void setShowLegend(String showLegend);
+    void setShowLegend(String showLegend);
 
-    public String getShowLegend();
+    String getShowLegend();
 
-    public JPanel getLegendPanel();
+    JPanel getLegendPanel();
 
-    public JScrollPane getLegendScrollPane();
+    JScrollPane getLegendScrollPane();
 }

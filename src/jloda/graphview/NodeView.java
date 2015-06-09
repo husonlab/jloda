@@ -968,9 +968,8 @@ final public class NodeView extends ViewBase implements Cloneable {
      * @return true, if hit
      */
     public boolean contains(Transform trans, int x, int y) {
-        if (getBox(trans).contains(x, y))
-            return true;
-        return image != null && image.isVisible() && image.contains(x, y);
+        Rectangle box = getBox(trans);
+        return box != null && box.contains(x, y) || image != null && image.isVisible() && image.contains(x, y);
     }
 
     /**
@@ -981,9 +980,9 @@ final public class NodeView extends ViewBase implements Cloneable {
      * @return
      */
     public boolean intersects(Transform trans, Rectangle rect) {
-        if (getBox(trans).intersects(rect))
-            return true;
-        return image != null && image.isVisible() && image.getRectangle().intersects(rect);
+        Rectangle box = getBox(trans);
+
+        return box != null && box.intersects(rect) || image != null && image.isVisible() && image.getRectangle().intersects(rect);
     }
 
     /**

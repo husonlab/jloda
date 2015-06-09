@@ -101,6 +101,6 @@ public class Single<S> implements Comparable<Single<S>>, Comparator<Single<S>> {
         } catch (CloneNotSupportedException e) {
             Basic.caught(e);
         }
-        return new Single<S>(get());
+        return new Single<>(get());
     }
 }

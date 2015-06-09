@@ -38,34 +38,34 @@ public interface IDirectorListener extends IUpdateableView {
      *
      * @param what what should be updated? Possible values: Director.ALL or Director.TITLE
      */
-    public void updateView(String what);
+    void updateView(String what);
 
     /**
      * ask view to prevent user input
      */
-    public void lockUserInput();
+    void lockUserInput();
 
     /**
      * ask view to allow user input
      */
-    public void unlockUserInput();
+    void unlockUserInput();
 
     /**
      * is viewer currently locked?
      *
      * @return true, if locked
      */
-    public boolean isLocked();
+    boolean isLocked();
 
     /**
      * ask view to destroy itself
      */
-    public void destroyView() throws CanceledException;
+    void destroyView() throws CanceledException;
 
     /**
      * set uptodate state
      *
      * @param flag
      */
-    public void setUptoDate(boolean flag);
+    void setUptoDate(boolean flag);
 }

@@ -154,8 +154,7 @@ public class ListTransferHandler extends TransferHandler {
                 String str = (String) t.getTransferData(DataFlavor.stringFlavor);
                 this.importString(component, str);
                 return true;
-            } catch (UnsupportedFlavorException ufe) {
-            } catch (IOException ioe) {
+            } catch (UnsupportedFlavorException | IOException ufe) {
             }
         }
         return false;

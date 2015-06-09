@@ -161,8 +161,8 @@ public class PDFDocument implements Serializable {
      */
     public PDFDocument(int pagemode) {
         objser = 1;
-        objects = new Vector<PDFObject>();
-        fonts = new Vector<PDFFont>();
+        objects = new Vector<>();
+        fonts = new Vector<>();
 
         // Now create some standard objects
         add(pdfPageList = new PDFPageList());

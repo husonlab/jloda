@@ -35,12 +35,12 @@ import java.util.*;
  */
 public class ProjectManager {
     final static private List<IDirector> projects = Collections.synchronizedList(new LinkedList<IDirector>());
-    final static private Map<IDirector, List<IDirectableViewer>> viewersList = new HashMap<IDirector, List<IDirectableViewer>>();
+    final static private Map<IDirector, List<IDirectableViewer>> viewersList = new HashMap<>();
     final static private List<Pair<IDirector, JMenu>> dirAndWindowMenuPairs = Collections.synchronizedList(new LinkedList<Pair<IDirector, JMenu>>());
-    final static private Map<JMenu, Integer> menu2baseSize = new HashMap<JMenu, Integer>();
+    final static private Map<JMenu, Integer> menu2baseSize = new HashMap<>();
     final static private List<IProjectsChangedListener> projectsChangedListeners = Collections.synchronizedList(new LinkedList<IProjectsChangedListener>());
     private static boolean exitOnEmpty = true;
-    final static private HashSet<JMenu> windowMenusUnderControl = new HashSet<JMenu>();
+    final static private HashSet<JMenu> windowMenusUnderControl = new HashSet<>();
 
     static final BitSet currentIDs = new BitSet();
     public static final int NEWEST = -1; // pass this to getProject to get newest project
@@ -57,7 +57,7 @@ public class ProjectManager {
             projects.remove(dir);
             viewersList.remove(dir);
             // any given project uses more than one menu, we need to delete them all
-            List<Pair<IDirector, JMenu>> toDelete = new LinkedList<Pair<IDirector, JMenu>>();
+            List<Pair<IDirector, JMenu>> toDelete = new LinkedList<>();
             for (Pair<IDirector, JMenu> pair : dirAndWindowMenuPairs) {
                 if (dir == pair.getFirst())
                     toDelete.add(pair);
@@ -99,7 +99,7 @@ public class ProjectManager {
                     final JMenu menu = viewer.getWindowMenu();
                     if (menu != null) {
                         if (!windowMenusUnderControl.contains(menu)) {
-                            Pair<IDirector, JMenu> pair = new Pair<IDirector, JMenu>(dir, menu);
+                            Pair<IDirector, JMenu> pair = new Pair<>(dir, menu);
                             dirAndWindowMenuPairs.add(pair);
                             windowMenusUnderControl.add(menu);
                             menu2baseSize.put(menu, menu.getItemCount());
@@ -124,7 +124,7 @@ public class ProjectManager {
     public static void addAnotherWindowWithWindowMenu(IDirector dir, JMenu menu) {
         if (!windowMenusUnderControl.contains(menu)) {
             synchronized (projects) {
-                dirAndWindowMenuPairs.add(new Pair<IDirector, JMenu>(dir, menu));
+                dirAndWindowMenuPairs.add(new Pair<>(dir, menu));
                 menu2baseSize.put(menu, menu.getItemCount());
             }
             fireProjectsChanged();
@@ -383,7 +383,7 @@ public class ProjectManager {
         isQuitting = quitting;
     }
 
-    private final static HashSet<String> previouslySelectedNodeLabels = new HashSet<String>();
+    private final static HashSet<String> previouslySelectedNodeLabels = new HashSet<>();
 
     public static Set<String> getPreviouslySelectedNodeLabels() {
         return previouslySelectedNodeLabels;

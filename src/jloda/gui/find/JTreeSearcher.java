@@ -75,8 +75,8 @@ public class JTreeSearcher implements IObjectSearcher {
         this.frame = frame;
         this.name = name;
         this.jTree = jTree;
-        toSelect = new HashSet<DefaultMutableTreeNode>();
-        toDeselect = new HashSet<DefaultMutableTreeNode>();
+        toSelect = new HashSet<>();
+        toDeselect = new HashSet<>();
     }
 
     /**
@@ -145,7 +145,7 @@ public class JTreeSearcher implements IObjectSearcher {
     }
 
     private TreePath getPath(TreeNode node) {
-        java.util.List<TreeNode> list = new ArrayList<TreeNode>();
+        java.util.List<TreeNode> list = new ArrayList<>();
 
         // Add all nodes to list
         while (node != null) {

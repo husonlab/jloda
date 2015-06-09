@@ -23,7 +23,6 @@ import java.awt.*;
 import java.awt.dnd.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Vector;
 
@@ -131,8 +130,7 @@ public class ReorderListDialog extends JDialog implements DropTargetListener, Ac
             i++;
         }
         //insert the removed elements at new position again
-        for (Iterator it = toBeRemoved.iterator(); it.hasNext(); ) {
-            Object ins = it.next();
+        for (Object ins : toBeRemoved) {
             dropmodel.add(insertIndex - offsetForNewInsertPosition, ins);
             insertIndex++;
         }
@@ -171,8 +169,8 @@ public class ReorderListDialog extends JDialog implements DropTargetListener, Ac
         } else if (e.getSource() == copy) {
             DefaultListModel model = new DefaultListModel();
             model.clear();
-            for (Iterator it = originalList.iterator(); it.hasNext(); ) {
-                model.addElement(it.next());
+            for (Object anOriginalList : originalList) {
+                model.addElement(anOriginalList);
             }
             reorderedJlist.setModel(model);
         } else if (e.getSource() == flip) {
@@ -181,8 +179,8 @@ public class ReorderListDialog extends JDialog implements DropTargetListener, Ac
                 model1.addElement(reorderedJlist.getModel().getElementAt(i));
             }
             if (model1.getSize() == 0) {
-                for (Iterator it = originalList.iterator(); it.hasNext(); ) {
-                    model1.addElement(it.next());
+                for (Object anOriginalList : originalList) {
+                    model1.addElement(anOriginalList);
                 }
             }
             int size = model1.getSize();
@@ -200,8 +198,8 @@ public class ReorderListDialog extends JDialog implements DropTargetListener, Ac
                 model2.addElement(reorderedJlist.getModel().getElementAt(i));
             }
             if (model2.getSize() == 0) {
-                for (Iterator it = originalList.iterator(); it.hasNext(); ) {
-                    model2.addElement(it.next());
+                for (Object anOriginalList : originalList) {
+                    model2.addElement(anOriginalList);
                 }
             }
             model2.add(model2.getSize(), model2.get(0));
@@ -213,8 +211,8 @@ public class ReorderListDialog extends JDialog implements DropTargetListener, Ac
                 model3.addElement(reorderedJlist.getModel().getElementAt(i));
             }
             if (model3.getSize() == 0) {
-                for (Iterator it = originalList.iterator(); it.hasNext(); ) {
-                    model3.addElement(it.next());
+                for (Object anOriginalList : originalList) {
+                    model3.addElement(anOriginalList);
                 }
             }
             model3.add(0, model3.get(model3.getSize() - 1));
@@ -430,15 +428,15 @@ public class ReorderListDialog extends JDialog implements DropTargetListener, Ac
         //load input into the link Jlist
         originalList.addAll(original);
         DefaultListModel model = new DefaultListModel();
-        for (Iterator it = original.iterator(); it.hasNext(); ) {
-            model.addElement(it.next());
+        for (Object anOriginal : original) {
+            model.addElement(anOriginal);
         }
         this.originalJlist.setModel(model);
 
         if (!showCopy) {
             model = new DefaultListModel();
-            for (Iterator it = originalList.iterator(); it.hasNext(); ) {
-                model.addElement(it.next());
+            for (Object anOriginalList : originalList) {
+                model.addElement(anOriginalList);
             }
             reorderedJlist.setModel(model);
         }

@@ -45,7 +45,7 @@ import java.util.LinkedList;
 public class Formatter implements IDirectableViewer {
     public static final String CONFIGURATOR_GEOMETRY = "ConfiguratorGeometry";
 
-    private final java.util.List<IFormatterListener> formatterListeners = new LinkedList<IFormatterListener>();
+    private final java.util.List<IFormatterListener> formatterListeners = new LinkedList<>();
 
     private boolean isLocked = false;
 

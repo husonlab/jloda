@@ -322,12 +322,12 @@ public class MessageWindowActions {
         if (kit == null) kit = new DefaultEditorKit();
 
         Action[] defActions = kit.getActions();
-        for (int i = 0; i < defActions.length; i++) {
-            if (defActions[i].getValue(Action.NAME) == DefaultEditorKit.cutAction) {
-                action = defActions[i];
+        for (Action defAction : defActions) {
+            if (defAction.getValue(Action.NAME) == DefaultEditorKit.cutAction) {
+                action = defAction;
             }
         }
-        action.putValue(AbstractAction.MNEMONIC_KEY, new Integer('T'));
+        action.putValue(AbstractAction.MNEMONIC_KEY, (int) 'T');
         action.putValue(Action.ACCELERATOR_KEY, KeyStroke.getKeyStroke(KeyEvent.VK_X,
                 Toolkit.getDefaultToolkit().getMenuShortcutKeyMask()));
 
@@ -350,13 +350,13 @@ public class MessageWindowActions {
         if (kit == null) kit = new DefaultEditorKit();
 
         Action[] defActions = kit.getActions();
-        for (int i = 0; i < defActions.length; i++) {
+        for (Action defAction : defActions) {
 
-            if ((defActions[i].getValue(Action.NAME)).equals(DefaultEditorKit.copyAction)) {
-                action = defActions[i];
+            if ((defAction.getValue(Action.NAME)).equals(DefaultEditorKit.copyAction)) {
+                action = defAction;
             }
         }
-        action.putValue(AbstractAction.MNEMONIC_KEY, new Integer('C'));
+        action.putValue(AbstractAction.MNEMONIC_KEY, (int) 'C');
         action.putValue(Action.ACCELERATOR_KEY, KeyStroke.getKeyStroke(KeyEvent.VK_C,
                 Toolkit.getDefaultToolkit().getMenuShortcutKeyMask()));
         action.putValue(Action.SHORT_DESCRIPTION, "Copy");
@@ -377,12 +377,12 @@ public class MessageWindowActions {
         if (kit == null) kit = new DefaultEditorKit();
 
         Action[] defActions = kit.getActions();
-        for (int i = 0; i < defActions.length; i++) {
-            if (defActions[i].getValue(Action.NAME) == DefaultEditorKit.pasteAction) {
-                action = defActions[i];
+        for (Action defAction : defActions) {
+            if (defAction.getValue(Action.NAME) == DefaultEditorKit.pasteAction) {
+                action = defAction;
             }
         }
-        action.putValue(AbstractAction.MNEMONIC_KEY, new Integer('P'));
+        action.putValue(AbstractAction.MNEMONIC_KEY, (int) 'P');
         action.putValue(Action.ACCELERATOR_KEY, KeyStroke.getKeyStroke(KeyEvent.VK_V,
                 Toolkit.getDefaultToolkit().getMenuShortcutKeyMask()));
         action.putValue(Action.SHORT_DESCRIPTION, "Paste");
@@ -403,12 +403,12 @@ public class MessageWindowActions {
         if (kit == null) kit = new DefaultEditorKit();
 
         Action[] defActions = kit.getActions();
-        for (int i = 0; i < defActions.length; i++) {
-            if (defActions[i].getValue(Action.NAME) == DefaultEditorKit.selectAllAction) {
-                action = defActions[i];
+        for (Action defAction : defActions) {
+            if (defAction.getValue(Action.NAME) == DefaultEditorKit.selectAllAction) {
+                action = defAction;
             }
         }
-        action.putValue(AbstractAction.MNEMONIC_KEY, new Integer('A'));
+        action.putValue(AbstractAction.MNEMONIC_KEY, (int) 'A');
         action.putValue(Action.ACCELERATOR_KEY, KeyStroke.getKeyStroke(KeyEvent.VK_A,
                 Toolkit.getDefaultToolkit().getMenuShortcutKeyMask()));
         action.putValue(Action.SHORT_DESCRIPTION, "Select All");

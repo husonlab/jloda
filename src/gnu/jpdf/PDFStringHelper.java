@@ -39,10 +39,10 @@ public class PDFStringHelper {
      * @return String that can be placed in a PDF (or Postscript) stream
      */
     public static String makePDFString(String s) {
-        if (s.indexOf("(") > -1)
+        if (s.contains("("))
             s = replace(s, "(", "\\(");
 
-        if (s.indexOf(")") > -1)
+        if (s.contains(")"))
             s = replace(s, ")", "\\)");
 
         return "(" + s + ")";

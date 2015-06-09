@@ -48,7 +48,7 @@ public class FindWindow extends JFrame implements IFindDialog {
     private final int HEIGHT_FIND = 250;
     private final int HEIGHT_FIND_REPLACE = 330;
 
-    private final Map<Component, ISearcher> parent2active = new HashMap<Component, ISearcher>();   // keeps a mapping of windows to active searcher
+    private final Map<Component, ISearcher> parent2active = new HashMap<>();   // keeps a mapping of windows to active searcher
 
 
     /**

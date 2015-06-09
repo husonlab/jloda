@@ -44,7 +44,7 @@ public class PDFPageList extends PDFObject {
      */
     public PDFPageList() {
         super("/Pages");
-        pages = new Vector<PDFPage>();
+        pages = new Vector<>();
     }
 
     /**

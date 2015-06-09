@@ -391,7 +391,7 @@ public class BoundingBox extends Rectangle {
 
         String[] childStrArray = null;
 
-        if ((cw > pw) || (string.indexOf("\n") != -1)) {
+        if ((cw > pw) || (string.contains("\n"))) {
             cw = pw - (padding * 2);
             childStrArray = createStringArray(string, fm, padding, pw);
             ch = getWrappedHeight(childStrArray, fm, padding);
@@ -531,9 +531,9 @@ public class BoundingBox extends Rectangle {
             g.drawString(getFullString(), xx, yy);
         } else {
             int len = stringArray.length;
-            for (int i = 0; i < len; i++) {
+            for (String aStringArray : stringArray) {
                 BoundingBox wrappedBox;
-                wrappedBox = getStringBounds(stringArray[i],
+                wrappedBox = getStringBounds(aStringArray,
                         hAlign,
                         BoundingBox.VERT_ALIGN_TOP,
                         fm,
@@ -547,7 +547,7 @@ public class BoundingBox extends Rectangle {
                     xx += padding;
                 }
                 int yy = (int) pp.getY() + padding;
-                g.drawString(stringArray[i], xx, yy);
+                g.drawString(aStringArray, xx, yy);
                 subtract(wrappedBox, BoundingBox.SUBTRACT_FROM_BOTTOM);
             }
         }
@@ -581,10 +581,10 @@ public class BoundingBox extends Rectangle {
         } else {
             int totalHeight = 0;
             int len = stringArray.length;
-            for (int i = 0; i < len; i++) {
+            for (String aStringArray : stringArray) {
                 BoundingBox wrappedBox = null;
                 try {
-                    wrappedBox = getStringBounds(stringArray[i],
+                    wrappedBox = getStringBounds(aStringArray,
                             hAlign,
                             BoundingBox.VERT_ALIGN_TOP,
                             fm,
@@ -711,7 +711,7 @@ public class BoundingBox extends Rectangle {
         int lw = pw - (padding * 2);
 
 
-        Vector<String> returnVector = new Vector<String>();
+        Vector<String> returnVector = new Vector<>();
         // Return delimiters as tokens
         StringTokenizer st = new StringTokenizer(string, " \t\n\r\f", true);
         StringBuilder tempBuffer = new StringBuilder();
@@ -740,8 +740,6 @@ public class BoundingBox extends Rectangle {
                 tempBuffer.append(tempString);
                 finalBuffer.append(tempString);
             }
-            continue;
-
         } // end while
         returnVector.addElement(finalBuffer.toString());
 
@@ -794,8 +792,8 @@ public class BoundingBox extends Rectangle {
         // and check the subtractFrom param
         int len = SUBTRACTS.length;
         boolean valid = false;
-        for (int i = 0; i < len; i++) {
-            if (subtractFrom == SUBTRACTS[i]) {
+        for (int SUBTRACT : SUBTRACTS) {
+            if (subtractFrom == SUBTRACT) {
                 valid = true;
             }
         }
@@ -977,8 +975,8 @@ public class BoundingBox extends Rectangle {
      */
     private boolean checkHAlign(int hAlign) {
         int len = HORIZ_ALIGNS.length;
-        for (int i = 0; i < len; i++) {
-            if (hAlign == HORIZ_ALIGNS[i]) {
+        for (int HORIZ_ALIGN : HORIZ_ALIGNS) {
+            if (hAlign == HORIZ_ALIGN) {
                 return true;
             }
         }
@@ -995,8 +993,8 @@ public class BoundingBox extends Rectangle {
      */
     private boolean checkVAlign(int vAlign) {
         int len = VERT_ALIGNS.length;
-        for (int i = 0; i < len; i++) {
-            if (vAlign == VERT_ALIGNS[i]) {
+        for (int VERT_ALIGN : VERT_ALIGNS) {
+            if (vAlign == VERT_ALIGN) {
                 return true;
             }
         }

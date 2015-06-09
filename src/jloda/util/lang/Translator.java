@@ -22,7 +22,10 @@ import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.util.*;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Set;
 
 /**
  * translate all english text into another language
@@ -54,8 +57,7 @@ public class Translator {
      */
     public void load(Language language) {
         Map lmap = language.getMap();
-        for (Iterator it = lmap.keySet().iterator(); it.hasNext(); ) {
-            Object obj = it.next();
+        for (Object obj : lmap.keySet()) {
             if (lmap.get(obj) != null)
                 map.put(obj, lmap.get(obj));
         }
@@ -130,13 +132,13 @@ public class Translator {
     public void dumpToFile(File file) throws IOException {
         BufferedWriter w = new BufferedWriter(new FileWriter(file));
 
-        for (Iterator it = map.keySet().iterator(); it.hasNext(); ) {
-            String label = (String) it.next();
+        for (Object o : map.keySet()) {
+            String label = (String) o;
             w.write("\tput(\"" + label + "\",\"" + map.get(label) + "\");\n");
         }
         w.write("\t// Unresolved:\n");
-        for (Iterator it = unresolved.iterator(); it.hasNext(); ) {
-            String label = (String) it.next();
+        for (Object anUnresolved : unresolved) {
+            String label = (String) anUnresolved;
             w.write("\tput(\"" + label + "\",null);\n");
         }
         w.flush();

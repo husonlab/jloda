@@ -38,9 +38,9 @@ public interface IFindDialog {
 
     void clearMessage();
 
-    public void updateTargets();
+    void updateTargets();
 
-    public String getFindText();
+    String getFindText();
 
-    public String getReplaceText();
+    String getReplaceText();
 }

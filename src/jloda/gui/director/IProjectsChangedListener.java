@@ -26,5 +26,5 @@ public interface IProjectsChangedListener {
     /**
      * called after number of projects has changed
      */
-    public void doHasChanged();
+    void doHasChanged();
 }

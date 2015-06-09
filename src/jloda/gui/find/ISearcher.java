@@ -32,7 +32,7 @@ public interface ISearcher {
      *
      * @return name
      */
-    public String getName();
+    String getName();
 
     /**
      * is a global find possible?
@@ -51,32 +51,32 @@ public interface ISearcher {
     /**
      * something has been changed or selected, update view
      */
-    public void updateView();
+    void updateView();
 
     /**
      * does this searcher support find all?
      *
      * @return true, if find all supported
      */
-    public boolean canFindAll();
+    boolean canFindAll();
 
     /**
      * set select state of all objects
      *
      * @param select
      */
-    public void selectAll(boolean select);
+    void selectAll(boolean select);
 
     /**
      * get the parent component
      *
      * @return parent
      */
-    public Component getParent();
+    Component getParent();
 
     /**
      * get list of additional buttons to be embedded into find tool bar, or null
      */
-    public Collection<AbstractButton> getAdditionalButtons();
+    Collection<AbstractButton> getAdditionalButtons();
 
 }

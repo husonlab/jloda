@@ -44,7 +44,7 @@ public class ChooseColorDialog {
         if (defaultColor != null)
             chooserPane.setColor(defaultColor);
 
-        final Single<Color> result = new Single<Color>();
+        final Single<Color> result = new Single<>();
 
         ActionListener okListener = new ActionListener() {
             public void actionPerformed(ActionEvent actionEvent) {

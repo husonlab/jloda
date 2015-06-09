@@ -29,7 +29,7 @@ public interface ILongPutter extends AutoCloseable {
      * @param index
      * @return value or 0
      */
-    public long get(long index);
+    long get(long index);
 
     /**
      * puts value for given index
@@ -37,7 +37,7 @@ public interface ILongPutter extends AutoCloseable {
      * @param index
      * @param value return the putter
      */
-    public ILongPutter put(long index, long value);
+    ILongPutter put(long index, long value);
 
     /**
      * length of array
@@ -45,10 +45,10 @@ public interface ILongPutter extends AutoCloseable {
      * @return array length
      * @throws java.io.IOException
      */
-    public long limit();
+    long limit();
 
     /**
      * close the array
      */
-    public void close();
+    void close();
 }

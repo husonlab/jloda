@@ -380,7 +380,7 @@ public class PhyloTree extends PhyloGraph {
                             setInputHasBootstrapValuesOnNodes(true);
 
                         if (label.length() > 0 && !isBootstrapValue) {
-                            if (!getAllowMultiLabeledNodes() && seen.containsKey(label) && !(PhyloTreeUtils.findReticulateLabel(label) != null))
+                            if (!getAllowMultiLabeledNodes() && seen.containsKey(label) && PhyloTreeUtils.findReticulateLabel(label) == null)
                             // if label already used, make unique, unless this is a reticulate node
                             {
                                 if (label.startsWith("'") && label.endsWith("'") && label.length() > 1)
@@ -432,7 +432,7 @@ public class PhyloTree extends PhyloGraph {
                         setInputHasBootstrapValuesOnNodes(true);
 
                     if (label.length() > 0 && !isBootstrapValue) {
-                        if (!getAllowMultiLabeledNodes() && seen.containsKey(label) && !(PhyloTreeUtils.findReticulateLabel(label) != null)) {
+                        if (!getAllowMultiLabeledNodes() && seen.containsKey(label) && PhyloTreeUtils.findReticulateLabel(label) == null) {
                             // give first occurence of this label the suffix .1
                             Node old = seen.get(label);
                             if (old != null) // change label of node

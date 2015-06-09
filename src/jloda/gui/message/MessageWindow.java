@@ -21,6 +21,7 @@ package jloda.gui.message;
 
 import jloda.gui.find.SearchManager;
 import jloda.util.Alert;
+import jloda.util.Basic;
 
 import javax.swing.*;
 import java.awt.*;
@@ -291,12 +292,12 @@ public class MessageWindow {
                 }
 
                 public void println(char[] x) {
-                    textArea.append(x + "\n");
+                    textArea.append(Basic.toString(x) + "\n");
                     textArea.setCaretPosition(textArea.getText().length());
                 }
 
                 public void print(char[] x) {
-                    textArea.append("" + x);
+                    textArea.append(Basic.toString(x));
                     textArea.setCaretPosition(textArea.getText().length());
                 }
 
@@ -363,7 +364,7 @@ public class MessageWindow {
         } else {
             stopCapturingOutput();
             frame.setVisible(false);
-            if (frame.getDefaultCloseOperation() == JFrame.EXIT_ON_CLOSE)
+            if (frame.getDefaultCloseOperation() == WindowConstants.EXIT_ON_CLOSE)
                 System.exit(0);
         }
     }

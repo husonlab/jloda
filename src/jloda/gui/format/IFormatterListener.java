@@ -26,7 +26,7 @@ import jloda.graph.NodeSet;
  * Daniel Huson, 3.2007
  */
 public interface IFormatterListener {
-    public void nodeFormatChanged(NodeSet nodes);
+    void nodeFormatChanged(NodeSet nodes);
 
-    public void edgeFormatChanged(EdgeSet edges);
+    void edgeFormatChanged(EdgeSet edges);
 }

@@ -157,7 +157,7 @@ public class Pair<S, T> implements Comparable<Pair<S, T>>, Comparator<Pair<S, T>
         } catch (CloneNotSupportedException e) {
             Basic.caught(e);
         }
-        return new Pair<S, T>(getFirst(), getSecond());
+        return new Pair<>(getFirst(), getSecond());
     }
 
     public void set(S first, T second) {

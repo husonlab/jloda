@@ -29,5 +29,5 @@ public interface ILabelGetter {
      * @param name
      * @return label
      */
-    public String getLabel(String name);
+    String getLabel(String name);
 }

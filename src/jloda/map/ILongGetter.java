@@ -31,7 +31,7 @@ public interface ILongGetter extends AutoCloseable {
      * @param index
      * @return value or 0
      */
-    public long get(long index);
+    long get(long index);
 
     /**
      * length of array
@@ -39,10 +39,10 @@ public interface ILongGetter extends AutoCloseable {
      * @return array length
      * @throws IOException
      */
-    public long limit();
+    long limit();
 
     /**
      * close the array
      */
-    public void close();
+    void close();
 }

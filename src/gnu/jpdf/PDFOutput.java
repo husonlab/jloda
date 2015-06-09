@@ -79,7 +79,7 @@ public class PDFOutput {
     public PDFOutput(OutputStream os) throws IOException {
         this.os = os;
         offset = 0;
-        offsets = new Vector<PDFXref>();
+        offsets = new Vector<>();
         baos = new ByteArrayOutputStream();
 
         // Now write the PDF header
@@ -135,7 +135,7 @@ public class PDFOutput {
         // but just in case:
         int firstid = 0;                    // First id in block
         int lastid = -1;                    // The last id used
-        Vector<PDFXref> block = new Vector<PDFXref>();        // xrefs in this block
+        Vector<PDFXref> block = new Vector<>();        // xrefs in this block
 
         // We need block 0 to exist
         block.addElement(new PDFXref(0, 0, 65535));

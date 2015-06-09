@@ -27,7 +27,7 @@ import java.util.Map;
  * Daniel Huson, 11.2011
  */
 public class Colors {
-    private final static Map<String, Color> table = new HashMap<String, Color>();
+    private final static Map<String, Color> table = new HashMap<>();
 
     private static void init() {
         table.put("snow", new Color(0xfffafa));

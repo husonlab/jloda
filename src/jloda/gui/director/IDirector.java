@@ -29,16 +29,16 @@ import java.awt.*;
  */
 public interface IDirector {
     // update targets
-    final public String ALL = "ALL";
-    final public String TITLE = "TITLE";
-    final public String ENABLE_STATE = "enable_state";
+    String ALL = "ALL";
+    String TITLE = "TITLE";
+    String ENABLE_STATE = "enable_state";
 
     /**
      * execute a command
      *
      * @param command
      */
-    public void execute(String command);
+    void execute(String command);
 
     /**
      * execute a command using the provided command manager
@@ -46,7 +46,7 @@ public interface IDirector {
      * @param command
      * @param commandManager
      */
-    public void execute(String command, CommandManager commandManager);
+    void execute(String command, CommandManager commandManager);
 
     /**
      * execute a command using the provided command manager
@@ -54,14 +54,14 @@ public interface IDirector {
      * @param command
      * @param commandManager
      */
-    public void execute(String command, CommandManager commandManager, Component parent);
+    void execute(String command, CommandManager commandManager, Component parent);
 
     /**
      * execute a command
      *
      * @param command
      */
-    public boolean executeImmediately(String command);
+    boolean executeImmediately(String command);
 
     /**
      * execute a command using the provided command manager
@@ -69,85 +69,85 @@ public interface IDirector {
      * @param command
      * @param commandManager
      */
-    public boolean executeImmediately(String command, CommandManager commandManager);
+    boolean executeImmediately(String command, CommandManager commandManager);
 
     /**
      * update viewers
      *
      * @param what update target
      */
-    public void notifyUpdateViewer(String what);
+    void notifyUpdateViewer(String what);
 
     /**
      * adds a viewer
      *
      * @param viewer
      */
-    public IDirectableViewer addViewer(IDirectableViewer viewer);
+    IDirectableViewer addViewer(IDirectableViewer viewer);
 
     /**
      * remove a given viewer
      *
      * @param viewer
      */
-    public void removeViewer(IDirectableViewer viewer);
+    void removeViewer(IDirectableViewer viewer);
 
     /**
      * get the project title
      *
      * @return title
      */
-    public String getTitle();
+    String getTitle();
 
     /**
      * set the dirty flag
      *
      * @param dirty
      */
-    public void setDirty(boolean dirty);
+    void setDirty(boolean dirty);
 
     /**
      * get the dirty flag
      *
      * @return dirty
      */
-    public boolean getDirty();
+    boolean getDirty();
 
     /**
      * set the project id
      *
      * @param id
      */
-    public void setID(int id);
+    void setID(int id);
 
     /**
      * get the project id
      *
      * @return id
      */
-    public int getID();
+    int getID();
 
     /**
      * gets the main viewer associated with this director
      *
      * @return main viewer
      */
-    public IMainViewer getMainViewer();
+    IMainViewer getMainViewer();
 
     /**
      * close this director
      */
-    public void close() throws CanceledException;
+    void close() throws CanceledException;
 
     /**
      * tell  directed viewers to lock input
      */
-    public void notifyLockInput();
+    void notifyLockInput();
 
     /**
      * tell directed viewers to unlock input
      */
-    public void notifyUnlockInput();
+    void notifyUnlockInput();
 
     /**
      * returns a viewer of the given class
@@ -155,5 +155,5 @@ public interface IDirector {
      * @param aClass
      * @return viewer of the given class, or null
      */
-    public IDirectableViewer getViewerByClass(Class aClass);
+    IDirectableViewer getViewerByClass(Class aClass);
 }

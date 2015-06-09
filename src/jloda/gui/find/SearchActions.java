@@ -51,7 +51,7 @@ public class SearchActions {
      */
     SearchActions(SearchManager searchManager) {
         this.searchManager = searchManager;
-        this.all = new LinkedList<AbstractAction>();
+        this.all = new LinkedList<>();
     }
 
     /**

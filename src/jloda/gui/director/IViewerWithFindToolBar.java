@@ -27,20 +27,20 @@ import javax.swing.*;
  * Daniel Huson, 2.2012
  */
 public interface IViewerWithFindToolBar {
-    public boolean isShowFindToolBar();
+    boolean isShowFindToolBar();
 
-    public void setShowFindToolBar(boolean show);
+    void setShowFindToolBar(boolean show);
 
-    public SearchManager getSearchManager();
+    SearchManager getSearchManager();
 
     /**
      * get name for this type of viewer
      *
      * @return name
      */
-    public String getClassName();
+    String getClassName();
 
-    public JFrame getFrame();
+    JFrame getFrame();
 
 
 }

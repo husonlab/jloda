@@ -23,7 +23,8 @@ import java.awt.*;
 import java.util.Collection;
 
 /**
- * Created by huson on 10/16/14.
+ * empty searcher
+ * Daniel Huson, 4.2014
  */
 public class EmptySearcher implements ISearcher {
     /**

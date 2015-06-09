@@ -61,7 +61,7 @@ public class SearchManager implements IDirectableViewer {
 
     final IFindDialog findDialog;
 
-    final Set<String> disabledSearchers = new HashSet<String>();
+    final Set<String> disabledSearchers = new HashSet<>();
 
     static SearchManager instance;
 
@@ -782,7 +782,7 @@ public class SearchManager implements IDirectableViewer {
         with quote literals: \Q expression \E just in case there are some regexp characters
         already there. Note - this will fail if string already contains \E or \Q !!!!!!! */
         if (!isRegularExpressionsOption()) {
-            if (regexp.indexOf("\\E") >= 0)
+            if (regexp.contains("\\E"))
                 throw new PatternSyntaxException("Illegal character ''\\'' in search string", query, -1);
             // TODO: this doesn't seem to work here, perhaps needs 1.5?
             regexp = '\\' + "Q" + regexp + '\\' + "E";

@@ -44,7 +44,7 @@ public class MemoryUsageManager {
      * constructor
      */
     private MemoryUsageManager() {
-        changeListeners = new LinkedList<WeakReference<ChangeListener>>();
+        changeListeners = new LinkedList<>();
 
         ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(1);
         scheduler.scheduleAtFixedRate(new Runnable() {
@@ -62,9 +62,7 @@ public class MemoryUsageManager {
                             }
                         }
                     });
-                } catch (InterruptedException e) {
-                    Basic.caught(e);
-                } catch (InvocationTargetException e) {
+                } catch (InterruptedException | InvocationTargetException e) {
                     Basic.caught(e);
                 }
             }
@@ -75,7 +73,7 @@ public class MemoryUsageManager {
         if (memoryUsageManager == null)
             memoryUsageManager = new MemoryUsageManager();
         synchronized (memoryUsageManager.changeListeners) {
-            memoryUsageManager.changeListeners.add(new WeakReference<ChangeListener>(changeListener));
+            memoryUsageManager.changeListeners.add(new WeakReference<>(changeListener));
         }
     }
 }

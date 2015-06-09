@@ -43,7 +43,7 @@ public class ChooseFontDialog {
      * @return color chosen or null
      */
     public static Pair<Font, Color> showChooseFontDialog(JFrame parent, String title, Font defaultFont, Color defaultColor) {
-        final Single<Color> theColor = new Single<Color>(defaultColor);
+        final Single<Color> theColor = new Single<>(defaultColor);
 
         final JDialog dialog = new JDialog(parent, title);
         dialog.setLocationRelativeTo(parent);
@@ -193,7 +193,7 @@ public class ChooseFontDialog {
                 String name = fontNames.getSelectedItem().toString().trim();
                 int size = Basic.parseInt(fontSizes.getSelectedItem().toString().trim());
                 if (name != null && size > 0) {
-                    result = new Pair<Font, Color>(getCurrentFont(fontNames, fontSizes, boldCBox, italicCBox), theColor.get());
+                    result = new Pair<>(getCurrentFont(fontNames, fontSizes, boldCBox, italicCBox), theColor.get());
                 }
                 dialog.setVisible(false);
             }

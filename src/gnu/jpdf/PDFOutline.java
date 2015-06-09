@@ -88,7 +88,7 @@ public class PDFOutline extends PDFObject implements Serializable {
      */
     protected PDFOutline() {
         super("/Outlines");
-        outlines = new Vector<PDFOutline>();
+        outlines = new Vector<>();
         title = null;
         dest = null;
         destMode = FITPAGE;

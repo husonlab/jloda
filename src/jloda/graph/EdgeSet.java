@@ -145,8 +145,10 @@ public class EdgeSet extends GraphBase implements Set<Edge> {
 
         clear();
         for (Object e : collection) {
-            if (was.contains(e))
-                add((Edge) e);
+            if (e instanceof Edge) {
+                if (was.contains(e))
+                    add((Edge) e);
+            }
         }
         return changed;
     }

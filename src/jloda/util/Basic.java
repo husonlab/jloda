@@ -315,10 +315,10 @@ public class Basic {
      */
     public static <T> Iterator<T> randomize(Iterator<T> it, int seed) {
         Random random = new Random(seed);
-        java.util.List<T> list = new LinkedList<T>();
+        java.util.List<T> list = new LinkedList<>();
         while (it.hasNext())
             list.add(it.next());
-        java.util.List<T> result = new LinkedList<T>();
+        java.util.List<T> result = new LinkedList<>();
         while (!list.isEmpty()) {
             int r = random.nextInt(list.size());
             result.add(list.get(r));
@@ -447,7 +447,7 @@ public class Basic {
         return buf.toString();
     }
 
-    private static final Set<String> usedFileNames = new HashSet<String>();
+    private static final Set<String> usedFileNames = new HashSet<>();
 
     /**
      * given a file name, returns a file with a unique file name.
@@ -586,7 +586,7 @@ public class Basic {
      * @return array of strings that where originally separated by spaces
      */
     public static String[] toArray(String str) {
-        List<String> list = new LinkedList<String>();
+        List<String> list = new LinkedList<>();
 
         for (int j, i = skipSpaces(str, 0); i < str.length(); i = skipSpaces(str, j)) {
             for (j = i + 1; j < str.length(); j++)
@@ -606,7 +606,7 @@ public class Basic {
      * @return list of strings
      */
     public static List<String> toList(String str) {
-        List<String> list = new LinkedList<String>();
+        List<String> list = new LinkedList<>();
 
         int i = 0;
         while (i < str.length()) {
@@ -1334,7 +1334,7 @@ public class Basic {
      * @return reverse order list
      */
     public static <T> List<T> reverseList(Collection<T> list) {
-        List<T> result = new LinkedList<T>();
+        List<T> result = new LinkedList<>();
         for (T aList : list) {
             result.add(0, aList);
         }
@@ -1348,7 +1348,7 @@ public class Basic {
      * @return rotated order
      */
     public static <T> List<T> rotateList(Collection<T> list) {
-        List<T> result = new LinkedList<T>();
+        List<T> result = new LinkedList<>();
         if (list.size() > 0) {
             result.addAll(list);
             result.add(result.remove(0));
@@ -1364,7 +1364,7 @@ public class Basic {
      * @return sublist with n elements
      */
     public static <T> List reduceList(List<T> list, int n) {
-        List<T> result = new LinkedList<T>();
+        List<T> result = new LinkedList<>();
         int mod = list.size() / n;
         int i = 0;
         int count = 0;
@@ -1524,7 +1524,7 @@ public class Basic {
      * @throws IOException
      */
     public static List<String> getLinesFromFile(String file) throws IOException {
-        List<String> result = new LinkedList<String>();
+        List<String> result = new LinkedList<>();
         BufferedReader r = new BufferedReader(new FileReader(file));
         String aLine;
         while ((aLine = r.readLine()) != null) {
@@ -1540,7 +1540,7 @@ public class Basic {
      * @return lines
      */
     public static List<String> getLinesFromString(String string) {
-        List<String> result = new LinkedList<String>();
+        List<String> result = new LinkedList<>();
         BufferedReader r = new BufferedReader(new StringReader(string));
         String aLine;
         try {
@@ -1581,7 +1581,7 @@ public class Basic {
      * @return concatenated list
      */
     public static <T> List<T> getConcatenation(Collection<T> listA, Collection<T> listB) {
-        List<T> all = new LinkedList<T>();
+        List<T> all = new LinkedList<>();
         all.addAll(listA);
         all.addAll(listB);
         return all;
@@ -1628,7 +1628,7 @@ public class Basic {
      * @return list of integers
      */
     public static List<Integer> asList(BitSet bits) {
-        List<Integer> result = new LinkedList<Integer>();
+        List<Integer> result = new LinkedList<>();
         if (bits != null) {
             for (int i = bits.nextSetBit(0); i != -1; i = bits.nextSetBit(i + 1))
                 result.add(i);
@@ -2355,7 +2355,7 @@ public class Basic {
      * @return prefix
      */
     public static String getCommonPrefix(File[] files, String defaultPrefix) {
-        List<String> names = new LinkedList<String>();
+        List<String> names = new LinkedList<>();
         for (File file : files)
             names.add(file.getName());
         return getCommonPrefix(names, defaultPrefix);
@@ -2466,7 +2466,7 @@ public class Basic {
      */
     public static String[] getLines(Reader r0) throws IOException {
         BufferedReader r = new BufferedReader(r0);
-        LinkedList<String> lines = new LinkedList<String>();
+        LinkedList<String> lines = new LinkedList<>();
         String aLine;
         while ((aLine = r.readLine()) != null) {
             lines.add(aLine);
@@ -2598,7 +2598,7 @@ public class Basic {
     public static String[] splitWithQuotes(String string, char separator) {
         //return string.split(""+separator);
 
-        List<String> list = new LinkedList<String>();
+        List<String> list = new LinkedList<>();
         int i = 0;
         while (i < string.length()) {
             if (string.charAt(i) == '\"') { // start of quoted item
@@ -2985,7 +2985,7 @@ public class Basic {
      * @return symmetric different
      */
     public static <T> HashSet<T> symmetricDifference(final HashSet<T> set1, final HashSet<T> set2) {
-        final HashSet<T> result = new HashSet<T>();
+        final HashSet<T> result = new HashSet<>();
         for (T element : set1) {
             if (!set2.contains(element))
                 result.add(element);
@@ -3006,7 +3006,7 @@ public class Basic {
      * @return symmetric different
      */
     public static <T> HashSet<T> intersection(final HashSet<T> set1, final HashSet<T> set2) {
-        final HashSet<T> result = new HashSet<T>();
+        final HashSet<T> result = new HashSet<>();
         for (T element : set1) {
             if (set2.contains(element))
                 result.add(element);
@@ -3348,7 +3348,7 @@ public class Basic {
      * @throws java.io.IOException
      */
     public static List<String> getAllLines(String fileName) throws IOException {
-        final List<String> list = new ArrayList<String>();
+        final List<String> list = new ArrayList<>();
         FileInputIterator it = new FileInputIterator(fileName);
         while (it.hasNext()) {
             String aLine = it.next().trim();

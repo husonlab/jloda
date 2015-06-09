@@ -59,70 +59,75 @@ public class ToolBar extends JToolBar {
         boolean needToAddPopupMenu = false;
 
         for (String token : tokens) {
-            if (token.equals("|")) {
-                if (popupMenu != null)
-                    popupMenu.addSeparator();
-                else
-                    addSeparator(new Dimension(5, 10));
-            } else if (token.equals("{")) {
-                if (popupMenu == null) {
-                    popupMenu = new JPopupMenu();
-                    needToAddPopupMenu = true;
-                } else
-                    System.err.println("Warning: nested popup menu in toolbar detected, not implemented");
-            } else if (token.equals("}")) {
-                popupMenu = null;
-                needToAddPopupMenu = false;
-            } else {
-                if (CommandManager.getCommandsToIgnore().contains(token)) {
-                    if (needToAddPopupMenu) // this popup menu is disabled
-                    {
-                        popupMenu = null;
-                        needToAddPopupMenu = false;
-                    }
-                    continue;
-                }
-
-                if (needToAddPopupMenu) {
-                    String tooltip = null;
-                    int a = token.indexOf("(");
-                    int b = token.indexOf(")");
-                    if (a != -1 && b > a + 1) {
-                        tooltip = token.substring(a + 1, b);
-                        token = token.substring(0, a);
-                    }
-                    final JButton button = new JButton(token);
-                    Basic.changeFontSize(button, 10);
-
-                    if (tooltip != null)
-                        button.setToolTipText(tooltip);
-                    button.setBorder(BorderFactory.createCompoundBorder(BorderFactory.createEtchedBorder(), BorderFactory.createEmptyBorder(2, 0, 2, 0)));
-                    final JPopupMenu popup = popupMenu;
-                    button.addMouseListener(new MouseAdapter() {
-                        public void mousePressed(MouseEvent e) {
-                            popup.show(e.getComponent(), e.getX(), e.getY());
-                        }
-                    });
-                    add(button);
+            switch (token) {
+                case "|":
+                    if (popupMenu != null)
+                        popupMenu.addSeparator();
+                    else
+                        addSeparator(new Dimension(5, 10));
+                    break;
+                case "{":
+                    if (popupMenu == null) {
+                        popupMenu = new JPopupMenu();
+                        needToAddPopupMenu = true;
+                    } else
+                        System.err.println("Warning: nested popup menu in toolbar detected, not implemented");
+                    break;
+                case "}":
+                    popupMenu = null;
                     needToAddPopupMenu = false;
-                    continue;
-                }
+                    break;
+                default:
+                    if (CommandManager.getCommandsToIgnore().contains(token)) {
+                        if (needToAddPopupMenu) // this popup menu is disabled
+                        {
+                            popupMenu = null;
+                            needToAddPopupMenu = false;
+                        }
+                        continue;
+                    }
 
-                ICommand command = commandManager.getCommand(token);
-                if (command == null) {
-                    JLabel label = new JLabel("(" + token + ")");
-                    label.setBorder(BorderFactory.createEmptyBorder());
-                    label.setEnabled(false);
-                    add(label);
-                } else if (popupMenu != null) {
-                    popupMenu.add(commandManager.getJMenuItem(command));
-                } else {
-                    AbstractButton button = commandManager.getButtonForToolBar(command);
-                    //button = new JToggleButton(button.getAction());
-                    //button.setText(null);
-                    button.setBorder(BorderFactory.createEtchedBorder());
-                    add(button);
-                }
+                    if (needToAddPopupMenu) {
+                        String tooltip = null;
+                        int a = token.indexOf("(");
+                        int b = token.indexOf(")");
+                        if (a != -1 && b > a + 1) {
+                            tooltip = token.substring(a + 1, b);
+                            token = token.substring(0, a);
+                        }
+                        final JButton button = new JButton(token);
+                        Basic.changeFontSize(button, 10);
+
+                        if (tooltip != null)
+                            button.setToolTipText(tooltip);
+                        button.setBorder(BorderFactory.createCompoundBorder(BorderFactory.createEtchedBorder(), BorderFactory.createEmptyBorder(2, 0, 2, 0)));
+                        final JPopupMenu popup = popupMenu;
+                        button.addMouseListener(new MouseAdapter() {
+                            public void mousePressed(MouseEvent e) {
+                                popup.show(e.getComponent(), e.getX(), e.getY());
+                            }
+                        });
+                        add(button);
+                        needToAddPopupMenu = false;
+                        continue;
+                    }
+
+                    ICommand command = commandManager.getCommand(token);
+                    if (command == null) {
+                        JLabel label = new JLabel("(" + token + ")");
+                        label.setBorder(BorderFactory.createEmptyBorder());
+                        label.setEnabled(false);
+                        add(label);
+                    } else if (popupMenu != null) {
+                        popupMenu.add(commandManager.getJMenuItem(command));
+                    } else {
+                        AbstractButton button = commandManager.getButtonForToolBar(command);
+                        //button = new JToggleButton(button.getAction());
+                        //button.setText(null);
+                        button.setBorder(BorderFactory.createEtchedBorder());
+                        add(button);
+                    }
+                    break;
             }
         }
         if (toolBarModifier != null)

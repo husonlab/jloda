@@ -211,19 +211,19 @@ public class PDFImage extends PDFStream implements ImageObserver, Serializable {
         for (int i = 0; i < numAppendBytes; i++) {
             stringToEncode += "00";
         }
-        Vector<Integer> digitVector = new Vector<Integer>();
+        Vector<Integer> digitVector = new Vector<>();
         long number = Long.parseLong(stringToEncode, 16);
         int remainder = 0;
 
         while (number >= 85) {
             remainder = (int) (number % 85);
             number = number / 85;
-            digitVector.add(0, new Integer(remainder));
+            digitVector.add(0, remainder);
         }
-        digitVector.add(0, new Integer((int) number));
+        digitVector.add(0, (int) number);
 
         for (int i = 0; i < digitVector.size(); i++) {
-            char c = (char) (digitVector.elementAt(i).intValue() + 33);
+            char c = (char) (digitVector.elementAt(i) + 33);
             sb.append(c);
         }
         String tuple = sb.toString();

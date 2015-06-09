@@ -29,7 +29,7 @@ public interface ITextSearcher extends ISearcher {
      * @param regularExpression
      * @return - returns boolean: true if text found, false otherwise
      */
-    public boolean findFirst(String regularExpression);
+    boolean findFirst(String regularExpression);
 
     /**
      * Find next instance
@@ -37,7 +37,7 @@ public interface ITextSearcher extends ISearcher {
      * @param regularExpression
      * @return - returns boolean: true if text found, false otherwise
      */
-    public boolean findNext(String regularExpression);
+    boolean findNext(String regularExpression);
 
 
     /**
@@ -46,14 +46,14 @@ public interface ITextSearcher extends ISearcher {
      * @param regularExpression
      * @return - returns boolean: true if text found, false otherwise
      */
-    public boolean findPrevious(String regularExpression);
+    boolean findPrevious(String regularExpression);
 
     /**
      * Replace the next instance with current. Does nothing if selection invalid.
      *
      * @param regularExpression
      */
-    public boolean replaceNext(String regularExpression, String replaceText);
+    boolean replaceNext(String regularExpression, String replaceText);
 
 
     /**
@@ -64,26 +64,26 @@ public interface ITextSearcher extends ISearcher {
      * @param selectionOnly
      * @return number of instances replaced
      */
-    public int replaceAll(String regularExpression, String replaceText, boolean selectionOnly);
+    int replaceAll(String regularExpression, String replaceText, boolean selectionOnly);
 
     /**
      * Selects all occurrences of text in document, subject to options and constraints of document type
      *
      * @param regularExpression
      */
-    public int findAll(String regularExpression);
+    int findAll(String regularExpression);
 
     /**
      * set scope global rather than selected
      *
      * @param globalScope
      */
-    public void setGlobalScope(boolean globalScope);
+    void setGlobalScope(boolean globalScope);
 
     /**
      * get scope global rather than selected
      *
      * @return true, if search scope is global
      */
-    public boolean isGlobalScope();
+    boolean isGlobalScope();
 }

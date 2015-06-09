@@ -34,10 +34,10 @@ import java.util.Map;
  * Daniel Huson, 5.2012
  */
 public class ColorManager {
-    private final Map<Integer, Color> colors = new HashMap<Integer, Color>(); // cache colors
-    private final Map<String, Color> series2color = new HashMap<String, Color>(); // cache changes
-    private final Map<String, Color> class2color = new HashMap<String, Color>(); // cache changes
-    private final Map<String, Color> attribute2color = new HashMap<String, Color>(); // cache changes
+    private final Map<Integer, Color> colors = new HashMap<>(); // cache colors
+    private final Map<String, Color> series2color = new HashMap<>(); // cache changes
+    private final Map<String, Color> class2color = new HashMap<>(); // cache changes
+    private final Map<String, Color> attribute2color = new HashMap<>(); // cache changes
 
     private ColorGetter seriesOverrideColorGetter = null;
 
@@ -350,31 +350,38 @@ public class ColorManager {
             if (aLine.length() > 0 && !aLine.startsWith("#")) {
                 String[] tokens = aLine.split("\t");
                 if (tokens.length >= 3 && Basic.isInteger(tokens[2])) {
-                    if (tokens[0].equals("S")) {
-                        String series = tokens[1];
-                        Color color = new Color(Integer.parseInt(tokens[2]));
-                        if (tokens.length >= 4) {
-                            int alpha = Integer.parseInt(tokens[3]);
-                            color = new Color(color.getRed(), color.getGreen(), color.getBlue(), alpha);
-                        }
-                        series2color.put(series, color);
+                    switch (tokens[0]) {
+                        case "S": {
+                            String series = tokens[1];
+                            Color color = new Color(Integer.parseInt(tokens[2]));
+                            if (tokens.length >= 4) {
+                                int alpha = Integer.parseInt(tokens[3]);
+                                color = new Color(color.getRed(), color.getGreen(), color.getBlue(), alpha);
+                            }
+                            series2color.put(series, color);
 
-                    } else if (tokens[0].equals("C")) {
-                        String className = tokens[1];
-                        Color color = new Color(Integer.parseInt(tokens[2]));
-                        if (tokens.length >= 4) {
-                            int alpha = Integer.parseInt(tokens[3]);
-                            color = new Color(color.getRed(), color.getGreen(), color.getBlue(), alpha);
+                            break;
                         }
-                        class2color.put(className, color);
-                    } else if (tokens[0].equals("A")) {
-                        String attribute = tokens[1];
-                        Color color = new Color(Integer.parseInt(tokens[2]));
-                        if (tokens.length >= 4) {
-                            int alpha = Integer.parseInt(tokens[3]);
-                            color = new Color(color.getRed(), color.getGreen(), color.getBlue(), alpha);
+                        case "C": {
+                            String className = tokens[1];
+                            Color color = new Color(Integer.parseInt(tokens[2]));
+                            if (tokens.length >= 4) {
+                                int alpha = Integer.parseInt(tokens[3]);
+                                color = new Color(color.getRed(), color.getGreen(), color.getBlue(), alpha);
+                            }
+                            class2color.put(className, color);
+                            break;
                         }
-                        attribute2color.put(attribute, color);
+                        case "A": {
+                            String attribute = tokens[1];
+                            Color color = new Color(Integer.parseInt(tokens[2]));
+                            if (tokens.length >= 4) {
+                                int alpha = Integer.parseInt(tokens[3]);
+                                color = new Color(color.getRed(), color.getGreen(), color.getBlue(), alpha);
+                            }
+                            attribute2color.put(attribute, color);
+                            break;
+                        }
                     }
                 }
             }
@@ -416,6 +423,6 @@ public class ColorManager {
     }
 
     public interface ColorGetter {
-        public Color get(String label);
+        Color get(String label);
     }
 }
