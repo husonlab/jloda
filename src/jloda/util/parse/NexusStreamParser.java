@@ -543,7 +543,8 @@ public class NexusStreamParser extends NexusStreamTokenizer {
 
         boolean result = defaultValue;
         boolean found = false;
-        final NexusStreamParser s = new NexusStreamParser(new StringReader(List2String(tokens)));
+        String str = List2String(tokens);
+        final NexusStreamParser s = new NexusStreamParser(new StringReader(str));
         tokens.clear();
 
         while (s.ttype != NexusStreamParser.TT_EOF) {

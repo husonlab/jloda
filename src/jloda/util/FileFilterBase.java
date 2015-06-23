@@ -156,10 +156,13 @@ public abstract class FileFilterBase extends FileFilter implements FilenameFilte
 
         if (file.isDirectory())
             return true;
+
+
         for (String extension : extensions) {
             if (file.getName().endsWith(extension) || isAllowGZipped() && file.getName().endsWith(extension + ".gz") || isAllowZipped() && file.getName().endsWith(extension + ".zip"))
                 return true;
         }
-        return false;
+
+        return extensions.contains(".txt") && !file.getName().contains(".");
     }
 }
