@@ -1503,7 +1503,7 @@ public class Basic {
         StringBuilder buf = new StringBuilder();
         for (int i = 0; i < name.length(); i++) {
             char ch = name.charAt(i);
-            if (Character.isLetterOrDigit(ch) || ch == '.' || ch == '_')
+            if (Character.isLetterOrDigit(ch) || ch == '.' || ch == '_' || ch == '-')
                 buf.append(ch);
             else
                 buf.append("_");
