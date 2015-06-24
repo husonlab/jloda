@@ -25,7 +25,7 @@ import java.io.*;
  * iterates over all lines in a file. File can also be a .gz file.
  * Daniel Huson, 3.2012
  */
-public class FileInputIterator implements ICloseableIterator<String>, Closeable {
+public class FileInputIterator implements IFileIterator {
     private final BufferedReader reader;
     private String nextLine = null;
     private long lineNumber = 0;
