@@ -627,7 +627,7 @@ public class PhyloGraph extends Graph {
                 break;
             }
         }
-        // chosse the split which doesn't contain the first taxon in the
+        // chose the split that doesn't contain the first taxon in the
         // cyclic ordering, because coordinates are computed starting there.
         split.clear();
         if (t2.contains(ordering[0]))
