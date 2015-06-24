@@ -790,4 +790,14 @@ public class Formatter implements IDirectableViewer {
             return new Color(color.getRed(), color.getGreen(), color.getBlue(), alphaValueSBar.getValue());
         }
     }
+
+    /**
+     * get the name of the class
+     *
+     * @return class name
+     */
+    @Override
+    public String getClassName() {
+        return "Formatter";
+    }
 }

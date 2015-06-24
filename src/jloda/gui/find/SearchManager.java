@@ -1191,4 +1191,14 @@ public class SearchManager implements IDirectableViewer {
     public IDirector getDir() {
         return dir;
     }
+
+    /**
+     * get the name of the class
+     *
+     * @return class name
+     */
+    @Override
+    public String getClassName() {
+        return "SearchManager";
+    }
 }

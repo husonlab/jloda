@@ -58,4 +58,11 @@ public interface IDirectableViewer extends IDirectorListener {
      * @return command manager
      */
     CommandManager getCommandManager();
+
+    /**
+     * get the name of the class
+     *
+     * @return class name
+     */
+    String getClassName();
 }
