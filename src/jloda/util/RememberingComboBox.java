@@ -24,7 +24,8 @@ import javax.swing.plaf.basic.BasicComboBoxEditor;
 import java.awt.*;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
-import java.util.LinkedList;
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import java.util.StringTokenizer;
 
@@ -125,7 +126,7 @@ public class RememberingComboBox extends JComboBox<String> {
         addItem("");
     }
 
-    public void addItems(List<String> items) {
+    public void addItems(Collection<String> items) {
         for (String item : items) addItem(item);
     }
 
@@ -136,8 +137,10 @@ public class RememberingComboBox extends JComboBox<String> {
      * @return first maxNumber items
      */
     public List<String> getItems(int maxNumber) {
-        List<String> list = new LinkedList<>();
-        for (int i = 0; i < Math.min(maxNumber, this.getItemCount()); i++) {
+        maxNumber = Math.min(maxNumber, this.getItemCount());
+
+        final List<String> list = new ArrayList<>(maxNumber);
+        for (int i = 0; i < maxNumber; i++) {
             list.add(getItemAt(i));
         }
         return list;

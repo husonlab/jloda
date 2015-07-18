@@ -2194,7 +2194,7 @@ public class GraphView extends JPanel implements Printable, Scrollable, INodeEdg
 
     /**
      * reset the transform margins after a resize or center graph operation.
-     * This automatically sets the margins to half of the width or hight of the pane
+     * This automatically sets the margins to half of the width or height of the pane
      */
     public void recomputeMargins() {
         Dimension size = scrollPane.getSize();
