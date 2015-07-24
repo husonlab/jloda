@@ -89,7 +89,7 @@ public abstract class FileGetterPutterBase {
             }
             default:
             case READ_ONLY: {
-                fileChannel = (new RandomAccessFile(file, "rw")).getChannel();
+                fileChannel = (new RandomAccessFile(file, "r")).getChannel();
                 fileChannelMapMode = FileChannel.MapMode.READ_ONLY;
                 break;
             }
