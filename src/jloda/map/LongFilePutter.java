@@ -131,7 +131,7 @@ public class LongFilePutter extends FileGetterPutterBase implements ILongPutter,
         }
         putter.close();
 
-        LongFileGetter getter = new LongFileGetter(file);
+        LongFileGetterMappedMemory getter = new LongFileGetterMappedMemory(file);
         for (long i = 0; i < limit; i += limit / 10) {
             long value = i * i;
             System.err.println("Expected=" + value + ", get(" + i + ")=" + getter.get(i));

@@ -28,7 +28,7 @@ import java.nio.ByteBuffer;
  * <p/>
  * Daniel Huson, 4.2015
  */
-public class ByteFileGetter extends FileGetterPutterBase implements IByteGetter {
+public class ByteFileGetterMappedMemory extends FileGetterPutterBase implements IByteGetter {
 
     /**
      * constructor
@@ -36,7 +36,7 @@ public class ByteFileGetter extends FileGetterPutterBase implements IByteGetter 
      * @param file
      * @throws java.io.IOException
      */
-    public ByteFileGetter(File file) throws IOException {
+    public ByteFileGetterMappedMemory(File file) throws IOException {
         super(file); // need 4 overlap to allow reading of integers
     }
 
@@ -49,7 +49,7 @@ public class ByteFileGetter extends FileGetterPutterBase implements IByteGetter 
     public int get(long index) {
         // note that index equals filePos and so no conversion from index to filePos necessary
         if (index < limit()) {
-            return buffers[getWhichBuffer(index)].get(getIndexInBuffer(index));
+            return buffers[getWhichBuffer(index)].get(getIndexInBuffer(index)) & 0xFF;
         } else
             return 0;
     }

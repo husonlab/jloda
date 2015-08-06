@@ -19,6 +19,8 @@
 */
 package jloda.map;
 
+import java.io.IOException;
+
 /**
  * A readonly long-indexed array of bytes
  * Daniel Huson, 4.2015
@@ -30,7 +32,7 @@ public interface IByteGetter extends AutoCloseable {
      * @param index
      * @return value or 0
      */
-    int get(long index);
+    int get(long index) throws IOException;
 
     /**
      * bulk get
@@ -41,14 +43,14 @@ public interface IByteGetter extends AutoCloseable {
      * @param len
      * @return
      */
-    int get(long index, byte[] bytes, int offset, int len);
+    int get(long index, byte[] bytes, int offset, int len) throws IOException;
 
     /**
      * gets next four bytes as a single integer
      * @param index
      * @return integer
      */
-    int getInt(long index);
+    int getInt(long index) throws IOException;
 
     /**
      * length of array

@@ -77,6 +77,8 @@ public class ResourceManager {
         dataMap = new HashMap<>();
     }
 
+    private static boolean warningMissingIcon;
+
     /**
      * get the icon package path
      *
@@ -132,7 +134,7 @@ public class ResourceManager {
                 ImageIcon icon = new ImageIcon(iconImage);
                 iconMap.put(name, icon);
             } else {
-                if (Basic.getDebugMode())
+                if (Basic.getDebugMode() && warningMissingIcon)
                     System.err.println("ICON NOT FOUND: " + name + ", path: " + iconPackagePath);
                 Image image = getImageResource(iconPackagePath, "sun/toolbarButtonGraphics/general/Help16.gif");
                 if (image != null)
@@ -395,6 +397,13 @@ public class ResourceManager {
         return existsAsStream || (new File(name)).canRead();
     }
 
+    public static void setWarningMissingIcon(boolean warningMissingIcon) {
+        ResourceManager.warningMissingIcon = warningMissingIcon;
+    }
+
+    public static boolean isWarningMissingIcon() {
+        return warningMissingIcon;
+    }
 }
 
 

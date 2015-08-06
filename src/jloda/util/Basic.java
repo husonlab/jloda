@@ -3397,7 +3397,7 @@ public class Basic {
         if (count == column)
             return aLine.substring(a);
         else
-            return null;
+            return "";
     }
 
     /**

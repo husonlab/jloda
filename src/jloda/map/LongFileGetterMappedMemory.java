@@ -1,5 +1,5 @@
 /**
- * IntFileGetter.java 
+ * LongFileGetter.java 
  * Copyright (C) 2015 Daniel H. Huson
  *
  * (Some files contain contributions from other authors, who are then mentioned separately.)
@@ -24,46 +24,47 @@ import java.io.IOException;
 import java.nio.ByteBuffer;
 
 /**
- * Open and read file of integers. File can be arbitrarily large, uses memory mapping.
+ * Open and read file of longs. File can be arbitrarily large, uses memory mapping.
  * <p/>
  * Daniel Huson, 4.2015
  */
-public class IntFileGetter extends FileGetterPutterBase implements IIntGetter {
+public class LongFileGetterMappedMemory extends FileGetterPutterBase implements ILongGetter {
     /**
      * constructor
      *
      * @param file
      * @throws java.io.IOException
      */
-    public IntFileGetter(File file) throws IOException {
+    public LongFileGetterMappedMemory(File file) throws IOException {
         super(file);
     }
 
     /**
      * gets value for given index
      *
-     * @return integer
-     * @throws IOException
+     * @param index
+     * @return value or 0
      */
-    public int get(long index) {
+    public long get(long index) {
         if (index < limit()) {
-            index <<= 2; // convert to file position
-            // the following works because we buffers overlap by 4 bytes
-            int indexBuffer = getIndexInBuffer(index);
+            index <<= 3; // convert to file position
             final ByteBuffer buf = buffers[getWhichBuffer(index)];
-            return ((buf.get(indexBuffer++)) << 24) + ((buf.get(indexBuffer++) & 0xFF) << 16) + ((buf.get(indexBuffer++) & 0xFF) << 8) + ((buf.get(indexBuffer) & 0xFF));
+            int indexBuffer = getIndexInBuffer(index);
+            return (((long) buf.get(indexBuffer++)) << 56) + ((long) (buf.get(indexBuffer++) & 0xFF) << 48) + ((long) (buf.get(indexBuffer++) & 0xFF) << 40) +
+                    ((long) (buf.get(indexBuffer++) & 0xFF) << 32) + ((long) (buf.get(indexBuffer++) & 0xFF) << 24) + ((long) (buf.get(indexBuffer++) & 0xFF) << 16) +
+                    ((long) (buf.get(indexBuffer++) & 0xFF) << 8) + (((long) buf.get(indexBuffer) & 0xFF));
         } else
             return 0;
     }
 
     /**
-     * length of array (file length/4)
+     * length of array (file length / 8)
      *
      * @return array length
      * @throws java.io.IOException
      */
     @Override
     public long limit() {
-        return fileLength >>> 2;
+        return fileLength >>> 3;
     }
 }
