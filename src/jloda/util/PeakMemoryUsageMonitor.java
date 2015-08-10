@@ -27,15 +27,20 @@ import static java.util.concurrent.TimeUnit.SECONDS;
 
 /**
  * this class records the peak memory usage of a program
- * Daniel Huson, DATE
+ * Daniel Huson, 5.2015
  */
 public class PeakMemoryUsageMonitor {
     private static PeakMemoryUsageMonitor instance;
 
     private final ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(1);
+    private final long start;
     private long peak = ((Runtime.getRuntime().totalMemory() - Runtime.getRuntime().freeMemory()) / 1048576);
 
+    /**
+     * constructor
+     */
     private PeakMemoryUsageMonitor() {
+        start = System.currentTimeMillis();
         scheduler.scheduleAtFixedRate(new Runnable() {
             public void run() {
                 long used = ((Runtime.getRuntime().totalMemory() - Runtime.getRuntime().freeMemory()) / 1048576);
@@ -45,22 +50,18 @@ public class PeakMemoryUsageMonitor {
         }, 0, 5, SECONDS);
     }
 
-    /**
-     * start recording memory usage
-     */
-    public static void start() {
-        if (instance == null)
+    private static PeakMemoryUsageMonitor getInstance() {
+        if (instance == null) {
             instance = new PeakMemoryUsageMonitor();
+        }
+        return instance;
     }
 
     /**
-     * stop recording memory usage
+     * start recording memory and time
      */
-    public static void stop() {
-        if (instance != null) {
-            instance.scheduler.shutdownNow();
-            instance = null;
-        }
+    public static void start() {
+        getInstance();
     }
 
     /**
@@ -71,10 +72,19 @@ public class PeakMemoryUsageMonitor {
     public static String getPeakUsageString() {
         long available = (Runtime.getRuntime().maxMemory() / 1048576);
         if (available < 1024) {
-            return String.format("%d of %dM", instance.peak, available);
+            return String.format("%d of %dM", getInstance().peak, available);
         } else {
-            return String.format("%.1f of %.1fG", (double) instance.peak / 1024.0, (double) available / 1024.0);
+            return String.format("%.1f of %.1fG", (double) getInstance().peak / 1024.0, (double) available / 1024.0);
         }
+    }
+
+    /**
+     * get number of elapsed seconds since start
+     *
+     * @return seconds since start
+     */
+    public static String getSecondsSinceStartString() {
+        return ((System.currentTimeMillis() - getInstance().start) / 1000) + "s";
     }
 
 }
