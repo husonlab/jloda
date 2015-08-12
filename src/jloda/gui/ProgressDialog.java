@@ -56,7 +56,7 @@ public class ProgressDialog implements ProgressListener {
     private boolean shiftedDown = false;
 
     private long maxProgess = 0;
-    private long currentProgress = 0;
+    private long currentProgress = -1;
 
     private StatusBar frameStatusBar = null;
     private JPanel statusBarPanel = null;
@@ -308,21 +308,23 @@ public class ProgressDialog implements ProgressListener {
         } else {
             steps = (int) steps0;
         }
-        currentProgress = steps;
-        checkForCancel();
+        if (steps != currentProgress) {
+            currentProgress = steps;
+            checkForCancel();
 
-        if (progressBar != null && currentProgress != progressBar.getValue()) {
-            SwingUtilities.invokeLater(new Runnable() {
-                public void run() {
-                    if (currentProgress < 0) {
-                        progressBar.setIndeterminate(true);
-                        progressBar.setString(null);
-                    } else {
-                        progressBar.setIndeterminate(false);
-                        progressBar.setValue(steps);
+            if (progressBar != null && currentProgress != progressBar.getValue()) {
+                SwingUtilities.invokeLater(new Runnable() {
+                    public void run() {
+                        if (currentProgress < 0) {
+                            progressBar.setIndeterminate(true);
+                            progressBar.setString(null);
+                        } else {
+                            progressBar.setIndeterminate(false);
+                            progressBar.setValue(steps);
+                        }
                     }
-                }
-            });
+                });
+            }
         }
     }
 
@@ -344,7 +346,10 @@ public class ProgressDialog implements ProgressListener {
      * @throws CanceledException
      */
     public void incrementProgress() throws CanceledException {
-        currentProgress++;
+        if (currentProgress == -1)
+            currentProgress = 1;
+        else
+            currentProgress++;
         checkForCancel();
 
         if (progressBar != null && currentProgress != progressBar.getValue()) {
