@@ -3585,7 +3585,17 @@ public class Basic {
 
     }
 
- }
+    /**
+     * determines whether a ends with b, ignoring case
+     *
+     * @param a
+     * @param b
+     * @return true, if a ends with b, ignoring case
+     */
+    public static boolean endsWithIgnoreCase(String a, String b) {
+        return a.toLowerCase().endsWith(b.toLowerCase());
+    }
+}
 
 /**
  * silent stream
