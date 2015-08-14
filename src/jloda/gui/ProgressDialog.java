@@ -40,7 +40,7 @@ import java.util.Stack;
  */
 public class ProgressDialog implements ProgressListener {
     static private long delayInMilliseconds = 2000;// wait two seconds before opening progress bar
-    private final long startTime = System.currentTimeMillis();
+    private long startTime = System.currentTimeMillis();
     private JDialog dialog;
     private boolean closed = false;
     private boolean visible = false;
@@ -271,6 +271,8 @@ public class ProgressDialog implements ProgressListener {
      * @param steps0
      */
     public void setMaximum(final long steps0) {
+        startTime = System.currentTimeMillis();
+
         final int steps;
         if (steps0 > 10000000) {
             steps = (int) (steps0 >> 8l);
