@@ -1723,7 +1723,7 @@ public class Basic {
     }
 
     /**
-     * convert bytes to a string. If bytes contains zero, then this intepreted as termination
+     * convert bytes to a string. If bytes contains zero, then this interpreted as termination
      *
      * @return string
      */

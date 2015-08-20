@@ -19,7 +19,6 @@
 */
 package jloda.util;
 
-import java.io.Closeable;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -29,7 +28,7 @@ import java.util.Iterator;
  * File iterator
  * Daniel Huson, 2014
  */
-public class FileIterator implements ICloseableIterator<byte[]>, Iterator<byte[]>, Closeable {
+public class FileIterator implements ICloseableIterator<byte[]>, Iterator<byte[]> {
     private byte[] bytes = new byte[1000];
 
     private final InputStreamReader reader;
