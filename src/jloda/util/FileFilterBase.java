@@ -31,6 +31,7 @@ import java.util.List;
  */
 public abstract class FileFilterBase extends FileFilter implements FilenameFilter {
     private final List<String> extensions = new LinkedList<>();
+    private final List<FileFilterBase> others = new LinkedList<>();
     private boolean allowGZipped = false;
     private boolean allowZipped = false;
 
@@ -115,6 +116,16 @@ public abstract class FileFilterBase extends FileFilter implements FilenameFilte
     }
 
     /**
+     * add another file filter
+     *
+     * @param fileFilter
+     */
+    public void add(FileFilterBase fileFilter) {
+        if (!others.contains(fileFilter))
+            others.add(fileFilter);
+    }
+
+    /**
      * Tests if a specified file should be included in a file list.
      *
      * @param fileName
@@ -160,6 +171,11 @@ public abstract class FileFilterBase extends FileFilter implements FilenameFilte
 
         for (String extension : extensions) {
             if (file.getName().endsWith(extension) || isAllowGZipped() && file.getName().endsWith(extension + ".gz") || isAllowZipped() && file.getName().endsWith(extension + ".zip"))
+                return true;
+        }
+
+        for (FileFilterBase filter : others) {
+            if (filter.accept(dir, name))
                 return true;
         }
 
