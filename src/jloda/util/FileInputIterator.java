@@ -85,7 +85,7 @@ public class FileInputIterator implements IFileIterator {
         setReportProgress(reportProgress);
 
         reader = new BufferedReader(r, bufferSize);
-        endOfLineBytes = System.getProperty("line.separator").length();
+        endOfLineBytes = Basic.getNumberOfNonSpaceCharacters(fileName);
 
         File file = new File(fileName);
         if (file.exists())
@@ -120,7 +120,7 @@ public class FileInputIterator implements IFileIterator {
             maxProgress = file.length() / 10;
         } else {
             reader = new BufferedReader(new FileReader(file), bufferSize);
-            endOfLineBytes = System.getProperty("line.separator").length();
+            endOfLineBytes = Basic.getNumberOfNonSpaceCharacters(fileName);
             maxProgress = file.length();
         }
         done = (file.length() == 0);

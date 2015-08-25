@@ -3595,6 +3595,28 @@ public class Basic {
     public static boolean endsWithIgnoreCase(String a, String b) {
         return a.toLowerCase().endsWith(b.toLowerCase());
     }
+
+    /**
+     * determine the number of end of line bytes in a text file
+     *
+     * @param fileName
+     * @return 1 or 2
+     */
+    public static int determineEndOfLinesBytes(String fileName) {
+        try (InputStream ins = new BufferedInputStream(new FileInputStream(fileName))) {
+            while (true) {
+                switch (ins.read()) {
+                    case '\n':
+                    case -1:
+                        return 1;
+                    case '\r':
+                        return 2;
+                }
+            }
+        } catch (Exception ex) {
+            return 1;
+        }
+    }
 }
 
 /**
