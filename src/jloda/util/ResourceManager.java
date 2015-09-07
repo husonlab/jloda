@@ -49,6 +49,8 @@ public class ResourceManager {
      */
     private static String filePackagePath;
 
+    private static String cssPackagePath;
+
 
     /**
      * Maps icon names to initialized icons that are reachable by a getter.
@@ -72,6 +74,8 @@ public class ResourceManager {
         iconPackagePath = "resources.icons";
         cursorPackagePath = "resources.cursors";
         filePackagePath = "resources.files";
+        cssPackagePath = "resources.css";
+
         iconMap = new HashMap<>();
         cursorMap = new HashMap<>();
         dataMap = new HashMap<>();
@@ -155,6 +159,13 @@ public class ResourceManager {
             dataMap.put(name, data);
         }
         return dataMap.get(name);
+    }
+
+    /**
+     * Returns the file with name specified by the parameter, or <code>null</code> if there is none.
+     */
+    public static URL getCssURL(String name) {
+        return getFileURL(cssPackagePath, name);
     }
 
     /**
@@ -294,6 +305,21 @@ public class ResourceManager {
             final String resourceName = ("/" + packageName.replace('.', '/') + "/" + fileName).replaceAll(" ", "\\ ");
             final URL url = ResourceManager.class.getResource(resourceName);
             return new File(url.getFile());
+        } catch (Exception exc) {
+        }
+        return null;
+    }
+
+    /**
+     * Returns URL with specified file name at the location specified by <code>packageName</code>.
+     *
+     * @param packageName the path through a package (the name of the subpackage) where to look for the icon
+     * @param fileName    the name of the file
+     */
+    public static URL getFileURL(String packageName, String fileName) {
+        try {
+            final String resourceName = ("/" + packageName.replace('.', '/') + "/" + fileName).replaceAll(" ", "\\ ");
+            return ResourceManager.class.getResource(resourceName);
         } catch (Exception exc) {
         }
         return null;
