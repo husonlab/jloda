@@ -35,8 +35,9 @@ import java.util.Map;
  * Daniel Huson, 5.2012
  */
 public class ColorManager {
+    public static final String SAMPLE_ID = "#SampleID";
+
     private final Map<Integer, Color> colors = new HashMap<>(); // cache colors
-    private final Map<String, Color> series2color = new HashMap<>(); // cache changes
     private final Map<String, Color> class2color = new HashMap<>(); // cache changes
     private final Map<String, Color> attribute2color = new HashMap<>(); // cache changes
 
@@ -45,20 +46,20 @@ public class ColorManager {
     /**
      * get color for data set
      *
-     * @param series
+     * @param sample
      * @return color
      */
-    public Color getSeriesColor(String series) {
+    public Color getSamplesColor(String sample) {
         Color color = null;
         if (seriesOverrideColorGetter != null)
-            color = seriesOverrideColorGetter.get(series);
+            color = seriesOverrideColorGetter.get(sample);
         if (color == null)
-            color = series2color.get(series);
+            color = getAttributeColor(SAMPLE_ID, sample);
         if (color == null) {
-            if (series == null || series.equals("GRAY"))
+            if (sample == null || sample.equals("GRAY"))
                 color = Color.GRAY;
             else {
-                int key = series.hashCode();
+                int key = sample.hashCode();
                 color = colors.get(key);
                 if (color == null) {
                     color = PaletteManager.get(key);
@@ -72,20 +73,20 @@ public class ColorManager {
     /**
      * get color for data set
      *
-     * @param series
+     * @param sample
      * @return color
      */
-    public Color getSeriesColor(String series, int alpha) {
+    public Color getSamplesColor(String sample, int alpha) {
         Color color = null;
         if (seriesOverrideColorGetter != null)
-            color = seriesOverrideColorGetter.get(series);
+            color = seriesOverrideColorGetter.get(sample);
         if (color == null)
-            color = series2color.get(series);
+            color = getAttributeColor("#SampleID", sample);
         if (color == null) {
-            if (series == null || series.equals("GRAY")) {
+            if (sample == null || sample.equals("GRAY")) {
                 color = Color.GRAY;
             } else {
-                int key = series.hashCode();
+                int key = sample.hashCode();
                 color = colors.get(key);
                 if (color == null) {
                     color = PaletteManager.get(key, alpha);
@@ -103,11 +104,11 @@ public class ColorManager {
     /**
      * set the color of a series
      *
-     * @param series
+     * @param sample
      * @param color
      */
-    public void setSeriesColor(String series, Color color) {
-        series2color.put(series, color);
+    public void setSampleColor(String sample, Color color) {
+        setAttributeColor(SAMPLE_ID, sample, color);
     }
 
     /**
@@ -310,12 +311,6 @@ public class ColorManager {
      * @throws java.io.IOException
      */
     public void write(Writer w, String separator) throws IOException {
-
-        for (Map.Entry<String, Color> entry : series2color.entrySet()) {
-            Color color = entry.getValue();
-            if (color != null)
-                w.write("S" + "\t" + entry.getKey() + "\t" + color.getRGB() + (color.getAlpha() < 255 ? "\t" + color.getAlpha() : "") + separator);
-        }
         for (Map.Entry<String, Color> entry : class2color.entrySet()) {
             Color color = entry.getValue();
             if (color != null)
@@ -352,17 +347,6 @@ public class ColorManager {
                 String[] tokens = aLine.split("\t");
                 if (tokens.length >= 3 && Basic.isInteger(tokens[2])) {
                     switch (tokens[0]) {
-                        case "S": {
-                            String series = tokens[1];
-                            Color color = new Color(Integer.parseInt(tokens[2]));
-                            if (tokens.length >= 4) {
-                                int alpha = Integer.parseInt(tokens[3]);
-                                color = new Color(color.getRed(), color.getGreen(), color.getBlue(), alpha);
-                            }
-                            series2color.put(series, color);
-
-                            break;
-                        }
                         case "C": {
                             String className = tokens[1];
                             Color color = new Color(Integer.parseInt(tokens[2]));
@@ -410,7 +394,7 @@ public class ColorManager {
     public ColorGetter getSeriesColorGetter() {
         return new ColorGetter() {
             public Color get(String label) {
-                return getSeriesColor(label);
+                return getSamplesColor(label);
             }
         };
     }

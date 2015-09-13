@@ -37,24 +37,24 @@ import java.util.*;
  * Daniel Huson, 7.2007
  */
 public class CommandManager {
-    private static final List<ICommand> globalCommands = new LinkedList<>();
+    protected static final List<ICommand> globalCommands = new LinkedList<>();
 
-    private final IDirector dir;
-    private final List<ICommand> commands;
-    private final Map<String, ICommand> name2Command = new HashMap<>();
-    private final Map<String, ICommand> startsWith2Command = new HashMap<>();
+    protected final IDirector dir;
+    protected final List<ICommand> commands;
+    protected final Map<String, ICommand> name2Command = new HashMap<>();
+    protected final Map<String, ICommand> startsWith2Command = new HashMap<>();
 
     // these are used to update the selection state of check box menu items
-    private final Map<JMenuItem, ICommand> menuItem2Command = new HashMap<>();
-    private final Map<AbstractButton, ICommand> button2Command = new HashMap<>();
+    protected final Map<JMenuItem, ICommand> menuItem2Command = new HashMap<>();
+    protected final Map<AbstractButton, ICommand> button2Command = new HashMap<>();
 
     public static final String ALT_NAME = "AltName";
 
-    private String undoCommand;
-    private boolean returnOnCommandNotFound = false;
-    final static private Set<String> commandsToIgnore = new HashSet<>();
+    protected String undoCommand;
+    protected boolean returnOnCommandNotFound = false;
+    final static protected Set<String> commandsToIgnore = new HashSet<>();
 
-    private final Object parent;
+    protected final Object parent;
 
     /**
      * construct a parser
