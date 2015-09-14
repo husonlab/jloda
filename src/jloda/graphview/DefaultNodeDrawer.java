@@ -22,6 +22,7 @@ package jloda.graphview;
 import gnu.jpdf.PDFGraphics;
 import jloda.graph.Node;
 import jloda.util.Geometry;
+import jloda.util.ProgramProperties;
 
 import java.awt.*;
 import java.awt.geom.AffineTransform;
@@ -213,12 +214,15 @@ public class DefaultNodeDrawer implements INodeDrawer {
         apt.x -= (scaledWidth >> 1);
         apt.y -= (scaledHeight >> 1);
 
-        if (nv.getColor() != null && nv.getColor().equals(Color.red))
-            gc.setColor(Color.yellow);
+        if (nv.getColor() != null && nv.getColor().equals(ProgramProperties.SELECTION_COLOR))
+            gc.setColor(Color.orange);
         else
-            gc.setColor(Color.red);
+            gc.setColor(ProgramProperties.SELECTION_COLOR);
 
+        Stroke stroke = gc.getStroke();
+        gc.setStroke(NodeView.HEAVY_STROKE);
         gc.drawRect(apt.x - 2, apt.y - 2, scaledWidth + 4, scaledHeight + 4);
+        gc.setStroke(stroke);
     }
 
 
@@ -233,15 +237,15 @@ public class DefaultNodeDrawer implements INodeDrawer {
 
         if (nv.getLabelColor() != null && nv.getLabel() != null && nv.isLabelVisible() && nv.getLabel().length() > 0) {
             final Stroke oldStroke = gc.getStroke();
-            gc.setStroke(NodeView.widthOneStroke);
+            gc.setStroke(ViewBase.HEAVY_STROKE);
             if (nv.getFont() != null)
                 gc.setFont(nv.getFont());
             else
                 gc.setFont(defaultFont);
-            if (nv.getColor() != null && nv.getColor().equals(Color.red))
-                gc.setColor(Color.yellow);
+            if (nv.getColor() != null && nv.getColor().equals(ProgramProperties.SELECTION_COLOR))
+                gc.setColor(Color.orange);
             else
-                gc.setColor(Color.red);
+                gc.setColor(ProgramProperties.SELECTION_COLOR);
             if (nv.getLabelAngle() == 0) {
                 gc.draw(nv.getLabelRect(trans));
             } else {

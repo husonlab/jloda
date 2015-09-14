@@ -20,6 +20,7 @@
 package jloda.graphview;
 
 import jloda.util.Geometry;
+import jloda.util.ProgramProperties;
 
 import javax.imageio.ImageIO;
 import java.awt.*;
@@ -157,7 +158,8 @@ public class NodeImage {
                 gc.drawImage(scaledImage, x, y, observer);
                 boundingBox.setRect(x, y, scaledImage.getWidth(observer), scaledImage.getHeight(observer));
                 if (hilite) {
-                    gc.setColor(Color.RED);
+                    gc.setStroke(NodeView.HEAVY_STROKE);
+                    gc.setColor(ProgramProperties.SELECTION_COLOR);
                     gc.draw(boundingBox);
                 }
             }

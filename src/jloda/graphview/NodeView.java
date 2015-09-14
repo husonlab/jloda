@@ -29,6 +29,7 @@ package jloda.graphview;
 import gnu.jpdf.PDFGraphics;
 import jloda.util.Basic;
 import jloda.util.Geometry;
+import jloda.util.ProgramProperties;
 import jloda.util.parse.NexusStreamParser;
 
 import java.awt.*;
@@ -55,8 +56,6 @@ final public class NodeView extends ViewBase implements Cloneable {
     public static final byte TRIANGLE_NODE = 3;
     public static final byte DIAMOND_NODE = 4;
     public static final byte NONE_NODE = 0;
-
-    static final Stroke widthOneStroke = new BasicStroke(1);
 
     private NodeImage image = null;
     protected Color bgColor = Color.WHITE;
@@ -415,10 +414,10 @@ final public class NodeView extends ViewBase implements Cloneable {
         apt.x -= (scaledWidth >> 1);
         apt.y -= (scaledHeight >> 1);
 
-        if (fgColor != null && fgColor.equals(Color.red))
-            gc.setColor(Color.yellow);
+        if (fgColor != null && fgColor.equals(ProgramProperties.SELECTION_COLOR))
+            gc.setColor(Color.ORANGE);
         else
-            gc.setColor(Color.red);
+            gc.setColor(ProgramProperties.SELECTION_COLOR);
 
         gc.drawRect(apt.x - 2, apt.y - 2, scaledWidth + 4, scaledHeight + 4);
     }
@@ -437,15 +436,15 @@ final public class NodeView extends ViewBase implements Cloneable {
 
         if (labelColor != null && label != null && labelVisible && label.length() > 0) {
             final Stroke oldStroke = gc.getStroke();
-            gc.setStroke(widthOneStroke);
+            gc.setStroke(HEAVY_STROKE);
             if (getFont() != null)
                 gc.setFont(getFont());
             else
                 gc.setFont(defaultFont);
-            if (fgColor != null && fgColor.equals(Color.red))
-                gc.setColor(Color.yellow);
+            if (fgColor != null && fgColor.equals(ProgramProperties.SELECTION_COLOR))
+                gc.setColor(Color.ORANGE);
             else
-                gc.setColor(Color.red);
+                gc.setColor(ProgramProperties.SELECTION_COLOR);
             if (labelAngle == 0) {
                 gc.draw(getLabelRect(trans));
             } else {

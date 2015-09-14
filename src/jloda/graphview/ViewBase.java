@@ -29,6 +29,9 @@ import java.awt.*;
  * Daniel Huson, 2.2006
  */
 public abstract class ViewBase {
+    public static final Stroke NORMAL_STROKE = new BasicStroke(1);
+    public static final Stroke HEAVY_STROKE = new BasicStroke(2);
+
     protected Color labelColor = Color.black;
     protected Color labelBackgroundColor = null;
     protected Font font = null;

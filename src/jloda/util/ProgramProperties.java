@@ -38,6 +38,9 @@ import java.util.StringTokenizer;
  */
 public class ProgramProperties {
     static public final java.util.Properties props = new java.util.Properties();
+    public static Color SELECTION_COLOR = new Color(252, 208, 102);
+    public static Color SELECTION_COLOR_ADDITIONAL_TEXT = new Color(93, 155, 206);
+
     static private String defaultFileName = null;
     static private String programName = "";
     static private String programVersion = "";

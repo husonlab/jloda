@@ -29,6 +29,7 @@ package jloda.graphview;
 import gnu.jpdf.PDFGraphics;
 import jloda.util.Basic;
 import jloda.util.Geometry;
+import jloda.util.ProgramProperties;
 import jloda.util.parse.NexusStreamParser;
 
 import java.awt.*;
@@ -179,8 +180,6 @@ final public class EdgeView extends ViewBase implements Cloneable { //, IEdgeVie
         this.font = font;
     }
 
-    static final Stroke widthOneStroke = new BasicStroke(1);
-
     /**
      * Draw the edge given device coordinates.
      *
@@ -191,10 +190,10 @@ final public class EdgeView extends ViewBase implements Cloneable { //, IEdgeVie
     public void draw2(Graphics2D gc, Point vp, Point wp, Transform trans, boolean hilited) {
         if (fgColor != null) {
             if (hilited) {// draw edge highlighting first
-                if (fgColor.equals(Color.red))
-                    gc.setColor(Color.yellow);
+                if (fgColor.equals(ProgramProperties.SELECTION_COLOR))
+                    gc.setColor(Color.ORANGE);
                 else
-                    gc.setColor(Color.red);
+                    gc.setColor(ProgramProperties.SELECTION_COLOR);
                 if (shape == STRAIGHT_EDGE || getInternalPoints() == null || getInternalPoints().size() == 0) {
                     gc.drawLine(vp.x - 1, vp.y - 1, wp.x - 1, wp.y - 1);
                     gc.drawLine(vp.x - 1, vp.y + 1, wp.x - 1, wp.y + 1);
@@ -267,10 +266,12 @@ final public class EdgeView extends ViewBase implements Cloneable { //, IEdgeVie
      */
     public void draw(Graphics2D gc, Point vp, Point wp, Transform trans, boolean hilited) {
         if (hilited) {// draw edge highlighting first
-            if (fgColor != null && fgColor.equals(Color.red))
-                gc.setColor(Color.yellow);
+            gc.setStroke(HEAVY_STROKE);
+
+            if (fgColor != null && fgColor.equals(ProgramProperties.SELECTION_COLOR))
+                gc.setColor(Color.ORANGE);
             else
-                gc.setColor(Color.red);
+                gc.setColor(ProgramProperties.SELECTION_COLOR);
             if (shape == STRAIGHT_EDGE || getInternalPoints() == null || getInternalPoints().size() == 0) {
                 gc.drawLine(vp.x - 1, vp.y - 1, wp.x - 1, wp.y - 1);
                 gc.drawLine(vp.x - 1, vp.y + 1, wp.x - 1, wp.y + 1);
@@ -298,7 +299,7 @@ final public class EdgeView extends ViewBase implements Cloneable { //, IEdgeVie
                 gc.draw(new QuadCurve2D.Double(vp.x + 1, vp.y - 1, aPt.x + 1, aPt.y - 1, wp.x + 1, wp.y - 1));
                 gc.draw(new QuadCurve2D.Double(vp.x + 1, vp.y + 1, aPt.x + 1, aPt.y + 1, wp.x + 1, wp.y + 1));
                 final Stroke stroke = gc.getStroke();
-                gc.setStroke(widthOneStroke);
+                gc.setStroke(NORMAL_STROKE);
                 gc.drawRect(aPt.x - 2, aPt.y - 2, 4, 4);
                 gc.setStroke(stroke);
             } else if (shape == CUBIC_EDGE && getInternalPoints().size() == 2) {
@@ -309,7 +310,7 @@ final public class EdgeView extends ViewBase implements Cloneable { //, IEdgeVie
                 gc.draw(new CubicCurve2D.Double(vp.x + 1, vp.y - 1, aPt.x + 1, aPt.y - 1, bPt.x + 1, bPt.y - 1, wp.x + 1, wp.y - 1));
                 gc.draw(new CubicCurve2D.Double(vp.x + 1, vp.y + 1, aPt.x + 1, aPt.y + 1, bPt.x + 1, bPt.y + 1, wp.x + 1, wp.y + 1));
                 final Stroke stroke = gc.getStroke();
-                gc.setStroke(widthOneStroke);
+                gc.setStroke(NORMAL_STROKE);
                 gc.drawRect(aPt.x - 2, aPt.y - 2, 4, 4);
                 gc.drawRect(bPt.x - 2, bPt.y - 2, 4, 4);
                 gc.setStroke(stroke);
@@ -719,12 +720,12 @@ final public class EdgeView extends ViewBase implements Cloneable { //, IEdgeVie
 
             if (hilited) {
                 Stroke oldStroke = gc.getStroke();
-                gc.setStroke(widthOneStroke);
+                gc.setStroke(NORMAL_STROKE);
 
-                if (fgColor != null && fgColor.equals(Color.red))
-                    gc.setColor(Color.yellow);
+                if (fgColor != null && fgColor.equals(ProgramProperties.SELECTION_COLOR))
+                    gc.setColor(Color.orange);
                 else
-                    gc.setColor(Color.red);
+                    gc.setColor(ProgramProperties.SELECTION_COLOR);
                 gc.draw(getLabelShape(trans));
                 gc.setStroke(oldStroke);
             }
@@ -748,12 +749,12 @@ final public class EdgeView extends ViewBase implements Cloneable { //, IEdgeVie
                 gc.setFont(getFont());
             setLabelSize(gc);
 
-            gc.setStroke(widthOneStroke);
+            gc.setStroke(HEAVY_STROKE);
 
-            if (fgColor != null && fgColor.equals(Color.red))
-                gc.setColor(Color.yellow);
+            if (fgColor != null && fgColor.equals(ProgramProperties.SELECTION_COLOR))
+                gc.setColor(Color.orange);
             else
-                gc.setColor(Color.red);
+                gc.setColor(ProgramProperties.SELECTION_COLOR);
             gc.draw(getLabelShape(trans));
         }
     }
