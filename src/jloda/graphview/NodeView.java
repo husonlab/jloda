@@ -414,11 +414,7 @@ final public class NodeView extends ViewBase implements Cloneable {
         apt.x -= (scaledWidth >> 1);
         apt.y -= (scaledHeight >> 1);
 
-        if (fgColor != null && fgColor.equals(ProgramProperties.SELECTION_COLOR))
-            gc.setColor(Color.ORANGE);
-        else
-            gc.setColor(ProgramProperties.SELECTION_COLOR);
-
+        gc.setColor(ProgramProperties.SELECTION_COLOR);
         gc.drawRect(apt.x - 2, apt.y - 2, scaledWidth + 4, scaledHeight + 4);
     }
 
@@ -435,21 +431,18 @@ final public class NodeView extends ViewBase implements Cloneable {
             return;
 
         if (labelColor != null && label != null && labelVisible && label.length() > 0) {
-            final Stroke oldStroke = gc.getStroke();
-            gc.setStroke(HEAVY_STROKE);
+            gc.setStroke(NORMAL_STROKE);
             if (getFont() != null)
                 gc.setFont(getFont());
             else
                 gc.setFont(defaultFont);
-            if (fgColor != null && fgColor.equals(ProgramProperties.SELECTION_COLOR))
-                gc.setColor(Color.ORANGE);
-            else
-                gc.setColor(ProgramProperties.SELECTION_COLOR);
-            if (labelAngle == 0) {
-                gc.draw(getLabelRect(trans));
-            } else {
-                gc.draw(getLabelShape(trans));
-            }
+            gc.setColor(ProgramProperties.SELECTION_COLOR);
+            Shape shape = getLabelShape(trans);
+            gc.fill(shape);
+            gc.setColor(ProgramProperties.SELECTION_COLOR_DARKER);
+            final Stroke oldStroke = gc.getStroke();
+            gc.setStroke(NORMAL_STROKE);
+            gc.draw(shape);
             gc.setStroke(oldStroke);
         }
     }
@@ -488,6 +481,9 @@ final public class NodeView extends ViewBase implements Cloneable {
                 gc.setFont(getFont());
             else
                 gc.setFont(defaultFont);
+
+            if (hilited)
+                hiliteLabel(gc, trans, defaultFont);
 
             if (enabled)
                 gc.setColor(labelColor);
@@ -547,8 +543,6 @@ final public class NodeView extends ViewBase implements Cloneable {
         if (getImage() != null && getImage().isVisible()) {
             getImage().draw(this, trans, gc, hilited);
         }
-        if (hilited)
-            hiliteLabel(gc, trans, defaultFont);
 
         if (descriptionWriter != null && getLabelVisible() && getLabel() != null && getLabel().length() > 0) {
             Rectangle bounds;

@@ -617,13 +617,13 @@ public class GraphViewListener implements IGraphViewListener {
                         offset.y = labPt.y - downY;
                     }
                     gc.drawLine(apt.x, apt.y, meX, meY);
-                    nodeDrawer.drawLabel(v, true);
+                    nv.hiliteLabel(gc, viewer.trans, viewer.getFont());
 
                     int labX = meX + offset.x;
                     int labY = meY + offset.y;
 
                     nv.setLabelPositionRelative(labX - apt.x, labY - apt.y);
-                    nodeDrawer.drawLabel(v, true);
+                    nv.hiliteLabel(gc, viewer.trans, viewer.getFont());
 
                     prevPt.x = meX;
                     prevPt.y = meY;

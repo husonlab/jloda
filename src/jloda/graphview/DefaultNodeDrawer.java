@@ -1,22 +1,22 @@
 /**
- * DefaultNodeDrawer.java 
+ * DefaultNodeDrawer.java
  * Copyright (C) 2015 Daniel H. Huson
- *
+ * <p>
  * (Some files contain contributions from other authors, who are then mentioned separately.)
- *
+ * <p>
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
- *
+ * <p>
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
- *
+ * <p>
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
-*/
+ */
 package jloda.graphview;
 
 import gnu.jpdf.PDFGraphics;
@@ -99,9 +99,9 @@ public class DefaultNodeDrawer implements INodeDrawer {
      * @param hilited
      */
     private void draw(NodeView nv, boolean hilited) {
-        draw(nv);
         if (hilited)
             hilite(nv);
+        draw(nv);
     }
 
     /**
@@ -214,15 +214,14 @@ public class DefaultNodeDrawer implements INodeDrawer {
         apt.x -= (scaledWidth >> 1);
         apt.y -= (scaledHeight >> 1);
 
-        if (nv.getColor() != null && nv.getColor().equals(ProgramProperties.SELECTION_COLOR))
-            gc.setColor(Color.orange);
-        else
-            gc.setColor(ProgramProperties.SELECTION_COLOR);
-
-        Stroke stroke = gc.getStroke();
-        gc.setStroke(NodeView.HEAVY_STROKE);
-        gc.drawRect(apt.x - 2, apt.y - 2, scaledWidth + 4, scaledHeight + 4);
-        gc.setStroke(stroke);
+        gc.setColor(ProgramProperties.SELECTION_COLOR);
+        Shape shape = new Rectangle(apt.x - 2, apt.y - 2, scaledWidth + 4, scaledHeight + 4);
+        gc.fill(shape);
+        gc.setColor(ProgramProperties.SELECTION_COLOR_DARKER);
+        final Stroke oldStroke = gc.getStroke();
+        gc.setStroke(NodeView.NORMAL_STROKE);
+        gc.draw(shape);
+        gc.setStroke(oldStroke);
     }
 
 
@@ -242,15 +241,13 @@ public class DefaultNodeDrawer implements INodeDrawer {
                 gc.setFont(nv.getFont());
             else
                 gc.setFont(defaultFont);
-            if (nv.getColor() != null && nv.getColor().equals(ProgramProperties.SELECTION_COLOR))
-                gc.setColor(Color.orange);
-            else
+            Shape shape = (nv.getLabelAngle() == 0 ? nv.getLabelRect(trans) : nv.getLabelShape(trans));
+            if (ProgramProperties.SELECTION_COLOR != null) {
                 gc.setColor(ProgramProperties.SELECTION_COLOR);
-            if (nv.getLabelAngle() == 0) {
-                gc.draw(nv.getLabelRect(trans));
-            } else {
-                gc.draw(nv.getLabelShape(trans));
+                gc.draw(shape);
             }
+            gc.setColor(ProgramProperties.SELECTION_COLOR_DARKER);
+            gc.fill(shape);
             gc.setStroke(oldStroke);
         }
     }
@@ -263,12 +260,16 @@ public class DefaultNodeDrawer implements INodeDrawer {
             return;
 
         if (nv.getLabelColor() != null && nv.getLabel() != null && nv.getLabel().length() > 0) {
-            //labelShape = null;
-            //gc.setColor(Color.WHITE);
-            //gc.fill(getLabelRect(trans));
-            if (nv.getLabelBackgroundColor() != null && nv.isLabelVisible() && nv.isEnabled()) {
-                gc.setColor(nv.getLabelBackgroundColor());
-                gc.fill(nv.getLabelShape(trans));
+            if (hilited)
+                hiliteLabel(nv, defaultFont);
+            else {
+                //labelShape = null;
+                //gc.setColor(Color.WHITE);
+                //gc.fill(getLabelRect(trans));
+                if (nv.getLabelBackgroundColor() != null && nv.isLabelVisible() && nv.isEnabled()) {
+                    gc.setColor(nv.getLabelBackgroundColor());
+                    gc.fill(nv.getLabelShape(trans));
+                }
             }
 
             if (nv.getFont() != null)
@@ -334,8 +335,6 @@ public class DefaultNodeDrawer implements INodeDrawer {
         if (nv.getImage() != null && nv.getImage().isVisible()) {
             nv.getImage().draw(nv, trans, gc, hilited);
         }
-        if (hilited)
-            hiliteLabel(nv, defaultFont);
 
         if (NodeView.descriptionWriter != null && nv.getLabelVisible() && nv.getLabel() != null
                 && nv.getLabel().length() > 0) {

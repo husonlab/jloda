@@ -681,8 +681,11 @@ final public class EdgeView extends ViewBase implements Cloneable { //, IEdgeVie
 
             setLabelSize(gc);
 
-            Point2D apt = getLabelPosition(trans);
+            if (hilited) {
+                hiliteLabel(gc, trans);
+            }
 
+            Point2D apt = getLabelPosition(trans);
             if (enabled && labelBackgroundColor != null) {
                 gc.setColor(labelBackgroundColor);
                 gc.fill(getLabelShape(trans));
@@ -717,18 +720,6 @@ final public class EdgeView extends ViewBase implements Cloneable { //, IEdgeVie
                 gc.drawString(label, (int) apt.getX(), (int) apt.getY());
                 gc.setTransform(saveTransform);
             }
-
-            if (hilited) {
-                Stroke oldStroke = gc.getStroke();
-                gc.setStroke(NORMAL_STROKE);
-
-                if (fgColor != null && fgColor.equals(ProgramProperties.SELECTION_COLOR))
-                    gc.setColor(Color.orange);
-                else
-                    gc.setColor(ProgramProperties.SELECTION_COLOR);
-                gc.draw(getLabelShape(trans));
-                gc.setStroke(oldStroke);
-            }
         }
     }
 
@@ -747,15 +738,17 @@ final public class EdgeView extends ViewBase implements Cloneable { //, IEdgeVie
 
             if (getFont() != null)
                 gc.setFont(getFont());
+
             setLabelSize(gc);
 
-            gc.setStroke(HEAVY_STROKE);
-
-            if (fgColor != null && fgColor.equals(ProgramProperties.SELECTION_COLOR))
-                gc.setColor(Color.orange);
-            else
-                gc.setColor(ProgramProperties.SELECTION_COLOR);
-            gc.draw(getLabelShape(trans));
+            gc.setColor(ProgramProperties.SELECTION_COLOR);
+            Shape shape = getLabelShape(trans);
+            gc.fill(shape);
+            gc.setColor(ProgramProperties.SELECTION_COLOR_DARKER);
+            final Stroke oldStroke = gc.getStroke();
+            gc.setStroke(NORMAL_STROKE);
+            gc.draw(shape);
+            gc.setStroke(oldStroke);
         }
     }
 
