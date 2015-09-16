@@ -39,7 +39,7 @@ import java.util.StringTokenizer;
 public class ProgramProperties {
     static public final java.util.Properties props = new java.util.Properties();
     public static Color SELECTION_COLOR = new Color(252, 208, 102);
-    public static Color SELECTION_COLOR_DARKER = new Color(225, 208, 102);
+    public static Color SELECTION_COLOR_DARKER = new Color(220, 200, 100);
     public static Color SELECTION_COLOR_ADDITIONAL_TEXT = new Color(93, 155, 206);
 
     static private String defaultFileName = null;

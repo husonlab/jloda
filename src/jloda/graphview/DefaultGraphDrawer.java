@@ -267,13 +267,13 @@ public class DefaultGraphDrawer implements IGraphDrawer {
             if (getFoundNode() != null) {
                 Node v = getFoundNode();
                 NodeView nv = graphView.getNV(v);
-                boolean selected = graphView.getSelected(v);
                 if (nv.getLabel() != null)
                     nv.setLabelSize(Basic.getStringSize(gc, graphView.getLabel(v), graphView.getFont(v)));
                 Shape shape = nv.getLabelShape(trans);
-                gc.setColor(graphView.getBackground());
+                gc.setColor(Color.YELLOW);
                 gc.fill(shape);
-                nodeDrawer.drawNodeAndLabel(v, selected);
+                gc.setColor(ProgramProperties.SELECTION_COLOR_DARKER);
+                nodeDrawer.drawNodeAndLabel(v, false);
             }
         } catch (NotOwnerException ex) {
 
