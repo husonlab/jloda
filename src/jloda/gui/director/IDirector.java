@@ -157,4 +157,8 @@ public interface IDirector {
      * @return viewer of the given class, or null
      */
     IDirectableViewer getViewerByClass(Class aClass);
+
+    boolean isInternalDocument();
+
+    void setInternalDocument(boolean invisible);
 }

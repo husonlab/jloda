@@ -1,22 +1,22 @@
 /**
- * ProjectManager.java 
+ * ProjectManager.java
  * Copyright (C) 2015 Daniel H. Huson
- *
+ * <p>
  * (Some files contain contributions from other authors, who are then mentioned separately.)
- *
+ * <p>
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
- *
+ * <p>
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
- *
+ * <p>
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
-*/
+ */
 package jloda.gui.director;
 
 
@@ -98,14 +98,14 @@ public class ProjectManager {
 
                 if (viewer != null) {
                     final JMenu menu = viewer.getWindowMenu();
-                    if (menu != null) {
+                    if (menu != null && !dir.isInternalDocument()) {
                         if (!windowMenusUnderControl.contains(menu)) {
                             Pair<IDirector, JMenu> pair = new Pair<>(dir, menu);
                             dirAndWindowMenuPairs.add(pair);
                             windowMenusUnderControl.add(menu);
                             menu2baseSize.put(menu, menu.getItemCount());
                         }
-                        }
+                    }
                     dir.addViewer(viewer);
                 }
             }
@@ -123,7 +123,7 @@ public class ProjectManager {
      * @param menu
      */
     public static void addAnotherWindowWithWindowMenu(IDirector dir, JMenu menu) {
-        if (!windowMenusUnderControl.contains(menu)) {
+        if (!dir.isInternalDocument() && !windowMenusUnderControl.contains(menu)) {
             synchronized (projects) {
                 dirAndWindowMenuPairs.add(new Pair<>(dir, menu));
                 menu2baseSize.put(menu, menu.getItemCount());
@@ -163,7 +163,7 @@ public class ProjectManager {
      * @param opened  true, if window opened, false if closed
      */
     public static void projectWindowChanged(IDirector dir, IDirectableViewer viewer0, boolean opened) {
-        List<IDirectableViewer> viewers0 = viewersList.get(dir);
+        final List<IDirectableViewer> viewers0 = viewersList.get(dir);
 
         if (viewers0 != null) {
             if (opened)
@@ -171,6 +171,7 @@ public class ProjectManager {
             else
                 viewers0.remove(viewer0);
         }
+        if (!dir.isInternalDocument())
         updateWindowMenus();
     }
 
@@ -215,40 +216,42 @@ public class ProjectManager {
                 }
 
                 for (final IDirector proj : projects) {
-                    final List<IDirectableViewer> viewers = viewersList.get(proj);
-                    if (viewers != null) {
-                        boolean first = true;
-                        try {
-                            for (final IDirectableViewer viewer : viewers) {
-                                if (viewer instanceof SearchManager)
-                                    continue; // don't show search managers in menu
-                                final JFrame frame = viewer.getFrame();
-                                AbstractAction action = new AbstractAction() {
-                                    public void actionPerformed(ActionEvent e) {
-                                        frame.setVisible(true);
-                                        frame.setState(JFrame.NORMAL);
-                                        frame.toFront();
+                    if (!proj.isInternalDocument()) {
+                        final List<IDirectableViewer> viewers = viewersList.get(proj);
+                        if (viewers != null) {
+                            boolean first = true;
+                            try {
+                                for (final IDirectableViewer viewer : viewers) {
+                                    if (viewer instanceof SearchManager)
+                                        continue; // don't show search managers in menu
+                                    final JFrame frame = viewer.getFrame();
+                                    AbstractAction action = new AbstractAction() {
+                                        public void actionPerformed(ActionEvent e) {
+                                            frame.setVisible(true);
+                                            frame.setState(JFrame.NORMAL);
+                                            frame.toFront();
+                                        }
+                                    };
+                                    String title = frame.getTitle();
+                                    int pos = title.indexOf(" - ");
+                                    if (pos != -1)
+                                        title = title.substring(0, pos);
+                                    if (viewer instanceof IMainViewer && mnenomicKey <= '9') {
+                                        action.putValue(AbstractAction.NAME, mnenomicKey + " " + title);
+                                        action.putValue(AbstractAction.MNEMONIC_KEY, new Integer(mnenomicKey));
+                                        mnenomicKey++;
+                                    } else
+                                        action.putValue(AbstractAction.NAME, "  " + title);
+                                    action.putValue(AbstractAction.SMALL_ICON, ResourceManager.getIcon("Empty16.gif"));
+                                    action.putValue(AbstractAction.SHORT_DESCRIPTION, "Bring to front: " + title);
+                                    if (first) {
+                                        menu.addSeparator();
+                                        first = false;
                                     }
-                                };
-                                String title = frame.getTitle();
-                                int pos = title.indexOf(" - ");
-                                if (pos != -1)
-                                    title = title.substring(0, pos);
-                                if (viewer instanceof IMainViewer && mnenomicKey <= '9') {
-                                    action.putValue(AbstractAction.NAME, mnenomicKey + " " + title);
-                                    action.putValue(AbstractAction.MNEMONIC_KEY, new Integer(mnenomicKey));
-                                    mnenomicKey++;
-                                } else
-                                    action.putValue(AbstractAction.NAME, "  " + title);
-                                action.putValue(AbstractAction.SMALL_ICON, ResourceManager.getIcon("Empty16.gif"));
-                                action.putValue(AbstractAction.SHORT_DESCRIPTION, "Bring to front: " + title);
-                                if (first) {
-                                    menu.addSeparator();
-                                    first = false;
+                                    menu.add(action);
                                 }
-                                menu.add(action);
+                            } catch (ConcurrentModificationException ex) {
                             }
-                        } catch (ConcurrentModificationException ex) {
                         }
                     }
                 }
