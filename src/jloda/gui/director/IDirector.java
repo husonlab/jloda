@@ -160,5 +160,5 @@ public interface IDirector {
 
     boolean isInternalDocument();
 
-    void setInternalDocument(boolean invisible);
+    void setInternalDocument(boolean isInternalDocument);
 }
