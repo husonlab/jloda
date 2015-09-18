@@ -291,9 +291,9 @@ final public class NodeView extends ViewBase implements Cloneable {
      * @param hilited
      */
     public void draw(Graphics gc, Transform trans, boolean hilited) {
-        draw(gc, trans);
         if (hilited)
             hilite(gc, trans);
+        draw(gc, trans);
     }
 
     /**

@@ -67,9 +67,9 @@ public class DefaultNodeDrawer implements INodeDrawer {
      */
     public void draw(Node v, boolean selected) {
         NodeView nv = graphView.getNV(v);
-        draw(nv);
         if (selected)
             hilite(nv);
+        draw(nv);
     }
 
     /**
@@ -214,8 +214,8 @@ public class DefaultNodeDrawer implements INodeDrawer {
         apt.x -= (scaledWidth >> 1);
         apt.y -= (scaledHeight >> 1);
 
-        gc.setColor(ProgramProperties.SELECTION_COLOR);
         Shape shape = new Rectangle(apt.x - 2, apt.y - 2, scaledWidth + 4, scaledHeight + 4);
+        gc.setColor(ProgramProperties.SELECTION_COLOR);
         gc.fill(shape);
         gc.setColor(ProgramProperties.SELECTION_COLOR_DARKER);
         final Stroke oldStroke = gc.getStroke();
@@ -235,19 +235,17 @@ public class DefaultNodeDrawer implements INodeDrawer {
             return;
 
         if (nv.getLabelColor() != null && nv.getLabel() != null && nv.isLabelVisible() && nv.getLabel().length() > 0) {
-            final Stroke oldStroke = gc.getStroke();
-            gc.setStroke(ViewBase.HEAVY_STROKE);
             if (nv.getFont() != null)
                 gc.setFont(nv.getFont());
             else
                 gc.setFont(defaultFont);
             Shape shape = (nv.getLabelAngle() == 0 ? nv.getLabelRect(trans) : nv.getLabelShape(trans));
-            if (ProgramProperties.SELECTION_COLOR != null) {
-                gc.setColor(ProgramProperties.SELECTION_COLOR);
-                gc.draw(shape);
-            }
-            gc.setColor(ProgramProperties.SELECTION_COLOR_DARKER);
+            gc.setColor(ProgramProperties.SELECTION_COLOR);
             gc.fill(shape);
+            gc.setColor(ProgramProperties.SELECTION_COLOR_DARKER);
+            final Stroke oldStroke = gc.getStroke();
+            gc.setStroke(ViewBase.NORMAL_STROKE);
+            gc.draw(shape);
             gc.setStroke(oldStroke);
         }
     }
