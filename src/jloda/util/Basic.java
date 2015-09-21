@@ -2951,7 +2951,6 @@ public class Basic {
      * @return split string, trimmed
      */
     public static String[] split(String aLine, final char splitChar) {
-        aLine = aLine.trim();
         if (aLine.length() == 0)
             return new String[0];
 

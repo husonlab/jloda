@@ -736,6 +736,8 @@ public class GraphViewListener implements IGraphViewListener {
         stillDownWithoutMoving = false;
         if (viewer.getGraphDrawer() != null && viewer.getGraph().getNumberOfNodes() <= 50000) {
             NodeSet nodes = viewer.getGraphDrawer().getHitNodes(me.getX(), me.getY());
+            if (nodes.size() == 0)
+                nodes = viewer.getGraphDrawer().getHitNodeLabels(me.getX(), me.getY());
             if (nodes.size() > 0) {
                 viewer.setToolTipText(nodes.getFirstElement());
                 return;

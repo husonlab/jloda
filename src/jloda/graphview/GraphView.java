@@ -2095,7 +2095,7 @@ public class GraphView extends JPanel implements Printable, Scrollable, INodeEdg
                     nv.setLabelSize(Basic.getStringSize(gc, getLabel(v), getFont(v)));
                 Color saveColor = nv.getLabelBackgroundColor();
                 nv.setLabelBackgroundColor(Color.YELLOW);
-                nv.drawLabel(gc, trans, getFont(), selected);
+                nv.drawLabel(gc, trans, getFont(), true);
                 nv.setLabelBackgroundColor(saveColor);
             }
         }
@@ -2420,7 +2420,6 @@ public class GraphView extends JPanel implements Printable, Scrollable, INodeEdg
     }
 
     public void fireDoClickPanel(int x, int y) {
-
     }
 
     /**
@@ -2429,7 +2428,6 @@ public class GraphView extends JPanel implements Printable, Scrollable, INodeEdg
      * @param nodes NodeSet
      */
     public void fireDoPress(NodeSet nodes) {
-
         for (NodeActionListener lis : nodeActionListeners) {
             lis.doPress(nodes);
         }

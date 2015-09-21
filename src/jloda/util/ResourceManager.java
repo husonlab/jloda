@@ -38,18 +38,18 @@ public class ResourceManager {
     /**
      * Specifies the path where to look for icon files in a jar archive.
      */
-    private static String iconPackagePath;
+    public static final String iconPackagePath;
 
     /**
      * Specifies the path where to look for cursor files in a jar archive.
      */
-    private static String cursorPackagePath;
+    public static final String cursorPackagePath;
     /**
      * Specifies the path where to look for data files in a jar archive.
      */
-    private static String filePackagePath;
+    public static final String filePackagePath;
 
-    private static String cssPackagePath;
+    public static final String cssPackagePath;
 
 
     /**
@@ -93,15 +93,6 @@ public class ResourceManager {
     }
 
     /**
-     * set the icon pacakage path
-     *
-     * @param iconPackagePath
-     */
-    public static void setIconPackagePath(String iconPackagePath) {
-        ResourceManager.iconPackagePath = iconPackagePath;
-    }
-
-    /**
      * get the cursor package path
      *
      * @return path
@@ -110,28 +101,15 @@ public class ResourceManager {
         return cursorPackagePath;
     }
 
-    /**
-     * set the cursor package path
-     *
-     * @param cursorPackagePath
-     */
-    public static void setCursorPackagePath(String cursorPackagePath) {
-        ResourceManager.cursorPackagePath = cursorPackagePath;
-    }
 
     public static String getFilePackagePath() {
         return filePackagePath;
-    }
-
-    public static void setFilePackagePath(String filePackagePath) {
-        ResourceManager.filePackagePath = filePackagePath;
     }
 
     /**
      * Returns the icon with name specified by the parameter, or <code>null</code> if there is none.
      */
     public static ImageIcon getIcon(String name) {
-
         if (!iconMap.containsKey(name)) {
             Image iconImage = getImageResource(iconPackagePath, name);
             if (iconImage != null) {
@@ -429,6 +407,10 @@ public class ResourceManager {
 
     public static boolean isWarningMissingIcon() {
         return warningMissingIcon;
+    }
+
+    public static HashMap<String, ImageIcon> getIconMap() {
+        return iconMap;
     }
 }
 
