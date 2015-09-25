@@ -38,12 +38,16 @@ import java.awt.*;
 import java.awt.event.*;
 import java.awt.geom.Point2D;
 import java.util.LinkedList;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 
 /**
  * Listener for all GraphView events
  */
 public class GraphViewListener implements IGraphViewListener {
+    private final static ExecutorService service = Executors.newFixedThreadPool(1);
+    private boolean inWait = false;
 
     private final GraphView viewer;
     private final Transform trans;
@@ -180,22 +184,24 @@ public class GraphViewListener implements IGraphViewListener {
                 current = inScrollByMouse;
                 viewer.setCursor(Cursors.getClosedHand());
 
-                final Thread worker = new Thread(new Runnable() {
-                    public void run() {
-                        try {
-                            synchronized (this) {
-                                wait(500);
+                if (!inWait) {
+                    service.execute(new Runnable() {
+                        public void run() {
+                            try {
+                                inWait = true;
+                                synchronized (this) {
+                                    Thread.sleep(500);
+                                }
+                            } catch (InterruptedException e) {
                             }
-                        } catch (InterruptedException e) {
+                            if (stillDownWithoutMoving) {
+                                current = inRubberband;
+                                viewer.setCursor(Cursor.getDefaultCursor());
+                            }
+                            inWait = false;
                         }
-                        if (stillDownWithoutMoving) {
-                            current = inRubberband;
-                            viewer.setCursor(Cursor.getDefaultCursor());
-                        }
-                    }
-                });
-                worker.setPriority(Thread.currentThread().getPriority() - 1);
-                worker.start();
+                    });
+                }
             }
         } else {
             viewer.setCursor(Cursor.getDefaultCursor());
@@ -289,7 +295,6 @@ public class GraphViewListener implements IGraphViewListener {
             hitNodes = viewer.getGraphDrawer().getHitNodes(me.getX(), me.getY(), 8);
             viewer.fireDoRelease(hitNodes);
         }
-
 
         if (current == inRubberband) {
             Rectangle rect = new Rectangle(downX, downY, 0, 0);
