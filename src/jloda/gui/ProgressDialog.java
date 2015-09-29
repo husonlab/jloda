@@ -286,12 +286,16 @@ public class ProgressDialog implements ProgressListener {
 
         if (progressBar != null && maxProgess != progressBar.getMaximum()) {
             try {
-                SwingUtilities.invokeAndWait(new Runnable() {
-                    public void run() {
-                        // progressBar.setValue(0);
-                        progressBar.setMaximum(steps);
-                    }
-                });
+                if (SwingUtilities.isEventDispatchThread())
+                    progressBar.setMaximum(steps);
+                else {
+                    SwingUtilities.invokeAndWait(new Runnable() {
+                        public void run() {
+                            // progressBar.setValue(0);
+                            progressBar.setMaximum(steps);
+                        }
+                    });
+                }
             } catch (InterruptedException | InvocationTargetException e) {
                 Basic.caught(e);
             }
