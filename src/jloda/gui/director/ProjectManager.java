@@ -123,7 +123,7 @@ public class ProjectManager {
      * @param menu
      */
     public static void addAnotherWindowWithWindowMenu(IDirector dir, JMenu menu) {
-        if (!dir.isInternalDocument() && !windowMenusUnderControl.contains(menu)) {
+        if (dir != null && !dir.isInternalDocument() && !windowMenusUnderControl.contains(menu)) {
             synchronized (projects) {
                 dirAndWindowMenuPairs.add(new Pair<>(dir, menu));
                 menu2baseSize.put(menu, menu.getItemCount());
