@@ -189,7 +189,7 @@ public class CommandManager {
             } else {
                 boolean found = false;
                 for (ICommand command : startsWith2Command.values()) {
-                    //System.err.println("trying " + Basic.getShortName(command.getClass()));
+                    // System.err.println("trying " + Basic.getShortName(command.getClass()));
                     if (command.getStartsWith() != null && np.peekMatchIgnoreCase(command.getStartsWith())) {
                         try {
                             if (command.getName() != null && command.getName().equals("Undo"))
