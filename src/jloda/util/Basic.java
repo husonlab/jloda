@@ -654,14 +654,36 @@ public class Basic {
      * @return string folded at spaces
      */
     public static String fold(String str, int maxLength) {
+        return fold(str, maxLength, "\n");
+    }
+
+    /**
+     * folds the given string so that no line is longer than max length, if possible.
+     * Replaces all spaces by single spaces
+     *
+     * @param str
+     * @param maxLength
+     * @return string folded at spaces
+     */
+    public static String fold(String str, int maxLength, String lineBreakString) {
         StringBuilder buf = new StringBuilder();
         StringTokenizer st = new StringTokenizer(str);
         int lineLength = 0;
         boolean first = true;
         while (st.hasMoreTokens()) {
             String token = st.nextToken();
+            int pos = token.lastIndexOf(lineBreakString);
+            if (pos != -1) {
+                if (!first) {
+                    buf.append(" ");
+                } else
+                    first = false;
+                buf.append(token.substring(0, pos + lineBreakString.length()));
+                lineLength = 0;
+                token = token.substring(pos + lineBreakString.length());
+            }
             if (lineLength > 0 && lineLength + token.length() >= maxLength) {
-                buf.append("\n");
+                buf.append(lineBreakString);
                 lineLength = 0;
             } else {
                 if (!first) {
@@ -675,6 +697,7 @@ public class Basic {
         }
         return buf.toString();
     }
+
 
     /**
      * fold to given length
@@ -1437,6 +1460,25 @@ public class Basic {
             for (int i = 0; i < str.length(); i++)
                 if (str.charAt(i) == c)
                     count++;
+        }
+        return count;
+    }
+
+    /**
+     * counts the number of occurrences of c at beginning of string str
+     *
+     * @param str
+     * @param c
+     * @return count
+     */
+    public static int countLeadingOccurrences(String str, char c) {
+        int count = 0;
+        if (str != null) {
+            for (int i = 0; i < str.length(); i++) {
+                if (str.charAt(i) == c)
+                    count++;
+                else break;
+            }
         }
         return count;
     }
@@ -3412,16 +3454,47 @@ public class Basic {
         return result;
     }
 
+
     /**
-     * gets the rank of a string in a list of strings
+     * return array in reverse order
      *
      * @param strings
-     * @param string
+     * @return
+     */
+    public static String[] reverse(Collection<String> strings) {
+        final String[] result = new String[strings.size()];
+        int pos = strings.size();
+        for (String str : strings) {
+            result[--pos] = str;
+        }
+        return result;
+    }
+
+    /**
+     * gets the rank of a value in a list
+     *
+     * @param list
+     * @param value
      * @return rank or -1
      */
-    public static int getRank(List<String> strings, String string) {
-        for (int i = 0; i < strings.size(); i++) {
-            if (strings.get(i).equals(string))
+    public static <T> int getRank(List<T> list, T value) {
+        for (int i = 0; i < list.size(); i++) {
+            if (list.get(i).equals(value))
+                return i;
+        }
+        return -1;
+    }
+
+    /**
+     * gets the rank of a value in an array
+     *
+     * @param list
+     * @param value
+     * @return rank or -1
+     */
+    public static <T> int getRank(T[] list, T value) {
+        for (int i = 0; i < list.length; i++) {
+            if (list[i] != null && list[i].equals(value))
                 return i;
         }
         return -1;
@@ -3563,9 +3636,9 @@ public class Basic {
 
     /**
      * gets next word after given first word
-     *
+     * @param first
      * @param aLine
-     * @return second word or null
+     * @return next word or null
      */
     public static String getWordAfter(String first, String aLine) {
         int start = aLine.indexOf(first);
@@ -3581,6 +3654,25 @@ public class Basic {
             return aLine.substring(start, finish);
         else
             return aLine.substring(start);
+
+    }
+
+    /**
+     * gets everything after the first word
+     *
+     * @param first
+     * @param aLine
+     * @return everything after the given word or null
+     */
+    public static String getAfter(String first, String aLine) {
+        int start = aLine.indexOf(first);
+        if (start == -1)
+            return null;
+        start += first.length();
+        while (start < aLine.length() && Character.isWhitespace(aLine.charAt(start)))
+            start++;
+        int finish = start;
+        return aLine.substring(start);
 
     }
 
