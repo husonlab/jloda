@@ -71,7 +71,7 @@ public class MultiLineCellRenderer implements TreeCellRenderer {
         textPane.setText(text);
         textPane.setEnabled(tree.isEnabled());
         if (isSelected) {
-            textPane.setBackground(UIManager.getColor("Tree.selectionBackground"));
+            textPane.setBackground(ProgramProperties.SELECTION_COLOR);
         } else {
             textPane.setBackground(UIManager.getColor("Tree.textBackground"));
         }

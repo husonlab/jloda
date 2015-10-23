@@ -23,6 +23,7 @@ package jloda.gui.message;
 import jloda.gui.find.SearchManager;
 import jloda.util.Alert;
 import jloda.util.Basic;
+import jloda.util.ProgramProperties;
 
 import javax.swing.*;
 import java.awt.*;
@@ -196,6 +197,7 @@ public class MessageWindow {
 
         textArea = new JTextArea();
         textArea.setFont(new Font("Courier", Font.PLAIN, 12));
+        textArea.setSelectionColor(ProgramProperties.SELECTION_COLOR);
 
         AbstractAction action = getActions().getInput();
         action.putValue(MessageWindowActions.JTEXTAREA, textArea);
