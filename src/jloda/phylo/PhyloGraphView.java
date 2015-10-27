@@ -598,18 +598,18 @@ public class PhyloGraphView extends GraphView {
      * contract all given edges
      *
      * @param edges
-     * @return true, if anything changed
+     * @return number of edges successfully removed
      */
     public boolean contractAll(Set<Edge> edges) {
         boolean result = false;
-        PhyloGraph graph = getPhyloGraph();
-        Set<Node> divertices = new HashSet<>();
+        final PhyloGraph graph = getPhyloGraph();
+        final Set<Node> diVertices = new HashSet<>();
         while (edges.size() > 0) {
-            Edge e = edges.iterator().next();
+            final Edge e = edges.iterator().next();
             edges.remove(e);
             if (!graph.isSpecial(e) && e.getTarget().getOutDegree() > 0) {
-                Node v = e.getSource();
-                Node w = e.getTarget();
+                final Node v = e.getSource();
+                final Node w = e.getTarget();
                 if (w.getOutDegree() == 0) {
                     if (graph.getLabel(w) != null && graph.getLabel(w).length() > 0) {
                         if (graph.getLabel(v) == null || graph.getLabel(v).length() == 0)
@@ -621,22 +621,22 @@ public class PhyloGraphView extends GraphView {
                     graph.deleteEdge(e);
                 } else {
                     for (Edge f = w.getFirstOutEdge(); f != null; f = w.getNextOutEdge(f)) {
-                        Edge h = graph.newEdge(v, f.getTarget());
+                        final Edge h = graph.newEdge(v, f.getTarget());
                         graph.setWeight(h, graph.getWeight(f));
                         graph.setConfidence(h, graph.getConfidence(f));
                         if (edges.remove(f))
                             edges.add(h);
                         result = true;
                     }
-                    divertices.remove(w);
+                    diVertices.remove(w);
                     graph.deleteNode(w);
                     if (v.getInDegree() == 1 && v.getOutDegree() == 1)
-                        divertices.add(v);
+                        diVertices.add(v);
                 }
             }
         }
 
-        for (Node v : divertices)
+        for (Node v : diVertices)
         {
             Edge f = graph.newEdge(v.getFirstInEdge().getSource(), v.getFirstOutEdge().getTarget());
             graph.setWeight(f, graph.getWeight(v.getFirstInEdge()) + graph.getWeight(v.getFirstOutEdge()));

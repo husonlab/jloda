@@ -82,7 +82,6 @@ public class FileInputIterator implements IFileIterator {
      */
     public FileInputIterator(Reader r, String fileName, boolean reportProgress) throws IOException {
         this.fileName = fileName;
-        setReportProgress(reportProgress);
 
         reader = new BufferedReader(r, bufferSize);
         endOfLineBytes = Basic.getNumberOfNonSpaceCharacters(fileName);
@@ -92,6 +91,8 @@ public class FileInputIterator implements IFileIterator {
             maxProgress = file.length();
         else
             maxProgress = 10000000;  // unknown
+
+        setReportProgress(reportProgress);
     }
 
     /**
@@ -112,18 +113,18 @@ public class FileInputIterator implements IFileIterator {
      */
     public FileInputIterator(File file, boolean reportProgress) throws IOException {
         this.fileName = file.getPath();
-        setReportProgress(reportProgress);
 
         if (Basic.isZIPorGZIPFile(file.getPath())) {
             reader = new BufferedReader(new InputStreamReader(Basic.getInputStreamPossiblyZIPorGZIP(file.getPath())));
             endOfLineBytes = 1;
-            maxProgress = file.length() / 10;
+            maxProgress = 5 * file.length(); // assuming compression factor of 5-to-1
         } else {
             reader = new BufferedReader(new FileReader(file), bufferSize);
             endOfLineBytes = Basic.getNumberOfNonSpaceCharacters(fileName);
             maxProgress = file.length();
         }
         done = (file.length() == 0);
+        setReportProgress(reportProgress);
     }
 
     /**
@@ -236,7 +237,7 @@ public class FileInputIterator implements IFileIterator {
             nextLine = null;
             lineNumber++;
             if (progress != null) {
-                progress.incrementProgress();
+                progress.setProgress(position);
             }
             return result;
         }
