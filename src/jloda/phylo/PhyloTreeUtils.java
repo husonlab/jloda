@@ -258,15 +258,15 @@ public class PhyloTreeUtils {
 	 * @param trees
 	 * @return true, if ok
 	 */
-	public static boolean areSingleLabeledTrees(PhyloTree t) {
+	public static boolean areSingleLabeledTrees(PhyloTree trees) {
 
 		Set<String> taxa = new HashSet<>();
-		for (Node v = t.getFirstNode(); v != null; v = v.getNext()) {
+		for (Node v = trees.getFirstNode(); v != null; v = v.getNext()) {
 			if (v.getOutDegree() == 0) {
-				if (taxa.contains(t.getLabel(v)))
+				if (taxa.contains(trees.getLabel(v)))
 					return false; // not single labeled
 				else
-					taxa.add(t.getLabel(v));
+					taxa.add(trees.getLabel(v));
 			}
 		}
 
