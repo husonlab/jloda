@@ -1915,17 +1915,17 @@ public class GraphView extends JPanel implements Printable, Scrollable, INodeEdg
      */
     public void computeSpringEmbedding(int iterations, boolean startFromCurrent) {
         try {
-            Graph G = getGraph();
+            final Graph G = getGraph();
 
-            double width = getSize().width;
-            double height = getSize().height;
+            final double width = getSize().width;
+            final double height = getSize().height;
 
             if (G.getNumberOfNodes() < 2)
                 return;
 
             // Initial positions are on a circle:
-            NodeDoubleArray xPos = new NodeDoubleArray(G);
-            NodeDoubleArray yPos = new NodeDoubleArray(G);
+            final NodeDoubleArray xPos = new NodeDoubleArray(G);
+            final NodeDoubleArray yPos = new NodeDoubleArray(G);
 
             int i = 0;
             for (Node v = G.getFirstNode(); v != null; v = G.getNextNode(v)) {
@@ -1943,15 +1943,13 @@ public class GraphView extends JPanel implements Printable, Scrollable, INodeEdg
             // run iterations of spring embedding:
             double log2 = Math.log(2);
             for (int count = 1; count < iterations; count++) {
-                double k = Math.sqrt(width * height / G.getNumberOfNodes()) / 2;
+                final double k = Math.sqrt(width * height / G.getNumberOfNodes()) / 2;
+                final double l2 = 25 * log2 * Math.log(1 + count);
+                final double tx = width / l2;
+                final double ty = height / l2;
 
-                double l2 = 25 * log2 * Math.log(1 + count);
-
-                double tx = width / l2;
-                double ty = height / l2;
-
-                NodeDoubleArray xDispl = new NodeDoubleArray(G);
-                NodeDoubleArray yDispl = new NodeDoubleArray(G);
+                final NodeDoubleArray xDispl = new NodeDoubleArray(G);
+                final NodeDoubleArray yDispl = new NodeDoubleArray(G);
 
                 // repulsive forces
 
@@ -1962,50 +1960,49 @@ public class GraphView extends JPanel implements Printable, Scrollable, INodeEdg
                     for (Node u = G.getFirstNode(); u != null; u = G.getNextNode(u)) {
                         if (u == v)
                             continue;
-                        double xdist = xv - xPos.getValue(u);
-                        double ydist = yv - yPos.getValue(u);
-                        double dist = xdist * xdist + ydist * ydist;
+                        double xDist = xv - xPos.getValue(u);
+                        double yDist = yv - yPos.getValue(u);
+                        double dist = xDist * xDist + yDist * yDist;
                         if (dist < 1e-3)
                             dist = 1e-3;
-                        double frepulse = k * k / dist;
-                        xDispl.set(v, xDispl.getValue(v) + frepulse * xdist);
-                        yDispl.set(v, yDispl.getValue(v) + frepulse * ydist);
+                        double repulse = k * k / dist;
+                        xDispl.set(v, xDispl.getValue(v) + repulse * xDist);
+                        yDispl.set(v, yDispl.getValue(v) + repulse * yDist);
                     }
 
                     for (Edge e = G.getFirstEdge(); e != null; e = G.getNextEdge(e)) {
-                        Node a = G.getSource(e);
-                        Node b = G.getTarget(e);
+                        final Node a = G.getSource(e);
+                        final Node b = G.getTarget(e);
                         if (a == v || b == v)
                             continue;
-                        double xdist = xv -
-                                (xPos.getValue(a) + xPos.getValue(b)) / 2;
-                        double ydist = yv -
-                                (yPos.getValue(a) + yPos.getValue(b)) / 2;
-                        double dist = xdist * xdist + ydist * ydist;
-                        if (dist < 1e-3) dist = 1e-3;
-                        double frepulse = k * k / dist;
-                        xDispl.set(v, xDispl.getValue(v) + frepulse * xdist);
-                        yDispl.set(v, yDispl.getValue(v) + frepulse * ydist);
+                        double xDist = xv - (xPos.getValue(a) + xPos.getValue(b)) / 2;
+                        double yDist = yv - (yPos.getValue(a) + yPos.getValue(b)) / 2;
+                        double dist = xDist * xDist + yDist * yDist;
+                        if (dist < 1e-3)
+                            dist = 1e-3;
+                        double repulse = k * k / dist;
+                        xDispl.set(v, xDispl.getValue(v) + repulse * xDist);
+                        yDispl.set(v, yDispl.getValue(v) + repulse * yDist);
                     }
                 }
 
                 // attractive forces
 
                 for (Edge e = G.getFirstEdge(); e != null; e = G.getNextEdge(e)) {
-                    Node u = G.getSource(e);
-                    Node v = G.getTarget(e);
+                    final Node u = G.getSource(e);
+                    final Node v = G.getTarget(e);
 
-                    double xdist = xPos.getValue(v) - xPos.getValue(u);
-                    double ydist = yPos.getValue(v) - yPos.getValue(u);
+                    double xDist = xPos.getValue(v) - xPos.getValue(u);
+                    double yDist = yPos.getValue(v) - yPos.getValue(u);
 
-                    double dist = Math.sqrt(xdist * xdist + ydist * ydist);
+                    double dist = Math.sqrt(xDist * xDist + yDist * yDist);
 
                     dist /= ((G.getDegree(u) + G.getDegree(v)) / 16.0);
 
-                    xDispl.set(v, xDispl.getValue(v) - xdist * dist / k);
-                    yDispl.set(v, yDispl.getValue(v) - ydist * dist / k);
-                    xDispl.set(u, xDispl.getValue(u) + xdist * dist / k);
-                    yDispl.set(u, yDispl.getValue(u) + ydist * dist / k);
+                    xDispl.set(v, xDispl.getValue(v) - xDist * dist / k);
+                    yDispl.set(v, yDispl.getValue(v) - yDist * dist / k);
+                    xDispl.set(u, xDispl.getValue(u) + xDist * dist / k);
+                    yDispl.set(u, yDispl.getValue(u) + yDist * dist / k);
                 }
 
                 // preventions
@@ -2014,16 +2011,13 @@ public class GraphView extends JPanel implements Printable, Scrollable, INodeEdg
                     double xd = xDispl.getValue(v);
                     double yd = yDispl.getValue(v);
 
-                    double dist = Math.sqrt(xd * xd + yd * yd);
+                    final double dist = Math.sqrt(xd * xd + yd * yd);
 
                     xd = tx * xd / dist;
                     yd = ty * yd / dist;
 
-                    double xp = xPos.getValue(v) + xd;
-                    double yp = yPos.getValue(v) + yd;
-
-                    xPos.set(v, xp);
-                    yPos.set(v, yp);
+                    xPos.set(v, xPos.getValue(v) + xd);
+                    yPos.set(v, yPos.getValue(v) + yd);
                 }
             }
 
