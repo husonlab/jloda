@@ -26,6 +26,7 @@ import java.io.*;
  * Daniel Huson, 3.2012
  */
 public class FileInputIterator implements IFileIterator {
+    public static final String PREFIX_TO_INDICATE_TO_PARSE_FILENAME_STRING = "!!!";
     private final BufferedReader reader;
     private String nextLine = null;
     private long lineNumber = 0;
@@ -51,7 +52,27 @@ public class FileInputIterator implements IFileIterator {
      * @throws java.io.FileNotFoundException
      */
     public FileInputIterator(String fileName) throws IOException {
-        this(new File(fileName), false);
+        this(fileName, false);
+    }
+
+    /**
+     * constructor
+     *
+     * @param file
+     * @throws java.io.FileNotFoundException
+     */
+    public FileInputIterator(File file, boolean reportProgress) throws IOException {
+        this(file.getPath(), reportProgress);
+    }
+
+    /**
+     * constructor
+     *
+     * @param file
+     * @throws java.io.FileNotFoundException
+     */
+    public FileInputIterator(File file) throws IOException {
+        this(file, false);
     }
 
     /**
@@ -61,8 +82,28 @@ public class FileInputIterator implements IFileIterator {
      * @throws java.io.FileNotFoundException
      */
     public FileInputIterator(String fileName, boolean reportProgress) throws IOException {
-        this(new File(fileName), reportProgress);
+        this.fileName = fileName;
+
+        if (fileName.startsWith(PREFIX_TO_INDICATE_TO_PARSE_FILENAME_STRING)) {
+            reader = new BufferedReader(new StringReader(fileName.substring(3)));
+            endOfLineBytes = 1;
+            maxProgress = fileName.length() - PREFIX_TO_INDICATE_TO_PARSE_FILENAME_STRING.length();
+        } else {
+            final File file = new File(fileName);
+            if (Basic.isZIPorGZIPFile(file.getPath())) {
+                reader = new BufferedReader(new InputStreamReader(Basic.getInputStreamPossiblyZIPorGZIP(file.getPath())));
+                endOfLineBytes = 1;
+                maxProgress = 5 * file.length(); // assuming compression factor of 5-to-1
+            } else {
+                reader = new BufferedReader(new FileReader(file), bufferSize);
+                endOfLineBytes = Basic.getNumberOfNonSpaceCharacters(fileName);
+                maxProgress = file.length();
+            }
+        }
+        done = (maxProgress <= 0);
+        setReportProgress(reportProgress);
     }
+
 
     /**
      * constructor
@@ -83,47 +124,21 @@ public class FileInputIterator implements IFileIterator {
     public FileInputIterator(Reader r, String fileName, boolean reportProgress) throws IOException {
         this.fileName = fileName;
 
-        reader = new BufferedReader(r, bufferSize);
-        endOfLineBytes = Basic.getNumberOfNonSpaceCharacters(fileName);
-
-        File file = new File(fileName);
-        if (file.exists())
-            maxProgress = file.length();
-        else
-            maxProgress = 10000000;  // unknown
-
-        setReportProgress(reportProgress);
-    }
-
-    /**
-     * constructor
-     *
-     * @param file
-     * @throws java.io.FileNotFoundException
-     */
-    public FileInputIterator(File file) throws IOException {
-        this(file, false);
-    }
-
-    /**
-     * constructor
-     *
-     * @param file
-     * @throws java.io.FileNotFoundException
-     */
-    public FileInputIterator(File file, boolean reportProgress) throws IOException {
-        this.fileName = file.getPath();
-
-        if (Basic.isZIPorGZIPFile(file.getPath())) {
-            reader = new BufferedReader(new InputStreamReader(Basic.getInputStreamPossiblyZIPorGZIP(file.getPath())));
+        if (fileName.startsWith(PREFIX_TO_INDICATE_TO_PARSE_FILENAME_STRING)) {
+            reader = new BufferedReader(new StringReader(fileName.substring(3)));
             endOfLineBytes = 1;
-            maxProgress = 5 * file.length(); // assuming compression factor of 5-to-1
+            maxProgress = fileName.length() - PREFIX_TO_INDICATE_TO_PARSE_FILENAME_STRING.length();
         } else {
-            reader = new BufferedReader(new FileReader(file), bufferSize);
+            reader = new BufferedReader(r, bufferSize);
             endOfLineBytes = Basic.getNumberOfNonSpaceCharacters(fileName);
-            maxProgress = file.length();
+
+            File file = new File(fileName);
+            if (file.exists())
+                maxProgress = file.length();
+            else
+                maxProgress = 10000000;  // unknown
         }
-        done = (file.length() == 0);
+
         setReportProgress(reportProgress);
     }
 
@@ -132,8 +147,12 @@ public class FileInputIterator implements IFileIterator {
      */
     public void setReportProgress(boolean reportProgress) {
         if (reportProgress) {
-            if (progress == null)
-                progress = new ProgressPercentage("Processing file: " + fileName, getMaximumProgress());
+            if (progress == null) {
+                if (!fileName.startsWith(PREFIX_TO_INDICATE_TO_PARSE_FILENAME_STRING))
+                    progress = new ProgressPercentage("Processing file: " + fileName, getMaximumProgress());
+                else
+                    progress = new ProgressPercentage("Processing string", getMaximumProgress());
+            }
         } else {
             if (progress != null) {
                 progress.close();
