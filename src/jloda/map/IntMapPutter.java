@@ -39,11 +39,17 @@ public class IntMapPutter implements IIntGetter, IIntPutter {
     private final File file;
     private boolean mustWriteOnClose = false;
 
-    public IntMapPutter(File file) throws IOException {
+    /**
+     * constructor
+     *
+     * @param file
+     * @throws IOException
+     */
+    public IntMapPutter(File file, boolean loadFileIfExists) throws IOException {
         this.file = file;
         map = new HashMap<>();
 
-        if (file.exists()) {
+        if (loadFileIfExists && file.exists()) {
             final FileInputIterator it = new FileInputIterator(file.getPath());
             while (it.hasNext()) {
                 String aLine = it.next().trim();
@@ -109,14 +115,13 @@ public class IntMapPutter implements IIntGetter, IIntPutter {
     @Override
     public void close() {
         if (mustWriteOnClose) {
-            try {
-                BufferedWriter w = new BufferedWriter(new FileWriter(file));
+            System.err.println("Writing file: " + file);
+            try (BufferedWriter w = new BufferedWriter(new FileWriter(file))) {
                 for (Long key : map.keySet()) {
                     w.write(key + "\t" + map.get(key) + "\n");
                 }
-                w.close();
-            } catch (IOException e) {
-                Basic.caught(e);
+            } catch (IOException ex) {
+                Basic.caught(ex);
             }
         }
     }
