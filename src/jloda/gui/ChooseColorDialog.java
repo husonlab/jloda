@@ -31,6 +31,7 @@ import java.awt.event.ActionListener;
  * Daniel Huson, 4.2011
  */
 public class ChooseColorDialog {
+    private final static JColorChooser chooserPane = new JColorChooser();
 
     /**
      * show a choose color dialog
@@ -41,7 +42,6 @@ public class ChooseColorDialog {
      * @return color chosen or null
      */
     public static Color showChooseColorDialog(JFrame parent, String title, Color defaultColor) {
-        final JColorChooser chooserPane = new JColorChooser();
         if (defaultColor != null)
             chooserPane.setColor(defaultColor);
 
