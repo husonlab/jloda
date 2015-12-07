@@ -40,7 +40,7 @@ public class PluginClassLoader {
      * @param clazz
      * @return instances
      */
-    public static List<Object> getInstances(String packageName, Class clazz) {
+    public static List<Object> getInstances(String packageName, Class<jloda.gui.commands.ICommand> clazz) {
         return getInstances(new String[]{packageName}, clazz);
     }
 
@@ -82,7 +82,7 @@ public class PluginClassLoader {
                                     // continue; //Must be an abstract class
                                 }
                             } else {
-                                //  System.err.println("Skipping: " + c.getName());
+                                // System.err.println("Skipping: " + c.getName());
                             }
                         } catch (Exception ex) {
                             // Basic.caught(ex);
@@ -111,7 +111,7 @@ public class PluginClassLoader {
      * @param type
      * @return instances
      */
-    public static List getInstancesSorted(String packageName, Class type) {
+    public static List getInstancesSorted(String packageName, Class<jloda.gui.commands.ICommand> type) {
         List plugins = getInstances(packageName, type);
 
         Object[] array = plugins.toArray();
