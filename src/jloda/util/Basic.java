@@ -55,6 +55,7 @@ public class Basic {
     static final PrintStream origErr = System.err;
     static final PrintStream origOut = System.out;
     static final PrintStream nullOut = new PrintStream(new NullOutStream());
+    static private CollectOutStream collectOut;
 
     /**
      * Catch an exception.
@@ -103,6 +104,21 @@ public class Basic {
      */
     public static void sendSystemErrToSystemOut() {
         System.setErr(origOut);
+    }
+
+    public static void startCollectionStdErr() {
+        collectOut = new CollectOutStream();
+        System.setErr(new PrintStream(collectOut));
+    }
+
+    public static String stopCollectingStdErr() {
+        restoreSystemErr();
+        if (collectOut != null) {
+            String result = collectOut.toString();
+            collectOut = null;
+            return result;
+        } else
+            return "";
     }
 
     /**
@@ -3716,6 +3732,20 @@ public class Basic {
  */
 class NullOutStream extends OutputStream {
     public void write(int b) {
+    }
+}
+
+class CollectOutStream extends OutputStream {
+    private StringBuilder buf = new StringBuilder();
+
+    @Override
+    public void write(int b) throws IOException {
+        Basic.origErr.write(b);
+        buf.append((char) b);
+    }
+
+    public String toString() {
+        return buf.toString();
     }
 }
 

@@ -173,13 +173,17 @@ public class ArgsOptions {
 
         if (verbose) {
             System.err.println("\t--verbose: true");
-            if (authors != null)
-                System.err.println("Author(s) " + authors);
+        }
+
+        if (!doHelp) {
             if (version != null)
                 System.err.println("Version   " + version);
+            if (authors != null)
+                System.err.println("Author(s) " + authors);
             if (license != null)
                 System.err.println(license);
         }
+
 
         if (doHelp) {
             System.err.println(getUsage());
