@@ -38,6 +38,7 @@ public class ArgsOptions {
     private final String description;
     private String version;
     private String authors;
+    private String license;
     private final List<String> arguments;
     private final List<String> usage;
 
@@ -120,12 +121,15 @@ public class ArgsOptions {
         }
         result.append(replaceFirstColon("\t-v, --verbose: Echo commandline options and be verbose. Default value: false.\n"));
         result.append(replaceFirstColon("\t-h, --help: Show program usage and quit.\n"));
-        if (authors != null) {
+        if (authors != null)
             result.append("AUTHOR(s)\n\t").append(authors).append(".\n");
-        }
-        if (version != null) {
+
+        if (version != null)
             result.append("VERSION\n\t").append(version).append(".\n");
-        }
+
+        if (license != null)
+            result.append(license).append(".\n");
+
         return result.toString();
     }
 
@@ -171,7 +175,10 @@ public class ArgsOptions {
             System.err.println("\t--verbose: true");
             if (authors != null)
                 System.err.println("Author(s) " + authors);
-            System.err.println("Version   " + version);
+            if (version != null)
+                System.err.println("Version   " + version);
+            if (license != null)
+                System.err.println(license);
         }
 
         if (doHelp) {
@@ -213,6 +220,14 @@ public class ArgsOptions {
 
     public void setAuthors(String authors) {
         this.authors = authors;
+    }
+
+    public String getLicense() {
+        return license;
+    }
+
+    public void setLicense(String license) {
+        this.license = license;
     }
 
     /**
