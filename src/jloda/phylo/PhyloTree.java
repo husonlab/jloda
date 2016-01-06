@@ -47,9 +47,7 @@ public class PhyloTree extends PhyloGraph {
     public boolean allowMultiLabeledNodes = false;
 
     Node root = null; // can be a node or edge
-    boolean writeConfidence = false;
     boolean inputHasMultiLabels = false;
-    boolean inputHasBootstrapValuesOnNodes = false;
     static boolean warnMultiLabeled = true;
     private boolean hideCollapsedSubTreeOnWrite = false;
     public static final String COLLAPSED_NODE_SUFFIX = "{+}";
@@ -297,7 +295,6 @@ public class PhyloTree extends PhyloGraph {
         if (doClear)
             clear();
         setInputHasMultiLabels(false);
-        setInputHasBootstrapValuesOnNodes(false);
         Map<String, Node> seen = new HashMap<>();
 
         hasWeights = false;
@@ -376,11 +373,7 @@ public class PhyloTree extends PhyloGraph {
                         }
                         label = buf.toString().trim();
 
-                        boolean isBootstrapValue = isBootstrapValue(label);
-                        if (isBootstrapValue)
-                            setInputHasBootstrapValuesOnNodes(true);
-
-                        if (label.length() > 0 && !isBootstrapValue) {
+                        if (label.length() > 0) {
                             if (!getAllowMultiLabeledNodes() && seen.containsKey(label) && PhyloTreeUtils.findReticulateLabel(label) == null)
                             // if label already used, make unique, unless this is a reticulate node
                             {
@@ -428,11 +421,8 @@ public class PhyloTree extends PhyloGraph {
                     if (label.startsWith("'") && label.endsWith("'") && label.length() > 1)
                         label = label.substring(1, label.length() - 1).trim();
 
-                    boolean isBootstrapValue = isBootstrapValue(label);
-                    if (isBootstrapValue)
-                        setInputHasBootstrapValuesOnNodes(true);
 
-                    if (label.length() > 0 && !isBootstrapValue) {
+                    if (label.length() > 0) {
                         if (!getAllowMultiLabeledNodes() && seen.containsKey(label) && PhyloTreeUtils.findReticulateLabel(label) == null) {
                             // give first occurence of this label the suffix .1
                             Node old = seen.get(label);
@@ -465,21 +455,6 @@ public class PhyloTree extends PhyloGraph {
 
                 // detect and read embedded bootstrap values:
                 i = Basic.skipSpaces(str, i);
-                if (i < str.length() && startOfNumber.indexOf(str.charAt(i)) >= 0) // edge weight is following
-                {
-                    int i0 = i;
-                    StringBuilder buf = new StringBuilder();
-                    while (i < str.length() && punctuationCharacters.indexOf(str.charAt(i)) == -1)
-                        buf.append(str.charAt(i++));
-                    String number = buf.toString().trim();
-                    try {
-                        double weight = Math.max(0, Double.parseDouble(number));
-                        if (e != null)
-                            setConfidence(e, weight / 100.0);
-                    } catch (Exception ex) {
-                        throw new IOException("Expected number at position " + i0 + " (got: '" + number + "')");
-                    }
-                }
 
                 // read edge weights
 
@@ -578,8 +553,6 @@ public class PhyloTree extends PhyloGraph {
         }
         if (edgeWeights.get(e) != null && edgeWeights.get(f) != null)
             setWeight(g, getWeight(e) + getWeight(f));
-        if (edgeConfidences.get(e) != null && edgeConfidences.get(f) != null)
-            setConfidence(g, Math.min(getConfidence(e), getConfidence(f)));
         if (root == v)
             root = null;
         deleteNode(v);
@@ -639,8 +612,6 @@ public class PhyloTree extends PhyloGraph {
                         setSplit(f, getSplit(e));
                         setWeight(f, getWeight(e));
                         setLabel(f, getLabel(e));
-                        if (edgeConfidences.get(e) != null)
-                            setConfidence(f, getConfidence(e));
                     }
                     deleteNode(v);
                 }
@@ -791,8 +762,6 @@ public class PhyloTree extends PhyloGraph {
                                 label = PhyloTreeUtils.makeReticulateNodeLabel(inEdgeHasWeight, node2reticulateNumber.getInt(w));
                             outs.write(label);
                             if (writeEdgeWeights) {
-                                if (getDegree(v) > 1 && edgeConfidencesSet)
-                                    outs.write("" + (float) (100 * getConfidence(e)));
                                 if (getWeight(f) >= 0)
                                     outs.write(":" + (float) (getWeight(f)));
                                 if (writeEdgeLabels && getLabel(f) != null) {
@@ -812,8 +781,6 @@ public class PhyloTree extends PhyloGraph {
         else if (outDegree == 0)
             outs.write("?");
         if (writeEdgeWeights && e != null) {
-            if (getDegree(v) > 1 && edgeConfidencesSet)
-                outs.write("" + (float) (100 * getConfidence(e)));
             if (getWeight(e) >= 0)
                 outs.write(":" + (float) (getWeight(e)));
             if (writeEdgeLabels && getLabel(e) != null) {
@@ -1041,13 +1008,6 @@ public class PhyloTree extends PhyloGraph {
         this.inputHasMultiLabels = inputHasMultiLabels;
     }
 
-    public boolean getInputHasBootstrapValuesOnNodes() {
-        return inputHasBootstrapValuesOnNodes;
-    }
-
-    public void setInputHasBootstrapValuesOnNodes(boolean inputHasBootstrapValuesOnNodes) {
-        this.inputHasBootstrapValuesOnNodes = inputHasBootstrapValuesOnNodes;
-    }
 
     /**
      * returns true if string contains a bootstrap value
