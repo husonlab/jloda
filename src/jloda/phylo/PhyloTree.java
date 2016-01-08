@@ -937,8 +937,8 @@ public class PhyloTree extends PhyloGraph {
      *
      * @param e
      */
-    public void setRoot(Edge e) {
-        setRoot(e, getWeight(e) * 0.5, getWeight(e) * 0.5);
+    public void setRoot(Edge e, EdgeArray<String> edgeLabels) {
+        setRoot(e, getWeight(e) * 0.5, getWeight(e) * 0.5, edgeLabels);
     }
 
     /**
@@ -948,7 +948,7 @@ public class PhyloTree extends PhyloGraph {
      * @param weightToSource weight for new edge adjacent to source of e
      * @param weightToTarget weight for new adjacent to target of e
      */
-    public void setRoot(Edge e, double weightToSource, double weightToTarget) {
+    public void setRoot(Edge e, double weightToSource, double weightToTarget, EdgeArray<String> edgesLabels) {
         Node root = getRoot();
         if (root != null && root.getDegree() == 2 && (getNode2Taxa(root) == null || getNode2Taxa(root).size() == 0)) {
             if (root == e.getSource()) {
@@ -962,7 +962,7 @@ public class PhyloTree extends PhyloGraph {
                 setWeight(f, weightToSource);
                 return; // root stays root
             }
-            delDivertex(root);
+            eraseRoot(edgeLabels);
         }
         Node v = e.getSource();
         Node w = e.getTarget();
@@ -971,14 +971,39 @@ public class PhyloTree extends PhyloGraph {
         Edge uw = newEdge(u, w);
         setWeight(vu, weightToSource);
         setWeight(uw, weightToTarget);
-        if (edgeConfidences.get(e) != null) {
-            setConfidence(vu, getConfidence(e));
-            setConfidence(uw, getConfidence(e));
+        if (edgeLabels != null) {
+            edgesLabels.set(vu, edgesLabels.get(e));
+            edgesLabels.set(uw, edgesLabels.get(e));
         }
+
         deleteEdge(e);
         setRoot(u);
     }
 
+    /**
+     * erase the current root. If it has out-degree two and is not node-labeled, then two out edges will be replaced by single ege
+     *
+     * @param edgeLabels if non-null and root has two out edges, will try to copy one of the edge labels to the new edge
+     */
+    public void eraseRoot(EdgeArray<String> edgeLabels) {
+        final Node oldRoot = getRoot();
+        setRoot((Node) null);
+        if (oldRoot != null) {
+            if (getDegree(oldRoot) == 2 && getLabel(oldRoot) == null) {
+                if (edgeLabels != null) {
+                    String label = null;
+                    for (Edge e = oldRoot.getFirstOutEdge(); e != null; e = oldRoot.getNextOutEdge(e)) {
+                        if (label == null && edgeLabels.get(e) != null)
+                            label = edgeLabels.get(e);
+                        edgeLabels.set(e, null);
+                    }
+                    final Edge e = delDivertex(oldRoot);
+                    edgeLabels.set(e, label);
+                } else
+                    delDivertex(oldRoot);
+            }
+        }
+    }
 
     /**
      * prints a tree

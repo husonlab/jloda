@@ -878,7 +878,7 @@ public class Basic {
     }
 
     /**
-     * returns an array of integers as a separated string
+     * returns an array of integers as a string
      *
      * @param array
      * @param separator
@@ -890,7 +890,7 @@ public class Basic {
 
 
     /**
-     * returns an array of integers as a comma separated string
+     * returns an array of integers as astring
      *
      * @param array
      * @return string representation
@@ -955,12 +955,12 @@ public class Basic {
         final StringBuilder buf = new StringBuilder();
 
         boolean first = true;
-        for (Object anArray : array) {
+        for (long a : array) {
             if (first)
                 first = false;
             else
                 buf.append(separator);
-            buf.append(anArray);
+            buf.append(a);
         }
         return buf.toString();
     }
@@ -977,12 +977,33 @@ public class Basic {
         final StringBuilder buf = new StringBuilder();
 
         boolean first = true;
-        for (Object anArray : array) {
+        for (double a : array) {
             if (first)
                 first = false;
             else
                 buf.append(separator);
-            buf.append(anArray);
+            buf.append(a);
+        }
+        return buf.toString();
+    }
+
+    /**
+     * returns an array of double as a separated string
+     *
+     * @param array
+     * @param separator
+     * @return string representation
+     */
+    public static String toString(String format, double[] array, String separator) {
+        final StringBuilder buf = new StringBuilder();
+
+        boolean first = true;
+        for (double a : array) {
+            if (first)
+                first = false;
+            else
+                buf.append(separator);
+            buf.append(String.format(format, a));
         }
         return buf.toString();
     }

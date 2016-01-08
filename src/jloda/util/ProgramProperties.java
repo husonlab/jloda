@@ -74,11 +74,8 @@ public class ProgramProperties {
      * load properties from default file
      */
     public static void load() {
-        /* TODO: search for file in path */
-        try {
-            FileInputStream fis = new FileInputStream(getDefaultFileName());
+        try (FileInputStream fis = new FileInputStream(getDefaultFileName())) {
             props.load(fis);
-            fis.close();
             //System.err.println("Loaded properties from: " + getDefaultFileName());
         } catch (Exception ex) {
             //Basic.caught(ex);
@@ -97,10 +94,8 @@ public class ProgramProperties {
      * save properties to default file
      */
     public static void store() {
-        try {
             try (OutputStream fos = new FileOutputStream(getDefaultFileName())) {
                 props.store(fos, programName);
-            }
             //System.err.println("Stored properties to: " + getDefaultFileName());
         } catch (Exception ex) {
             //Basic.caught(ex);
