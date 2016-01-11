@@ -948,8 +948,8 @@ public class PhyloTree extends PhyloGraph {
      * @param weightToSource weight for new edge adjacent to source of e
      * @param weightToTarget weight for new adjacent to target of e
      */
-    public void setRoot(Edge e, double weightToSource, double weightToTarget, EdgeArray<String> edgesLabels) {
-        Node root = getRoot();
+    public void setRoot(Edge e, double weightToSource, double weightToTarget, EdgeArray<String> edgeLabels) {
+        final Node root = getRoot();
         if (root != null && root.getDegree() == 2 && (getNode2Taxa(root) == null || getNode2Taxa(root).size() == 0)) {
             if (root == e.getSource()) {
                 Edge f = (root.getFirstAdjacentEdge() != e ? root.getFirstAdjacentEdge() : root.getLastAdjacentEdge());
@@ -971,9 +971,9 @@ public class PhyloTree extends PhyloGraph {
         Edge uw = newEdge(u, w);
         setWeight(vu, weightToSource);
         setWeight(uw, weightToTarget);
-        if (edgeLabels != null) {
-            edgesLabels.set(vu, edgesLabels.get(e));
-            edgesLabels.set(uw, edgesLabels.get(e));
+        if (this.edgeLabels != null) {
+            edgeLabels.set(vu, edgeLabels.get(e));
+            edgeLabels.set(uw, edgeLabels.get(e));
         }
 
         deleteEdge(e);
@@ -989,7 +989,7 @@ public class PhyloTree extends PhyloGraph {
         final Node oldRoot = getRoot();
         setRoot((Node) null);
         if (oldRoot != null) {
-            if (getDegree(oldRoot) == 2 && getLabel(oldRoot) == null) {
+            if (getOutDegree(oldRoot) == 2 && getLabel(oldRoot) == null) {
                 if (edgeLabels != null) {
                     String label = null;
                     for (Edge e = oldRoot.getFirstOutEdge(); e != null; e = oldRoot.getNextOutEdge(e)) {
