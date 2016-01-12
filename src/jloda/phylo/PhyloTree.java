@@ -971,7 +971,7 @@ public class PhyloTree extends PhyloGraph {
         Edge uw = newEdge(u, w);
         setWeight(vu, weightToSource);
         setWeight(uw, weightToTarget);
-        if (this.edgeLabels != null) {
+        if (edgeLabels != null) {
             edgeLabels.set(vu, edgeLabels.get(e));
             edgeLabels.set(uw, edgeLabels.get(e));
         }
