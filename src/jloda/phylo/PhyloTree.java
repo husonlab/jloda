@@ -44,7 +44,7 @@ public class PhyloTree extends PhyloGraph {
     public static final boolean ALLOW_READ_RETICULATE = true;
     public static final boolean ALLOW_READ_WRITE_EDGE_LABELS = true;
 
-    public boolean allowMultiLabeledNodes = false;
+    public boolean allowMultiLabeledNodes = true;
 
     Node root = null; // can be a node or edge
     boolean inputHasMultiLabels = false;
@@ -380,7 +380,7 @@ public class PhyloTree extends PhyloGraph {
                                 if (label.startsWith("'") && label.endsWith("'") && label.length() > 1)
                                     label = label.substring(1, label.length() - 1);
                                 // give first occurence of this label the suffix .1
-                                Node old = seen.get(label);
+                                final Node old = seen.get(label);
                                 if (old != null) // change label of node
                                 {
                                     setLabel(old, label + ".1");
@@ -407,7 +407,7 @@ public class PhyloTree extends PhyloGraph {
                     if (getNumberOfNodes() == 1)
                         throw new IOException("Expected '(' at position " + i);
                     int i0 = i;
-                    StringBuilder buf = new StringBuilder();
+                    final StringBuilder buf = new StringBuilder();
                     boolean inQuotes = false;
                     while (i < str.length() && (inQuotes || punctuationCharacters.indexOf(str.charAt(i)) == -1)) {
                         if (str.charAt(i) == '\'')
@@ -424,7 +424,7 @@ public class PhyloTree extends PhyloGraph {
 
                     if (label.length() > 0) {
                         if (!getAllowMultiLabeledNodes() && seen.containsKey(label) && PhyloTreeUtils.findReticulateLabel(label) == null) {
-                            // give first occurence of this label the suffix .1
+                            // give first occurrence of this label the suffix .1
                             Node old = seen.get(label);
                             if (old != null) // change label of node
                             {
