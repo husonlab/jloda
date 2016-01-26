@@ -45,8 +45,6 @@ public class MessageWindow {
     private boolean toConsoleWhenHidden = true;
     private static MessageWindow instance;
 
-    public static String SEARCHER_NAME = "Messages";
-
     public JTextArea textArea = null;
 
     /**
@@ -334,6 +332,10 @@ public class MessageWindow {
                 }
             };
         }
+
+        String collected = Basic.stopCollectingStdErr();
+        if (collected.length() > 0)
+            printStream.print(collected);
         System.setOut(printStream);
         System.setErr(printStream);
     }
