@@ -44,6 +44,7 @@ public class MessageWindow {
     private final JFrame frame;
     private boolean toConsoleWhenHidden = true;
     private static MessageWindow instance;
+    final public static String SEARCHER_NAME = "Messages";
 
     public JTextArea textArea = null;
 
