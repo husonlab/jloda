@@ -37,7 +37,6 @@ import java.util.Map;
 public class ColorManager {
     public static final String SAMPLE_ID = "#SampleID";
 
-    private final Map<Integer, Color> colors = new HashMap<>(); // cache colors
     private final Map<String, Color> class2color = new HashMap<>(); // cache changes
     private final Map<String, Color> attribute2color = new HashMap<>(); // cache changes
 
@@ -60,11 +59,7 @@ public class ColorManager {
                 color = Color.GRAY;
             else {
                 int key = sample.hashCode();
-                color = colors.get(key);
-                if (color == null) {
-                    color = PaletteManager.get(key);
-                    colors.put(key, color);
-                }
+                color = PaletteManager.get(key);
             }
         }
         return color;
@@ -87,11 +82,7 @@ public class ColorManager {
                 color = Color.GRAY;
             } else {
                 int key = sample.hashCode();
-                color = colors.get(key);
-                if (color == null) {
                     color = PaletteManager.get(key, alpha);
-                    colors.put(key, color);
-                }
             }
         }
         if (color.getAlpha() == alpha)
@@ -127,11 +118,7 @@ public class ColorManager {
                 color = Color.GRAY;
             else {
                 int key = className.hashCode();
-                color = colors.get(key);
-                if (color == null) {
-                    color = PaletteManager.get(key);
-                    colors.put(key, color);
-                }
+                color = PaletteManager.get(key);
             }
         }
         return color;
@@ -153,11 +140,7 @@ public class ColorManager {
                 color = Color.GRAY;
             else {
                 int key = className.hashCode();
-                color = colors.get(key);
-                if (color == null) {
-                    color = PaletteManager.get(key);
-                    colors.put(key, color);
-                }
+                color = PaletteManager.get(key);
             }
         }
         if (color.getAlpha() == alpha)
@@ -190,11 +173,7 @@ public class ColorManager {
                 color = Color.GRAY;
             else {
                 int key = attributeState.hashCode();
-                color = colors.get(key);
-                if (color == null) {
-                    color = PaletteManager.get(key);
-                    colors.put(key, color);
-                }
+                color = PaletteManager.get(key);
             }
         }
         return color;
@@ -223,11 +202,7 @@ public class ColorManager {
                 color = Color.GRAY;
             else {
                 int key = attributeState.hashCode();
-                color = colors.get(key);
-                if (color == null) {
-                    color = PaletteManager.get(key);
-                    colors.put(key, color);
-                }
+                color = PaletteManager.get(key);
             }
         }
         if (color.getAlpha() == alpha)

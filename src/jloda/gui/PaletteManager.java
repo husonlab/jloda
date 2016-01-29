@@ -114,7 +114,7 @@ public class PaletteManager {
         int alpha = ProgramProperties.get("ColorAlpha", 255);
         java.util.List<Color> list = loadPaletteFromString(ProgramProperties.get("ColorPalette", ""));
         if (list.size() == 0)
-            list = getDefaultPalette();
+            list = defaultColorScheme();
         colors = list.toArray(new Color[list.size()]);
         if (alpha < 255) {
             for (int i = 0; i < colors.length; i++) {
@@ -148,7 +148,7 @@ public class PaletteManager {
      *
      * @return default palette
      */
-    static public java.util.List<Color> getDefaultPalette() {
+    static public java.util.List<Color> defaultColorScheme() {
         java.util.List<Color> colors = new LinkedList<>();
 
         colors.add(Color.decode("0xFF0000")); // Red

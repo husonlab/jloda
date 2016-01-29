@@ -1375,6 +1375,21 @@ public class NexusStreamParser extends NexusStreamTokenizer {
                 np.getWordRespectCase();
         }
         throw new IOException("line " + lineno() + ": input '" + word + "' does not match any of legal tokens: " + legalTokens);
+    }
+
+    /**
+     * gets the legal token matched by next word in stream
+     *
+     * @param legalTokens
+     * @return matched token
+     * @throws IOException
+     */
+    public String getWordMatchesRespectingCase(String[] legalTokens) throws IOException {
+        final String word = getWordRespectCase();
+        for (String legalToken : legalTokens)
+            if (word.equals(legalToken))
+                return legalToken;
+        throw new IOException("line " + lineno() + ": input '" + word + "' does not match any of legal tokens: " + legalTokens);
 
     }
 
