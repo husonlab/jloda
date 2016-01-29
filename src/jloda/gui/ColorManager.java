@@ -59,7 +59,7 @@ public class ColorManager {
                 color = Color.GRAY;
             else {
                 int key = sample.hashCode();
-                color = PaletteManager.get(key);
+                color = ColorTableManager.get(key);
             }
         }
         return color;
@@ -82,7 +82,7 @@ public class ColorManager {
                 color = Color.GRAY;
             } else {
                 int key = sample.hashCode();
-                    color = PaletteManager.get(key, alpha);
+                color = ColorTableManager.get(key, alpha);
             }
         }
         if (color.getAlpha() == alpha)
@@ -118,7 +118,7 @@ public class ColorManager {
                 color = Color.GRAY;
             else {
                 int key = className.hashCode();
-                color = PaletteManager.get(key);
+                color = ColorTableManager.get(key);
             }
         }
         return color;
@@ -140,7 +140,7 @@ public class ColorManager {
                 color = Color.GRAY;
             else {
                 int key = className.hashCode();
-                color = PaletteManager.get(key);
+                color = ColorTableManager.get(key);
             }
         }
         if (color.getAlpha() == alpha)
@@ -173,7 +173,7 @@ public class ColorManager {
                 color = Color.GRAY;
             else {
                 int key = attributeState.hashCode();
-                color = PaletteManager.get(key);
+                color = ColorTableManager.get(key);
             }
         }
         return color;
@@ -202,7 +202,7 @@ public class ColorManager {
                 color = Color.GRAY;
             else {
                 int key = attributeState.hashCode();
-                color = PaletteManager.get(key);
+                color = ColorTableManager.get(key);
             }
         }
         if (color.getAlpha() == alpha)
