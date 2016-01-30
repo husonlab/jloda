@@ -271,33 +271,36 @@ public class CommandManager {
         /**
          * update selection state of all menu items
          */
-        for (JMenuItem menuItem : menuItem2Command.keySet()) {
-            ICommand command = menuItem2Command.get(menuItem);
-            if (command != null) {
-                menuItem.setEnabled(command.isApplicable());
-                if (command instanceof ICheckBoxCommand)
-                    menuItem.setSelected(((ICheckBoxCommand) command).isSelected());
+        try {
+            for (JMenuItem menuItem : menuItem2Command.keySet()) {
+                ICommand command = menuItem2Command.get(menuItem);
+                if (command != null) {
+                    menuItem.setEnabled(command.isApplicable());
+                    if (command instanceof ICheckBoxCommand)
+                        menuItem.setSelected(((ICheckBoxCommand) command).isSelected());
+                }
             }
-        }
 
-        /**
-         * update selection state of all check boxes
-         */
-        for (AbstractButton button : button2Command.keySet()) {
-            ICommand command = button2Command.get(button);
-            if (button.getAction() != null)
-                button.getAction().setEnabled(command.isApplicable());
-            else
-                button.setEnabled(command.isApplicable());
-            if (command instanceof ICheckBoxCommand) {
-                button.setSelected(((ICheckBoxCommand) command).isSelected());
-                if (((ICheckBoxCommand) command).isSelected())
-                    button.setBorder(BorderFactory.createBevelBorder(1));
+            /**
+             * update selection state of all check boxes
+             */
+            for (AbstractButton button : button2Command.keySet()) {
+                ICommand command = button2Command.get(button);
+                if (button.getAction() != null)
+                    button.getAction().setEnabled(command.isApplicable());
                 else
-                    button.setBorder(BorderFactory.createEtchedBorder());
-                button.repaint();
+                    button.setEnabled(command.isApplicable());
+                if (command instanceof ICheckBoxCommand) {
+                    button.setSelected(((ICheckBoxCommand) command).isSelected());
+                    if (((ICheckBoxCommand) command).isSelected())
+                        button.setBorder(BorderFactory.createBevelBorder(1));
+                    else
+                        button.setBorder(BorderFactory.createEtchedBorder());
+                    button.repaint();
 
+                }
             }
+            } catch (Exception ex) {
         }
     }
 
