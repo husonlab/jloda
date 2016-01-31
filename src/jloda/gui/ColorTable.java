@@ -19,7 +19,9 @@
 
 package jloda.gui;
 
+import javax.swing.*;
 import java.awt.*;
+import java.awt.image.BufferedImage;
 import java.util.Collection;
 
 /**
@@ -95,5 +97,48 @@ public class ColorTable {
 
     public int size() {
         return colors.length;
+    }
+
+    /**
+     * gets the command needed to undo this command
+     *
+     * @return undo command
+     */
+    public String getUndo() {
+        return null;
+    }
+
+    /**
+     * make an icon for this color table
+     *
+     * @return icon
+     */
+    public ImageIcon makeIcon() {
+        final BufferedImage image = new BufferedImage(16, 16, BufferedImage.TYPE_INT_RGB);
+
+        int patchSize = 16 / (int) (1 + Math.sqrt(size()));
+
+        for (int x = 0; x < 16; x++)
+            for (int y = 0; y < 16; y++)
+                image.setRGB(x, y, Color.LIGHT_GRAY.getRGB());
+
+        int row = 0;
+        int col = 0;
+        for (Color color : getColors()) {
+            for (int y = 0; y < patchSize; y++) {
+
+                if (row + patchSize >= 16) {
+                    row = 0;
+                    col += patchSize;
+                }
+
+                for (int x = 0; x < patchSize; x++) {
+                    if (row + x < 16 && col + y < 16)
+                        image.setRGB(row + x, col + y, color.getRGB());
+                }
+            }
+            row += patchSize;
+        }
+        return new ImageIcon(image);
     }
 }
