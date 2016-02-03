@@ -301,6 +301,7 @@ public class CommandManager {
                 }
             }
             } catch (Exception ex) {
+            Basic.caught(ex);
         }
     }
 
