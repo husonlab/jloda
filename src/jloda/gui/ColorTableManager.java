@@ -33,11 +33,11 @@ import java.util.TreeMap;
  * Daniel Huson, 1.2016
  */
 public class ColorTableManager {
-    private static String DefaultColorTableName = "Fews8";
+    private static final String DefaultColorTableName = "Fews8";
 
     private static final String[] BuiltInColorTables = {
             "Caspian8;8;0xf64d1b;0x8633bc;0x41a744;0x747474;0x2746bc;0xff9301;0xc03150;0x2198bc;",
-            DefaultColorTableName + ";8;0x5da6dc;0xfba53a;0x60be68;0xf27db0;0xb39230;0xb376b2;0xdfd040;0xf15954;",
+            "Fews8;8;0x5da6dc;0xfba53a;0x60be68;0xf27db0;0xb39230;0xb376b2;0xdfd040;0xf15954;",
             "Pale13;13;0xe2d271;0x9ec25d;0x67c295;0x6083b2;0xc76287;0xe08473;0xf7eead;0xd5e8b7;0xd5e8b7;0xbbe6d2;0xbacee5;0xe3b4c6;0xeec8c2;",
             "Sea9;9;0xffffdb;0xedfbb4;0xc9ecb6;0x88cfbc;0x56b7c4;0x3c90bf;0x345aa7;0x2f2b93;0x121858;",
             "Pale12;12;0xdbdada;0xf27e75;0xba7bbd;0xceedc5;0xfbf074;0xf8cbe5;0xf9b666;0xfdffb6;0x86b0d2;0x95d6c8;0xb3e46c;0xbfb8da;",
@@ -55,11 +55,9 @@ public class ColorTableManager {
 
     private static final Map<String, ColorTable> name2ColorTable = new TreeMap<>();
 
-
     public static ColorTable getColorTable(String name) {
         init();
         if (name != null && name2ColorTable.keySet().contains(name)) {
-            ProgramProperties.put("DefaultColorTableName", name); // change default color table name to last one used
             return name2ColorTable.get(name);
         }
         else
@@ -162,6 +160,10 @@ public class ColorTableManager {
      * @return default color table
      */
     public static ColorTable getDefaultColorTable() {
-        return getColorTable(DefaultColorTableName);
+        String name = ProgramProperties.get("DefaultColorTableName", DefaultColorTableName);
+        if (name2ColorTable.keySet().contains(name))
+            return getColorTable(name);
+        else
+            return getColorTable(DefaultColorTableName);
     }
 }

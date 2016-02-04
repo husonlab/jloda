@@ -517,11 +517,15 @@ public class CommandManager {
      * @return menu item
      */
     public JMenuItem getJMenuItem(String commandName) {
-        ICommand command = getCommand(commandName);
-        JMenuItem item = getJMenuItem(command);
-        if (item != null && command != null)
-            item.setEnabled(command.isApplicable());
-        return item;
+        final ICommand command = getCommand(commandName);
+        if (command != null) {
+            final JMenuItem item = getJMenuItem(command);
+            if (item != null) {
+                item.setEnabled(command.isApplicable());
+                return item;
+            }
+        }
+        return null;
     }
 
     /**
