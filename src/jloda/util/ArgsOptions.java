@@ -540,7 +540,6 @@ public class ArgsOptions {
         usage.add("\t" + shortKey + ", " + longKey + " [string(s)]: " + description + ". " + (mandatory ? "Mandatory option." : defaultValueString));
 
         List<String> result = new LinkedList<>();
-        boolean found = false;
         boolean inArguments = false; // once in arguments, will continue until argument starts with -
 
         Iterator<String> it = arguments.iterator();
@@ -548,8 +547,6 @@ public class ArgsOptions {
             String arg = it.next();
             if (arg.equals(shortKey) || arg.equals(longKey)) {
                 it.remove();
-                if (!it.hasNext())
-                    throw new UsageException("Value for option " + longKey + ": not found");
                 inArguments = true;
             }
             if (inArguments) {
@@ -562,13 +559,12 @@ public class ArgsOptions {
                     }
                     it.remove();
                     result.add(value);
-                    found = true;
                 }
                 if (done)
                     break;
             }
         }
-        if (!found) {
+        if (!inArguments) {
             if (mandatory && !doHelp)
                 throw new UsageException("Mandatory option '" + longKey + "' not specified");
             else

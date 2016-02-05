@@ -2873,6 +2873,9 @@ public class Basic {
      */
     public static void writeStreamToFile(InputStream inputStream, File outputFile) throws IOException {
         System.err.println("Writing file: " + outputFile);
+        if (inputStream == null)
+            throw new IOException("Input stream is null");
+
         try (BufferedOutputStream outs = new BufferedOutputStream(new FileOutputStream(outputFile), 1048576)) {
             while (true) {
                 int a = inputStream.read();
@@ -3605,6 +3608,20 @@ public class Basic {
             return string;
         else
             return string.substring(0, length - 1) + ".";
+    }
+
+    /**
+     * abbreviate a string to the given length
+     *
+     * @param string
+     * @param length
+     * @return abbreviated string
+     */
+    public static String abbreviateDotDotDot(String string, int length) {
+        if (string.length() <= length)
+            return string;
+        else
+            return string.substring(0, length - 1) + "...";
 
     }
 
