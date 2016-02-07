@@ -91,7 +91,6 @@ public class IntFilePutter extends FileGetterPutterBase implements IIntPutter, I
         if (index < fileLength) {
             final ByteBuffer buf = buffers[getWhichBuffer(index)];
             int indexBuffer = getIndexInBuffer(index);
-
             buf.put(indexBuffer++, (byte) (value >> 24));
             buf.put(indexBuffer++, (byte) (value >> 16));
             buf.put(indexBuffer++, (byte) (value >> 8));
@@ -124,5 +123,4 @@ public class IntFilePutter extends FileGetterPutterBase implements IIntPutter, I
 
         resize(file, 4 * (newLimit + 1));
     }
-
 }
