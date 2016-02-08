@@ -117,28 +117,6 @@ public class LongFilePutter extends FileGetterPutterBase implements ILongPutter,
         return fileLength >>> 3;
     }
 
-    public static void main(String[] args) throws IOException {
-        File file = new File("/Users/huson/tmp/xxx.x");
-        long limit = 1000000;
-        LongFilePutter putter = new LongFilePutter(file, limit);
-        putter.erase();
-        System.err.println("limit: " + putter.limit());
-
-        for (long i = 0; i < limit; i += limit / 10) {
-            long value = i * i;
-            putter.put(i, value);
-            System.err.println("put(" + i + "," + value + ") - get(" + i + ")=" + putter.get(i));
-        }
-        putter.close();
-
-        LongFileGetterMappedMemory getter = new LongFileGetterMappedMemory(file);
-        for (long i = 0; i < limit; i += limit / 10) {
-            long value = i * i;
-            System.err.println("Expected=" + value + ", get(" + i + ")=" + getter.get(i));
-        }
-
-    }
-
     /**
      * set a new limit for a file
      *
