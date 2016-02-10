@@ -3637,7 +3637,20 @@ public class Basic {
             return string.substring(pos + 1);
         else
             return string;
+    }
 
+    /**
+     * skip the first word in a string and trim
+     *
+     * @param string
+     * @return first line
+     */
+    public static String skipFirstWord(String string) {
+        for (int pos = 0; pos < string.length(); pos++) {
+            if (Character.isWhitespace(string.charAt(pos)))
+                return string.substring(pos).trim();
+        }
+        return "";
     }
 
     /**
