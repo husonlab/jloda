@@ -80,7 +80,7 @@ public class ColorTable {
      * @param alpha
      * @return color
      */
-    public Color get(int i, int alpha) {
+    public Color getWithAlpha(int i, int alpha) {
         Color color = get(i);
         if (color.getRed() > 210 && color.getGreen() > 210 && color.getBlue() > 210)
             color = color.darker();
@@ -140,5 +140,40 @@ public class ColorTable {
             row += patchSize;
         }
         return new ImageIcon(image);
+    }
+
+    /**
+     * this is used in the node drawer of the main viewer
+     *
+     * @param count
+     * @param inverseLogMaxReads
+     * @return color on a log scale
+     */
+    public Color getColorLogScale(int count, double inverseLogMaxReads) {
+        int index = Math.max(1, Math.min(colors.length - 1, (int) Math.round(colors.length * Math.log(count + 1) * inverseLogMaxReads)));
+        return get(index);
+    }
+
+    /**
+     * this is used in the node drawer of the main viewer
+     *
+     * @param count
+     * @param inverseSqrtMaxReads
+     * @return color on a log scale
+     */
+    public Color getColorSqrtScale(int count, double inverseSqrtMaxReads) {
+        int index = Math.max(1, Math.min(colors.length - 1, (int) Math.round(colors.length * Math.sqrt(count) * inverseSqrtMaxReads)));
+        return get(index);
+    }
+
+    /**
+     * get color on linear scale
+     *
+     * @param count
+     * @return color
+     */
+    public Color getColor(int count, int maxCount) {
+        int index = Math.min(colors.length - 1, (count * colors.length) / maxCount);
+        return get(index);
     }
 }
