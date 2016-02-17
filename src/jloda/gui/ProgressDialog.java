@@ -40,6 +40,7 @@ import java.util.Stack;
  */
 public class ProgressDialog implements ProgressListener {
     static private long delayInMilliseconds = 2000;// wait two seconds before opening progress bar
+    static private final int BITS = 30; // used to shift long values to int ones
     private long startTime = System.currentTimeMillis();
     private JDialog dialog;
     private boolean closed = false;
@@ -53,10 +54,9 @@ public class ProgressDialog implements ProgressListener {
     private String subtask;
     private boolean debug = false;
 
-    private boolean shiftedDown = false;
-
-    private long maxProgess = 0;
+    private long maxProgess = 100;
     private long currentProgress = -1;
+    private boolean shiftedDown = false;
 
     private StatusBar frameStatusBar = null;
     private JPanel statusBarPanel = null;
@@ -93,10 +93,7 @@ public class ProgressDialog implements ProgressListener {
      * @param owner
      */
     public void MakeProgressDialog(final String taskName, final String subtaskName, final Component owner, final long delayInMillisec) {
-//final String note = Basic.toMessageString(note0);
-
-        try {
-            SwingUtilities.invokeAndWait(new Runnable() {
+        final Runnable runnable = new Runnable() {
                 public void run() {
                     userCancelled = false;
                     delayInMilliseconds = delayInMillisec;
@@ -236,9 +233,15 @@ public class ProgressDialog implements ProgressListener {
                     }
                     //dialog.setVisible(true);  //open once delay has passed
                 }
-            });
-        } catch (Exception ex) {
-            // Basic.caught(ex);
+        };
+        if (SwingUtilities.isEventDispatchThread())
+            runnable.run();
+        else {
+            try {
+                SwingUtilities.invokeAndWait(runnable);
+            } catch (InterruptedException | InvocationTargetException e) {
+                Basic.caught(e);
+            }
         }
     }
 
@@ -266,54 +269,42 @@ public class ProgressDialog implements ProgressListener {
 
 
     /**
-     * sets the steps number of steps to be done. By default, the maximum is set to 100
+     * sets the steps number of steps to be done. This can be done in the event dispatch thread
      *
-     * @param steps0
+     * @param steps
      */
-    public void setMaximum(final long steps0) {
+    public void setMaximum(final long steps) {
         startTime = System.currentTimeMillis();
 
-        final int steps;
-        if (steps0 > 10000000) {
-            steps = (int) (steps0 >> 8l);
-            shiftedDown = true;
-        } else {
-            steps = (int) steps0;
-            shiftedDown = false;
-        }
+        shiftedDown = (steps > (1 << BITS));
+
         maxProgess = steps;
         checkTimeAndShow();
 
         if (progressBar != null && maxProgess != progressBar.getMaximum()) {
-            try {
-                if (SwingUtilities.isEventDispatchThread())
-                    progressBar.setMaximum(steps);
-                else {
-                    SwingUtilities.invokeAndWait(new Runnable() {
-                        public void run() {
-                            // progressBar.setValue(0);
-                            progressBar.setMaximum(steps);
-                        }
-                    });
+            final Runnable runnable = new Runnable() {
+                public void run() {
+                    progressBar.setMaximum((int) (shiftedDown ? steps >>> BITS : steps));
                 }
-            } catch (InterruptedException | InvocationTargetException e) {
-                Basic.caught(e);
-            }
+            };
+                if (SwingUtilities.isEventDispatchThread())
+                    runnable.run();
+                else {
+                    try {
+                        SwingUtilities.invokeAndWait(runnable);
+                    } catch (InterruptedException | InvocationTargetException e) {
+                        Basic.caught(e);
+                    }
+                }
         }
     }
 
     /**
      * sets the progress. If a negative value is given, sets the progress bar to indeterminate mode
      *
-     * @param steps0
+     * @param steps
      */
-    public void setProgress(long steps0) throws CanceledException {
-        final int steps;
-        if (shiftedDown) {
-            steps = (int) (steps0 >> 8l);
-        } else {
-            steps = (int) steps0;
-        }
+    public void setProgress(final long steps) throws CanceledException {
         if (steps != currentProgress) {
             currentProgress = steps;
             checkForCancel();
@@ -326,7 +317,7 @@ public class ProgressDialog implements ProgressListener {
                             progressBar.setString(null);
                         } else {
                             progressBar.setIndeterminate(false);
-                            progressBar.setValue(steps);
+                            progressBar.setValue((int) (shiftedDown ? steps >>> BITS : steps));
                         }
                     }
                 });
@@ -340,10 +331,7 @@ public class ProgressDialog implements ProgressListener {
      * @return progress
      */
     public long getProgress() {
-        if (shiftedDown)
-            return progressBar.getValue() << 8;
-        else
-            return progressBar.getValue();
+        return currentProgress;
     }
 
     /**
@@ -361,12 +349,11 @@ public class ProgressDialog implements ProgressListener {
         if (progressBar != null && currentProgress != progressBar.getValue()) {
             SwingUtilities.invokeLater(new Runnable() {
                 public void run() {
-                    progressBar.setValue((int) currentProgress);
+                    progressBar.setValue((int) (shiftedDown ? currentProgress >>> BITS : currentProgress));
                 }
             });
         }
     }
-
 
     /**
      * closes the dialog.
@@ -408,7 +395,6 @@ public class ProgressDialog implements ProgressListener {
             throw new CanceledException();
         }
     }
-
 
     /**
      * sets the subtask name
@@ -485,19 +471,23 @@ public class ProgressDialog implements ProgressListener {
         }
     }
 
+    /**
+     * show the progress bar
+     */
     public void show() {
         if (!visible) {
             try {
                 Runnable runnable = new Runnable() {
                     public void run() {
                         if (progressBar != null) {
-                            progressBar.setMaximum((int) maxProgess);
+
+                            progressBar.setMaximum((int) (shiftedDown ? maxProgess >>> BITS : maxProgess));
                             if (currentProgress < 0) {
                                 progressBar.setIndeterminate(true);
                                 progressBar.setString(null);
                             } else {
                                 progressBar.setIndeterminate(false);
-                                progressBar.setValue((int) currentProgress);
+                                progressBar.setValue((int) (shiftedDown ? currentProgress >>> BITS : currentProgress));
                             }
                         }
                         if (statusBarPanel != null)
@@ -574,7 +564,6 @@ public class ProgressDialog implements ProgressListener {
             cancelButton.setText("Stop");
         else
             cancelButton.setText("Cancel");
-
     }
 
     /**

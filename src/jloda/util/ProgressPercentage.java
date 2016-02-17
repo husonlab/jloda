@@ -100,9 +100,8 @@ public class ProgressPercentage implements ProgressListener {
      * @param steps
      */
     public void setProgress(final long steps) {
-        this.steps = steps;
-
         if (steps > nextThreshold && !reported[nextPercentageToReport]) {
+            this.steps = steps;
             System.err.print((10 * nextPercentageToReport + "% "));
             reported[nextPercentageToReport] = true;
             if (nextPercentageToReport < 10)

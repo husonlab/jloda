@@ -28,9 +28,10 @@ import java.io.*;
  * Daniel Huson, 5.2015
  */
 public class LongFileGetterInMemory implements ILongGetter {
+    private final int BITS = 30;
+    private final long BIT_MASK = (1L << (long) BITS) - 1L;
     private final long[][] data;
     private final long limit;
-    private final int length0;
 
     /**
      * long file getter in memory
@@ -42,19 +43,26 @@ public class LongFileGetterInMemory implements ILongGetter {
     public LongFileGetterInMemory(File file) throws IOException {
         limit = file.length() / 8;
 
-        data = new long[(int) ((limit >> 30)) + 1][];
-        length0 = (int) (Math.min(limit, 1 << 30));
+        data = new long[(int) ((limit >>> BITS)) + 1][];
+        int length0 = (int) (Math.min(limit, 1L << BITS));
         for (int i = 0; i < data.length; i++) {
-            int length = Math.min(length0, dataPos(limit) + 1);
+            int length = Math.min(length0, (int) (limit & BIT_MASK) + 1);
             data[i] = new long[length];
         }
 
         try (InputStream ins = new BufferedInputStream(new FileInputStream(file))) {
             final ProgressPercentage progress = new ProgressPercentage("Reading file: " + file, limit);
-            for (long pos = 0; pos < limit; pos++) {
-                data[dataIndex(pos)][dataPos(pos)] = (((long) (ins.read()) & 0xFF) << 56) + (((long) (ins.read()) & 0xFF) << 48) + (((long) (ins.read()) & 0xFF) << 40) + (((long) (ins.read()) & 0xFF) << 32)
+            int whichArray = 0;
+            int indexInArray = 0;
+
+            for (long index = 0; index < limit; index++) {
+                data[whichArray][indexInArray] = (((long) (ins.read()) & 0xFF) << 56) + (((long) (ins.read()) & 0xFF) << 48) + (((long) (ins.read()) & 0xFF) << 40) + (((long) (ins.read()) & 0xFF) << 32)
                         + (((long) (ins.read()) & 0xFF) << 24) + (((long) (ins.read()) & 0xFF) << 16) + (((long) (ins.read()) & 0xFF) << 8) + (((long) (ins.read()) & 0xFF));
-                progress.setProgress(pos);
+                if (++indexInArray == length0) {
+                    whichArray++;
+                    indexInArray = 0;
+                }
+                progress.setProgress(index);
             }
             progress.close();
         }
@@ -68,7 +76,7 @@ public class LongFileGetterInMemory implements ILongGetter {
      */
     @Override
     public long get(long index) {
-        return data[dataIndex(index)][dataPos(index)];
+        return data[(int) (index >>> BITS)][(int) (index & BIT_MASK)];
     }
 
     /**
@@ -87,14 +95,5 @@ public class LongFileGetterInMemory implements ILongGetter {
      */
     @Override
     public void close() {
-
-    }
-
-    private int dataIndex(long index) {
-        return (int) ((index >> 30));
-    }
-
-    private int dataPos(long index) {
-        return (int) (index - (index >> 30) * length0);
     }
 }

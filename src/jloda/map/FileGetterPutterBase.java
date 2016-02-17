@@ -40,7 +40,7 @@ public abstract class FileGetterPutterBase {
     protected static final int BITS = 30;
 
     protected static final int BLOCK_SIZE = (1 << BITS);
-    protected static final long BIT_MASK = (BLOCK_SIZE - 1l);
+    protected static final long BIT_MASK = (BLOCK_SIZE - 1L);
     protected final ByteBuffer[] buffers;
     protected final FileChannel fileChannel;
     protected final long fileLength;
