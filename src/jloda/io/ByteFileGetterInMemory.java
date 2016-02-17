@@ -16,7 +16,7 @@
  *  You should have received a copy of the GNU General Public License
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package jloda.map;
+package jloda.io;
 
 import jloda.util.CanceledException;
 import jloda.util.ProgressPercentage;
@@ -44,14 +44,13 @@ public class ByteFileGetterInMemory implements IByteGetter {
         limit = file.length();
 
         data = new byte[(int) ((limit >>> BITS)) + 1][];
-        int length0 = (int) (Math.min(limit, 1L << BITS));
+        final int length0 = (1 << BITS);
         for (int i = 0; i < data.length; i++) {
-            int length = Math.min(length0, (int) (limit & BIT_MASK) + 1);
+            int length = (i < data.length - 1 ? length0 : (int) (limit & BIT_MASK) + 1);
             data[i] = new byte[length];
         }
 
-        try (InputStream ins = new BufferedInputStream(new FileInputStream(file))) {
-            final ProgressPercentage progress = new ProgressPercentage("Reading file: " + file, limit);
+        try (InputStream ins = new BufferedInputStream(new FileInputStream(file)); ProgressPercentage progress = new ProgressPercentage("Reading file: " + file, limit)) {
             int whichArray = 0;
             int indexInArray = 0;
             for (long index = 0; index < limit; index++) {

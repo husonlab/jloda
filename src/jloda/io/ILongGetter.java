@@ -1,5 +1,5 @@
 /**
- * ILongPutter.java 
+ * ILongGetter.java 
  * Copyright (C) 2016 Daniel H. Huson
  *
  * (Some files contain contributions from other authors, who are then mentioned separately.)
@@ -17,34 +17,28 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-package jloda.map;
+package jloda.io;
+
+import java.io.IOException;
 
 /**
- * A read and write long-indexed array of longs
+ * A readonly long-indexed array of longs
  * Daniel Huson, 4.2015
  */
-public interface ILongPutter extends AutoCloseable {
+public interface ILongGetter extends AutoCloseable {
     /**
      * gets value for given index
      *
      * @param index
      * @return value or 0
      */
-    long get(long index);
-
-    /**
-     * puts value for given index
-     *
-     * @param index
-     * @param value return the putter
-     */
-    ILongPutter put(long index, long value);
+    long get(long index) throws IOException;
 
     /**
      * length of array
      *
      * @return array length
-     * @throws java.io.IOException
+     * @throws IOException
      */
     long limit();
 

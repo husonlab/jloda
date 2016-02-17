@@ -1,5 +1,5 @@
 /**
- * IByteGetter.java 
+ * ILongPutter.java 
  * Copyright (C) 2016 Daniel H. Huson
  *
  * (Some files contain contributions from other authors, who are then mentioned separately.)
@@ -17,40 +17,28 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-package jloda.map;
-
-import java.io.IOException;
+package jloda.io;
 
 /**
- * A readonly long-indexed array of bytes
+ * A read and write long-indexed array of longs
  * Daniel Huson, 4.2015
  */
-public interface IByteGetter extends AutoCloseable {
+public interface ILongPutter extends AutoCloseable {
     /**
      * gets value for given index
      *
      * @param index
      * @return value or 0
      */
-    int get(long index) throws IOException;
+    long get(long index);
 
     /**
-     * bulk get
+     * puts value for given index
      *
      * @param index
-     * @param bytes
-     * @param offset
-     * @param len
-     * @return
+     * @param value return the putter
      */
-    int get(long index, byte[] bytes, int offset, int len) throws IOException;
-
-    /**
-     * gets next four bytes as a single integer
-     * @param index
-     * @return integer
-     */
-    int getInt(long index) throws IOException;
+    ILongPutter put(long index, long value);
 
     /**
      * length of array
@@ -61,7 +49,7 @@ public interface IByteGetter extends AutoCloseable {
     long limit();
 
     /**
-     * close the file
+     * close the array
      */
     void close();
 }

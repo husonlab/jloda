@@ -1,5 +1,5 @@
 /**
- * IntFilePutter.java 
+ * LongFilePutter.java 
  * Copyright (C) 2016 Daniel H. Huson
  *
  * (Some files contain contributions from other authors, who are then mentioned separately.)
@@ -17,7 +17,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-package jloda.map;
+package jloda.io;
 
 import java.io.File;
 import java.io.IOException;
@@ -28,38 +28,38 @@ import java.nio.ByteBuffer;
  * <p/>
  * Daniel Huson, 4.2015
  */
-public class IntFilePutter extends FileGetterPutterBase implements IIntPutter, IIntGetter {
+public class LongFilePutter extends FileGetterPutterBase implements ILongPutter, ILongGetter {
+
     /**
      * constructor  to read and write values from an existing file
      *
      * @param file
-     * @throws java.io.IOException
+     * @throws IOException
      */
-    public IntFilePutter(File file) throws IOException {
+    public LongFilePutter(File file) throws IOException {
         super(file, 0, Mode.READ_WRITE);
     }
 
     /**
-     * constructs a int file putter using the given file and limit. (Is not in-memory)
+     * constructs a long file putter using the given file and limit
      *
      * @param file
      * @param limit length of array
      * @throws java.io.IOException
      */
-    public IntFilePutter(File file, long limit) throws IOException {
+    public LongFilePutter(File file, long limit) throws IOException {
         this(file, limit, false);
     }
 
     /**
-     * constructs a int file putter using the given file and limit
+     * constructs a long file putter using the given file and limit
      *
      * @param file
-     * @param limit    length of array
-     * @param inMemory create in memory and then save on close? This uses more memory, but may be faster
+     * @param limit length of array
      * @throws java.io.IOException
      */
-    public IntFilePutter(File file, long limit, boolean inMemory) throws IOException {
-        super(file, 4 * limit, inMemory ? Mode.CREATE_READ_WRITE_IN_MEMORY : Mode.CREATE_READ_WRITE);
+    public LongFilePutter(File file, long limit, boolean inMemory) throws IOException {
+        super(file, 8 * limit, (inMemory ? Mode.CREATE_READ_WRITE_IN_MEMORY : Mode.CREATE_READ_WRITE));
     }
 
     /**
@@ -68,13 +68,14 @@ public class IntFilePutter extends FileGetterPutterBase implements IIntPutter, I
      * @param index
      * @return value or 0
      */
-    public int get(long index) {
+    public long get(long index) {
         if (index < limit()) {
-            index <<= 2; // convert to file position
+            index <<= 3; // convert to file position
             final ByteBuffer buf = buffers[getWhichBuffer(index)];
             int indexBuffer = getIndexInBuffer(index);
-            return ((buf.get(indexBuffer++)) << 24) + ((buf.get(indexBuffer++) & 0xFF) << 16) +
-                    ((buf.get(indexBuffer++) & 0xFF) << 8) + ((buf.get(indexBuffer) & 0xFF));
+            return (((long) buf.get(indexBuffer++)) << 56) + ((long) (buf.get(indexBuffer++) & 0xFF) << 48) + ((long) (buf.get(indexBuffer++) & 0xFF) << 40) +
+                    ((long) (buf.get(indexBuffer++) & 0xFF) << 32) + ((long) (buf.get(indexBuffer++) & 0xFF) << 24) + ((long) (buf.get(indexBuffer++) & 0xFF) << 16) +
+                    ((long) (buf.get(indexBuffer++) & 0xFF) << 8) + (((long) buf.get(indexBuffer) & 0xFF));
         } else
             return 0;
     }
@@ -86,29 +87,34 @@ public class IntFilePutter extends FileGetterPutterBase implements IIntPutter, I
      * @param value
      */
     @Override
-    public void put(long index, int value) {
-        index <<= 2; // convert to file position
-        if (index < fileLength) {
+    public ILongPutter put(long index, long value) {
+        if (index < limit()) {
+            index <<= 3; // convert to file position
             final ByteBuffer buf = buffers[getWhichBuffer(index)];
             int indexBuffer = getIndexInBuffer(index);
+
+            buf.put(indexBuffer++, (byte) (value >> 56));
+            buf.put(indexBuffer++, (byte) (value >> 48));
+            buf.put(indexBuffer++, (byte) (value >> 40));
+            buf.put(indexBuffer++, (byte) (value >> 32));
             buf.put(indexBuffer++, (byte) (value >> 24));
             buf.put(indexBuffer++, (byte) (value >> 16));
             buf.put(indexBuffer++, (byte) (value >> 8));
             buf.put(indexBuffer, (byte) (value));
-        } else {
+        } else
             throw new ArrayIndexOutOfBoundsException("" + index);
-        }
+        return this;
     }
 
     /**
-     * length of array (file length / 4)
+     * length of array (file length / 8)
      *
      * @return array length
      * @throws java.io.IOException
      */
     @Override
     public long limit() {
-        return fileLength >>> 2;
+        return fileLength >>> 3;
     }
 
     /**
@@ -119,8 +125,6 @@ public class IntFilePutter extends FileGetterPutterBase implements IIntPutter, I
      * @throws IOException
      */
     public static void setLimit(File file, long newLimit) throws IOException {
-        System.err.println("new limit: " + newLimit);
-
-        resize(file, 4 * (newLimit + 1));
+        resize(file, 8 * (newLimit + 1));
     }
 }
