@@ -27,6 +27,7 @@ package jloda.gui.format;
 import jloda.graph.EdgeSet;
 import jloda.graph.NodeSet;
 import jloda.graphview.*;
+import jloda.gui.ChooseColorDialog;
 import jloda.gui.WindowListenerAdapter;
 import jloda.gui.commands.CommandManager;
 import jloda.gui.director.IDirectableViewer;
@@ -620,7 +621,7 @@ public class Formatter implements IDirectableViewer {
     }
 
     private JColorChooser makeColor() {
-        final JColorChooser chooser = new JColorChooser();
+        final JColorChooser chooser = ChooseColorDialog.colorChooser;
 
         chooser.setPreviewPanel(new JPanel());
 

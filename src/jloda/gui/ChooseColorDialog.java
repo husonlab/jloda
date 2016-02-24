@@ -31,7 +31,7 @@ import java.awt.event.ActionListener;
  * Daniel Huson, 4.2011
  */
 public class ChooseColorDialog {
-    private final static JColorChooser chooserPane = new JColorChooser();
+    public final static JColorChooser colorChooser = new JColorChooser();
 
     /**
      * show a choose color dialog
@@ -43,13 +43,13 @@ public class ChooseColorDialog {
      */
     public static Color showChooseColorDialog(JFrame parent, String title, Color defaultColor) {
         if (defaultColor != null)
-            chooserPane.setColor(defaultColor);
+            colorChooser.setColor(defaultColor);
 
         final Single<Color> result = new Single<>();
 
         ActionListener okListener = new ActionListener() {
             public void actionPerformed(ActionEvent actionEvent) {
-                result.set(chooserPane.getColor());
+                result.set(colorChooser.getColor());
             }
         };
 
@@ -59,7 +59,7 @@ public class ChooseColorDialog {
             }
         };
 
-        JDialog chooser = JColorChooser.createDialog(parent, title, true, chooserPane, okListener, cancelListener);
+        JDialog chooser = JColorChooser.createDialog(parent, title, true, colorChooser, okListener, cancelListener);
         chooser.setVisible(true);
 
         return result.get();

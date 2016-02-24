@@ -926,6 +926,8 @@ public class Basic {
      * returns an array of integers as a separated string
      *
      * @param array
+     * @param offset where to start reading array
+     * @param length how many entries to read
      * @param separator
      * @return string representation
      */
@@ -933,8 +935,8 @@ public class Basic {
         final StringBuilder buf = new StringBuilder();
 
         boolean first = true;
-        for (int i = offset; i < length; i++) {
-            Object anArray = array[i];
+        for (int i = 0; i < length; i++) {
+            Object anArray = array[i + offset];
             if (first)
                 first = false;
             else
