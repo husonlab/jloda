@@ -37,6 +37,7 @@ public class BlastFileFilter extends FileFilterBase implements FilenameFilter {
         add("blastout");
         add("blastxml");
         add("tab");
+        add("blasttab");
         add("txt");
         add("xml");
     }
