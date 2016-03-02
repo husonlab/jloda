@@ -2349,14 +2349,14 @@ public class Basic {
      * gets the first word in the given string
      *
      * @param string
-     * @return word (delimited by a space)
+     * @return word (delimited by a white space) or empty string, if the first character is a white space
      */
     public static String getFirstWord(String string) {
         int i = getIndexOfFirstWhiteSpace(string);
         if (i != -1)
-            return string.substring(0, i).trim();
+            return string.substring(0, i);
         else
-            return string.trim();
+            return string;
     }
 
     /**

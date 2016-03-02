@@ -90,6 +90,8 @@ public class ProgressPercentage implements ProgressListener {
      */
     public void setMaximum(final long maxSteps) {
         tenPercent = maxSteps / 10;
+        for (int i = 0; i < reported.length - 1; i++) // not the last entry!
+            reported[i] = false;
         nextThreshold = tenPercent;
         nextPercentageToReport = 1;
     }
@@ -101,13 +103,13 @@ public class ProgressPercentage implements ProgressListener {
      */
     public void setProgress(final long steps) {
         if (steps > nextThreshold && !reported[nextPercentageToReport]) {
-            this.steps = steps;
             System.err.print((10 * nextPercentageToReport + "% "));
             reported[nextPercentageToReport] = true;
             if (nextPercentageToReport < 10)
                 nextPercentageToReport++;
             nextThreshold += tenPercent;
         }
+        this.steps = steps;
     }
 
     /**
@@ -166,6 +168,8 @@ public class ProgressPercentage implements ProgressListener {
      * @param subtaskName
      */
     public void setSubtask(String subtaskName) {
+        if (subtaskName != null)
+            System.err.println(subtaskName);
     }
 
     public void setCancelable(boolean enabled) {
