@@ -2532,6 +2532,21 @@ public class Basic {
         return sum;
     }
 
+    /**
+     * get the sum of values
+     *
+     * @param values
+     * @return sum
+     */
+    public static int getSum(int[] values, int offset, int len) {
+        int sum = 0;
+        for (int i = offset; i < len; i++) {
+            Integer value = values[i];
+            sum += value;
+        }
+        return sum;
+    }
+
     public static long getSum(long[] array) {
         long result = 0;
         for (long value : array)
