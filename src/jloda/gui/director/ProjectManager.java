@@ -117,7 +117,7 @@ public class ProjectManager {
     }
 
     /**
-     * use this only to add additional viewers that have a window menu that they want keep upto date
+     * use this to add additional viewers that have a window menu that they want keep upto date
      *
      * @param dir
      * @param menu
@@ -205,10 +205,8 @@ public class ProjectManager {
         synchronized (projects) {
             for (final Pair<IDirector, JMenu> pair : dirAndWindowMenuPairs) {
                 final JMenu menu = pair.getSecond();
-
-                char mnenomicKey = '1';
-
                 final int windowMenuBaseSize = menu2baseSize.get(menu);
+                char mnenomicKey = '1';
 
                 // remove all windows from menu:
                 while (menu.getItemCount() > windowMenuBaseSize) {
@@ -238,7 +236,7 @@ public class ProjectManager {
                                         title = title.substring(0, pos);
                                     if (viewer instanceof IMainViewer && mnenomicKey <= '9') {
                                         action.putValue(AbstractAction.NAME, mnenomicKey + " " + title);
-                                        action.putValue(AbstractAction.MNEMONIC_KEY, new Integer(mnenomicKey));
+                                        action.putValue(AbstractAction.MNEMONIC_KEY, (int) mnenomicKey);
                                         mnenomicKey++;
                                     } else
                                         action.putValue(AbstractAction.NAME, "  " + title);
@@ -251,6 +249,7 @@ public class ProjectManager {
                                     menu.add(action);
                                 }
                             } catch (ConcurrentModificationException ex) {
+                                // System.err.println("ConcurrentModificationException");
                             }
                         }
                     }

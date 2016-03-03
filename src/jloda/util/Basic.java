@@ -1695,12 +1695,8 @@ public class Basic {
     public static boolean isImageFile(File file) {
         if (file.isDirectory())
             return false;
-        String name = file.getName();
-        return name.endsWith(".gif") || name.endsWith(".GIF") ||
-                name.endsWith(".jpg") || name.endsWith(".JPG") ||
-                name.endsWith(".jpeg") || name.endsWith(".JPEG") ||
-                name.endsWith(".bmp") || name.endsWith(".BMP") ||
-                name.endsWith(".png") || name.endsWith(".PNG");
+        final String name = file.getName().toLowerCase();
+        return name.endsWith(".gif") || name.endsWith(".jpg") || name.endsWith(".jpeg") || name.endsWith(".bmp") || name.endsWith(".png");
     }
 
     /**
@@ -1790,65 +1786,40 @@ public class Basic {
      */
     static public String toString(byte[] bytes) {
         if (bytes == null)
-            return null;
-        return toString(bytes, 0, bytes.length);
+            return "";
+        char[] array = new char[bytes.length];
+        for (int i = 0; i < bytes.length; i++)
+            array[i] = (char) bytes[i];
+        return new String(array);
     }
 
     /**
      * convert bytes to a string
-     *
+     * @param length number of bytes, starting at index 0
      * @return string
      */
     static public String toString(byte[] bytes, int length) {
-        return toString(bytes, 0, length);
+        if (bytes == null)
+            return "";
+        char[] array = new char[length];
+        for (int i = 0; i < length; i++)
+            array[i] = (char) bytes[i];
+        return new String(array);
     }
 
     /**
-     * convert bytes to a string. If bytes contains zero, then this interpreted as termination
-     *
+     * convert bytes to a string
+     * @param offset start here
+     * @param length number of bytes
      * @return string
      */
     static public String toString(byte[] bytes, int offset, int length) {
-        StringBuilder buf = new StringBuilder();
-        if (bytes != null) {
-            int top = Math.min(offset + length, bytes.length);
-            for (int i = offset; i < top; i++) {
-                byte aByte = bytes[i];
-                if (aByte == 0)
-                    break; // zero terminated
-                buf.append((char) aByte);
-            }
-        }
-        return buf.toString();
-    }
-
-    /**
-     * convert two array separated by a letter to a string
-     *
-     * @param a
-     * @param b
-     * @param c
-     * @return string
-     */
-    static public String toString(byte[] a, char b, byte[] c) {
-        StringBuilder buf = new StringBuilder();
-        if (a != null) {
-            for (byte aByte : a) {
-                if (aByte == 0)
-                    break; // zero terminated
-                buf.append((char) aByte);
-            }
-        }
-        buf.append(b);
-        if (c != null) {
-            for (byte aByte : c) {
-                if (aByte == 0)
-                    break; // zero terminated
-                buf.append((char) aByte);
-            }
-        }
-        return buf.toString();
-
+        if (bytes == null)
+            return "";
+        char[] array = new char[length];
+        for (int i = 0; i < length; i++)
+            array[i] = (char) bytes[i + offset];
+        return new String(array);
     }
 
     /**
@@ -1872,13 +1843,7 @@ public class Basic {
      * @return string
      */
     static public String toString(char[] chars) {
-        StringBuilder buf = new StringBuilder();
-        if (chars != null) {
-            for (char aChar : chars) {
-                buf.append(aChar);
-            }
-        }
-        return buf.toString();
+        return new String(chars);
     }
 
     /**
