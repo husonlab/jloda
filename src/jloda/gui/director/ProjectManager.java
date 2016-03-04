@@ -223,7 +223,7 @@ public class ProjectManager {
                                     if (viewer instanceof SearchManager)
                                         continue; // don't show search managers in menu
                                     final JFrame frame = viewer.getFrame();
-                                    AbstractAction action = new AbstractAction() {
+                                    final AbstractAction action = new AbstractAction() {
                                         public void actionPerformed(ActionEvent e) {
                                             frame.setVisible(true);
                                             frame.setState(JFrame.NORMAL);
