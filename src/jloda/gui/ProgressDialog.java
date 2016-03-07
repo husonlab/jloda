@@ -1,22 +1,22 @@
 /**
- * ProgressDialog.java 
+ * ProgressDialog.java
  * Copyright (C) 2016 Daniel H. Huson
- *
+ * <p>
  * (Some files contain contributions from other authors, who are then mentioned separately.)
- *
+ * <p>
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
- *
+ * <p>
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
- *
+ * <p>
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
-*/
+ */
 package jloda.gui;
 
 import jloda.util.Basic;
@@ -72,99 +72,95 @@ public class ProgressDialog implements ProgressListener {
      * @param owner
      */
     public ProgressDialog(final String taskName, final String subtaskName, final Component owner) {
-        MakeProgressDialog(taskName, subtaskName, owner, delayInMilliseconds);
+        setup(taskName, subtaskName, owner, delayInMilliseconds);
         checkTimeAndShow();
         if (dialog != null)
             dialog.setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
     }
 
     public ProgressDialog(final String taskName, final String subtaskName, final Component owner, final long delayInMillisec) {
-        MakeProgressDialog(taskName, subtaskName, owner, delayInMillisec);
+        setup(taskName, subtaskName, owner, delayInMillisec);
         checkTimeAndShow();
         dialog.setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
     }
 
     /**
-     * Constructs a Progress Dialog with a given task name and subtask name. The dialog is embedded into
+     * sets up Progress Dialog with a given task name and subtask name. The dialog is embedded into
      * the given frame. If frame = null then the dialog will appear as a separate window.
      *
      * @param taskName
      * @param subtaskName
      * @param owner
      */
-    public void MakeProgressDialog(final String taskName, final String subtaskName, final Component owner, final long delayInMillisec) {
+    private void setup(final String taskName, final String subtaskName, final Component owner, final long delayInMillisec) {
+
         final Runnable runnable = new Runnable() {
-                public void run() {
-                    userCancelled = false;
-                    delayInMilliseconds = delayInMillisec;
-                    Frame parent = null;
-                    if (owner instanceof JFrame)
-                        parent = (Frame) owner;
-                    dialog = new JDialog(parent, "Progress...");
+            public void run() {
+                frameStatusBar = findStatusBar(owner);
 
-                    dialog.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
-                    // dialog.setResizable(false);
-
+                userCancelled = false;
+                delayInMilliseconds = delayInMillisec;
 // the label:
-                    taskLabel = new JLabel();
-                    task = taskName;
-                    subtask = subtaskName;
-                    updateTaskLabel();
+                taskLabel = new JLabel();
+                task = taskName;
+                subtask = subtaskName;
+                updateTaskLabel();
 
 // the progress bar:
-                    progressBar = new JProgressBar(0, 150);
-                    progressBar.setValue(-1);
-                    progressBar.setIndeterminate(true);
-                    progressBar.setStringPainted(false);
-                    if (ProgramProperties.isMacOS()) { //On the mac - make like the standard p bar
-                        Dimension d = progressBar.getPreferredSize();
-                        d.height = 10;
-                        progressBar.setPreferredSize(d);
-                        d = progressBar.getMaximumSize();
-                        d.height = 10;
-                        progressBar.setMaximumSize(d);
-                    }
+                progressBar = new JProgressBar(0, 150);
+                progressBar.setValue(-1);
+                progressBar.setIndeterminate(true);
+                progressBar.setStringPainted(false);
+                if (ProgramProperties.isMacOS()) { //On the mac - make like the standard p bar
+                    Dimension d = progressBar.getPreferredSize();
+                    d.height = 10;
+                    progressBar.setPreferredSize(d);
+                    d = progressBar.getMaximumSize();
+                    d.height = 10;
+                    progressBar.setMaximumSize(d);
+                }
 
 // the cancel button:
-                    cancelButton = new JButton();
-                    resetCancelButtonText();
-                    cancelButton.addActionListener(new ActionListener() {
-                        public void actionPerformed(ActionEvent e) {
-                            try {
-                                setUserCancelled(true);
-                                checkForCancel();
-                            } catch (CanceledException e1) {
-                            }
+                cancelButton = new JButton();
+                resetCancelButtonText();
+                cancelButton.addActionListener(new ActionListener() {
+                    public void actionPerformed(ActionEvent e) {
+                        try {
+                            setUserCancelled(true);
+                            checkForCancel();
+                        } catch (CanceledException e1) {
                         }
-                    });
+                    }
+                });
 
-                    if (!isCancelable())
-                        cancelButton.setEnabled(false);
+                if (!isCancelable())
+                    cancelButton.setEnabled(false);
 
-                        frameStatusBar = findStatusBar(owner);
+                if (frameStatusBar != null) { // window appears to have a status bar that can be used for the progress bar
+                    statusBarPanel = new JPanel();
+                    statusBarPanel.setLayout(new BorderLayout());
 
-                        if (frameStatusBar != null) {
-                            statusBarPanel = new JPanel();
-                            statusBarPanel.setLayout(new BorderLayout());
-                            progressBar.setPreferredSize(new Dimension(300, 10));
-                            statusBarPanel.add(progressBar, BorderLayout.CENTER);
-                            cancelButton.setPreferredSize(new Dimension(60, 14));
-                            cancelButton.setMinimumSize(new Dimension(60, 14));
-                            cancelButton.setFont(new Font("Dialog", Font.PLAIN, 12));
-                            cancelButton.setBorder(BorderFactory.createEtchedBorder());
-                            statusBarPanel.add(cancelButton, BorderLayout.EAST);
-                            return; // done
-                        }
+                    progressBar.setPreferredSize(new Dimension(300, 10));
+                    statusBarPanel.add(progressBar, BorderLayout.CENTER);
+
+                    cancelButton.setPreferredSize(new Dimension(60, 14));
+                    cancelButton.setMinimumSize(new Dimension(60, 14));
+                    cancelButton.setFont(new Font("Dialog", Font.PLAIN, 12));
+                    cancelButton.setBorder(BorderFactory.createEtchedBorder());
+                    statusBarPanel.add(cancelButton, BorderLayout.EAST);
+                } else { // no status bar for a program bar, show a window
+                    final JFrame parent = (owner instanceof JFrame ? (JFrame) owner : null);
+                    dialog = new JDialog(parent, "Progress...");
+                    dialog.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
 
                     if (!ProgramProperties.isMacOS()) { // none mac progress dialog:
-                        GridBagLayout gridBag = new GridBagLayout();
-                        JPanel pane = new JPanel(gridBag);
+                        final GridBagLayout gridBag = new GridBagLayout();
+                        final JPanel pane = new JPanel(gridBag);
                         pane.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
 
                         GridBagConstraints c = new GridBagConstraints();
 
                         c.anchor = GridBagConstraints.CENTER;
-
                         c.fill = GridBagConstraints.HORIZONTAL;
                         c.weightx = 3;
                         c.weighty = 1;
@@ -172,7 +168,6 @@ public class ProgressDialog implements ProgressListener {
                         c.gridy = 0;
                         c.gridwidth = 3;
                         c.gridheight = 1;
-
                         pane.add(taskLabel, c);
 
                         c.anchor = GridBagConstraints.CENTER;
@@ -183,7 +178,6 @@ public class ProgressDialog implements ProgressListener {
                         c.gridy = 1;
                         c.gridwidth = 3;
                         c.gridheight = 1;
-
                         pane.add(progressBar, c);
 
                         c.anchor = GridBagConstraints.CENTER;
@@ -193,13 +187,12 @@ public class ProgressDialog implements ProgressListener {
                         c.gridy = 2;
                         c.gridwidth = 1;
                         c.gridheight = 1;
-
                         pane.add(cancelButton, c);
 
                         dialog.getContentPane().add(pane);
                         dialog.setSize(new Dimension(550, 120));
                     } else {  // mac os progress dialog:
-                        JPanel contentPane = new JPanel(new BorderLayout());
+                        final JPanel contentPane = new JPanel(new BorderLayout());
                         contentPane.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
 //Progress Bar and cancel button.
                         JPanel barpane = new JPanel();
@@ -221,11 +214,11 @@ public class ProgressDialog implements ProgressListener {
                         dialog.setSize(new Dimension(550, 120));
                     }
 
-                    if (parent != null) {
-                        int x = parent.getX();
-                        int y = parent.getY();
-                        int dx = parent.getWidth() - dialog.getWidth();
-                        int dy = parent.getHeight() - dialog.getHeight();
+                    if (dialog.getParent() != null) {
+                        int x = dialog.getParent().getX();
+                        int y = dialog.getParent().getY();
+                        int dx = dialog.getParent().getWidth() - dialog.getWidth();
+                        int dy = dialog.getParent().getHeight() - dialog.getHeight();
                         x += dx / 2;
                         y += dy / 2;
 
@@ -233,16 +226,14 @@ public class ProgressDialog implements ProgressListener {
                     }
                     //dialog.setVisible(true);  //open once delay has passed
                 }
+            }
         };
+
+
         if (SwingUtilities.isEventDispatchThread())
             runnable.run();
-        else {
-            try {
-                SwingUtilities.invokeAndWait(runnable);
-            } catch (InterruptedException | InvocationTargetException e) {
-                Basic.caught(e);
-            }
-        }
+        else
+            SwingUtilities.invokeLater(runnable);
     }
 
     /**
@@ -254,7 +245,7 @@ public class ProgressDialog implements ProgressListener {
     private static StatusBar findStatusBar(Component component) {
         if (component instanceof Container) {
             Container frame = (Container) component;
-            Stack<Component> stack = new Stack<>();
+            final Stack<Component> stack = new Stack<>();
             stack.addAll(Arrays.asList(frame.getComponents()));
             while (stack.size() > 0) {
                 Component c = stack.pop();
@@ -287,15 +278,15 @@ public class ProgressDialog implements ProgressListener {
                     progressBar.setMaximum((int) (shiftedDown ? steps >>> BITS : steps));
                 }
             };
-                if (SwingUtilities.isEventDispatchThread())
-                    runnable.run();
-                else {
-                    try {
-                        SwingUtilities.invokeAndWait(runnable);
-                    } catch (InterruptedException | InvocationTargetException e) {
-                        Basic.caught(e);
-                    }
+            if (SwingUtilities.isEventDispatchThread())
+                runnable.run();
+            else {
+                try {
+                    SwingUtilities.invokeAndWait(runnable);
+                } catch (InterruptedException | InvocationTargetException e) {
+                    Basic.caught(e);
                 }
+            }
         }
     }
 
@@ -490,10 +481,11 @@ public class ProgressDialog implements ProgressListener {
                                 progressBar.setValue((int) (shiftedDown ? currentProgress >>> BITS : currentProgress));
                             }
                         }
-                        if (statusBarPanel != null)
+                        if (statusBarPanel != null) {
                             frameStatusBar.setComponent2(statusBarPanel, !closed);
-                        else if (dialog != null)
+                        } else if (dialog != null) {
                             dialog.setVisible(true);
+                        }
                         visible = true;
                     }
                 };
@@ -564,15 +556,6 @@ public class ProgressDialog implements ProgressListener {
             cancelButton.setText("Stop");
         else
             cancelButton.setText("Cancel");
-    }
-
-    /**
-     * gets the window that owns this dialog
-     *
-     * @return owner
-     */
-    public Window getOwner() {
-        return dialog.getOwner();
     }
 
     public boolean isCloseOnCancel() {

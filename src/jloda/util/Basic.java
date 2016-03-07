@@ -331,7 +331,17 @@ public class Basic {
      * @return iterator in random order
      */
     public static <T> Iterator<T> randomize(Iterator<T> it, int seed) {
-        Random random = new Random(seed);
+        return randomize(it, new Random(seed));
+    }
+
+    /**
+     * given a iterator, returns a new iterator in random order
+     *
+     * @param it
+     * @param random
+     * @return iterator in random order
+     */
+    public static <T> Iterator<T> randomize(Iterator<T> it, Random random) {
         java.util.List<T> list = new LinkedList<>();
         while (it.hasNext())
             list.add(it.next());
@@ -352,7 +362,17 @@ public class Basic {
      * @return array in random order
      */
     public static <T> T[] randomize(T[] array, int seed) {
-        final Random random = new Random(seed);
+        return randomize(array, new Random(seed));
+    }
+
+    /**
+     * given an array, returns it randomized (Durstenfeld 1964)
+     *
+     * @param array
+     * @param random
+     * @return array in random order
+     */
+    public static <T> T[] randomize(T[] array, Random random) {
         T[] result = (T[]) new Object[array.length];
         System.arraycopy(array, 0, result, 0, array.length);
 
@@ -363,7 +383,6 @@ public class Basic {
             result[j] = tmp;
         }
         return result;
-
     }
 
     /**
