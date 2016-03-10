@@ -2052,6 +2052,9 @@ public class GraphView extends JPanel implements Printable, Scrollable, INodeEdg
         else
             totalRect = trans.getPreferredRect();
 
+        gc.setColor(Color.GREEN);
+        gc.draw(getBBox());
+
         if (canvasColor != null) {
             gc.setColor(inDrawOnScreen ? canvasColor : Color.WHITE);
             if (!inPrint)

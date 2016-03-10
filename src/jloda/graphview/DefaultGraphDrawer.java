@@ -319,7 +319,7 @@ public class DefaultGraphDrawer implements IGraphDrawer {
 
         final Rectangle rect = new Rectangle(x - d, y - d, 2 * d, 2 * d);
         for (Node v = graph.getLastNode(); v != null; v = graph.getPrevNode(v)) {
-            NodeView nv = graphView.getNV(v);
+            final NodeView nv = graphView.getNV(v);
             if (nv.getLocation() != null && (rect.intersects(nv.getBox(trans)) || nv.contains(trans, x, y))) {
                 hitNodes.add(v);
             }
@@ -337,7 +337,7 @@ public class DefaultGraphDrawer implements IGraphDrawer {
     public NodeSet getHitNodeLabels(int x, int y) {
         hitNodeLabels.clear();
         for (Node v = graph.getLastNode(); v != null; v = graph.getPrevNode(v)) {
-            NodeView nv = graphView.getNV(v);
+            final NodeView nv = graphView.getNV(v);
             if (nv != null && nv.getLabel() != null && nv.getLocation() != null && nv.getLabelVisible()
                     && (graphView.getSelected(v) || labelOverlapAvoider.isVisible(v))
                     && (nv.getLabelShape(trans) != null && nv.getLabelShape(trans).contains(x, y)))
@@ -356,9 +356,12 @@ public class DefaultGraphDrawer implements IGraphDrawer {
         hitNodes.clear();
 
         for (Node v = graph.getLastNode(); v != null; v = graph.getPrevNode(v)) {
-            NodeView nv = graphView.getNV(v);
-            if (nv.getLocation() != null && rect.contains(nv.getBox(trans)))
-                hitNodes.add(v);
+            final NodeView nv = graphView.getNV(v);
+            if (nv.isEnabled() && nv.getLocation() != null) {
+                final Rectangle nodeRect = nv.getBox(trans);
+                if (nodeRect != null && rect.contains(nodeRect))
+                    hitNodes.add(v);
+            }
         }
         return hitNodes;
     }
@@ -372,12 +375,14 @@ public class DefaultGraphDrawer implements IGraphDrawer {
     public NodeSet getHitNodeLabels(Rectangle rect) {
         hitNodeLabels.clear();
         for (Node v = graph.getLastNode(); v != null; v = graph.getPrevNode(v)) {
-            NodeView nv = graphView.getNV(v);
+            final NodeView nv = graphView.getNV(v);
             if (nv.getLabel() != null && nv.getLocation() != null
                     && nv.getLabelVisible() &&
-                    (graphView.getSelected(v) || labelOverlapAvoider.isVisible(v)) &&
-                    rect.contains(nv.getLabelRect(trans)))
-                hitNodeLabels.add(v);
+                    (graphView.getSelected(v) || labelOverlapAvoider.isVisible(v))) {
+                final Rectangle labelRect = nv.getLabelRect(trans);
+                if (labelRect != null && rect.contains(labelRect))
+                    hitNodeLabels.add(v);
+            }
         }
         return hitNodeLabels;
     }
@@ -392,27 +397,30 @@ public class DefaultGraphDrawer implements IGraphDrawer {
      */
     public EdgeSet getHitEdges(int x, int y) {
         hitEdges.clear();
-        MagnifierUtil magnifierUtil = new MagnifierUtil(graphView);
+        final MagnifierUtil magnifierUtil = new MagnifierUtil(graphView);
 
         for (Edge e = graph.getLastEdge(); e != null; e = graph.getPrevEdge(e)) {
-            final Node v = graph.getSource(e);
-            final Node w = graph.getTarget(e);
-            final NodeView nv = graphView.getNV(v);
-            final NodeView nw = graphView.getNV(w);
-            if (nv.getLocation() == null || nw.getLocation() == null)
-                continue;
+            final EdgeView ev = graphView.getEV(e);
+            if (ev.isEnabled() && ev.getColor() != null) {
+                final Node v = graph.getSource(e);
+                final Node w = graph.getTarget(e);
+                final NodeView nv = graphView.getNV(v);
+                final NodeView nw = graphView.getNV(w);
+                if (nv.getLocation() == null || nw.getLocation() == null)
+                    continue;
 
-            magnifierUtil.addInternalPoints(e);
+                magnifierUtil.addInternalPoints(e);
 
-            final Point pv = nv.computeConnectPoint(nw.getLocation(), trans);
-            final Point pw = nw.computeConnectPoint(nv.getLocation(), trans);
+                final Point pv = nv.computeConnectPoint(nw.getLocation(), trans);
+                final Point pw = nw.computeConnectPoint(nv.getLocation(), trans);
 
-            if (graph.findDirectedEdge(graph.getTarget(e), graph.getSource(e)) != null)
-                graphView.adjustBiEdge(pv, pw); // adjust for parallel edge
+                if (graph.findDirectedEdge(graph.getTarget(e), graph.getSource(e)) != null)
+                    graphView.adjustBiEdge(pv, pw); // adjust for parallel edge
 
-            if (graphView.getEV(e).hitEdge(pv, pw, trans, x, y, 3))
-                hitEdges.add(e);
-            magnifierUtil.removeAddedInternalPoints(e);
+                if (ev.hitEdge(pv, pw, trans, x, y, 3))
+                    hitEdges.add(e);
+                magnifierUtil.removeAddedInternalPoints(e);
+            }
         }
         return hitEdges;
     }
@@ -429,9 +437,12 @@ public class DefaultGraphDrawer implements IGraphDrawer {
 
         for (Edge e = graph.getLastEdge(); e != null; e = graph.getPrevEdge(e)) {
             EdgeView ev = graphView.getEV(e);
-            if (ev.getLabel() != null && ev.getLabelVisible()
-                    && ev.getLabelShape(trans).contains(x, y)) {
-                hitEdgeLabels.add(e);
+            if (ev.isEnabled() && ev.getLabelVisible() && ev.getLabel() != null) {
+                Shape labelShape = ev.getLabelShape(trans);
+                if (labelShape != null &&
+                        labelShape.contains(x, y)) {
+                    hitEdgeLabels.add(e);
+                }
             }
         }
         return hitEdgeLabels;
