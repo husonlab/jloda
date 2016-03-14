@@ -80,11 +80,10 @@ public class ArgsOptions {
 
         this.programName = programName;
         if (main != null)
-            this.version = Basic.getVersion(main.getClass());
+            this.version = Basic.getVersion(main.getClass(), programName);
         this.description = description;
 
         usage = new LinkedList<>();
-
 
         try {
             doHelp = getOption("-h", "--help", "Show help", false, false);

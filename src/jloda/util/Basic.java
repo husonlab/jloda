@@ -2785,14 +2785,24 @@ public class Basic {
      * @return compile time version
      */
     public static String getVersion(final Class clazz) {
+        return getVersion(clazz, clazz.getName().substring(clazz.getName().lastIndexOf(".") + 1));
+    }
+
+    /**
+     * gets the compile time version of the given class
+     *
+     * @param clazz
+     * @param name
+     * @return compile time version
+     */
+    public static String getVersion(final Class clazz, final String name) {
         String version;
-        final String shortClassName = clazz.getName().substring(clazz.getName().lastIndexOf(".") + 1);
         try {
             final ClassLoader classLoader = clazz.getClassLoader();
             String threadContexteClass = clazz.getName().replace('.', '/');
             URL url = classLoader.getResource(threadContexteClass + ".class");
             if (url == null) {
-                version = shortClassName + " $ (no manifest) $";
+                version = name + " $ (no manifest) $";
             } else {
                 final String path = url.getPath();
                 final String jarExt = ".jar";
@@ -2804,16 +2814,16 @@ public class Basic {
                     final String jarVersion = file.getName();
                     final JarFile jarFile = new JarFile(new File(new URI(jarPath)));
                     final JarEntry entry = jarFile.getJarEntry("META-INF/MANIFEST.MF");
-                    version = shortClassName + " $ " + jarVersion.substring(0, jarVersion.length() - jarExt.length()) + " $ " + sdf.format(new Date(entry.getTime()));
+                    version = name + " $ " + jarVersion.substring(0, jarVersion.length() - jarExt.length()) + " $ " + sdf.format(new Date(entry.getTime()));
                     jarFile.close();
                 } else {
                     final File file = new File(path);
-                    version = shortClassName + " $ " + sdf.format(new Date(file.lastModified()));
+                    version = name + " $ " + sdf.format(new Date(file.lastModified()));
                 }
             }
         } catch (Exception e) {
             //Basic.caught(e);
-            version = shortClassName + " $ " + e.toString();
+            version = name + " $ " + e.toString();
         }
         return version;
     }
@@ -2902,16 +2912,15 @@ public class Basic {
         try {
             sourceChannel = new FileInputStream(source).getChannel();
             raf = new RandomAccessFile(dest, "rw");
-            raf.seek(raf.length());
             destChannel = raf.getChannel();
-            destChannel.transferFrom(sourceChannel, 0, sourceChannel.size());
+            destChannel.transferFrom(sourceChannel, raf.length(), sourceChannel.size());
         } finally {
             if (sourceChannel != null)
                 sourceChannel.close();
-            if (raf != null)
-                raf.close();
             if (destChannel != null)
                 destChannel.close();
+            if (raf != null)
+                raf.close();
         }
     }
 
@@ -3755,28 +3764,31 @@ public class Basic {
         return a.toLowerCase().endsWith(b.toLowerCase());
     }
 
-    /**
-     * determine the number of end of line bytes in a text file
-     *
-     * @param fileName
-     * @return 1 or 2
-     */
-    public static int determineEndOfLinesBytes(String fileName) {
-        try (InputStream ins = new BufferedInputStream(new FileInputStream(fileName))) {
-            while (true) {
-                switch (ins.read()) {
-                    case '\n':
-                    case -1:
-                        return 1;
-                    case '\r':
-                        return 2;
-                }
+     /**
+     * get the number of bytes used to terminate a line
+      *
+      * @param file
+      * @return 1 or 2
+      */
+    public static int determineEndOfLinesBytes(File file) {
+        try {
+            RandomAccessFile r = new RandomAccessFile(file, "r");
+            int count = 0;
+            long length = 0;
+            for (; count < 5; count++) {
+                String aLine = r.readLine();
+                if (aLine == null)
+                    break;
+                length += aLine.length();
             }
-        } catch (Exception ex) {
+            long diff = r.getFilePointer() - length;
+            r.close();
+            return (int) (diff / count);
+        } catch (Exception e) {
+            //Basic.caught(e);
             return 1;
         }
     }
-
 }
 
 /**

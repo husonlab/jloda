@@ -92,11 +92,11 @@ public class FileInputIterator implements IFileIterator {
             final File file = new File(fileName);
             if (Basic.isZIPorGZIPFile(file.getPath())) {
                 reader = new BufferedReader(new InputStreamReader(Basic.getInputStreamPossiblyZIPorGZIP(file.getPath())));
-                endOfLineBytes = 1;
+                endOfLineBytes = Basic.determineEndOfLinesBytes(new File(fileName));
                 maxProgress = 5 * file.length(); // assuming compression factor of 5-to-1
             } else {
                 reader = new BufferedReader(new FileReader(file), bufferSize);
-                endOfLineBytes = Basic.getNumberOfNonSpaceCharacters(fileName);
+                endOfLineBytes = 1;
                 maxProgress = file.length();
             }
         }
@@ -130,7 +130,7 @@ public class FileInputIterator implements IFileIterator {
             maxProgress = fileName.length() - PREFIX_TO_INDICATE_TO_PARSE_FILENAME_STRING.length();
         } else {
             reader = new BufferedReader(r, bufferSize);
-            endOfLineBytes = Basic.getNumberOfNonSpaceCharacters(fileName);
+            endOfLineBytes = Basic.determineEndOfLinesBytes(new File(fileName));
 
             File file = new File(fileName);
             if (file.exists())
