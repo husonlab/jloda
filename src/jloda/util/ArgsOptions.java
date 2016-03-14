@@ -570,7 +570,7 @@ public class ArgsOptions {
                 result = defaultValue;
         }
         if (verbose && result.size() > 0)
-            System.err.println("\t" + longKey + ": " + Basic.toString(result, ", "));
+            System.err.println("\t" + longKey + ": " + Basic.toString(result, " "));
         return result;
     }
 
