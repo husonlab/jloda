@@ -597,10 +597,6 @@ public class Basic {
         if (pos == -1 || pos == fileName.length() - 1)
             return null;
         else {
-            String suffix = fileName.substring(pos + 1);
-            for (int i = 0; i < suffix.length(); i++)
-                if (!Character.isLetterOrDigit(suffix.charAt(i)))
-                    return null;
             return fileName.substring(pos + 1);
         }
     }
@@ -3263,9 +3259,9 @@ public class Basic {
             zipSuffix = getSuffix(name);
             name = getFileNameWithoutZipOrGZipSuffix(name);
         }
-        String suffix = getSuffix(name);
+        final String suffix = getSuffix(name);
         name = getFileBaseName(name);
-        int number = (int) (System.currentTimeMillis() & ((1 << 20) - 1));
+        final int number = (int) (System.currentTimeMillis() & ((1 << 20) - 1));
         return String.format("%s-tmp%d.%s%s", name, number, suffix, zipSuffix != null ? "." + zipSuffix : "");
     }
 
