@@ -451,11 +451,12 @@ public class ProgramProperties {
     }
 
     /**
-     * sets the program version string
+     * sets the program version string, if not already set...
      *
      */
     public static void setProgramVersion(String version) {
-        ProgramProperties.programVersion = version;
+        if (programVersion == null || programVersion.length() == 0)
+            ProgramProperties.programVersion = version;
     }
 
     /**
