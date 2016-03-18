@@ -2518,6 +2518,19 @@ public class Basic {
      * @param values
      * @return sum
      */
+    public static int getSum(Collection<Integer> values) {
+        int sum = 0;
+        for (Number value : values)
+            sum += value.intValue();
+        return sum;
+    }
+
+    /**
+     * get the sum of values
+     *
+     * @param values
+     * @return sum
+     */
     public static int getSum(int[] values, int offset, int len) {
         int sum = 0;
         for (int i = offset; i < len; i++) {
@@ -3784,6 +3797,21 @@ public class Basic {
             //Basic.caught(e);
             return 1;
         }
+    }
+
+    /**
+     * replace value by replacement, if null
+     *
+     * @param value
+     * @param replacementValue
+     * @param <T>
+     * @return value, if non-null, else replacment
+     */
+    public static <T> T replaceNull(T value, T replacementValue) {
+        if (value == null)
+            return replacementValue;
+        else
+            return value;
     }
 }
 
