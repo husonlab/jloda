@@ -19,6 +19,7 @@
  */
 package jloda.gui;
 
+import javafx.application.Platform;
 import jloda.util.Basic;
 import jloda.util.CanceledException;
 import jloda.util.ProgramProperties;
@@ -28,7 +29,6 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.lang.reflect.InvocationTargetException;
 import java.util.Arrays;
 import java.util.Stack;
 
@@ -93,8 +93,7 @@ public class ProgressDialog implements ProgressListener {
      * @param owner
      */
     private void setup(final String taskName, final String subtaskName, final Component owner, final long delayInMillisec) {
-
-        final Runnable runnable = new Runnable() {
+        run(new Runnable() {
             public void run() {
                 frameStatusBar = findStatusBar(owner);
 
@@ -227,13 +226,7 @@ public class ProgressDialog implements ProgressListener {
                     //dialog.setVisible(true);  //open once delay has passed
                 }
             }
-        };
-
-
-        if (SwingUtilities.isEventDispatchThread())
-            runnable.run();
-        else
-            SwingUtilities.invokeLater(runnable);
+        });
     }
 
     /**
@@ -273,20 +266,11 @@ public class ProgressDialog implements ProgressListener {
         checkTimeAndShow();
 
         if (progressBar != null && maxProgess != progressBar.getMaximum()) {
-            final Runnable runnable = new Runnable() {
+            run(new Runnable() {
                 public void run() {
                     progressBar.setMaximum((int) (shiftedDown ? steps >>> BITS : steps));
                 }
-            };
-            if (SwingUtilities.isEventDispatchThread())
-                runnable.run();
-            else {
-                try {
-                    SwingUtilities.invokeAndWait(runnable);
-                } catch (InterruptedException | InvocationTargetException e) {
-                    Basic.caught(e);
-                }
-            }
+            });
         }
     }
 
@@ -350,7 +334,7 @@ public class ProgressDialog implements ProgressListener {
      * closes the dialog.
      */
     public void close() {
-        SwingUtilities.invokeLater(new Runnable() {
+        run(new Runnable() {
             public void run() {
                 if (!closed) {
                     if (statusBarPanel != null) {
@@ -398,7 +382,8 @@ public class ProgressDialog implements ProgressListener {
 
         if ((subtaskName == null && subtask != null) || (subtaskName != null && (subtask == null || !subtask.equals(subtaskName)))) {
             subtask = subtaskName;
-            SwingUtilities.invokeLater(new Runnable() {
+
+            run(new Runnable() {
                 public void run() {
                     updateTaskLabel();
                 }
@@ -421,7 +406,7 @@ public class ProgressDialog implements ProgressListener {
                 || (subtaskName == null && subtask != null) || (subtaskName != null && (subtask == null || !subtask.equals(subtaskName)))) {
             task = taskName;
             subtask = subtaskName;
-            SwingUtilities.invokeLater(new Runnable() {
+            run(new Runnable() {
                 public void run() {
                     updateTaskLabel();
                 }
@@ -467,11 +452,10 @@ public class ProgressDialog implements ProgressListener {
      */
     public void show() {
         if (!visible) {
-            try {
-                Runnable runnable = new Runnable() {
+            run(new Runnable() {
                     public void run() {
                         if (progressBar != null) {
-
+                            updateTaskLabel();
                             progressBar.setMaximum((int) (shiftedDown ? maxProgess >>> BITS : maxProgess));
                             if (currentProgress < 0) {
                                 progressBar.setIndeterminate(true);
@@ -488,13 +472,24 @@ public class ProgressDialog implements ProgressListener {
                         }
                         visible = true;
                     }
-                };
-                if (!SwingUtilities.isEventDispatchThread()) {
-                    SwingUtilities.invokeAndWait(runnable);
-                } else
-                    runnable.run();
-            } catch (InterruptedException e) {
-            } catch (InvocationTargetException e) {
+            });
+        }
+    }
+
+    /**
+     * run a task either directly, if in swing thread, or later, if FX thread, or invoke or wait, otherwise
+     *
+     * @param runnable
+     */
+    private static void run(Runnable runnable) {
+        if (SwingUtilities.isEventDispatchThread())
+            runnable.run();
+        else if (Platform.isFxApplicationThread())
+            SwingUtilities.invokeLater(runnable);
+        else {
+            try {
+                SwingUtilities.invokeAndWait(runnable);
+            } catch (Exception e) {
                 Basic.caught(e);
             }
         }
