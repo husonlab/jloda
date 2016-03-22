@@ -70,7 +70,6 @@ public class CommandManager {
         }
     }
 
-
     /**
      * construct a parser and load all commands found for the given path
      */
@@ -104,15 +103,24 @@ public class CommandManager {
         this.setReturnOnCommandNotFound(returnOnCommandNotFound);
         this.commands = new LinkedList<>();
 
-        List<ICommand> commands = new LinkedList<>();
+        addCommands(viewer, globalCommands, true);
+        addCommands(viewer, commandsPaths);
+    }
+
+    /**
+     * add more commands
+     *
+     * @param viewer
+     * @param commandsPaths
+     */
+    public void addCommands(Object viewer, String[] commandsPaths) {
+        final List<ICommand> commands = new LinkedList<>();
         for (String commandsPath : commandsPaths) {
             for (Object obj : PluginClassLoader.getInstances(commandsPath, ICommand.class)) {
                 if (obj instanceof ICommand)
                     commands.add((ICommand) obj);
             }
         }
-
-        addCommands(viewer, globalCommands, true);
         addCommands(viewer, commands, false);
     }
 
