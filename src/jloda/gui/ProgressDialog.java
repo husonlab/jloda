@@ -61,6 +61,8 @@ public class ProgressDialog implements ProgressListener {
     private StatusBar frameStatusBar = null;
     private JPanel statusBarPanel = null;
 
+    private final Component owner;
+
     private boolean cancelable = true;
 
     /**
@@ -72,14 +74,16 @@ public class ProgressDialog implements ProgressListener {
      * @param owner
      */
     public ProgressDialog(final String taskName, final String subtaskName, final Component owner) {
-        setup(taskName, subtaskName, owner, delayInMilliseconds);
+        this.owner = owner;
+        setup(taskName, subtaskName, delayInMilliseconds);
         checkTimeAndShow();
         if (dialog != null)
             dialog.setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
     }
 
     public ProgressDialog(final String taskName, final String subtaskName, final Component owner, final long delayInMillisec) {
-        setup(taskName, subtaskName, owner, delayInMillisec);
+        this.owner = owner;
+        setup(taskName, subtaskName, delayInMillisec);
         checkTimeAndShow();
         dialog.setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
     }
@@ -87,12 +91,10 @@ public class ProgressDialog implements ProgressListener {
     /**
      * sets up Progress Dialog with a given task name and subtask name. The dialog is embedded into
      * the given frame. If frame = null then the dialog will appear as a separate window.
-     *
-     * @param taskName
+     *  @param taskName
      * @param subtaskName
-     * @param owner
      */
-    private void setup(final String taskName, final String subtaskName, final Component owner, final long delayInMillisec) {
+    private void setup(final String taskName, final String subtaskName, final long delayInMillisec) {
         run(new Runnable() {
             public void run() {
                 frameStatusBar = findStatusBar(owner);
@@ -454,6 +456,9 @@ public class ProgressDialog implements ProgressListener {
         if (!visible) {
             run(new Runnable() {
                     public void run() {
+                        if (owner != null && owner instanceof Window) {
+                            ((Window) owner).toFront();
+                        }
                         if (progressBar != null) {
                             updateTaskLabel();
                             progressBar.setMaximum((int) (shiftedDown ? maxProgess >>> BITS : maxProgess));
