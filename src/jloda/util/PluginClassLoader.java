@@ -57,7 +57,7 @@ public class PluginClassLoader {
         final LinkedList<String> packageNameQueue = new LinkedList<>();
         packageNameQueue.addAll(Arrays.asList(packageNames));
         while (packageNameQueue.size() > 0) {
-            String packageName = packageNameQueue.remove(0);
+            String packageName = packageNameQueue.removeFirst();
             // System.err.println("packageName: " + packageName);
 
             String[] resources = null;
@@ -91,7 +91,7 @@ public class PluginClassLoader {
                         try {
                             String newPackageName = resources[i];
                             if (!newPackageName.equals(packageName)) {
-                                packageNameQueue.add(newPackageName);
+                                packageNameQueue.addLast(newPackageName);
                                 // System.err.println("Adding package name: " + newPackageName);
                             }
                         } catch (Exception ex) {
