@@ -77,6 +77,7 @@ public class ArgsOptions {
         if (args.length > 0 && args[0].equals("--install4j")) {
             String[] tmp = new String[args.length - 1];
             System.arraycopy(args, 1, tmp, 0, tmp.length);
+            args = tmp;
             usingInstall4j = true;
         } else
             usingInstall4j = false;
