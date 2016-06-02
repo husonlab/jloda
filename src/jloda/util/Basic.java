@@ -3600,6 +3600,25 @@ public class Basic {
     }
 
     /**
+     * gets the first bytes from a file. File may be zgipped or zipped
+     *
+     * @param file
+     * @return first bytes
+     * @throws IOException
+     */
+    public static byte[] getFirstBytesFromFile(File file, int count) {
+        try {
+            try (InputStream ins = getInputStreamPossiblyZIPorGZIP(file.getPath())) {
+                byte[] bytes = new byte[count];
+                ins.read(bytes, 0, count);
+                return bytes;
+            }
+        } catch (IOException ex) {
+            return null;
+        }
+    }
+
+    /**
      * does the given string contain the given count of character ch?
      *
      * @param string
