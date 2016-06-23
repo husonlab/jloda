@@ -20,7 +20,6 @@
 package jloda.util;
 
 import java.util.concurrent.Executors;
-import java.util.concurrent.ScheduledExecutorService;
 
 import static java.util.concurrent.TimeUnit.SECONDS;
 
@@ -31,8 +30,6 @@ import static java.util.concurrent.TimeUnit.SECONDS;
  */
 public class PeakMemoryUsageMonitor {
     private static PeakMemoryUsageMonitor instance;
-
-    private final ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(1);
     private final long start;
     private long peak = ((Runtime.getRuntime().totalMemory() - Runtime.getRuntime().freeMemory()) / 1048576);
 
@@ -41,7 +38,7 @@ public class PeakMemoryUsageMonitor {
      */
     private PeakMemoryUsageMonitor() {
         start = System.currentTimeMillis();
-        scheduler.scheduleAtFixedRate(new Runnable() {
+        Executors.newScheduledThreadPool(1).scheduleAtFixedRate(new Runnable() {
             public void run() {
                 long used = ((Runtime.getRuntime().totalMemory() - Runtime.getRuntime().freeMemory()) / 1048576);
                 if (used > peak)
