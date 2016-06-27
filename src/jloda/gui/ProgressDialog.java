@@ -19,8 +19,6 @@
  */
 package jloda.gui;
 
-import javafx.application.Platform;
-import jloda.util.Basic;
 import jloda.util.CanceledException;
 import jloda.util.ProgramProperties;
 import jloda.util.ProgressListener;
@@ -324,7 +322,7 @@ public class ProgressDialog implements ProgressListener {
         checkForCancel();
 
         if (progressBar != null && currentProgress != progressBar.getValue()) {
-            SwingUtilities.invokeLater(new Runnable() {
+            run(new Runnable() {
                 public void run() {
                     progressBar.setValue((int) (shiftedDown ? currentProgress >>> BITS : currentProgress));
                 }
@@ -489,15 +487,8 @@ public class ProgressDialog implements ProgressListener {
     private static void run(Runnable runnable) {
         if (SwingUtilities.isEventDispatchThread())
             runnable.run();
-        else if (Platform.isFxApplicationThread())
+        else
             SwingUtilities.invokeLater(runnable);
-        else {
-            try {
-                SwingUtilities.invokeAndWait(runnable);
-            } catch (Exception e) {
-                Basic.caught(e);
-            }
-        }
     }
 
     public static long getDelayInMilliseconds() {
