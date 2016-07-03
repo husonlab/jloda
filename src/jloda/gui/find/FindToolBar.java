@@ -462,8 +462,6 @@ public class FindToolBar extends JPanel implements IFindDialog {
         this.enabled = enabled;
         if (enabled)
             findCBox.requestFocusInWindow(); // grab focus
-        else if (frame != null)
-            frame.requestFocus();
     }
 
     public void setEnableCritical(boolean enableCritical) {

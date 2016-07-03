@@ -116,7 +116,7 @@ public class StatusBar extends JPanel {
      * @param text
      */
     public void setText1(String text) {
-        //this.text1.setText(text);
+        this.text1.setText(text);
         splitPane1.resetToPreferredSizes();
         splitPane2.resetToPreferredSizes();
     }
@@ -131,9 +131,9 @@ public class StatusBar extends JPanel {
      * @param text
      */
     public void setText2(String text) {
-        //this.text2.setText(text + "   ");
-        //splitPane1.resetToPreferredSizes();
-        //splitPane2.resetToPreferredSizes();
+        this.text2.setText(text + "   ");
+        splitPane1.resetToPreferredSizes();
+        splitPane2.resetToPreferredSizes();
     }
 
     public String getText2() {
