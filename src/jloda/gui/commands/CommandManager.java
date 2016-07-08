@@ -210,7 +210,6 @@ public class CommandManager {
                             throw e;
                         } catch (Exception e) {
                             System.err.println("Command usage: " + command.getSyntax() + " - " + command.getDescription());
-                            Basic.caught(e);
                             throw new IOException(e.getMessage());
                         }
                         found = true;
