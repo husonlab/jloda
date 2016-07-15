@@ -480,7 +480,7 @@ public class ProgressDialog implements ProgressListener {
     }
 
     /**
-     * run a task either directly, if in swing thread, or later, if FX thread, or invoke or wait, otherwise
+     * run a task either directly, if in swing thread, or later,  otherwise
      *
      * @param runnable
      */
