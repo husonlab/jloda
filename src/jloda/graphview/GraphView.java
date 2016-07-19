@@ -2838,7 +2838,7 @@ public class GraphView extends JPanel implements Printable, Scrollable, INodeEdg
             }
 
         } catch (NotOwnerException ex) {
-            Basic.caught(ex);
+            //Basic.caught(ex);
         }
         Rectangle2D rect = new Rectangle2D.Double(xmin, ymin, xmax - xmin, ymax - ymin);
 
