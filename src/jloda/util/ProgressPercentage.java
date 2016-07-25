@@ -29,12 +29,14 @@ package jloda.util;
 public class ProgressPercentage implements ProgressListener {
     private long steps = 0;
 
-    private final boolean[] reported = new boolean[11];
+    private final boolean[] percentageReported = new boolean[11];
     private int nextPercentageToReport;
 
     private long nextThreshold = 0;
     private long tenPercent = 0;
     private long startTime = 0;
+
+    private boolean reportedCompleted = false;
 
     /**
      * constructor
@@ -49,7 +51,7 @@ public class ProgressPercentage implements ProgressListener {
      */
     public ProgressPercentage(long maxSteps) {
         startTime = System.currentTimeMillis();
-        reported[10] = true; // sentinel
+        percentageReported[10] = true; // sentinel
         setMaximum(maxSteps);
     }
 
@@ -90,8 +92,8 @@ public class ProgressPercentage implements ProgressListener {
      */
     public void setMaximum(final long maxSteps) {
         tenPercent = maxSteps / 10;
-        for (int i = 0; i < reported.length - 1; i++) // not the last entry!
-            reported[i] = false;
+        for (int i = 0; i < percentageReported.length - 1; i++) // not the last entry!
+            percentageReported[i] = false;
         nextThreshold = tenPercent;
         nextPercentageToReport = 1;
     }
@@ -102,14 +104,16 @@ public class ProgressPercentage implements ProgressListener {
      * @param steps
      */
     public void setProgress(final long steps) {
-        if (steps > nextThreshold && !reported[nextPercentageToReport]) {
+        if (steps > nextThreshold && !percentageReported[nextPercentageToReport]) {
             System.err.print((10 * nextPercentageToReport + "% "));
-            reported[nextPercentageToReport] = true;
+            percentageReported[nextPercentageToReport] = true;
             if (nextPercentageToReport < 10)
                 nextPercentageToReport++;
             nextThreshold += tenPercent;
         }
         this.steps = steps;
+        if (reportedCompleted)
+            reportedCompleted = false;
     }
 
     /**
@@ -134,6 +138,7 @@ public class ProgressPercentage implements ProgressListener {
     public void reportTaskCompleted() {
         System.err.println("100% (" + getTimeString() + ")");
         startTime = System.currentTimeMillis();
+        reportedCompleted = false;
     }
 
     /**
@@ -168,6 +173,8 @@ public class ProgressPercentage implements ProgressListener {
      * @param subtaskName
      */
     public void setSubtask(String subtaskName) {
+        if (!reportedCompleted && steps > 0)
+            reportTaskCompleted();
         if (subtaskName != null)
             System.err.println(subtaskName);
     }
