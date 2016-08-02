@@ -209,6 +209,7 @@ public class CommandManager {
                             // System.err.println("USER canceled");
                             throw e;
                         } catch (Exception e) {
+                            Basic.caught(e);
                             System.err.println("Command usage: " + command.getSyntax() + " - " + command.getDescription());
                             throw new IOException(e.getMessage());
                         }
