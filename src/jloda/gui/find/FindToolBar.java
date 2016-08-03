@@ -123,7 +123,6 @@ public class FindToolBar extends JPanel implements IFindDialog {
             public void mouseExited(MouseEvent mouseEvent) {
                 if (frame != null)
                     frame.requestFocusInWindow();
-
             }
 
             public void mouseEntered(MouseEvent mouseEvent) {
@@ -446,7 +445,6 @@ public class FindToolBar extends JPanel implements IFindDialog {
     public String getFindText() {
         if (frame != null)
             frame.requestFocusInWindow();
-
         return findCBox.getCurrentText(true);
     }
 
