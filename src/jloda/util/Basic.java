@@ -3832,6 +3832,25 @@ public class Basic {
         else
             return value;
     }
+
+    /**
+     * get comparator that compares by decreasing length of second and then lexicographical on first
+     *
+     * @return comparator
+     */
+    public static Comparator<Pair<String, String>> getComparatorDecreasingLengthOfSecond() {
+        return new Comparator<Pair<String, String>>() {
+            @Override
+            public int compare(Pair<String, String> pair1, Pair<String, String> pair2) { // sorting in decreasing order of length
+                if (pair1.getSecond().length() > pair2.getSecond().length())
+                    return -1;
+                else if (pair1.getSecond().length() < pair2.getSecond().length())
+                    return 1;
+                else
+                    return pair1.getFirst().compareTo(pair2.getFirst());
+            }
+        };
+    }
 }
 
 /**
