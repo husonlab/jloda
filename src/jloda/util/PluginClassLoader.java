@@ -53,20 +53,13 @@ public class PluginClassLoader {
      */
     public static List<Object> getInstances(String[] packageNames, Class clazz) {
         final List<Object> plugins = new LinkedList<>();
-
         final LinkedList<String> packageNameQueue = new LinkedList<>();
         packageNameQueue.addAll(Arrays.asList(packageNames));
         while (packageNameQueue.size() > 0) {
-            String packageName = packageNameQueue.removeFirst();
-            // System.err.println("packageName: " + packageName);
-
-            String[] resources = null;
             try {
-                resources = Basic.fetchResources(packageName);
-            } catch (IOException ex) {
-                ex.printStackTrace();
-            }
-            if (resources != null) {
+                final String packageName = packageNameQueue.removeFirst();
+                final String[] resources = Basic.fetchResources(packageName);
+
                 for (int i = 0; i != resources.length; ++i) {
                     //System.err.println("Resource: " + resources[i]);
                     if (resources[i].endsWith(".class")) {
@@ -74,22 +67,18 @@ public class PluginClassLoader {
                             resources[i] = resources[i].substring(0, resources[i].length() - 6);
                             Class c = Basic.classForName(packageName.concat(".").concat(resources[i]));
                             if (!c.isInterface() && !Modifier.isAbstract(c.getModifiers()) && clazz.isAssignableFrom(c)) {
-                                Object obj;
                                 try {
-                                    obj = c.newInstance();
-                                    plugins.add(obj);
+                                    plugins.add(c.newInstance());
                                 } catch (InstantiationException ex) {
-                                    // continue; //Must be an abstract class
+                                    //Basic.caught(ex);
                                 }
-                            } else {
-                                // System.err.println("Skipping: " + c.getName());
                             }
                         } catch (Exception ex) {
                             // Basic.caught(ex);
                         }
                     } else {
                         try {
-                            String newPackageName = resources[i];
+                            final String newPackageName = resources[i];
                             if (!newPackageName.equals(packageName)) {
                                 packageNameQueue.addLast(newPackageName);
                                 // System.err.println("Adding package name: " + newPackageName);
@@ -99,6 +88,8 @@ public class PluginClassLoader {
                         }
                     }
                 }
+            } catch (IOException ex) {
+                Basic.caught(ex);
             }
         }
         return plugins;
