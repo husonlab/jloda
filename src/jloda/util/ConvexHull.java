@@ -18,54 +18,69 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 package jloda.util;
+/*
+ * Copyright (C) 2016 Daniel H. Huson
+ *
+ * (Some files contain contributions from other authors, who are then mentioned separately.)
+ *
+ * No usage, copying or distribution without explicit permission.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+*/
 
-import java.awt.*;
+import java.awt.geom.Point2D;
 import java.util.ArrayList;
 
 /**
  * computes convex hull for a collection of two dimensional points
- *
+ * <p>
  * daniel huson, 4.2015
  */
 public class ConvexHull {
     /**
      * computes the convex hull of a set of two-dimensional points using the quick hull algorithm
      *
-     * @param points
+     * @param points0
      * @return convex hull
      */
-    public static ArrayList<Point> quickHull(final ArrayList<Point> points) {
-        ArrayList<Point> convexHull = new ArrayList<>();
-        if (points.size() < 3) {
-            ArrayList<Point> result = new ArrayList<>(points.size());
+    public static ArrayList<Point2D> quickHull(final ArrayList<Point2D> points0) {
+        final ArrayList<Point2D> points = new ArrayList<>();
+        points.addAll(points0);
+
+        final ArrayList<Point2D> convexHull = new ArrayList<>();
+        if (points.size() <= 3) {
+            ArrayList<Point2D> result = new ArrayList<>(points.size());
             result.addAll(points);
             return result;
         }
         int minPointIndex = -1;
         int maxPointIndex = -1;
-        int minX = Integer.MAX_VALUE;
-        int maxX = Integer.MIN_VALUE;
+        double minX = Double.MAX_VALUE;
+        double maxX = Double.NEGATIVE_INFINITY;
         for (int i = 0; i < points.size(); i++) {
-            if (points.get(i).x < minX) {
-                minX = points.get(i).x;
+            final Point2D apt = points.get(i);
+            if (apt.getX() < minX) {
+                minX = apt.getX();
                 minPointIndex = i;
             }
-            if (points.get(i).x > maxX) {
-                maxX = points.get(i).x;
+            if (apt.getX() > maxX) {
+                maxX = apt.getX();
                 maxPointIndex = i;
             }
         }
-        final Point a = points.get(minPointIndex);
-        final Point b = points.get(maxPointIndex);
+        final Point2D a = points.get(minPointIndex);
+        final Point2D b = points.get(maxPointIndex);
         convexHull.add(a);
         convexHull.add(b);
         points.remove(a);
         points.remove(b);
 
-        ArrayList<Point> leftSet = new ArrayList<>();
-        ArrayList<Point> rightSet = new ArrayList<>();
+        final ArrayList<Point2D> leftSet = new ArrayList<>();
+        final ArrayList<Point2D> rightSet = new ArrayList<>();
 
-        for (Point p : points) {
+        for (Point2D p : points) {
             if (!isLeftOf(a, b, p))
                 leftSet.add(p);
             else
@@ -85,44 +100,44 @@ public class ConvexHull {
      * @param set
      * @param hull
      */
-    private static void hullSet(final Point a, final Point b, final ArrayList<Point> set, final ArrayList<Point> hull) {
+    private static void hullSet(final Point2D a, final Point2D b, final ArrayList<Point2D> set, final ArrayList<Point2D> hull) {
         if (set.size() == 0) return;
 
         if (set.size() == 1) {
-            Point p = set.get(0);
+            Point2D p = set.get(0);
             set.remove(p);
             final int insertPosition = hull.indexOf(b);
             hull.add(insertPosition, p);
             return;
         }
 
-        int maxDistance = Integer.MIN_VALUE;
+        double maxDistance = Double.NEGATIVE_INFINITY;
         int maxDistancePointIndex = -1;
         for (int i = 0; i < set.size(); i++) {
-            final Point p = set.get(i);
-            int distance = distance(a, b, p);
+            final Point2D p = set.get(i);
+            double distance = distance(a, b, p);
             if (distance > maxDistance) {
                 maxDistance = distance;
                 maxDistancePointIndex = i;
             }
         }
 
-        final Point p = set.get(maxDistancePointIndex);
+        final Point2D p = set.get(maxDistancePointIndex);
         set.remove(maxDistancePointIndex);
         final int insertPosition = hull.indexOf(b);
         hull.add(insertPosition, p);
 
         // Determine who's to the left of a
-        final ArrayList<Point> leftOfA = new ArrayList<>();
-        for (final Point m : set) {
+        final ArrayList<Point2D> leftOfA = new ArrayList<>();
+        for (final Point2D m : set) {
             if (isLeftOf(a, p, m)) {
                 leftOfA.add(m);
             }
         }
 
         // Determine who's to the left of b
-        final ArrayList<Point> leftOfB = new ArrayList<>();
-        for (final Point m : set) {
+        final ArrayList<Point2D> leftOfB = new ArrayList<>();
+        for (final Point2D m : set) {
             if (isLeftOf(p, b, m)) {
                 leftOfB.add(m);
             }
@@ -140,8 +155,8 @@ public class ConvexHull {
      * @param z
      * @return true, if z to left of line from a to b
      */
-    private static boolean isLeftOf(final Point a, final Point b, final Point z) {
-        return ((b.x - a.x) * (z.y - a.y) - (b.y - a.y) * (z.x - a.x)) > 0;
+    private static boolean isLeftOf(final Point2D a, final Point2D b, final Point2D z) {
+        return ((b.getX() - a.getX()) * (z.getY() - a.getY()) - (b.getY() - a.getY()) * (z.getX() - a.getX())) > 0;
     }
 
     /**
@@ -152,9 +167,9 @@ public class ConvexHull {
      * @param z
      * @return distance to line
      */
-    private static int distance(final Point a, final Point b, final Point z) {
-        final int ABx = b.x - a.x;
-        final int ABy = b.y - a.y;
-        return Math.abs(ABx * (a.y - z.y) - ABy * (a.x - z.x));
+    private static double distance(final Point2D a, final Point2D b, final Point2D z) {
+        final double ABx = b.getX() - a.getX();
+        final double ABy = b.getY() - a.getY();
+        return Math.abs(ABx * (a.getY() - z.getY()) - ABy * (a.getX() - z.getX()));
     }
 }
