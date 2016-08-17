@@ -19,6 +19,8 @@
  */
 package jloda.gui;
 
+import javafx.application.Platform;
+import jloda.util.Basic;
 import jloda.util.CanceledException;
 import jloda.util.ProgramProperties;
 import jloda.util.ProgressListener;
@@ -487,8 +489,14 @@ public class ProgressDialog implements ProgressListener {
     private static void run(Runnable runnable) {
         if (SwingUtilities.isEventDispatchThread())
             runnable.run();
-        else
+        else if (Platform.isFxApplicationThread())
             SwingUtilities.invokeLater(runnable);
+        else // todo: this may lead to FX vs Swing deadlock. But not using this cases Inspector window to appear below current window
+            try {
+                SwingUtilities.invokeAndWait(runnable);
+            } catch (Exception e) {
+                Basic.caught(e);
+            }
     }
 
     public static long getDelayInMilliseconds() {
