@@ -112,7 +112,6 @@ public class Basic {
     }
 
     public static String stopCollectingStdErr() {
-        restoreSystemErr();
         if (collectOut != null) {
             String result = collectOut.toString();
             collectOut = null;

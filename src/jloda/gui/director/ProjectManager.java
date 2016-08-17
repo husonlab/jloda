@@ -172,7 +172,7 @@ public class ProjectManager {
                 viewers0.remove(viewer0);
         }
         if (!dir.isInternalDocument())
-        updateWindowMenus();
+            updateWindowMenus();
     }
 
     private static void fireProjectsChanged() {
