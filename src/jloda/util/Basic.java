@@ -323,16 +323,13 @@ public class Basic {
     }
 
     /**
-     * gets the text in quotes. If already in quotes, returns unchanged, otherwise surrounds with quotes
+     * gets the text in quotes, removing any quotes already present
      *
      * @param text
      * @return quoted text
      */
-    public static String getInQuotes(String text) {
-        if (text.startsWith("\"") && text.endsWith("\""))
-            return text;
-        else
-            return "\"" + text + "\"";
+    public static String getInCleanQuotes(String text) {
+        return "\"" + text.replaceAll("\"", "") + "\"";
     }
 
     /**
