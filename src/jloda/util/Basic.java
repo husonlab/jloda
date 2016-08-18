@@ -323,6 +323,19 @@ public class Basic {
     }
 
     /**
+     * gets the text in quotes. If already in quotes, returns unchanged, otherwise surrounds with quotes
+     *
+     * @param text
+     * @return quoted text
+     */
+    public static String getInQuotes(String text) {
+        if (text.startsWith("\"") && text.endsWith("\""))
+            return text;
+        else
+            return "\"" + text + "\"";
+    }
+
+    /**
      * given a iterator, returns a new iterator in random order
      *
      * @param it
