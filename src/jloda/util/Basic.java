@@ -351,16 +351,24 @@ public class Basic {
      * @return iterator in random order
      */
     public static <T> Iterator<T> randomize(Iterator<T> it, Random random) {
-        java.util.List<T> list = new LinkedList<>();
+        final ArrayList<T> list = new ArrayList<>();
         while (it.hasNext())
             list.add(it.next());
-        java.util.List<T> result = new LinkedList<>();
-        while (!list.isEmpty()) {
-            int r = random.nextInt(list.size());
-            result.add(list.get(r));
-            list.remove(r);
-        }
-        return result.iterator();
+        final Object[] array = randomize(list.toArray(), random);
+        list.clear();
+        return new Iterator<T>() {
+            private int i = 0;
+
+            @Override
+            public boolean hasNext() {
+                return i < array.length;
+            }
+
+            @Override
+            public T next() {
+                return (T) array[i++];
+            }
+        };
     }
 
     /**
