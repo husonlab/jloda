@@ -350,9 +350,9 @@ public class ProjectManager {
      * attempt to quit program. If quit canceled and no projects open, opens a new empty document.
      * Programs that use this method for quitting must set setQuitting to false if the user chooses not to quit
      *
-     * @param makeNewDocument
+     * @param runOnQuitCanceled
      */
-    public static void doQuit(Runnable makeNewDocument) {
+    public static void doQuit(final Runnable runJustBeforeQuit, final Runnable runOnQuitCanceled) {
         setQuitting(true);
         setExitOnEmpty(false);
         try {
@@ -367,13 +367,19 @@ public class ProjectManager {
                 }
             }
             if (isQuitting()) {
+                try {
+                    if (runJustBeforeQuit != null)
+                        runJustBeforeQuit.run();
+                } catch (Exception ex) {
+                    Basic.caught(ex);
+                }
                 ProgramProperties.store();
                 System.exit(0);
             }
         } catch (CanceledException ex) {
         } finally {
             if (projects.isEmpty()) {
-                makeNewDocument.run();
+                runOnQuitCanceled.run();
             }
             setQuitting(false);
         }
