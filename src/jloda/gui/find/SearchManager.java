@@ -90,7 +90,7 @@ public class SearchManager implements IDirectableViewer {
         this.showReplace = showReplace;
         searcher = targets[0];
         if (createToolBar)
-            findDialog = new FindToolBar(this, viewer, new SearchActions(this), target.getAdditionalButtons());
+            findDialog = new FindToolBar(this, viewer, new SearchActions(this), showReplace, target.getAdditionalButtons());
         else
             findDialog = new FindWindow(searcher.getParent(), "", this, new SearchActions(this));
     }
