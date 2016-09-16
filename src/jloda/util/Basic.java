@@ -3868,6 +3868,22 @@ public class Basic {
             }
         };
     }
+
+    /**
+     * transposes a matrix
+     *
+     * @param matrix
+     * @return transposed
+     */
+    public static float[][] transposeMatrix(float[][] matrix) {
+        final float[][] transposed = new float[matrix[0].length][matrix.length];
+        for (int i = 0; i < matrix.length; i++) {
+            for (int j = 0; j < transposed.length; j++) {
+                transposed[j][i] = matrix[i][j];
+            }
+        }
+        return transposed;
+    }
 }
 
 /**

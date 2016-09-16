@@ -61,6 +61,36 @@ public class Correlation {
      * compute Pearson's correlation coefficient
      *
      * @param n
+     * @param x
+     * @param y
+     * @return correlation coefficient between -1 and 1
+     */
+    public static float computePersonsCorrelationCoefficent(int n, float[] x, float[] y) {
+        double sumX = 0;
+        double sumY = 0;
+        double sumXY = 0;
+        double sumX2 = 0;
+        double sumY2 = 0;
+
+        for (int i = 0; i < n; i++) {
+            sumX += x[i];
+            sumY += y[i];
+            sumXY += x[i] * y[i];
+            sumX2 += x[i] * x[i];
+            sumY2 += y[i] * y[i];
+        }
+
+        final double bottom = Math.sqrt((n * sumX2 - sumX * sumX) * (n * sumY2 - sumY * sumY));
+        if (bottom == 0)
+            return 0;
+        final double top = n * sumXY - sumX * sumY;
+        return (float) (top / bottom);
+    }
+
+    /**
+     * compute Pearson's correlation coefficient
+     *
+     * @param n
      * @param xValues
      * @param yValues
      * @return correlation coefficient between -1 and 1
