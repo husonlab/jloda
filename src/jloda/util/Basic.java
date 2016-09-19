@@ -1429,7 +1429,7 @@ public class Basic {
      * @return reverse order list
      */
     public static <T> List<T> reverseList(Collection<T> list) {
-        List<T> result = new LinkedList<>();
+        final List<T> result = new LinkedList<>();
         for (T aList : list) {
             result.add(0, aList);
         }
@@ -1443,7 +1443,7 @@ public class Basic {
      * @return rotated order
      */
     public static <T> List<T> rotateList(Collection<T> list) {
-        List<T> result = new LinkedList<>();
+        final List<T> result = new LinkedList<>();
         if (list.size() > 0) {
             result.addAll(list);
             result.add(result.remove(0));
