@@ -25,6 +25,7 @@ import jloda.graphview.GraphView;
 import jloda.graphview.NodeView;
 import jloda.util.Geometry;
 import jloda.util.NotOwnerException;
+import jloda.util.Pair;
 
 import java.util.*;
 
@@ -342,6 +343,59 @@ public class PhyloTreeView extends GraphView {
      */
     public PhyloTree getPhyloTree() {
         return (PhyloTree) getGraph();
+    }
+
+    /**
+     * rotate the tree so that node labels are alphabetically sorted
+     * Note that this is a topological operation that does not modify coordinates
+     */
+    public void topologicallySortTreeLexicographically() {
+        if (getPhyloTree().getRoot() != null)
+            sortTreeAlphabeticallyRec(getPhyloTree().getRoot());
+    }
+
+    /**
+     * rotates tree so as to sort leaves alphabetically
+     *
+     * @param v
+     * @return lexicographic smallest leaf label below
+     */
+    private String sortTreeAlphabeticallyRec(Node v) {
+        if (v.getOutDegree() == 0)
+            return getLabel(v);
+        else { // out degree must be >0
+            final ArrayList<Pair<String, Edge>> list = new ArrayList<>(v.getOutDegree());
+            for (Edge e = v.getFirstOutEdge(); e != null; e = v.getNextOutEdge(e)) {
+                String first = sortTreeAlphabeticallyRec(e.getTarget());
+                list.add(new Pair<>(first, e));
+            }
+            list.sort(new Comparator<Pair<String, Edge>>() {
+                @Override
+                public int compare(Pair<String, Edge> a, Pair<String, Edge> b) {
+                    int compare = a.getFirst().compareTo(b.getFirst());
+                    if (compare != 0)
+                        return compare;
+                    else if (a.getSecond().getId() < b.getSecond().getId())
+                        return -1;
+                    else if (a.getSecond().getId() > b.getSecond().getId())
+                        return 1;
+                    else
+                        return 0;
+                }
+            });
+            final ArrayList<Edge> edges = new ArrayList<>(v.getDegree());
+            for (Pair<String, Edge> pair : list) {
+                edges.add(pair.getSecond());
+            }
+            if (v.getInDegree() > 0)
+                edges.add(v.getFirstInEdge());
+            v.rearrangeAdjacentEdges(edges);
+
+            if (getLabel(v) != null && getLabel(v).compareTo(list.get(0).getFirst()) == -1)
+                return getLabel(v);
+            else
+                return list.get(0).getFirst();
+        }
     }
 }
 
