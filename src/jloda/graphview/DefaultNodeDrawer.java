@@ -237,7 +237,7 @@ public class DefaultNodeDrawer implements INodeDrawer {
         if (nv.getLabelColor() != null && nv.getLabel() != null && nv.isLabelVisible() && nv.getLabel().length() > 0) {
             if (nv.getFont() != null)
                 gc.setFont(nv.getFont());
-            else
+            else if (defaultFont != null)
                 gc.setFont(defaultFont);
             Shape shape = (nv.getLabelAngle() == 0 ? nv.getLabelRect(trans) : nv.getLabelShape(trans));
             gc.setColor(ProgramProperties.SELECTION_COLOR);
@@ -272,7 +272,7 @@ public class DefaultNodeDrawer implements INodeDrawer {
 
             if (nv.getFont() != null)
                 gc.setFont(nv.getFont());
-            else
+            else if (defaultFont != null)
                 gc.setFont(defaultFont);
 
             if (nv.isEnabled())
