@@ -3068,7 +3068,7 @@ public class Basic {
      * @param splitChar
      * @return split string, trimmed
      */
-    public static String[] split(String aLine, final char splitChar) {
+    public static String[] split(String aLine, char splitChar) {
         if (aLine.length() == 0)
             return new String[0];
 
@@ -3078,12 +3078,46 @@ public class Basic {
                 count++;
         if (count == 1)
             return new String[]{aLine};
-        String[] result = new String[count];
+        final String[] result = new String[count];
         int prev = 0;
         int which = 0;
         int pos = 0;
         for (; pos < aLine.length(); pos++) {
             if (aLine.charAt(pos) == splitChar) {
+                result[which++] = aLine.substring(prev, pos).trim();
+                prev = pos + 1;
+            }
+        }
+        if (pos > prev) {
+            result[which] = aLine.substring(prev, pos).trim();
+        }
+        return result;
+    }
+
+    /**
+     * split string on given characters. Note that results are subsequently trimmed
+     *
+     * @param aLine
+     * @param splitChar
+     * @return split string, trimmed
+     */
+    public static String[] split(String aLine, char splitChar, char... splitChars) {
+        if (aLine.length() == 0)
+            return new String[0];
+
+        int count = (aLine.charAt(aLine.length() - 1) == splitChar || contains(splitChars, aLine.charAt(aLine.length() - 1)) ? 0 : 1);
+
+        for (int i = 0; i < aLine.length(); i++)
+            if (aLine.charAt(i) == splitChar || contains(splitChars, aLine.charAt(i)))
+                count++;
+        if (count == 1)
+            return new String[]{aLine};
+        final String[] result = new String[count];
+        int prev = 0;
+        int which = 0;
+        int pos = 0;
+        for (; pos < aLine.length(); pos++) {
+            if (aLine.charAt(pos) == splitChar || contains(splitChars, aLine.charAt(pos))) {
                 result[which++] = aLine.substring(prev, pos).trim();
                 prev = pos + 1;
             }
@@ -3646,6 +3680,21 @@ public class Basic {
     public static boolean contains(String string, char ch, int count) {
         for (int i = 0; i < string.length(); i++) {
             if (string.charAt(i) == ch && --count == 0)
+                return true;
+        }
+        return false;
+    }
+
+    /**
+     * does the given array of characters contain the given one?
+     *
+     * @param string
+     * @param ch
+     * @return true, if contained
+     */
+    public static boolean contains(char[] string, char ch) {
+        for (char a : string) {
+            if (a == ch)
                 return true;
         }
         return false;
