@@ -252,7 +252,7 @@ public class FileInputIterator implements IFileIterator {
         if (nextLine == null)
             hasNext();
         if (nextLine != null) {
-            String result = nextLine;
+            final String result = nextLine;
             nextLine = null;
             lineNumber++;
             if (progress != null) {
