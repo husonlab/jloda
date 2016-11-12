@@ -43,7 +43,6 @@ public class FastaFileFilter extends FileFilterBase implements FilenameFilter {
         return instance;
     }
 
-
     /**
      * constructor
      */
@@ -53,6 +52,16 @@ public class FastaFileFilter extends FileFilterBase implements FilenameFilter {
         add(".faa");
         add(".fna");
         add(".fasta");
+    }
+
+    public boolean accept (String fileName) {
+        boolean acceptBasedOnSuffix=super.accept(fileName);
+        if(!acceptBasedOnSuffix && isAllowGZipped() && fileName.toLowerCase().endsWith(".gz")) {   // look inside a gzipped file
+            final String[] lines=Basic.getFirstLinesFromFile(new File(fileName),2);
+            return lines!=null && lines[0]!=null && isFastAHeaderLine(lines[0])   && lines[1]!=null && !lines[1].startsWith(">");
+        }
+        else
+            return true;
     }
 
     /**
@@ -71,6 +80,16 @@ public class FastaFileFilter extends FileFilterBase implements FilenameFilter {
     public static boolean accept(String fileName, boolean allowGZipped) {
         final FastaFileFilter fastaFileFilter = (new FastaFileFilter());
         fastaFileFilter.setAllowGZipped(allowGZipped);
-        return fastaFileFilter.accept(new File(fileName));
+        return fastaFileFilter.accept(fileName);
+    }
+
+    private static boolean isFastAHeaderLine(String line) {
+        if(line.startsWith("> ")) {
+            return line.length()>2 && Character.isLetterOrDigit(line.charAt(2));
+        } else  if(line.startsWith(">")) {
+            return line.length()>1 && Character.isLetterOrDigit(line.charAt(1));
+        }
+        else
+            return false;
     }
 }
