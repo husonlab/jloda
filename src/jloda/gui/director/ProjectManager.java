@@ -378,7 +378,7 @@ public class ProjectManager {
             }
         } catch (CanceledException ex) {
         } finally {
-            if (projects.isEmpty()) {
+            if (projects.isEmpty() && runOnQuitCanceled != null) {
                 runOnQuitCanceled.run();
             }
             setQuitting(false);
