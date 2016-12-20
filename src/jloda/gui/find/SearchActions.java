@@ -61,11 +61,21 @@ public class SearchActions {
      * @param enable
      */
     public void setEnableCritical(boolean enable) {
+        if (enable && searchManager.getSearcher() != null && searchManager.getSearcher().getAdditionalButtons() != null) {
+            for (AbstractButton abstractButton : searchManager.getSearcher().getAdditionalButtons()) {
+                abstractButton.setEnabled(true);
+            }
+        }
         for (AbstractAction action : all) {
             action.setEnabled(enable);
         }
         if (enable)
             updateEnableState();
+        if (!enable && searchManager.getSearcher() != null && searchManager.getSearcher().getAdditionalButtons() != null) {
+            for (AbstractButton abstractButton : searchManager.getSearcher().getAdditionalButtons()) {
+                abstractButton.setEnabled(false);
+            }
+        }
     }
 
     /**

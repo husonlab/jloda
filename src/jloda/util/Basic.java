@@ -3634,6 +3634,30 @@ public class Basic {
      * @return first line or null
      * @throws IOException
      */
+    public static String getFirstLineFromFile(File file, String ignoreLinesThatStartWithThis, int maxLines) {
+        try {
+            int count = 0;
+            try (BufferedReader ins = new BufferedReader(new InputStreamReader(getInputStreamPossiblyZIPorGZIP(file.getPath())))) {
+                String aLine;
+                while ((aLine = ins.readLine()) != null) {
+                    if (!aLine.startsWith(ignoreLinesThatStartWithThis))
+                        return aLine;
+                    if (++count == maxLines)
+                        break;
+                }
+            }
+        } catch (IOException ex) {
+        }
+        return null;
+    }
+
+    /**
+     * gets the first line in a file. File may be zgipped or zipped
+     *
+     * @param file
+     * @return first line or null
+     * @throws IOException
+     */
     public static String[] getFirstLinesFromFile(File file, int count) {
         try {
             String[] lines = new String[count];
