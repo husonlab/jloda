@@ -1491,6 +1491,25 @@ public class NexusStreamParser extends NexusStreamTokenizer implements Closeable
     public void close() throws IOException {
         reader.close();
     }
+
+    /**
+     * attempts to skip a block. If successful, returns the name of the block
+     *
+     * @return name of block skipped or null
+     * @throws IOException
+     */
+    public String skipBlock() throws IOException {
+        String blockName = null;
+        while (!peekMatchIgnoreCase("end;")) {
+            if (blockName == null && peekMatchIgnoreCase("begin")) {
+                matchIgnoreCase("begin");
+                blockName = getWordRespectCase();
+                matchIgnoreCase(";");
+            }
+            nextToken();
+        }
+        return blockName;
+    }
 }
 
 // EOF
