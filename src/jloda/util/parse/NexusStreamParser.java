@@ -19,29 +19,21 @@
 */
 package jloda.util.parse;
 
-/**
- * @version $Id: NexusStreamParser.java,v 1.16 2010-05-31 04:27:41 huson Exp $
- *
- * @author Daniel Huson
- *
- */
-
-
 import jloda.util.Basic;
 import jloda.util.Colors;
 
 import java.awt.*;
-import java.io.File;
-import java.io.IOException;
-import java.io.Reader;
-import java.io.StringReader;
+import java.io.*;
 import java.util.*;
 import java.util.List;
 
 /**
  * Parser for NexusBlock files
+ * 2003, Daniel Huson
  */
-public class NexusStreamParser extends NexusStreamTokenizer {
+public class NexusStreamParser extends NexusStreamTokenizer implements Closeable {
+    private final Reader reader; // keep a reference only so that we can close the reader...
+
     /**
      * Construct a new NexusStreamParser object
      *
@@ -49,6 +41,7 @@ public class NexusStreamParser extends NexusStreamTokenizer {
      */
     public NexusStreamParser(Reader r) {
         super(r);
+        reader = r;
     }
 
     /**
@@ -1388,7 +1381,7 @@ public class NexusStreamParser extends NexusStreamTokenizer {
         for (String legalToken : legalTokens)
             if (word.equals(legalToken))
                 return legalToken;
-        throw new IOException("line " + lineno() + ": input '" + word + "' does not match any of legal tokens: " + legalTokens);
+        throw new IOException("line " + lineno() + ": input '" + word + "' does not match any of legal tokens: " + Basic.toString(legalTokens, " "));
 
     }
 
@@ -1493,7 +1486,10 @@ public class NexusStreamParser extends NexusStreamTokenizer {
             return Integer.parseInt(value.substring(2), 16);
         else
             throw new NumberFormatException("Not hex: " + value);
+    }
 
+    public void close() throws IOException {
+        reader.close();
     }
 }
 
