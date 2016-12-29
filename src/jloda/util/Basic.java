@@ -1088,13 +1088,13 @@ public class Basic {
 
 
     /**
-     * returns a set of bits as a comma separated string
+     * returns a set a comma separated string
      *
-     * @param bits
+     * @param set
      * @return string representation
      */
-    public static String toString(BitSet bits) {
-        if (bits == null)
+    public static String toString(BitSet set) {
+        if (set == null)
             return "null";
 
         final StringBuilder buf = new StringBuilder();
@@ -1102,7 +1102,7 @@ public class Basic {
         int startRun = 0;
         int inRun = 0;
         boolean first = true;
-        for (int i = bits.nextSetBit(0); i >= 0; i = bits.nextSetBit(i + 1)) {
+        for (int i = set.nextSetBit(0); i >= 0; i = set.nextSetBit(i + 1)) {
             if (first) {
                 first = false;
                 buf.append(i);
@@ -1126,6 +1126,25 @@ public class Basic {
             buf.append(",").append(inRun);
         else if (inRun > startRun + 1)
             buf.append("-").append(inRun);
+        return buf.toString();
+    }
+
+    /**
+     * gets members of bit set as as string
+     * @param set
+     * @param separator
+     * @return string
+     */
+    public static String toString(BitSet set, char separator) {
+        StringBuilder buf = new StringBuilder();
+        boolean first = true;
+        for (int i = set.nextSetBit(0); i != -1; i = set.nextSetBit(i + 1)) {
+            if (first)
+                first = false;
+            else
+                buf.append(separator);
+            buf.append(i);
+        }
         return buf.toString();
     }
 
