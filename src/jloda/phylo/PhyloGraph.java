@@ -1070,11 +1070,11 @@ public class PhyloGraph extends Graph {
      *
      * @param old2new
      */
-    public void changeLabels(Map old2new) {
+    public void changeLabels(Map<String, String> old2new) {
         for (Node v = getFirstNode(); v != null; v = getNextNode(v)) {
             String label = getLabel(v);
             if (label != null && old2new.containsKey(label))
-                setLabel(v, (String) old2new.get(label));
+                setLabel(v, old2new.get(label));
         }
     }
 

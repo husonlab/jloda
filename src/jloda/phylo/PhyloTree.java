@@ -27,6 +27,7 @@ package jloda.phylo;
  * @author Daniel Huson
  */
 
+import com.sun.istack.internal.Nullable;
 import jloda.graph.*;
 import jloda.util.Basic;
 import jloda.util.NotOwnerException;
@@ -155,7 +156,7 @@ public class PhyloTree extends PhyloGraph {
      * @return a string representation of the tree in bracket notation
      */
     public String toBracketString() {
-        StringWriter sw = new StringWriter();
+        final StringWriter sw = new StringWriter();
         try {
             write(sw, true);
         } catch (Exception ex) {
@@ -171,7 +172,7 @@ public class PhyloTree extends PhyloGraph {
      * @return a string representation of the tree in bracket notation
      */
     public String toBracketString(boolean showWeights) {
-        StringWriter sw = new StringWriter();
+        final StringWriter sw = new StringWriter();
         try {
             write(sw, showWeights);
         } catch (Exception ex) {
@@ -195,8 +196,8 @@ public class PhyloTree extends PhyloGraph {
      *
      * @return a string representation of the tree in bracket notation
      */
-    public String toString(Map translate) {
-        StringWriter sw = new StringWriter();
+    public String toString(Map<String, String> translate) {
+        final StringWriter sw = new StringWriter();
         try {
             if (translate == null || translate.size() == 0) {
                 this.write(sw, true);
@@ -219,6 +220,33 @@ public class PhyloTree extends PhyloGraph {
             return "()";
         }
         return sw.toString();
+    }
+
+    /**
+     * writes a tree
+     *
+     * @param writer
+     * @param showWeights
+     * @param translate   if non-null, is used to translate labels
+     * @throws IOException
+     */
+    public void write(final Writer writer, final boolean showWeights, @Nullable final Map<String, String> translate) throws IOException {
+        if (translate == null || translate.size() == 0) {
+            this.write(writer, true);
+
+        } else {
+            PhyloTree tmpTree = new PhyloTree();
+            tmpTree.copy(this);
+            for (Node v = tmpTree.getFirstNode(); v != null; v = v.getNext()) {
+                String key = tmpTree.getLabel(v);
+                if (key != null) {
+                    String value = translate.get(key);
+                    if (value != null)
+                        tmpTree.setLabel(v, value);
+                }
+            }
+            tmpTree.write(writer, showWeights);
+        }
     }
 
     /**
