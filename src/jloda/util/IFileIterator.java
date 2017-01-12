@@ -1,6 +1,6 @@
 /**
  * ICloseableIterator.java
- * Copyright (C) 2016 Daniel H. Huson
+ * Copyright (C) 2017 Daniel H. Huson
  * <p/>
  * (Some files contain contributions from other authors, who are then mentioned separately.)
  * <p/>
