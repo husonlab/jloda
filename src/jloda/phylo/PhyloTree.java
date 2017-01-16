@@ -232,15 +232,15 @@ public class PhyloTree extends PhyloGraph {
      */
     public void write(final Writer writer, final boolean showWeights, @Nullable final Map<String, String> translate) throws IOException {
         if (translate == null || translate.size() == 0) {
-            this.write(writer, true);
+            this.write(writer, showWeights);
 
         } else {
             PhyloTree tmpTree = new PhyloTree();
             tmpTree.copy(this);
             for (Node v = tmpTree.getFirstNode(); v != null; v = v.getNext()) {
-                String key = tmpTree.getLabel(v);
+                final String key = tmpTree.getLabel(v);
                 if (key != null) {
-                    String value = translate.get(key);
+                    final String value = translate.get(key);
                     if (value != null)
                         tmpTree.setLabel(v, value);
                 }
