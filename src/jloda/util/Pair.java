@@ -28,17 +28,16 @@ import java.util.Comparator;
  *         Date: 14-May-2004
  */
 public class Pair<S, T> implements Comparable<Pair<S, T>>, Comparator<Pair<S, T>> {
-    S first;
-    T second;
+    private S first;
+    private T second;
 
     public Pair() {
 
     }
 
     public Pair(S first, T second) {
-        setFirst(first);
-        setSecond(second);
-
+        this.first = first;
+        this.second = second;
     }
 
     public S getFirst() {
@@ -60,7 +59,6 @@ public class Pair<S, T> implements Comparable<Pair<S, T>>, Comparator<Pair<S, T>
     public int getFirstInt() {
         return ((Integer) first);
     }
-
 
     public int getSecondInt() {
         return ((Integer) second);
@@ -97,34 +95,47 @@ public class Pair<S, T> implements Comparable<Pair<S, T>>, Comparator<Pair<S, T>
     }
 
     public int hashCode() {
-        if (first == null || second == null)
-            return 0;
-        else
-            return first.hashCode() + 37 * second.hashCode();
+        return (first == null ? 0 : first.hashCode()) + (second == null ? 0 : 37 * second.hashCode());
     }
 
     public int compareTo(Pair<S, T> p) {
-        int value = ((Comparable<S>) this.getFirst()).compareTo(p.getFirst());
+        int value;
+        if (first == null && p.first != null)
+            return -1;
+        if (first != null && p.first == null)
+            return 1;
+        if (first == null) //  && p.first==null
+            value = 0;
+        else
+            value = ((Comparable) first).compareTo(p.getFirst());
         if (value != 0)
             return value;
+
+        if (second == null && p.second != null)
+            return -1;
+        if (second != null && p.second == null)
+            return 1;
+        if (second == null) //  && p.second==null
+            value = 0;
         else
-            return ((Comparable<T>) this.getSecond()).compareTo(p.getSecond());
+            value = ((Comparable) second).compareTo(p.getSecond());
+        return value;
     }
 
     public boolean equals(Object other) {
         boolean good = false;
         if (other instanceof Pair) {
-            Pair p = (Pair) other;
+            final Pair that = (Pair) other;
             if (first == null) {
-                good = (p.first == null);
+                good = (that.first == null);
             } else {
-                good = first.equals(p.first);
+                good = first.equals(that.first);
             }
             if (good) {
                 if (second == null) {
-                    good = (p.second == null);
+                    good = (that.second == null);
                 } else {
-                    good = second.equals(p.second);
+                    good = second.equals(that.second);
                 }
             }
         }
