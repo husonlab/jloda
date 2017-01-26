@@ -56,6 +56,7 @@ public class PhyloTree extends PhyloGraph {
     private final boolean cleanLabelsOnWrite;
 
     private String name = null;
+    private double weight = 1;
 
     protected final NodeArray<List<Node>> node2GuideTreeChildren; // keep track of children in LSA tree in network
 
@@ -99,6 +100,7 @@ public class PhyloTree extends PhyloGraph {
                 getNode2GuideTreeChildren().set(oldNode2NewNode.get(v), newChildren);
             }
         }
+        setName(src.getName());
 
         return oldNode2NewNode;
     }
@@ -1293,6 +1295,14 @@ public class PhyloTree extends PhyloGraph {
      */
     public NodeArray<List<Node>> getNode2GuideTreeChildren() {
         return node2GuideTreeChildren;
+    }
+
+    public double getWeight() {
+        return weight;
+    }
+
+    public void setWeight(double weight) {
+        this.weight = weight;
     }
 }
 
