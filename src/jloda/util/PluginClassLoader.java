@@ -47,11 +47,23 @@ public class PluginClassLoader {
     /**
      * get an instance of each class of the given type in the given packages
      *
-     * @param packageNames
      * @param clazz
+     * @param packageNames
      * @return instances
      */
-    public static List<Object> getInstances(String[] packageNames, Class clazz) {
+    public static List<Object> getInstances(Class clazz, String... packageNames) {
+        return getInstances(clazz, null, packageNames);
+    }
+
+    /**
+     * get an instance of each class of the given types in the given packages
+     *
+     * @param clazz1       this must be assignable from the returned class
+     * @param clazz2       if non-null, must also be assignable from the returned class
+     * @param packageNames
+     * @return instances
+     */
+    public static List<Object> getInstances(Class clazz1, Class clazz2, String... packageNames) {
         final List<Object> plugins = new LinkedList<>();
         final LinkedList<String> packageNameQueue = new LinkedList<>();
         packageNameQueue.addAll(Arrays.asList(packageNames));
@@ -66,7 +78,7 @@ public class PluginClassLoader {
                         try {
                             resources[i] = resources[i].substring(0, resources[i].length() - 6);
                             Class c = Basic.classForName(packageName.concat(".").concat(resources[i]));
-                            if (!c.isInterface() && !Modifier.isAbstract(c.getModifiers()) && clazz.isAssignableFrom(c)) {
+                            if (!c.isInterface() && !Modifier.isAbstract(c.getModifiers()) && clazz1.isAssignableFrom(c) && (clazz2 == null || clazz2.isAssignableFrom(c))) {
                                 try {
                                     plugins.add(c.newInstance());
                                 } catch (InstantiationException ex) {
@@ -93,6 +105,17 @@ public class PluginClassLoader {
             }
         }
         return plugins;
+    }
+
+    /**
+     * get an instance of each class of the given type in the given packages
+     *
+     * @param packageNames
+     * @param clazz
+     * @return instances
+     */
+    public static List<Object> getInstances(String[] packageNames, Class clazz) {
+        return getInstances(clazz, null, packageNames);
     }
 
     /**
