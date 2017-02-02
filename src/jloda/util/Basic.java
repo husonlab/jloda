@@ -3114,6 +3114,33 @@ public class Basic {
     }
 
     /**
+     * split string on white space
+     *
+     * @param aLine
+     * @return split string, trimmed
+     */
+    public static String[] splitOnWhiteSpace(String aLine) {
+        ArrayList<String> parts = new ArrayList<>();
+
+        int start = -1;
+        for (int i = 0; i < aLine.length(); i++) {
+            int ch = aLine.charAt(i);
+            if (Character.isWhitespace(ch)) {
+                if (start != -1) {
+                    parts.add(aLine.substring(start, i));
+                    start = -1;
+                }
+            } else {
+                if (start == -1)
+                    start = i;
+            }
+        }
+        if (start != -1)
+            parts.add(aLine.substring(start));
+        return parts.toArray(new String[parts.size()]);
+    }
+
+    /**
      * split string on given characters. Note that results are subsequently trimmed
      *
      * @param aLine
