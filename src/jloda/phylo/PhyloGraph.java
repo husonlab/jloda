@@ -452,7 +452,7 @@ public class PhyloGraph extends Graph {
      */
     public List<Integer> getNode2Taxa(Node v) {
         if (node2taxa.get(v) == null)
-            node2taxa.set(v, new LinkedList<Integer>()); // lazy initialization
+            node2taxa.set(v, new ArrayList<Integer>()); // lazy initialization
         return node2taxa.get(v);
     }
 
@@ -899,7 +899,7 @@ public class PhyloGraph extends Graph {
 
         if (one != null) {
             // determine all nodes and edges that separate S(1) from X-S(1)
-            List<Pair<Node, Edge>> separators = new LinkedList<>(); // each is a pair consisting of a node and edge
+            List<Pair<Node, Edge>> separators = new ArrayList<>(); // each is a pair consisting of a node and edge
             NodeSet seen = new NodeSet(this);
 
             getAllSeparators(splitId, one, null, seen, separators);
