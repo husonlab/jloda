@@ -4003,6 +4003,20 @@ public class Basic {
         }
         return transposed;
     }
+
+    /**
+     * surrounds word with quotes if it contains character that is not a digit, letter or _
+     *
+     * @param str
+     * @return str, quoted is necessary
+     */
+    public static String quoteIfNecessary(String str) {
+        for (int i = 0; i < str.length(); i++) {
+            if (!Character.isLetterOrDigit(str.charAt(i)) && str.charAt(i) != '_')
+                return "'" + str + "'";
+        }
+        return str;
+    }
 }
 
 /**
