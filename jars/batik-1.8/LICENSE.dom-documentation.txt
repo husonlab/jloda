@@ -4,8 +4,8 @@ xml-commons/java/external/LICENSE.dom-documentation.txt $Id: LICENSE.dom-documen
 This license came from: http://www.w3.org/Consortium/Legal/copyright-documents-19990405
 
 
-W3C® DOCUMENT NOTICE AND LICENSE
-Copyright © 1994-2001 World
+W3Cï¿½ DOCUMENT NOTICE AND LICENSE
+Copyright ï¿½ 1994-2001 World
 Wide Web Consortium, <a href="http://www.w3.org/">World
 Wide Web Consortium</a>, (<a href=
 "http://www.lcs.mit.edu/">Massachusetts Institute of
@@ -31,7 +31,7 @@ copies of the document, or portions thereof, that you use:
 A link or URL to the original W3C document.
 
 The pre-existing copyright notice of the original author, or if
-it doesn't exist, a notice of the form: "Copyright © [$date-of-document] World Wide Web
+it doesn't exist, a notice of the form: "Copyright ï¿½ [$date-of-document] World Wide Web
 Consortium, (Massachusetts
 Institute of Technology, Institut National de Recherche en Informatique et en
 Automatique, Keio
@@ -41,7 +41,7 @@ textual representation is permitted.)
 
 If it exists, the STATUS of the W3C document.
 
-When space permits, inclusion of the full text of this NOTICE 
+When space permits, inclusion of the full label of this NOTICE
 should be provided. We request that authorship
 attribution be provided in any software, documents, or other items
 or products that you create pursuant to the implementation of the
@@ -51,7 +51,7 @@ No right to create modifications or derivatives of W3C documents
 is granted pursuant to this license. However, if additional 
 requirements (documented in the Copyright
 FAQ) are satisfied, the right to create modifications or
-derivatives is sometimes granted by the W3C to individuals
+derivatives isï¿½sometimes granted by the W3C to individuals
 complying with those requirements.
 
 THIS DOCUMENT IS PROVIDED "AS IS," AND COPYRIGHT HOLDERS MAKE NO

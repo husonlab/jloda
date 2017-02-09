@@ -108,7 +108,7 @@ public class NodeEdge extends GraphBase {
     }
 
     /**
-     * is this node hidden? If hidden, this node will not be considered when using an iteration
+     * is this node hidden? If hidden, this node or edge will not be considered when using an iteration
      *
      * @return hidden
      */

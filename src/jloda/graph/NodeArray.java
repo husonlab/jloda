@@ -200,8 +200,6 @@ public class NodeArray<T> extends GraphBase implements NodeAssociation<T> {
         }
         return result;
     }
-
-
 }
 
 // EOF

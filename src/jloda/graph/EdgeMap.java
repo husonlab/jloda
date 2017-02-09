@@ -110,7 +110,6 @@ public class EdgeMap<T> extends GraphBase implements EdgeAssociation<T> {
             data.put(e, obj);
         if (obj != null && isClear)
             isClear = false;
-
     }
 
     /**

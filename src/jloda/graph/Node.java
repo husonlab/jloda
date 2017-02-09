@@ -487,8 +487,8 @@ public class Node extends NodeEdge implements Comparable {
      * @return iterator over all adjacent edges
      */
     public Iterator<Edge> getAdjacentEdges() {
-        final Node v = this;
         return new IteratorAdapter<Edge>() {
+            final Node v = Node.this;
             private Edge e = v.getFirstAdjacentEdge();
 
             protected Edge findNext() throws NoSuchElementException {
@@ -509,8 +509,8 @@ public class Node extends NodeEdge implements Comparable {
      * @return iterator over all in edges
      */
     public Iterator<Edge> getInEdges() {
-        final Node v = this;
         return new IteratorAdapter<Edge>() {
+            final Node v = Node.this;
             private Edge e = v.getFirstAdjacentEdge();
 
             protected Edge findNext() throws NoSuchElementException {
@@ -534,8 +534,8 @@ public class Node extends NodeEdge implements Comparable {
      * @return iterator over all out edges
      */
     public Iterator<Edge> getOutEdges() {
-        final Node v = this;
         return new IteratorAdapter<Edge>() {
+            final Node v = Node.this;
             private Edge e = v.getFirstAdjacentEdge();
 
             protected Edge findNext() throws NoSuchElementException {

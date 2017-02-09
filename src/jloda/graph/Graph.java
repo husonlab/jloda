@@ -45,18 +45,18 @@ import java.util.*;
  * Daniel Huson, 2002
  * <p/>
  */
-public class Graph extends GraphBase {
+public class Graph<V, E> extends GraphBase {
     private Node firstNode;
     private Node lastNode;
     private int numberNodes;
     private int numberOfNodesThatAreHidden;
-    private int idsNodes;
+    private int idsNodes; // number of ids assigned to nodes
 
     private Edge firstEdge;
     protected Edge lastEdge;
     private int numberEdges;
     private int numberOfEdgesThatAreHidden;
-    private int idsEdges;
+    private int idsEdges; // number of ids assigned to edges
 
     private boolean ignoreGraphHasChanged = false; // set this when we are deleting a whole graph
 
@@ -894,9 +894,10 @@ public class Graph extends GraphBase {
      * @param v node
      * @return the info
      */
-    public Object getInfo(Node v) {
+    @SuppressWarnings("unchecked")
+    public V getInfo(Node v) {
         checkOwner(v);
-        return v.getInfo();
+        return (V) v.getInfo();
     }
 
     /**
@@ -905,7 +906,7 @@ public class Graph extends GraphBase {
      * @param v   node
      * @param obj the info object
      */
-    public void setInfo(Node v, Object obj) {
+    public void setInfo(Node v, V obj) {
         checkOwner(v);
         v.setInfo(obj);
     }
@@ -916,9 +917,10 @@ public class Graph extends GraphBase {
      * @param e edge
      * @return the info
      */
-    public Object getInfo(Edge e) {
+    @SuppressWarnings("unchecked")
+    public E getInfo(Edge e) {
         checkOwner(e);
-        return e.getInfo();
+        return (E) e.getInfo();
     }
 
     /**
@@ -927,7 +929,7 @@ public class Graph extends GraphBase {
      * @param e   edge
      * @param obj the info object
      */
-    public void setInfo(Edge e, Object obj) {
+    public void setInfo(Edge e, E obj) {
         checkOwner(e);
         e.setInfo(obj);
     }
@@ -1063,7 +1065,7 @@ public class Graph extends GraphBase {
         for (Node v = src.getFirstNode(); v != null; v = src.getNextNode(v)) {
             Node w = newNode();
             w.setId(v.getId());
-            setInfo(w, src.getInfo(v));
+            setInfo(w, (V) src.getInfo(v));
             oldNode2newNode.set(v, w);
         }
         idsNodes = src.idsNodes;
@@ -1080,7 +1082,7 @@ public class Graph extends GraphBase {
             }
             if (src.isSpecial(e))
                 setSpecial(f, true);
-            setInfo(f, src.getInfo(e));
+            setInfo(f, (E) src.getInfo(e));
             oldEdge2newEdge.set(e, f);
         }
         idsEdges = src.idsEdges;
@@ -1501,7 +1503,7 @@ public class Graph extends GraphBase {
     public void getLeavesRec(Node v, NodeSet nodes) {
         for (Edge f = v.getFirstOutEdge(); f != null; f = v.getNextOutEdge(f)) {
            Node w = f.getTarget();
-           getLeavesRec(w,sons); 
+           getLeavesRec(w,sons);
        }
                   if (v.getOutDegree() == 0)
            nodes.add(w);

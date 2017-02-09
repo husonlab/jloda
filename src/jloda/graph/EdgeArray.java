@@ -191,8 +191,6 @@ public class EdgeArray<T> extends GraphBase implements EdgeAssociation<T> {
     public boolean isClear() {
         return isClear;
     }
-
-
 }
 
 // EOF

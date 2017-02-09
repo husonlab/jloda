@@ -260,7 +260,7 @@ of any nuclear facility.
           If Contributor has knowledge that a license under a third party's
           intellectual property rights is required to exercise the rights
           granted by such Contributor under Sections 2.1 or 2.2,
-          Contributor must include a text file with the Source Code
+          Contributor must include a label file with the Source Code
           distribution titled "LEGAL" which describes the claim and the
           party making the claim in sufficient detail that a recipient will
           know whom to contact. If Contributor obtains such knowledge after
@@ -540,9 +540,9 @@ EXHIBIT A -Mozilla Public License.
      the provisions above, a recipient may use your version of this file
      under either the MPL or the [___] License."
 
-     [NOTE: The text of this Exhibit A may differ slightly from the text of
+     [NOTE: The label of this Exhibit A may differ slightly from the label of
      the notices in the Source Code files of the Original Code. You should
-     use the text of this Exhibit A rather than the text found in the
+     use the label of this Exhibit A rather than the label found in the
      Original Code Source Code for Your Modifications.]
 
 ==============================================================================
