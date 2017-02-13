@@ -32,23 +32,26 @@ import javax.swing.*;
  * Daniel Huson, 11.2010
  */
 public class PopupMenu extends JPopupMenu {
+    private static IPopMenuModifier menuModifier;
     /**
      * constructor
      *
+     * @param viewer
      * @param configuration
      * @param commandManager
      */
-    public PopupMenu(String configuration, CommandManager commandManager) {
-        this(configuration, commandManager, false);
+    public PopupMenu(Object viewer, String configuration, CommandManager commandManager) {
+        this(viewer, configuration, commandManager, false);
     }
 
     /**
      * constructor
      *
+     * @param viewer
      * @param configuration
      * @param commandManager
      */
-    public PopupMenu(String configuration, CommandManager commandManager, boolean showApplicableOnly) {
+    public PopupMenu(Object viewer, String configuration, CommandManager commandManager, boolean showApplicableOnly) {
         super();
         if (configuration != null && configuration.length() > 0) {
             String[] tokens = configuration.split(";");
@@ -78,6 +81,8 @@ public class PopupMenu extends JPopupMenu {
                 }
             }
         }
+        if (menuModifier != null)
+            menuModifier.apply(this, viewer, commandManager);
         if (ProgramProperties.get("showtex", false)) {
             System.out.println(TeXGenerator.getPopupMenuLaTeX(configuration, commandManager));
         }
@@ -85,5 +90,13 @@ public class PopupMenu extends JPopupMenu {
             commandManager.updateEnableState();
         } catch (Exception ex) {
         }
+    }
+
+    public static IPopMenuModifier getMenuModifier() {
+        return menuModifier;
+    }
+
+    public static void setMenuModifier(IPopMenuModifier menuModifier) {
+        PopupMenu.menuModifier = menuModifier;
     }
 }

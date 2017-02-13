@@ -61,7 +61,8 @@ public class Formatter implements IDirectableViewer {
 
     private static Formatter instance = null;
 
-    private JComboBox nodeSize, fontName, fontSize, nodeShape, edgeShape, edgeWidth;
+    private JComboBox<String> nodeSize, fontName, fontSize, edgeShape, edgeWidth;
+    private JComboBox<NodeShape> nodeShape;
     private JCheckBox boldFont, italicFont, labels, foregroundColor, backgroundColor, labelForegroundColor,
             labelBackgroundColor;
     private JButton rotateLabelsLeft, rotateLabelsRight;
@@ -535,42 +536,40 @@ public class Formatter implements IDirectableViewer {
         return viewer;
     }
 
-    private JComboBox makeNodeSize() {
-        Object[] possibleValues = {"1", "2", "3", "4", "5", "6", "7", "8", "10"};
-        JComboBox box = new JComboBox(possibleValues);
+    private JComboBox<String> makeNodeSize() {
+        String[] possibleValues = {"1", "2", "3", "4", "5", "6", "7", "8", "10"};
+        JComboBox<String> box = new JComboBox<>(possibleValues);
         box.setEditable(true);
         box.setMinimumSize(box.getPreferredSize());
         box.setAction(actions.getNodeSize());
         return box;
     }
 
-    private JComboBox makeNodeShape() {
-        Object[] possibleValues = {"none", "square", "circle", "triangle", "diamond"};
-        JComboBox box = new JComboBox(possibleValues);
+    private JComboBox<NodeShape> makeNodeShape() {
+        JComboBox<NodeShape> box = new JComboBox<>(NodeShape.values());
         box.setMinimumSize(box.getPreferredSize());
         box.setAction(actions.getNodeShape());
         return box;
     }
 
 
-    private JComboBox makeEdgeShape() {
-        Object[] possibleValues = {"angular", "straight", "curved"};
-        JComboBox box = new JComboBox(possibleValues);
+    private JComboBox<String> makeEdgeShape() {
+        JComboBox<String> box = new JComboBox<>(new String[]{"angular", "straight", "curved"});
         box.setMinimumSize(box.getPreferredSize());
         box.setAction(actions.getEdgeShape());
         return box;
     }
 
-    private JComboBox makeFont() {
-        JComboBox box = new JComboBox(GraphicsEnvironment.getLocalGraphicsEnvironment().getAvailableFontFamilyNames());
+    private JComboBox<String> makeFont() {
+        JComboBox<String> box = new JComboBox<>(GraphicsEnvironment.getLocalGraphicsEnvironment().getAvailableFontFamilyNames());
         box.setAction(actions.getFont());
         box.setMinimumSize(box.getPreferredSize());
         return box;
     }
 
-    private JComboBox makeFontSize() {
-        Object[] possibleValues = {"8", "10", "12", "14", "16", "18", "20", "22", "24", "26", "28", "32", "36", "40", "44"};
-        JComboBox box = new JComboBox(possibleValues);
+    private JComboBox<String> makeFontSize() {
+        String[] possibleValues = {"8", "10", "12", "14", "16", "18", "20", "22", "24", "26", "28", "32", "36", "40", "44"};
+        JComboBox<String> box = new JComboBox<>(possibleValues);
         box.setEditable(true);
         box.setAction(actions.getFontSize());
         box.setMinimumSize(box.getPreferredSize());

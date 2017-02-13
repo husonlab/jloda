@@ -43,10 +43,11 @@ public class MenuBar extends JMenuBar {
     /**
      * creates the window menu bar
      *
+     * @param viewer
      * @param commandManager
      */
-    public MenuBar(MenuConfiguration configuration, CommandManager commandManager) {
-        MenuCreator menuCreator = new MenuCreator(commandManager);
+    public MenuBar(Object viewer, MenuConfiguration configuration, CommandManager commandManager) {
+        MenuCreator menuCreator = new MenuCreator(viewer, commandManager);
         try {
             menuCreator.buildMenuBar("main", configuration, this);
         } catch (Exception e) {

@@ -22,6 +22,7 @@ package jloda.phylo;
 import jloda.graph.*;
 import jloda.graphview.EdgeView;
 import jloda.graphview.GraphView;
+import jloda.graphview.NodeShape;
 import jloda.graphview.NodeView;
 import jloda.util.Geometry;
 import jloda.util.NotOwnerException;
@@ -224,12 +225,12 @@ public class PhyloTreeView extends GraphView {
             //setShape(v, NodeView.NONE_NODE);
 
             if (G.getLabel(v) != null && !G.getLabel(v).equals("")) {
-                setShape(v, NodeView.OVAL_NODE);
+                setNodeShape(v, NodeShape.Oval);
                 setLabelLayout(v, NodeView.LAYOUT);
                 setWidth(v, 1);
                 setHeight(v, 1);
             } else
-                setShape(v, NodeView.NONE_NODE);
+                setNodeShape(v, NodeShape.None);
 
         }
         for (Edge e = G.getFirstEdge(); e != null; e = G.getNextEdge(e)) {

@@ -51,9 +51,9 @@ public class GraphViewPopupListener implements IPopupListener {
      */
     public GraphViewPopupListener(GraphView viewer, String nodeConfig, String edgeConfig, String panelConfig, CommandManager commandManager) {
         this.viewer = viewer;
-        nodeMenu = new PopupMenu(nodeConfig, commandManager);
-        edgeMenu = new PopupMenu(edgeConfig, commandManager);
-        panelMenu = new PopupMenu(panelConfig, commandManager);
+        nodeMenu = new PopupMenu(this, nodeConfig, commandManager);
+        edgeMenu = new PopupMenu(this, edgeConfig, commandManager);
+        panelMenu = new PopupMenu(this, panelConfig, commandManager);
     }
 
     /**

@@ -536,6 +536,15 @@ public class GraphView extends JPanel implements Printable, Scrollable, INodeEdg
     }
 
     /**
+     * gets the node shape
+     *
+     * @param v
+     * @return node shape
+     */
+    public NodeShape getNodeShape(Node v) {
+        return getNV(v).getNodeShape();
+    }
+    /**
      * Set the default edge label.
      *
      * @param a the default value
@@ -1133,6 +1142,16 @@ public class GraphView extends JPanel implements Printable, Scrollable, INodeEdg
      */
     public void setShape(Node v, byte a) {
         getNV(v).setShape(a);
+    }
+
+    /**
+     * Sets the shape.
+     *
+     * @param v the node
+     * @param a the shape
+     */
+    public void setNodeShape(Node v, NodeShape a) {
+        getNV(v).setNodeShape(a);
     }
 
     /**
@@ -3842,6 +3861,7 @@ public class GraphView extends JPanel implements Printable, Scrollable, INodeEdg
     public void setFrame(JFrame frame) {
         this.frame = frame;
     }
+
 }
 
 // EOF

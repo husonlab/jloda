@@ -23,9 +23,12 @@ import gnu.jpdf.PDFGraphics;
 import jloda.graph.Node;
 import jloda.util.Geometry;
 import jloda.util.ProgramProperties;
+import jloda.util.Shapes;
+import org.apache.batik.ext.awt.geom.Polygon2D;
 
 import java.awt.*;
 import java.awt.geom.AffineTransform;
+import java.awt.geom.Ellipse2D;
 import java.awt.geom.Point2D;
 import java.io.IOException;
 
@@ -45,7 +48,8 @@ public class DefaultNodeDrawer implements INodeDrawer {
      */
     public DefaultNodeDrawer(GraphView graphView) {
         this.graphView = graphView;
-        this.trans = graphView.trans;
+        if (graphView != null)
+            this.trans = graphView.trans;
     }
 
     /**
@@ -56,7 +60,8 @@ public class DefaultNodeDrawer implements INodeDrawer {
      */
     public void setup(GraphView graphView, Graphics2D gc) {
         this.graphView = graphView;
-        this.trans = graphView.trans;
+        if (graphView != null)
+            this.trans = graphView.trans;
         this.gc = gc;
     }
 
@@ -107,14 +112,18 @@ public class DefaultNodeDrawer implements INodeDrawer {
     /**
      * Draw the node.
      */
-    private void draw(NodeView nv) {
+    public void draw(NodeView nv) {
         if (nv.getLocation() == null)
             return; // no location, don't draw
-        Point apt = trans.w2d(nv.getLocation());
+        Point apt;
+        if (trans != null)
+            apt = trans.w2d(nv.getLocation());
 
+        else
+            apt = new Point((int) Math.round(nv.getLocation().getX()), (int) Math.round(nv.getLocation().getY()));
         int scaledWidth;
         int scaledHeight;
-        if (nv.getFixedSize()) {
+        if (nv.getFixedSize() || trans == null) {
             scaledWidth = nv.getWidth();
             scaledHeight = nv.getHeight();
         } else {
@@ -125,68 +134,87 @@ public class DefaultNodeDrawer implements INodeDrawer {
         apt.x -= (scaledWidth >> 1);
         apt.y -= (scaledHeight >> 1);
 
-        if (nv.getBorderColor() != null) {   // selected
-            if (nv.isEnabled())
-                gc.setColor(nv.getBorderColor());
-            else
-                gc.setColor(NodeView.DISABLED_COLOR);
-            if (nv.getShape() == NodeView.OVAL_NODE) {
-                gc.drawOval(apt.x - 2, apt.y - 2, scaledWidth + 4, scaledHeight + 4);
-                gc.drawOval(apt.x - 3, apt.y - 3, scaledWidth + 6, scaledHeight + 6);
-            } else if (nv.getShape() == NodeView.RECT_NODE) {
-                // default shape==GraphView.RECT_NODE
-                gc.drawRect(apt.x - 2, apt.y - 2, scaledWidth + 4, scaledHeight + 4);
-                gc.drawRect(apt.x - 3, apt.y - 3, scaledWidth + 6, scaledHeight + 6);
-            } else if (nv.getShape() == NodeView.TRIANGLE_NODE) {
-                Shape polygon = new Polygon(new int[]{apt.x - 2, apt.x + scaledWidth + 2, apt.x + scaledHeight / 2},
-                        new int[]{apt.y + scaledHeight + 2, apt.y + scaledHeight + 2, apt.y - 2}, 3);
-                gc.draw(polygon);
-            } else if (nv.getShape() == NodeView.DIAMOND_NODE) {
-                Shape polygon = new Polygon(new int[]{apt.x - 2, apt.x + scaledWidth / 2, apt.x + scaledWidth + 2, apt.x + scaledHeight / 2},
-                        new int[]{apt.y + scaledHeight / 2, apt.y + scaledHeight + 2, apt.y + scaledHeight / 2, apt.y - 2}, 4);
-                gc.draw(polygon);
+        final Shape shape;
+        NodeShape x = nv.getNodeShape();
+
+        switch (x) {
+            case None:
+                return;
+            default:
+            case Oval: {
+                shape = new Ellipse2D.Float(apt.x, apt.y, scaledWidth, scaledHeight);
+                break;
+            }
+            case Rectangle: {
+                shape = new Rectangle(apt.x, apt.y, scaledWidth, scaledHeight);
+                break;
+            }
+            case Triangle: {
+                shape = new Polygon2D(new float[]{apt.x, apt.x + scaledWidth, apt.x + 0.5f * scaledWidth},
+                        new float[]{apt.y + scaledHeight, apt.y + scaledHeight, apt.y}, 3);
+                break;
+            }
+            case Diamond: {
+                shape = new Polygon(new int[]{apt.x, apt.x + scaledWidth / 2, apt.x + scaledWidth, apt.x + scaledWidth / 2},
+                        new int[]{apt.y + scaledHeight / 2, apt.y + scaledHeight, apt.y + scaledHeight / 2, apt.y}, 4);
+                break;
+            }
+            case Star4: {
+                final float[][] coords = Shapes.createStar(apt.x, apt.y, scaledWidth, scaledHeight, 4);
+                shape = new Polygon2D(coords[0], coords[1], coords[0].length);
+                break;
+            }
+            case Star5: {
+                final float[][] coords = Shapes.createStar(apt.x, apt.y, scaledWidth, scaledHeight, 5);
+                shape = new Polygon2D(coords[0], coords[1], coords[0].length);
+                break;
+            }
+            case Star6: {
+                final float[][] coords = Shapes.createStar(apt.x, apt.y, scaledWidth, scaledHeight, 6);
+                shape = new Polygon2D(coords[0], coords[1], coords[0].length);
+                break;
+            }
+            case Cross: {
+                final float[][] coords = Shapes.createCross1(apt.x, apt.y, scaledWidth, scaledHeight);
+                shape = new Polygon2D(coords[0], coords[1], coords[0].length);
+                break;
+            }
+            case Cross2: {
+                final float[][] coords = Shapes.createCross2(apt.x, apt.y, scaledWidth, scaledHeight);
+                shape = new Polygon2D(coords[0], coords[1], coords[0].length);
+                break;
+
+            }
+            case Pentagon: {
+                final float[][] coords = Shapes.createRegularPolygon(apt.x, apt.y, scaledWidth, scaledHeight, 5);
+                shape = new Polygon2D(coords[0], coords[1], coords[0].length);
+                break;
+            }
+            case Hexagon: {
+                final float[][] coords = Shapes.createRegularPolygon(apt.x, apt.y, scaledWidth, scaledHeight, 6);
+                shape = new Polygon2D(coords[0], coords[1], coords[0].length);
+                break;
             }
 
-            // else draw nothing
+            case Triangle2: {
+                shape = new Polygon2D(new float[]{apt.x, apt.x + scaledWidth, apt.x + 0.5f * scaledWidth},
+                        new float[]{apt.y, apt.y, apt.y + scaledHeight}, 3);
+                break;
+            }
         }
-
         if (nv.getBackgroundColor() != null) {
             if (nv.isEnabled())
                 gc.setColor(nv.getBackgroundColor());
             else
                 gc.setColor(Color.WHITE);
-            if (nv.getShape() == NodeView.OVAL_NODE)
-                gc.fillOval(apt.x, apt.y, scaledWidth, scaledHeight);
-            else if (nv.getShape() == NodeView.RECT_NODE)
-                gc.fillRect(apt.x, apt.y, scaledWidth, scaledHeight);
-            else if (nv.getShape() == NodeView.TRIANGLE_NODE) {
-                Shape polygon = new Polygon(new int[]{apt.x, apt.x + scaledWidth, apt.x + scaledHeight / 2},
-                        new int[]{apt.y + scaledHeight, apt.y + scaledHeight, apt.y}, 3);
-                gc.fill(polygon);
-            } else if (nv.getShape() == NodeView.DIAMOND_NODE) {
-                Shape polygon = new Polygon(new int[]{apt.x, apt.x + scaledWidth / 2, apt.x + scaledWidth, apt.x + scaledHeight / 2},
-                        new int[]{apt.y + scaledHeight / 2, apt.y + scaledHeight, apt.y + scaledHeight / 2, apt.y}, 4);
-                gc.fill(polygon);
-            }
+            gc.fill(shape);
         }
         if (nv.getColor() != null) {
             if (nv.isEnabled())
                 gc.setColor(nv.getColor());
             else
                 gc.setColor(NodeView.DISABLED_COLOR);
-            if (nv.getShape() == NodeView.OVAL_NODE)
-                gc.drawOval(apt.x, apt.y, scaledWidth, scaledHeight);
-            else if (nv.getShape() == NodeView.RECT_NODE)
-                gc.drawRect(apt.x, apt.y, scaledWidth, scaledHeight);
-            else if (nv.getShape() == NodeView.TRIANGLE_NODE) {
-                Shape polygon = new Polygon(new int[]{apt.x, apt.x + scaledWidth, apt.x + scaledHeight / 2},
-                        new int[]{apt.y + scaledHeight, apt.y + scaledHeight, apt.y}, 3);
-                gc.draw(polygon);
-            } else if (nv.getShape() == NodeView.DIAMOND_NODE) {
-                Shape polygon = new Polygon(new int[]{apt.x, apt.x + scaledWidth / 2, apt.x + scaledWidth, apt.x + scaledHeight / 2},
-                        new int[]{apt.y + scaledHeight / 2, apt.y + scaledHeight, apt.y + scaledHeight / 2, apt.y}, 4);
-                gc.draw(polygon);
-            }
+            gc.draw(shape);
         }
     }
 
@@ -198,7 +226,7 @@ public class DefaultNodeDrawer implements INodeDrawer {
             return;
         int scaledWidth;
         int scaledHeight;
-        if (nv.getShape() == NodeView.NONE_NODE) {
+        if (nv.getNodeShape() == NodeShape.None) {
             scaledWidth = scaledHeight = 2;
         } else {
             if (nv.getFixedSize()) {

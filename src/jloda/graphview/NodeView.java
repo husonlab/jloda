@@ -46,16 +46,20 @@ final public class NodeView extends ViewBase implements Cloneable {
     private final int GAPSIZE = 2; // gap between edge of node and start of edge
 
     private Color borderColor = null;
-    private byte shape = OVAL_NODE;
+    private NodeShape nodeShape = NodeShape.Oval;
     //private byte imageLayout = NORTH;
     protected Point2D location = null;
     boolean fixedSize = true;
 
+    // legacy implementation of node shape:
+    public static final byte NONE_NODE = 0;
     public static final byte RECT_NODE = 1;
     public static final byte OVAL_NODE = 2;
     public static final byte TRIANGLE_NODE = 3;
     public static final byte DIAMOND_NODE = 4;
-    public static final byte NONE_NODE = 0;
+
+    // do not changer order of first 5 items for backward compatiblity
+
 
     private NodeImage image = null;
     protected Color bgColor = Color.WHITE;
@@ -93,7 +97,7 @@ final public class NodeView extends ViewBase implements Cloneable {
         setBackgroundColor(src.getBackgroundColor());
         height = src.height;
         width = src.width;
-        shape = src.shape;
+        nodeShape = src.nodeShape;
         fixedSize = src.getFixedSize();
     }
 
@@ -118,7 +122,7 @@ final public class NodeView extends ViewBase implements Cloneable {
             return null;
 
         Point apt = trans.w2d(getLocation());
-        if (shape == NONE_NODE)
+        if (nodeShape == NodeShape.None)
             return apt;
 
         int scaledWidth;
@@ -141,7 +145,7 @@ final public class NodeView extends ViewBase implements Cloneable {
 
         Point p = new Point();
 
-        if (shape == RECT_NODE) {
+        if (nodeShape == NodeShape.Rectangle) {
             if (y >= x && y >= -x) // top
             {
                 p.x = apt.x;
@@ -203,7 +207,7 @@ final public class NodeView extends ViewBase implements Cloneable {
 
         int scaledWidth;
         int scaledHeight;
-        if (shape == NONE_NODE) {
+        if (nodeShape == NodeShape.None) {
             scaledWidth = scaledHeight = 2;
         } else {
             if (fixedSize) {
@@ -250,19 +254,28 @@ final public class NodeView extends ViewBase implements Cloneable {
      * Sets the node shape.
      *
      * @param a int
+     *  @deprecated use setNodeShape
      */
     public void setShape(byte a) {
-        shape = a;
+        nodeShape = NodeShape.values()[a];
     }
 
     /**
      * Gets the node shape.
      *
      * @return the shape
+     * @deprecated use getNodeShape
      */
-
     public byte getShape() {
-        return shape;
+        return (byte) nodeShape.ordinal();
+    }
+
+    public void setNodeShape(NodeShape nodeShape) {
+        this.nodeShape = nodeShape;
+    }
+
+    public NodeShape getNodeShape() {
+        return nodeShape;
     }
 
     /**
@@ -325,10 +338,10 @@ final public class NodeView extends ViewBase implements Cloneable {
                 gc.setColor(this.borderColor);
             else
                 gc.setColor(DISABLED_COLOR);
-            if (shape == OVAL_NODE) {
+            if (nodeShape == NodeShape.Oval) {
                 gc.drawOval(apt.x - 2, apt.y - 2, scaledWidth + 4, scaledHeight + 4);
                 gc.drawOval(apt.x - 3, apt.y - 3, scaledWidth + 6, scaledHeight + 6);
-            } else if (shape == RECT_NODE) {
+            } else if (nodeShape == NodeShape.Rectangle) {
 // default shape==GraphView.RECT_NODE
                 gc.drawRect(apt.x - 2, apt.y - 2, scaledWidth + 4, scaledHeight + 4);
                 gc.drawRect(apt.x - 3, apt.y - 3, scaledWidth + 6, scaledHeight + 6);
@@ -341,10 +354,11 @@ final public class NodeView extends ViewBase implements Cloneable {
                 gc.setColor(bgColor);
             else
                 gc.setColor(Color.WHITE);
-            if (shape == OVAL_NODE)
+            if (nodeShape == NodeShape.Oval) {
                 gc.fillOval(apt.x, apt.y, scaledWidth, scaledHeight);
-            else if (shape == RECT_NODE)
+            } else if (nodeShape == NodeShape.Rectangle) {
                 gc.fillRect(apt.x, apt.y, scaledWidth, scaledHeight);
+            }
 
         }
         if (fgColor != null) {
@@ -352,10 +366,11 @@ final public class NodeView extends ViewBase implements Cloneable {
                 gc.setColor(fgColor);
             else
                 gc.setColor(DISABLED_COLOR);
-            if (shape == OVAL_NODE)
+            if (nodeShape == NodeShape.Oval) {
                 gc.drawOval(apt.x, apt.y, scaledWidth, scaledHeight);
-            else if (shape == RECT_NODE)
+            } else if (nodeShape == NodeShape.Rectangle) {
                 gc.drawRect(apt.x, apt.y, scaledWidth, scaledHeight);
+            }
         }
     }
 
@@ -398,7 +413,7 @@ final public class NodeView extends ViewBase implements Cloneable {
             return;
         int scaledWidth;
         int scaledHeight;
-        if (shape == NONE_NODE) {
+        if (nodeShape == NodeShape.None) {
             scaledWidth = scaledHeight = 2;
         } else {
             if (fixedSize) {
@@ -605,7 +620,7 @@ final public class NodeView extends ViewBase implements Cloneable {
         int scaledWidth;
         int scaledHeight;
 
-        if (shape == NONE_NODE)
+        if (nodeShape == NodeShape.None)
             scaledWidth = scaledHeight = 2;
         else {
             if (fixedSize) {
@@ -824,8 +839,8 @@ final public class NodeView extends ViewBase implements Cloneable {
             buf.append(" bd=").append(Basic.toString3Int(borderColor));
         if (previousNV == null || linewidth != previousNV.linewidth)
             buf.append(" w=").append(linewidth);
-        if (previousNV == null || shape != previousNV.shape)
-            buf.append(" sh=").append(shape);
+        if (previousNV == null || nodeShape != previousNV.nodeShape)
+            buf.append(" sh=").append(getShape());
         if (withCoordinates && location != null) {
             buf.append(" x=").append((float) location.getX());
             buf.append(" y=").append((float) location.getY());
@@ -898,9 +913,9 @@ final public class NodeView extends ViewBase implements Cloneable {
         bgColor = np.findIgnoreCase(tokens, "bg=", prevNV.bgColor);
         borderColor = np.findIgnoreCase(tokens, "bd=", prevNV.borderColor);
         linewidth = (byte) np.findIgnoreCase(tokens, "w=", prevNV.linewidth);
-        shape = (byte) np.findIgnoreCase(tokens, "sh=", prevNV.shape);
+        setShape((byte) np.findIgnoreCase(tokens, "sh=", prevNV.getShape()));
 
-        if ((prevNV != null && prevNV != this) || (tokens.contains("x=") && tokens.contains("y="))) {
+        if (prevNV != this || (tokens.contains("x=") && tokens.contains("y="))) {
             double x = np.findIgnoreCase(tokens, "x=", prevNV.getLocation() != null ? (float) prevNV.getLocation().getX() : 0);
             double y = np.findIgnoreCase(tokens, "y=", prevNV.getLocation() != null ? (float) prevNV.getLocation().getY() : 0);
             setLocation(new Point2D.Double(x, y));

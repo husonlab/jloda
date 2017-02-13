@@ -22,7 +22,7 @@ package jloda.progs;
 import jloda.export.PDFExportType;
 import jloda.graph.*;
 import jloda.graphview.GraphView;
-import jloda.graphview.NodeView;
+import jloda.graphview.NodeShape;
 import jloda.phylo.PhyloGraph;
 import jloda.phylo.PhyloGraphView;
 import jloda.util.Basic;
@@ -561,7 +561,7 @@ public class QuasiMedianNetwork {
         view.setCanvasColor(Color.WHITE);
         view.setMaintainEdgeLengths(false);
         for (Node v = graph.getFirstNode(); v != null; v = v.getNext()) {
-            view.setShape(v, NodeView.NONE_NODE);
+            view.setNodeShape(v, NodeShape.None);
         }
         for (Edge e = graph.getFirstEdge(); e != null; e = e.getNext()) {
             view.setLabel(e, graph.getLabel(e));

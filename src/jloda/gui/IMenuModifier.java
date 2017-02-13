@@ -28,5 +28,5 @@ import javax.swing.*;
  * Daniel Huson, 5.2015
  */
 public interface IMenuModifier {
-    void apply(JMenu menu, CommandManager commandManager);
+    void apply(JMenu menu, Object viewer, CommandManager commandManager);
 }

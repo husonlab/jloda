@@ -41,11 +41,13 @@ public class MenuCreator {
     static IMenuModifier menuModifer;
 
     private final CommandManager commandManager;
+    private final Object viewer;
 
     /**
      * constructor
      */
-    public MenuCreator(CommandManager commandManager) {
+    public MenuCreator(Object viewer, CommandManager commandManager) {
+        this.viewer = viewer;
         this.commandManager = commandManager;
     }
 
@@ -193,7 +195,7 @@ public class MenuCreator {
             }
         }
         if (menuModifer != null)
-            menuModifer.apply(menu, commandManager);
+            menuModifer.apply(menu, viewer, commandManager);
         if (ProgramProperties.get("showtex", false)) {
             System.out.println(TeXGenerator.getMenuLaTeX(commandManager, menuBarConfiguration, menusConfigurations));
         }

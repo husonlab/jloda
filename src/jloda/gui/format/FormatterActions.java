@@ -22,7 +22,7 @@ package jloda.gui.format;
 import jloda.export.TransferableGraphic;
 import jloda.graphview.EdgeView;
 import jloda.graphview.INodeEdgeFormatable;
-import jloda.graphview.NodeView;
+import jloda.graphview.NodeShape;
 import jloda.gui.director.IDirector;
 import jloda.util.Alert;
 import jloda.util.ResourceManager;
@@ -398,19 +398,13 @@ public class FormatterActions {
         action = new AbstractAction() {
             public void actionPerformed(ActionEvent event) {
                 if (!ignore) {
-                    Object selectedValue = ((JComboBox) event.getSource()).getSelectedItem();
-                    if (selectedValue != null) {
-                        byte shape = -1;
-                        if (selectedValue == "none") shape = 0;
-                        if (selectedValue == "square") shape = NodeView.RECT_NODE;
-                        if (selectedValue == "circle") shape = NodeView.OVAL_NODE;
-                        if (selectedValue == "triangle") shape = NodeView.TRIANGLE_NODE;
-                        if (selectedValue == "diamond") shape = NodeView.DIAMOND_NODE;
-                        viewer.setShapeSelectedNodes(shape);
+                    NodeShape shape = (NodeShape) ((JComboBox) event.getSource()).getSelectedItem();
+                    if (shape != null) {
+                        viewer.setShapeSelectedNodes((byte) shape.ordinal());
                         formatter.fireNodeFormatChanged(viewer.getSelectedNodes());
+                        viewer.repaint();
+                        dir.setDirty(true);
                     }
-                    viewer.repaint();
-                    dir.setDirty(true);
                 }
             }
         };
