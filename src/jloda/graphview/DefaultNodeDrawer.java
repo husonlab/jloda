@@ -131,8 +131,8 @@ public class DefaultNodeDrawer implements INodeDrawer {
             scaledHeight = NodeView.computeScaledHeight(trans, nv.getHeight());
         }
 
-        apt.x -= (scaledWidth >> 1);
-        apt.y -= (scaledHeight >> 1);
+        apt.x -= scaledHeight / 2;
+        apt.y -= scaledHeight / 2;
 
         final Shape shape;
         Shape shape2 = null;
@@ -233,9 +233,8 @@ public class DefaultNodeDrawer implements INodeDrawer {
                 gc.setColor(Color.WHITE);
             gc.fill(shape);
             if (shape2 != null) {
-                gc.setColor(new Color(1f, 1f, 1f, 0.6f));
+                gc.setColor(new Color(1f, 1f, 1f, 0.8f));
                 gc.fill(shape2);
-
             }
 
         }

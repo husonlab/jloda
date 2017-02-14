@@ -321,11 +321,11 @@ public class PhyloTreeView extends GraphView {
 
             if (hasNodeData) {   // recompute summarized
                 NodeData srcND = (NodeData) srcV.getData();
-                int[] summarized = Arrays.copyOf(srcND.getAssigned(), srcND.getAssigned().length);
+                float[] summarized = Arrays.copyOf(srcND.getAssigned(), srcND.getAssigned().length);
                 for (Node u : below) {
                     for (int i = 0; i < summarized.length; i++) {
-                        final int[] uSummarized = ((NodeData) u.getData()).getSummarized();
-                        final int value = (i < uSummarized.length ? uSummarized[i] : 0);
+                        final float[] uSummarized = ((NodeData) u.getData()).getSummarized();
+                        final float value = (i < uSummarized.length ? uSummarized[i] : 0);
                         summarized[i] += value;
                     }
                 }

@@ -16,7 +16,7 @@ public class Shapes {
      * @return coordinates
      */
     public static float[][] createStar(int x, int y, int width, int height, int n) {
-        final float radius = 0.5f * Math.min(width, height) + 0.5f;
+        final float radius = 0.5f * Math.min(width, height);
         x += radius;
         y += radius;
         final float[] xCoordinates = new float[2 * n];
@@ -41,7 +41,7 @@ public class Shapes {
      * @return coordinates
      */
     public static float[][] createRegularPolygon(int x, int y, int width, int height, int n) {
-        final int radius = Math.min(width, height) / 2;
+        final float radius = 0.5f * Math.min(width, height);
         x += radius;
         y += radius;
         final float[] xCoordinates = new float[n];

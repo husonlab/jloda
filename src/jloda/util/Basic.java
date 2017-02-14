@@ -920,7 +920,6 @@ public class Basic {
         return toString(array, 0, array.length, separator);
     }
 
-
     /**
      * returns an array of integers as astring
      *
@@ -939,6 +938,46 @@ public class Basic {
             else
                 buf.append(separator);
             buf.append(x);
+        }
+        return buf.toString();
+    }
+
+    /**
+     * returns an array of floats as string
+     *
+     * @param array
+     * @param separator
+     * @return
+     */
+    public static String toString(float[] array, String separator) {
+        return toString(array, 0, array.length, separator, false);
+    }
+
+    /**
+     * returns an array of floats as string
+     *
+     * @param array
+     * @param offset
+     * @param length
+     * @param separator
+     * @param roundToInts
+     * @return
+     */
+    public static String toString(float[] array, int offset, int length, String separator, boolean roundToInts) {
+        final StringBuilder buf = new StringBuilder();
+
+        boolean first = true;
+        length = Math.min(offset + length, array.length);
+        for (int i = offset; i < length; i++) {
+            float x = array[i];
+            if (first)
+                first = false;
+            else
+                buf.append(separator);
+            if (roundToInts)
+                buf.append(Math.round(x));
+            else
+                buf.append(x);
         }
         return buf.toString();
     }
@@ -2547,6 +2586,21 @@ public class Basic {
         }
         return sum;
     }
+
+    /**
+     * get the sum of values
+     *
+     * @param values
+     * @return sum
+     */
+    public static float getSum(float[] values) {
+        float sum = 0;
+        for (float value : values) {
+            sum += value;
+        }
+        return sum;
+    }
+
 
     /**
      * get the sum of values

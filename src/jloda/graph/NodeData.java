@@ -26,12 +26,12 @@ import jloda.util.Basic;
  * Daniel Huson, 1.2013
  */
 public class NodeData {
-    private int[] assigned;
-    private int[] summarized;
-    private int countAssigned;
-    private int maxAssigned;
-    private int countSummarized;
-    private int maxSummarized;
+    private float[] assigned;
+    private float[] summarized;
+    private float countAssigned;
+    private float maxAssigned;
+    private float countSummarized;
+    private float maxSummarized;
 
     private double upPValue = -1; // p-value of left
     private double downPValue = -1;   // p-value for right
@@ -42,45 +42,45 @@ public class NodeData {
      * @param assigned
      * @param summarized
      */
-    public NodeData(int[] assigned, int[] summarized) {
+    public NodeData(float[] assigned, float[] summarized) {
         setAssigned(assigned);
         setSummarized(summarized);
     }
 
-    public int[] getAssigned() {
+    public float[] getAssigned() {
         return assigned;
     }
 
-    public int getAssigned(int i) {
+    public float getAssigned(int i) {
         return assigned[i];
     }
 
-    public void setAssigned(int[] assigned) {
+    public void setAssigned(float[] assigned) {
         this.assigned = assigned;
         countAssigned = 0;
         maxAssigned = 0;
         if (assigned != null) {
-            for (int value : assigned) {
+            for (float value : assigned) {
                 countAssigned += value;
                 maxAssigned = Math.max(maxAssigned, value);
             }
         }
     }
 
-    public int[] getSummarized() {
+    public float[] getSummarized() {
         return summarized;
     }
 
-    public int getSummarized(int i) {
+    public float getSummarized(int i) {
         return summarized[i];
     }
 
-    public void setSummarized(int[] summarized) {
+    public void setSummarized(float[] summarized) {
         this.summarized = summarized;
         countSummarized = 0;
         maxSummarized = 0;
         if (summarized != null) {
-            for (int value : summarized) {
+            for (float value : summarized) {
                 countSummarized += value;
                 maxSummarized = Math.max(maxSummarized, value);
             }
@@ -94,19 +94,19 @@ public class NodeData {
             maxSummarized = summarized[i];
     }
 
-    public int getCountAssigned() {
+    public float getCountAssigned() {
         return countAssigned;
     }
 
-    public int getMaxAssigned() {
+    public float getMaxAssigned() {
         return maxAssigned;
     }
 
-    public int getCountSummarized() {
+    public float getCountSummarized() {
         return countSummarized;
     }
 
-    public int getMaxSummarized() {
+    public float getMaxSummarized() {
         return maxSummarized;
     }
 
@@ -127,7 +127,7 @@ public class NodeData {
     }
 
     public String toString() {
-        return "assigned: " + Basic.toString(assigned, ",") + ", summarized: " + Basic.toString(summarized, ",");
+        return "assigned: " + Basic.toString(assigned, 0, assigned.length, ",", true) + ", summarized: " + Basic.toString(summarized, 0, summarized.length, ",", true);
     }
 
     public NodeData clone() {
