@@ -24,6 +24,7 @@ import javafx.scene.Parent;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
 import java.net.URL;
 
 /**
@@ -46,10 +47,16 @@ public class ExtendedFXMLLoader<C> {
         fxmlLoader = new FXMLLoader();
         String path = clazz.getCanonicalName().replaceAll("\\.", File.separator) + ".fxml";
         final URL url = clazz.getClassLoader().getResource(path);
+        System.err.println("path: " + path + " URL: " + url);
         if (url == null)
-            throw new IOException("Failed to load resource: " + path);
+            throw new IOException("Failed to get resource: " + path);
 
-        root = fxmlLoader.load(url.openStream());
+        try (final InputStream ins = url.openStream()) {
+            if (ins == null)
+                throw new IOException("Failed to open input stream for URL: " + url);
+
+            root = fxmlLoader.load(ins);
+        }
         controller = fxmlLoader.getController();
     }
 

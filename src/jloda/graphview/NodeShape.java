@@ -24,7 +24,7 @@ package jloda.graphview;
  * Created by huson on 2/13/17.
  */
 public enum NodeShape {
-    None, Rectangle, Oval, Triangle, Diamond, Star4, Star5, Star6, Cross, Cross2, Pentagon, Hexagon, Triangle2;
+    None, Rectangle, Oval, Triangle, Diamond, Star4, Star5, Star6, CrossPlus, CrossX, Pentagon, Hexagon, TriangleDown, CirclePlus, CircleX, SquarePlus, SquareX;
 
     public static NodeShape valueOfIgnoreCase(String name) {
         if (name == null)

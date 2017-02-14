@@ -135,9 +135,9 @@ public class DefaultNodeDrawer implements INodeDrawer {
         apt.y -= (scaledHeight >> 1);
 
         final Shape shape;
-        NodeShape x = nv.getNodeShape();
+        Shape shape2 = null;
 
-        switch (x) {
+        switch (nv.getNodeShape()) {
             case None:
                 return;
             default:
@@ -174,13 +174,13 @@ public class DefaultNodeDrawer implements INodeDrawer {
                 shape = new Polygon2D(coords[0], coords[1], coords[0].length);
                 break;
             }
-            case Cross: {
-                final float[][] coords = Shapes.createCross1(apt.x, apt.y, scaledWidth, scaledHeight);
+            case CrossPlus: {
+                final float[][] coords = Shapes.createCrossPlus(apt.x, apt.y, scaledWidth, scaledHeight);
                 shape = new Polygon2D(coords[0], coords[1], coords[0].length);
                 break;
             }
-            case Cross2: {
-                final float[][] coords = Shapes.createCross2(apt.x, apt.y, scaledWidth, scaledHeight);
+            case CrossX: {
+                final float[][] coords = Shapes.createCrossX(apt.x, apt.y, scaledWidth, scaledHeight);
                 shape = new Polygon2D(coords[0], coords[1], coords[0].length);
                 break;
 
@@ -196,9 +196,33 @@ public class DefaultNodeDrawer implements INodeDrawer {
                 break;
             }
 
-            case Triangle2: {
+            case TriangleDown: {
                 shape = new Polygon2D(new float[]{apt.x, apt.x + scaledWidth, apt.x + 0.5f * scaledWidth},
                         new float[]{apt.y, apt.y, apt.y + scaledHeight}, 3);
+                break;
+            }
+            case CirclePlus: {
+                shape = new Ellipse2D.Float(apt.x, apt.y, scaledWidth, scaledHeight);
+                final float[][] coords = Shapes.createCrossPlus(apt.x + 1, apt.y + 1, scaledWidth - 2, scaledHeight - 2);
+                shape2 = new Polygon2D(coords[0], coords[1], coords[0].length);
+                break;
+            }
+            case CircleX: {
+                shape = new Ellipse2D.Float(apt.x, apt.y, scaledWidth, scaledHeight);
+                final float[][] coords = Shapes.createCrossX(apt.x + 2, apt.y + 2, scaledWidth - 4, scaledHeight - 4);
+                shape2 = new Polygon2D(coords[0], coords[1], coords[0].length);
+                break;
+            }
+            case SquarePlus: {
+                shape = new Rectangle(apt.x, apt.y, scaledWidth, scaledHeight);
+                final float[][] coords = Shapes.createCrossPlus(apt.x, apt.y, scaledWidth - 1, scaledHeight - 1);
+                shape2 = new Polygon2D(coords[0], coords[1], coords[0].length);
+                break;
+            }
+            case SquareX: {
+                shape = new Rectangle(apt.x, apt.y, scaledWidth, scaledHeight);
+                final float[][] coords = Shapes.createCrossX(apt.x, apt.y - 1, scaledWidth, scaledHeight);
+                shape2 = new Polygon2D(coords[0], coords[1], coords[0].length);
                 break;
             }
         }
@@ -208,6 +232,12 @@ public class DefaultNodeDrawer implements INodeDrawer {
             else
                 gc.setColor(Color.WHITE);
             gc.fill(shape);
+            if (shape2 != null) {
+                gc.setColor(new Color(1f, 1f, 1f, 0.6f));
+                gc.fill(shape2);
+
+            }
+
         }
         if (nv.getColor() != null) {
             if (nv.isEnabled())
@@ -215,6 +245,9 @@ public class DefaultNodeDrawer implements INodeDrawer {
             else
                 gc.setColor(NodeView.DISABLED_COLOR);
             gc.draw(shape);
+            if (shape2 != null) {
+                gc.draw(shape2);
+            }
         }
     }
 

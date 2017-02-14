@@ -62,7 +62,7 @@ public class Shapes {
      * @param height
      * @return coordinates
      */
-    public static float[][] createCross1(int x, int y, int width, int height) {
+    public static float[][] createCrossPlus(int x, int y, int width, int height) {
         final float x1 = x + 0.333f * width;
         final float x2 = x + 0.666f * width;
         final float x3 = x + width;
@@ -81,7 +81,7 @@ public class Shapes {
      * @param height
      * @return coordinates
      */
-    public static float[][] createCross2(int x, int y, int width, int height) {
+    public static float[][] createCrossX(int x, int y, int width, int height) {
         final float x1 = x + 0.333f * width;
         final float x2 = x + 0.5f * width;
         final float x3 = x + 0.666f * width;
