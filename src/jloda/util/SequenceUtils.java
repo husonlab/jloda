@@ -485,7 +485,8 @@ public class SequenceUtils {
         {
             int pos = 0;
             for (int i = sequence.length() - 1 - shift; i >= 2; i -= 3) {
-                result[pos++] = getAminoAcidReverse(sequence, i);
+                if (i + 2 < sequence.length())
+                    result[pos++] = getAminoAcidReverse(sequence, i);
             }
         }
         return result;
