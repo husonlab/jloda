@@ -27,6 +27,7 @@ import javafx.collections.SetChangeListener;
 import javafx.scene.control.MultipleSelectionModel;
 
 import java.util.Arrays;
+import java.util.Collection;
 
 /**
  * Selection model
@@ -124,6 +125,11 @@ public class ASelectionModel<T> extends MultipleSelectionModel<T> {
                 return;
             }
         }
+        final T tmp[] = (T[]) new Object[items.length + 1];
+        System.arraycopy(items, 0, tmp, 0, items.length);
+        tmp[tmp.length - 1] = item;
+        items = tmp;
+        select(tmp.length - 1);
     }
 
     public void clearSelect(T item) {
@@ -192,12 +198,26 @@ public class ASelectionModel<T> extends MultipleSelectionModel<T> {
     }
 
     /**
-     * set the array of items and clear selection
+     * clear selection and set list of items
      *
      * @param items
      */
     public void setItems(T... items) {
         clearSelection();
-        this.items = Arrays.copyOf(items, items.length); // use copy for safety
+        this.items = Arrays.copyOf(items, items.length);  // use copy for safety
+    }
+
+    /**
+     * clear selection and set list of items
+     *
+     * @param items
+     */
+    public void setItems(Collection<T> items) {
+        clearSelection();
+        this.items = (T[]) new Object[items.size()];
+        int i = 0;
+        for (T item : items) {
+            this.items[i++] = item;
+        }
     }
 }

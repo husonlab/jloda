@@ -368,6 +368,10 @@ public class Basic {
             public T next() {
                 return (T) array[i++];
             }
+
+            @Override
+            public void remove() {
+            }
         };
     }
 
@@ -2325,6 +2329,32 @@ public class Basic {
     }
 
     /**
+     * returns the last line beginning with query
+     *
+     * @param query
+     * @param text
+     * @return first line
+     */
+    public static String getLastLineStartingWith(String query, String text) {
+        String result = null;
+
+        try (BufferedReader r = new BufferedReader(new StringReader(text))) {
+            String aLine;
+            while ((aLine = r.readLine()) != null) {
+                if (aLine.startsWith(query))
+                    result = aLine;
+            }
+        } catch (IOException e) {
+            Basic.caught(e);
+        }
+        if (result == null)
+            return "";
+        else
+            return result;
+    }
+
+
+    /**
      * returns the first block of a text up to an empty line. Consecutive lines are separated by single spaces
      *
      * @param text
@@ -2401,17 +2431,33 @@ public class Basic {
     }
 
     /**
-     * gets the first word in the given string
+     * gets the first word in the given text
      *
-     * @param string
+     * @param text
      * @return word (delimited by a white space) or empty string, if the first character is a white space
      */
-    public static String getFirstWord(String string) {
-        int i = getIndexOfFirstWhiteSpace(string);
+    public static String getFirstWord(String text) {
+        int i = getIndexOfFirstWhiteSpace(text);
         if (i != -1)
-            return string.substring(0, i);
+            return text.substring(0, i);
         else
-            return string;
+            return text;
+    }
+
+    /**
+     * gets the last word in the given text
+     *
+     * @param text
+     * @return word (delimited by a white space) or empty string, if the last character is a white space
+     */
+    public static String getLastWord(String text) {
+        if (text.length() == 0 || Character.isWhitespace(text.charAt(text.length() - 1)))
+            return "";
+        for (int i = text.length() - 2; i >= 0; i--) {
+            if (Character.isWhitespace(text.charAt(i)))
+                return text.substring(i + 1);
+        }
+        return text;
     }
 
     /**
@@ -3932,23 +3978,23 @@ public class Basic {
     /**
      * gets next word after given first word
      * @param first
-     * @param aLine
+     * @param text
      * @return next word or null
      */
-    public static String getWordAfter(String first, String aLine) {
-        int start = aLine.indexOf(first);
+    public static String getWordAfter(String first, String text) {
+        int start = text.indexOf(first);
         if (start == -1)
             return null;
         start += first.length();
-        while (start < aLine.length() && Character.isWhitespace(aLine.charAt(start)))
+        while (start < text.length() && Character.isWhitespace(text.charAt(start)))
             start++;
         int finish = start;
-        while (finish < aLine.length() && !Character.isWhitespace(aLine.charAt(finish)))
+        while (finish < text.length() && !Character.isWhitespace(text.charAt(finish)))
             finish++;
-        if (finish < aLine.length())
-            return aLine.substring(start, finish);
+        if (finish < text.length())
+            return text.substring(start, finish);
         else
-            return aLine.substring(start);
+            return text.substring(start);
 
     }
 
@@ -3956,18 +4002,18 @@ public class Basic {
      * gets everything after the first word
      *
      * @param first
-     * @param aLine
+     * @param text
      * @return everything after the given word or null
      */
-    public static String getAfter(String first, String aLine) {
-        int start = aLine.indexOf(first);
+    public static String getTextAfter(String first, String text) {
+        int start = text.indexOf(first);
         if (start == -1)
             return null;
         start += first.length();
-        while (start < aLine.length() && Character.isWhitespace(aLine.charAt(start)))
+        while (start < text.length() && Character.isWhitespace(text.charAt(start)))
             start++;
         int finish = start;
-        return aLine.substring(start);
+        return text.substring(start);
 
     }
 
