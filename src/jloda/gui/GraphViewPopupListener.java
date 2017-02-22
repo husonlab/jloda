@@ -33,11 +33,11 @@ import java.awt.event.MouseEvent;
  * Daniel Huson, 8.2010
  */
 public class GraphViewPopupListener implements IPopupListener {
-    final JPopupMenu nodeMenu;
+    final PopupMenu nodeMenu;
     //JPopupMenu nodeLabelMenu;
-    final JPopupMenu edgeMenu;
+    final PopupMenu edgeMenu;
     //JPopupMenu EdgeLabelMenu;
-    final JPopupMenu panelMenu;
+    final PopupMenu panelMenu;
     private final GraphView viewer;
 
     /**
@@ -51,8 +51,8 @@ public class GraphViewPopupListener implements IPopupListener {
      */
     public GraphViewPopupListener(GraphView viewer, String nodeConfig, String edgeConfig, String panelConfig, CommandManager commandManager) {
         this.viewer = viewer;
-        nodeMenu = new PopupMenu(this, nodeConfig, commandManager);
-        edgeMenu = new PopupMenu(this, edgeConfig, commandManager);
+        nodeMenu = new PopupMenu(this, nodeConfig, commandManager, false, true, false);
+        edgeMenu = new PopupMenu(this, edgeConfig, commandManager, false, false, true);
         panelMenu = new PopupMenu(this, panelConfig, commandManager);
     }
 

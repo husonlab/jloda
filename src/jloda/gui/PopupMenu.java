@@ -33,6 +33,9 @@ import javax.swing.*;
  */
 public class PopupMenu extends JPopupMenu {
     private static IPopMenuModifier menuModifier;
+    private final boolean isEdgePopup;
+    private final boolean isNodePopup;
+
     /**
      * constructor
      *
@@ -41,7 +44,7 @@ public class PopupMenu extends JPopupMenu {
      * @param commandManager
      */
     public PopupMenu(Object viewer, String configuration, CommandManager commandManager) {
-        this(viewer, configuration, commandManager, false);
+        this(viewer, configuration, commandManager, false, false, false);
     }
 
     /**
@@ -52,7 +55,20 @@ public class PopupMenu extends JPopupMenu {
      * @param commandManager
      */
     public PopupMenu(Object viewer, String configuration, CommandManager commandManager, boolean showApplicableOnly) {
+        this(viewer, configuration, commandManager, showApplicableOnly, false, false);
+    }
+
+    /**
+     * constructor
+     *
+     * @param viewer
+     * @param configuration
+     * @param commandManager
+     */
+    public PopupMenu(Object viewer, String configuration, CommandManager commandManager, boolean showApplicableOnly, boolean isNodePopup, boolean isEdgePopup) {
         super();
+        this.isNodePopup = isNodePopup;
+        this.isEdgePopup = isEdgePopup;
         if (configuration != null && configuration.length() > 0) {
             String[] tokens = configuration.split(";");
 
@@ -98,5 +114,13 @@ public class PopupMenu extends JPopupMenu {
 
     public static void setMenuModifier(IPopMenuModifier menuModifier) {
         PopupMenu.menuModifier = menuModifier;
+    }
+
+    public boolean isEdgePopup() {
+        return isEdgePopup;
+    }
+
+    public boolean isNodePopup() {
+        return isNodePopup;
     }
 }
