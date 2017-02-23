@@ -1,29 +1,37 @@
 <project name="JLODA" default="compile" basedir=".">
+    <!-- set global properties for this build -->
+    <property name="jlodaSrcDir" value="../src"/>
+    <property name="srcDir" value="src"/>
+    <property name="classDir" value="class"/>
+    <property name="docDir" value="doc"/>
 
 
-	<path id="build.classpath">
+    <path id="build.classpath">
 	    <fileset dir="../../jloda/jars"  includes="*.jar"/>
     	    <fileset dir="../../jloda/jars/batik-1.8"  includes="*.jar"/>
 
     </path>
 
-
-    <!-- set global properties for this build -->
-    <property name="src" value="../src"/>
-    <property name="build" value="class"/>
-    <property name="doc" value="doc"/>
+    <!-- init -->
     <target name="init">
-        <mkdir dir="${build}"/>
-        <mkdir dir="${doc}"/>
-        <!-- Create the time stamp -->
-        <tstamp/>
+        <mkdir dir="${srcDir}"/>
+        <mkdir dir="${classDir}"/>
+        <mkdir dir="${docDir}"/>
     </target>
 
-    <target name="compile" depends="init">
+
+    <!-- copy sources -->
+    <target name="copy_sources" depends="init">
+        <copy todir="${srcDir}">
+            <fileset dir="${jlodaSrcDir}" excludes="com/apple/**"/>
+        </copy>
+    </target>
+
+     <target name="compile" depends="copy_sources">
 	    <!-- Compile the java code from ${src} into ${build} -->
 	     <javac  includeantruntime="false"
-        	srcdir="${src}"
-               destdir="${build}"
+        	srcdir="${srcDir}"
+               destdir="${classDir}"
                debug="on"
 	       classpathref="build.classpath">
 	       <compilerarg value="-XDignore.symbol.file=true"/> 
@@ -33,27 +41,21 @@
     <target name="jar" depends="compile">
         <!-- Put everything in ${build} into a jar file -->
         <jar jarfile="jloda.jar"
-             basedir="${build}"
+             basedir="${classDir}"
                 />
     </target>
 
     <target name="clean">
-        <!-- Delete the ${build} directory tree -->
-        <delete dir="${build}"/>
+        <delete dir="${classDir}" includeEmptyDirs="true"/>
+        <delete dir="${srcDir}" includeEmptyDirs="true"/>
+        <delete file="${docDir}"/>
     </target>
 
-    <target name="aseptic_clean">
-        <!-- Delete the ${build} directory tree -->
-        <delete dir="${build}"/>
-        <!-- Delete the ${doc} directory tree -->
-        <delete dir="${doc}"/>
-    </target>
-
-    <target name="doc" depends="init">
+    <target name="doc" depends="copy_sources">
         <javadoc packagenames=
                 "jloda.*"
-                 sourcepath="${src}"
-                 destdir="${doc}"
+                 sourcepath="${classDir}"
+                 destdir="${docDir}"
                  author="true"
                  version="true"
                  verbose="true"
