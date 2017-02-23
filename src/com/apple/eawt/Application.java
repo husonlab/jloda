@@ -30,7 +30,7 @@ public class Application {
 
     }
 
-    public Application getApplication() {
+    public static Application getApplication() {
         if (instance == null)
             instance = new Application();
         return instance;
