@@ -24,8 +24,17 @@ package com.apple.eawt;
  * Created by huson on 2/23/17.
  */
 public class AppEvent {
-    public static int QuitEvent = 0;
-    public static int AboutEvent = 0;
-    public static int PreferencesEvent = 0;
+    public static class QuitEvent {
+    }
+
+    ;
+
+    public static class AboutEvent {
+    }
+
+    ;
+
+    public static class PreferencesEvent {
+    }
 
 }
