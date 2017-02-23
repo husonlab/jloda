@@ -22,7 +22,6 @@ package jloda.fx;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 
-import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
@@ -45,7 +44,7 @@ public class ExtendedFXMLLoader<C> {
      */
     public ExtendedFXMLLoader(Class clazz) throws IOException {
         fxmlLoader = new FXMLLoader();
-        String path = clazz.getCanonicalName().replaceAll("\\.", File.separator) + ".fxml";
+        String path = clazz.getCanonicalName().replaceAll("\\.", "/") + ".fxml";
         final URL url = clazz.getClassLoader().getResource(path);
         System.err.println("path: " + path + " URL: " + url);
         if (url == null)
