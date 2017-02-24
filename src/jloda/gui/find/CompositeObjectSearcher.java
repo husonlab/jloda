@@ -24,32 +24,29 @@ import java.awt.*;
 import java.util.Collection;
 
 /**
- * Composition of two object searchers
+ * Composition of multiple object searchers
  * Daniel Huson, 4.2013
  */
-public class CompositeObjectSearchers implements IObjectSearcher {
+public class CompositeObjectSearcher implements IObjectSearcher {
     public static final String SEARCHER_NAME = "Composite";
     private final Component frame;
     private final String name;
-    private final IObjectSearcher first;
-    private final IObjectSearcher second;
 
-    private enum Which {First, Second, None}
+    private IObjectSearcher[] searchers;
 
-    private Which which = Which.None;
+    private final int None = -1;
 
+    private int whichSearcher = None;
 
     /**
      * constructor
      *
-     * @param first
-     * @param second
+     * @param searchers
      */
-    public CompositeObjectSearchers(String name, Component frame, IObjectSearcher first, IObjectSearcher second) {
+    public CompositeObjectSearcher(String name, Component frame, IObjectSearcher... searchers) {
         this.name = name;
         this.frame = frame;
-        this.first = first;
-        this.second = second;
+        this.searchers = searchers;
     }
 
     /**
@@ -74,14 +71,13 @@ public class CompositeObjectSearchers implements IObjectSearcher {
      * goto the first object
      */
     public boolean gotoFirst() {
-        if (first.gotoFirst()) {
-            which = Which.First;
-            return true;
-        } else if (second.gotoFirst()) {
-            which = Which.Second;
-            return true;
+        for (int i = 0; i < searchers.length; i++) {
+            if (searchers[i].gotoFirst()) {
+                whichSearcher = i;
+                return true;
+            }
         }
-        which = Which.None;
+        whichSearcher = None;
         return false;
     }
 
@@ -89,32 +85,19 @@ public class CompositeObjectSearchers implements IObjectSearcher {
      * goto the next object
      */
     public boolean gotoNext() {
-        if (which == Which.First) {
-            if (first.gotoNext())
-                return true;
-            else if (second.gotoFirst()) {
-                which = Which.Second;
-                return true;
-            } else {
-                which = Which.None;
-                return false;
+        if (whichSearcher == None)
+            return false;
+        else if (searchers[whichSearcher].gotoNext())
+            return true;
+        else {
+            for (int i = whichSearcher + 1; i < searchers.length; i++) {
+                if (searchers[i].gotoFirst()) {
+                    whichSearcher = i;
+                    return true;
+                }
             }
-        } else if (which == Which.Second) {
-            if (second.gotoNext())
-                return true;
-            else {
-                which = Which.None;
-                return false;
-            }
-        } else {
-            if (first.gotoFirst()) {
-                which = Which.First;
-                return true;
-            } else if (second.gotoFirst()) {
-                which = Which.Second;
-                return true;
-            } else
-                return false;
+            whichSearcher = None;
+            return false;
         }
     }
 
@@ -122,47 +105,34 @@ public class CompositeObjectSearchers implements IObjectSearcher {
      * goto the last object
      */
     public boolean gotoLast() {
-        if (second.gotoLast()) {
-            which = Which.Second;
-            return true;
-        } else if (first.gotoLast()) {
-            which = Which.First;
-            return true;
+        for (int i = searchers.length - 1; i >= 0; i--) {
+            if (searchers[i].gotoLast()) {
+                whichSearcher = i;
+                return true;
+            }
         }
-        which = Which.None;
+        whichSearcher = None;
         return false;
+
     }
 
     /**
      * goto the previous object
      */
     public boolean gotoPrevious() {
-        if (which == Which.Second) {
-            if (second.gotoPrevious())
-                return true;
-            else if (first.gotoLast()) {
-                which = Which.First;
-                return true;
-            } else {
-                which = Which.None;
-                return false;
+        if (whichSearcher == None)
+            return false;
+        else if (searchers[whichSearcher].gotoPrevious())
+            return true;
+        else {
+            for (int i = whichSearcher - 1; i >= 0; i--) {
+                if (searchers[i].gotoLast()) {
+                    whichSearcher = i;
+                    return true;
+                }
             }
-        } else if (which == Which.First) {
-            if (first.gotoPrevious())
-                return true;
-            else {
-                which = Which.None;
-                return false;
-            }
-        } else {
-            if (second.gotoLast()) {
-                which = Which.Second;
-                return true;
-            } else if (first.gotoLast()) {
-                which = Which.First;
-                return true;
-            } else
-                return false;
+            whichSearcher = None;
+            return false;
         }
     }
 
@@ -172,7 +142,7 @@ public class CompositeObjectSearchers implements IObjectSearcher {
      * @return true, if selected
      */
     public boolean isCurrentSelected() {
-        return which == Which.First && first.isCurrentSelected() || which == Which.Second && second.isCurrentSelected();
+        return whichSearcher != None && searchers[whichSearcher].isCurrentSelected();
     }
 
     /**
@@ -181,10 +151,8 @@ public class CompositeObjectSearchers implements IObjectSearcher {
      * @param select
      */
     public void setCurrentSelected(boolean select) {
-        if (which == Which.First)
-            first.setCurrentSelected(select);
-        else if (which == Which.Second)
-            second.setCurrentSelected(select);
+        if (whichSearcher != None)
+            searchers[whichSearcher].setCurrentSelected(select);
     }
 
     /**
@@ -193,8 +161,9 @@ public class CompositeObjectSearchers implements IObjectSearcher {
      * @param select
      */
     public void selectAll(boolean select) {
-        first.selectAll(select);
-        second.selectAll(select);
+        for (IObjectSearcher searcher : searchers) {
+            searcher.selectAll(select);
+        }
     }
 
     /**
@@ -203,10 +172,9 @@ public class CompositeObjectSearchers implements IObjectSearcher {
      * @return label
      */
     public String getCurrentLabel() {
-        if (which == Which.First)
-            return first.getCurrentLabel();
-        else if (which == Which.Second)
-            return second.getCurrentLabel();
+        if (whichSearcher != None) {
+            return searchers[whichSearcher].getCurrentLabel();
+        }
         else
             return null;
     }
@@ -225,7 +193,11 @@ public class CompositeObjectSearchers implements IObjectSearcher {
      * @return true, if there is at least one object
      */
     public boolean isGlobalFindable() {
-        return first.isGlobalFindable() || second.isGlobalFindable();
+        for (IObjectSearcher searcher : searchers) {
+            if (searcher.isGlobalFindable())
+                return true;
+        }
+        return false;
     }
 
     /**
@@ -243,15 +215,16 @@ public class CompositeObjectSearchers implements IObjectSearcher {
      * @return true, if set
      */
     public boolean isCurrentSet() {
-        return which == Which.First && first.isCurrentSet() || which == Which.Second && second.isCurrentSet();
+        return whichSearcher != None && searchers[whichSearcher].isCurrentSet();
     }
 
     /**
      * something has been changed or selected, update view
      */
     public void updateView() {
-        first.updateView();
-        second.updateView();
+        for (IObjectSearcher searcher : searchers) {
+            searcher.updateView();
+        }
     }
 
     /**
@@ -269,11 +242,39 @@ public class CompositeObjectSearchers implements IObjectSearcher {
      * @return number of objects or -1
      */
     public int numberOfObjects() {
-        return first.numberOfObjects() + second.numberOfObjects();
+        int sum = 0;
+
+        for (IObjectSearcher searcher : searchers) {
+            int n = searcher.numberOfObjects();
+            if (n == -1)
+                return -1;
+            else
+                sum += n;
+        }
+        return sum;
     }
 
     @Override
     public Collection<AbstractButton> getAdditionalButtons() {
         return null;
+    }
+
+    /**
+     * set the searchers
+     *
+     * @param searchers
+     */
+    public void setSearchers(IObjectSearcher... searchers) {
+        whichSearcher = None;
+        this.searchers = searchers;
+    }
+
+    /**
+     * get the searchers
+     *
+     * @return searchers
+     */
+    public IObjectSearcher[] getSearchers() {
+        return searchers;
     }
 }
