@@ -20,14 +20,14 @@
 package jloda.export;
 
 
-import gnu.jpdf.PDFJob;
+import de.erichseifert.vectorgraphics2d.Document;
+import de.erichseifert.vectorgraphics2d.VectorGraphics2D;
+import de.erichseifert.vectorgraphics2d.pdf.PDFProcessor;
+import de.erichseifert.vectorgraphics2d.util.PageSize;
 import jloda.util.Basic;
 
 import javax.swing.*;
-import java.awt.*;
 import java.awt.datatransfer.DataFlavor;
-import java.awt.print.PageFormat;
-import java.awt.print.Paper;
 import java.io.*;
 
 
@@ -82,20 +82,12 @@ public class PDFExportType extends SVGExportType implements ExportGraphicType {
         int height = panel.getHeight();
 
         // Get the Graphics object for pdf writing
-        Graphics pdfGraphics;
-        PDFJob job = new PDFJob(out);
-
-        PageFormat pageFormat = new PageFormat();
-        Paper paper = new Paper();
-        paper.setSize(width, height);
-        pageFormat.setPaper(paper);
-
-        pdfGraphics = job.getGraphics(pageFormat);
-
+        VectorGraphics2D pdfGraphics = new VectorGraphics2D();
         panel.paint(pdfGraphics);
 
-        pdfGraphics.dispose();
-        job.end();
+        PDFProcessor processor = new PDFProcessor(false);
+        Document document = processor.getDocument(pdfGraphics.getCommands(), new PageSize(width, height));
+        document.writeTo(out);
         out.flush();
     }
 

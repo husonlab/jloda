@@ -26,7 +26,6 @@
  */
 package jloda.graphview;
 
-import gnu.jpdf.PDFGraphics;
 import jloda.util.Basic;
 import jloda.util.Geometry;
 import jloda.util.ProgramProperties;
@@ -697,14 +696,6 @@ final public class EdgeView extends ViewBase implements Cloneable { //, IEdgeVie
 
             if (labelAngle == 0) {
                 gc.drawString(label, (int) apt.getX(), (int) apt.getY());
-            } else if (gc instanceof PDFGraphics) {
-                if (labelAngle >= 0.5 * Math.PI && labelAngle <= 1.5 * Math.PI) {
-                    double d = getLabelSize().getWidth();
-                    apt = Geometry.translateByAngle(apt, labelAngle, d);
-                    ((PDFGraphics) gc).drawString(label, (float) apt.getX(), (float) apt.getY(), (float) (labelAngle - Math.PI));
-                } else {
-                    ((PDFGraphics) gc).drawString(label, (float) apt.getX(), (float) apt.getY(), labelAngle);
-                }
             } else {
                 // save current transform:
                 AffineTransform saveTransform = gc.getTransform();

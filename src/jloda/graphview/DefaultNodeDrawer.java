@@ -19,7 +19,6 @@
  */
 package jloda.graphview;
 
-import gnu.jpdf.PDFGraphics;
 import jloda.graph.Node;
 import jloda.util.Geometry;
 import jloda.util.ProgramProperties;
@@ -347,17 +346,9 @@ public class DefaultNodeDrawer implements INodeDrawer {
                     if (nv.getLabelAngle() == 0) {
                         gc.drawString(nv.getLabel(), (int) apt.getX(), (int) apt.getY());
                     } else {
-                        float labelAngle = nv.getLabelAngle() + 0.00001f; // to ensure that labels all get same orientation in
+                        final float labelAngle = nv.getLabelAngle() + 0.00001f; // to ensure that labels all get same orientation in
 
-                        Dimension labelSize = nv.getLabelSize();
-                        if (gc instanceof PDFGraphics) {
-                            if (labelAngle >= 0.5 * Math.PI && labelAngle <= 1.5 * Math.PI) {
-                                apt = Geometry.translateByAngle(apt, labelAngle, labelSize.getWidth());
-                                ((PDFGraphics) gc).drawString(nv.getLabel(), (float) (apt.getX()), (float) (apt.getY()), (float) (labelAngle - Math.PI));
-                            } else {
-                                ((PDFGraphics) gc).drawString(nv.getLabel(), (float) (apt.getX()), (float) (apt.getY()), labelAngle);
-                            }
-                        } else {
+                        final Dimension labelSize = nv.getLabelSize();
                             // save current transform:
                             AffineTransform saveTransform = gc.getTransform();
                             // a vertical phylogram view
@@ -384,7 +375,6 @@ public class DefaultNodeDrawer implements INodeDrawer {
                             }
                             gc.drawString(nv.getLabel(), (int) apt.getX(), (int) apt.getY());
                             gc.setTransform(saveTransform);
-                        }
                     }
                 }
             }

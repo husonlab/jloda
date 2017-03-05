@@ -113,17 +113,15 @@ public class ExportManager {
     }
 
     static private void doPaint(Graphics g0, JPanel imagePanel, Point apt, Dimension extent) {
-        //System.err.println("apt: " + apt);
-        //System.err.println("Extent: " + extent);
+        System.err.println("apt: " + apt);
+        System.err.println("Extent: " + extent);
         g0.translate(-apt.x, -apt.y);
         g0.setClip(apt.x, apt.y, extent.width, extent.height);
         g0.setColor(imagePanel.getBackground());
         g0.fillRect(apt.x, apt.y, extent.width, extent.height);
         imagePanel.paint(g0);
         g0.translate(apt.x, apt.y);
-
     }
-
 
     /**
      * result is true, if we are currently in a writeToFile call.

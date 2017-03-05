@@ -101,7 +101,7 @@ public class PNGExportType extends FileFilter implements ExportGraphicType {
      * @throws IOException
      */
     public void writeToFile(File file, final JPanel imagePanel, JScrollPane imageScrollPane, boolean showWholeImage) throws IOException {
-        JPanel panel;
+        final JPanel panel;
         if (showWholeImage || imageScrollPane == null)
             panel = imagePanel;
         else

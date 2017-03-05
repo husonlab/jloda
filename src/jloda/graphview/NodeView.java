@@ -26,7 +26,6 @@
  */
 package jloda.graphview;
 
-import gnu.jpdf.PDFGraphics;
 import jloda.util.Basic;
 import jloda.util.Geometry;
 import jloda.util.ProgramProperties;
@@ -512,17 +511,8 @@ final public class NodeView extends ViewBase implements Cloneable {
                     if (labelAngle == 0) {
                         gc.drawString(label, (int) apt.getX(), (int) apt.getY());
                     } else {
-                        float labelAngle = this.labelAngle + 0.00001f; // to ensure that labels all get same orientation in
+                        final float labelAngle = this.labelAngle + 0.00001f; // to ensure that labels all get same orientation in
 
-                        Dimension labelSize = getLabelSize();
-                        if (gc instanceof PDFGraphics) {
-                            if (labelAngle >= 0.5 * Math.PI && labelAngle <= 1.5 * Math.PI) {
-                                apt = Geometry.translateByAngle(apt, labelAngle, labelSize.getWidth());
-                                ((PDFGraphics) gc).drawString(label, (float) (apt.getX()), (float) (apt.getY()), (float) (labelAngle - Math.PI));
-                            } else {
-                                ((PDFGraphics) gc).drawString(label, (float) (apt.getX()), (float) (apt.getY()), labelAngle);
-                            }
-                        } else {
                             // save current transform:
                             AffineTransform saveTransform = gc.getTransform();
                             // a vertical phylogram view
@@ -549,7 +539,6 @@ final public class NodeView extends ViewBase implements Cloneable {
                             }
                             gc.drawString(label, (int) apt.getX(), (int) apt.getY());
                             gc.setTransform(saveTransform);
-                        }
                     }
                 }
             }
