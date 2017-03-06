@@ -113,8 +113,6 @@ public class ExportManager {
     }
 
     static private void doPaint(Graphics g0, JPanel imagePanel, Point apt, Dimension extent) {
-        System.err.println("apt: " + apt);
-        System.err.println("Extent: " + extent);
         g0.translate(-apt.x, -apt.y);
         g0.setClip(apt.x, apt.y, extent.width, extent.height);
         g0.setColor(imagePanel.getBackground());
