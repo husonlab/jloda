@@ -69,6 +69,9 @@ public class ProgramProperties {
     public static final String MULTI_WINDOW_GEOMETRY = "MultiWindowGeometry";
     public static PageFormat pageFormat = null;
     public static final String DEFAULT_FONT = "DefaultFont";
+    public static final String SEARCH_URL = "SearchURL";
+    public static final String defaultSearchURL = "http://www.google.com/search?q=%s";
+
 
     /**
      * load properties from default file
