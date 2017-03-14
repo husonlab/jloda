@@ -50,15 +50,7 @@ public class ChooseFileDialog {
     public static File chooseFileToOpen(Component parent, File lastOpenFile, FileFilter fileFilter, FilenameFilter fileNameFilter, ActionEvent event, String message) {
         File file = null;
 
-        JFrame frame = null;
-        if (parent != null && parent instanceof JFrame)
-            frame = (JFrame) parent;
-        if (frame != null && frame.getJMenuBar() != null) {
-            // frame.getJMenuBar().setEnabled(false); // todo: to do this we need to remember the state of all menu items and then reenable them below...
-        }
-
-        try {
-            if (ProgramProperties.isMacOS() && (event == null || (event.getModifiers() & Event.SHIFT_MASK) == 0)) {
+        if (ProgramProperties.isMacOS() && (event == null || (event.getModifiers() & Event.SHIFT_MASK) == 0)) {
                 //Use native file dialog on mac
                 java.awt.FileDialog dialog;
                 if (parent != null && parent instanceof JFrame)
@@ -98,11 +90,6 @@ public class ChooseFileDialog {
                     file = chooser.getSelectedFile();
                 }
             }
-        } finally {
-            if (frame != null && frame.getJMenuBar() != null) {
-                // frame.getJMenuBar().setEnabled(true);
-            }
-        }
         return file;
     }
 
@@ -199,8 +186,7 @@ public class ChooseFileDialog {
      * @param defaultSuffix  .suff or null
      * @return file or null
      */
-    public static File chooseFileToSave(Component parent, File lastOpenFile, FileFilter fileFilter, FilenameFilter fileNameFilter, ActionEvent event, String message,
-                                        String defaultSuffix) {
+    public static File chooseFileToSave(Component parent, File lastOpenFile, FileFilter fileFilter, FilenameFilter fileNameFilter, ActionEvent event, String message, String defaultSuffix) {
         if (defaultSuffix != null && !defaultSuffix.startsWith("."))
             defaultSuffix = "." + defaultSuffix;
         File file = null;
@@ -275,10 +261,7 @@ public class ChooseFileDialog {
                 }
                 if (file.exists()) {
                     switch (
-                            JOptionPane.showConfirmDialog(parent,
-                                    "This file already exists. Overwrite the existing file?",
-                                    "Save File",
-                                    JOptionPane.YES_NO_CANCEL_OPTION)) {
+                            JOptionPane.showConfirmDialog(parent, "This file already exists. Overwrite the existing file?", "Save File", JOptionPane.YES_NO_CANCEL_OPTION)) {
                         case JOptionPane.YES_OPTION:
                             okToWrite = true;
                             break;

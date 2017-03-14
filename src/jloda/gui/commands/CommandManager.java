@@ -250,7 +250,7 @@ public class CommandManager {
      * @param on
      */
     public void setEnableCritical(boolean on) {
-        /**
+        /*
          * update selection state of all menu items
          */
         for (JMenuItem menuItem : menuItem2Command.keySet()) {
@@ -260,7 +260,7 @@ public class CommandManager {
             }
         }
 
-        /**
+        /*
          * update selection state of all check boxes
          */
         for (AbstractButton button : button2Command.keySet()) {
