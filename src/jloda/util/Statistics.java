@@ -62,6 +62,90 @@ public class Statistics {
     }
 
     /**
+     * computes simple statistics for given collection of numbers
+     *
+     * @param data
+     */
+    public Statistics(int[] data) {
+        count = data.length;
+        if (count > 0) {
+            for (Number number : data) {
+                double value = number.doubleValue();
+                sum += value;
+                if (value < min)
+                    min = value;
+                if (value > max)
+                    max = value;
+            }
+            mean = sum / count;
+            if (count > 1) {
+                double sum2 = 0;
+                for (Number number : data) {
+                    double value = number.doubleValue();
+                    sum2 += (value - mean) * (value - mean);
+                }
+                stdDev = Math.sqrt(sum2 / count);
+            }
+        }
+    }
+
+    /**
+     * computes simple statistics for given collection of numbers
+     *
+     * @param data
+     */
+    public Statistics(float[] data) {
+        count = data.length;
+        if (count > 0) {
+            for (Number number : data) {
+                double value = number.doubleValue();
+                sum += value;
+                if (value < min)
+                    min = value;
+                if (value > max)
+                    max = value;
+            }
+            mean = sum / count;
+            if (count > 1) {
+                double sum2 = 0;
+                for (Number number : data) {
+                    double value = number.doubleValue();
+                    sum2 += (value - mean) * (value - mean);
+                }
+                stdDev = Math.sqrt(sum2 / count);
+            }
+        }
+    }
+
+    /**
+     * computes simple statistics for given collection of numbers
+     *
+     * @param data
+     */
+    public Statistics(double[] data) {
+        count = data.length;
+        if (count > 0) {
+            for (Number number : data) {
+                double value = number.doubleValue();
+                sum += value;
+                if (value < min)
+                    min = value;
+                if (value > max)
+                    max = value;
+            }
+            mean = sum / count;
+            if (count > 1) {
+                double sum2 = 0;
+                for (Number number : data) {
+                    double value = number.doubleValue();
+                    sum2 += (value - mean) * (value - mean);
+                }
+                stdDev = Math.sqrt(sum2 / count);
+            }
+        }
+    }
+
+    /**
      * gets string representation of stats
      *
      * @return string

@@ -1581,34 +1581,48 @@ public class Basic {
     }
 
     /**
-     * counts the number of occurrences of c in string str
+     * counts the number of occurrences of c in text
      *
-     * @param str
+     * @param text
      * @param c
      * @return count
      */
-    public static int countOccurrences(String str, char c) {
+    public static int countOccurrences(String text, char c) {
         int count = 0;
-        if (str != null) {
-            for (int i = 0; i < str.length(); i++)
-                if (str.charAt(i) == c)
+        if (text != null) {
+            for (int i = 0; i < text.length(); i++)
+                if (text.charAt(i) == c)
                     count++;
         }
         return count;
     }
 
     /**
-     * counts the number of occurrences of c at beginning of string str
+     * counts the number of occurrences of word in text
      *
-     * @param str
+     * @param text
+     * @param word
+     * @return count
+     */
+    public static int countOccurrences(String text, String word) {
+        int count = 0;
+        for (int i = text.indexOf(word); i != -1; i = text.indexOf(word, i + 1))
+            count++;
+        return count;
+    }
+
+    /**
+     * counts the number of occurrences of c at beginning of text
+     *
+     * @param text
      * @param c
      * @return count
      */
-    public static int countLeadingOccurrences(String str, char c) {
+    public static int countLeadingOccurrences(String text, char c) {
         int count = 0;
-        if (str != null) {
-            for (int i = 0; i < str.length(); i++) {
-                if (str.charAt(i) == c)
+        if (text != null) {
+            for (int i = 0; i < text.length(); i++) {
+                if (text.charAt(i) == c)
                     count++;
                 else break;
             }
@@ -1617,16 +1631,16 @@ public class Basic {
     }
 
     /**
-     * counts the number of occurrences of c in byte[] str
+     * counts the number of occurrences of c in byte[] text
      *
-     * @param str
+     * @param text
      * @param c
      * @return count
      */
-    public static int countOccurrences(byte[] str, char c) {
+    public static int countOccurrences(byte[] text, char c) {
         int count = 0;
-        if (str != null) {
-            for (byte aStr : str)
+        if (text != null) {
+            for (byte aStr : text)
                 if (aStr == c)
                     count++;
         }
