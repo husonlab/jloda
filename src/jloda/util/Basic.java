@@ -3726,18 +3726,17 @@ public class Basic {
 
 
     /**
-     * return array in reverse order
+     * return list in reverse order
      *
-     * @param strings
-     * @return
+     * @param list
+     * @return list in reverse order
      */
-    public static String[] reverse(Collection<String> strings) {
-        final String[] result = new String[strings.size()];
-        int pos = strings.size();
-        for (String str : strings) {
-            result[--pos] = str;
-        }
-        return result;
+    public static <T> Collection<T> reverse(Collection<T> list) {
+        final ArrayList<T> source = new ArrayList<>(list);
+        final ArrayList<T> target = new ArrayList<>(list.size());
+        for (int i = source.size() - 1; i >= 0; i--)
+            target.add(source.get(i));
+        return target;
     }
 
     /**
@@ -3748,11 +3747,7 @@ public class Basic {
      * @return rank or -1
      */
     public static <T> int getRank(List<T> list, T value) {
-        for (int i = 0; i < list.size(); i++) {
-            if (list.get(i).equals(value))
-                return i;
-        }
-        return -1;
+        return list.indexOf(value);
     }
 
     /**

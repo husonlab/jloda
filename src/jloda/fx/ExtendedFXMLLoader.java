@@ -46,7 +46,7 @@ public class ExtendedFXMLLoader<C> {
         fxmlLoader = new FXMLLoader();
         String path = clazz.getCanonicalName().replaceAll("\\.", "/") + ".fxml";
         final URL url = clazz.getClassLoader().getResource(path);
-        System.err.println("path: " + path + " URL: " + url);
+        //System.err.println("path: " + path + " URL: " + url);
         if (url == null)
             throw new IOException("Failed to get resource: " + path);
 
