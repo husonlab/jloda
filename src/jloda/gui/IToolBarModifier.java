@@ -28,5 +28,5 @@ import javax.swing.*;
  * Daniel Huson, 5.2015
  */
 public interface IToolBarModifier {
-    void apply(JToolBar toolBar, CommandManager commandManager);
+    void apply(JToolBar toolBar, Object viewer, CommandManager commandManager);
 }
