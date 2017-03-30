@@ -4126,6 +4126,26 @@ public class Basic {
         }
         return str;
     }
+
+    /**
+     * checks that no two of the given files are equal
+     *
+     * @param fileNames (can be null or "")
+     * @return true, if no two files are equal (using File.equals())
+     */
+    public static boolean checkAllFilesDifferent(String... fileNames) {
+        final File[] files = new File[fileNames.length];
+        for (int i = 0; i < fileNames.length; i++) {
+            if (fileNames[i] != null && fileNames[i].length() > 0) {
+                files[i] = new File(fileNames[i]);
+                for (int j = 0; j < i; j++) {
+                    if (files[i] != null && files[i].equals(files[j]))
+                        return false;
+                }
+            }
+        }
+        return true;
+    }
 }
 
 /**
