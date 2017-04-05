@@ -240,7 +240,10 @@ public class ProjectManager {
                                         mnenomicKey++;
                                     } else
                                         action.putValue(AbstractAction.NAME, "  " + title);
-                                    action.putValue(AbstractAction.SMALL_ICON, ResourceManager.getIcon("Empty16.gif"));
+                                    if (proj.getMainViewer().isLocked())
+                                        action.putValue(AbstractAction.SMALL_ICON, ResourceManager.getIcon("Updating16.gif"));
+                                    else
+                                        action.putValue(AbstractAction.SMALL_ICON, ResourceManager.getIcon("Empty16.gif"));
                                     action.putValue(AbstractAction.SHORT_DESCRIPTION, "Bring to front: " + title);
                                     if (first) {
                                         menu.addSeparator();

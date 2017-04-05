@@ -4146,6 +4146,22 @@ public class Basic {
         }
         return true;
     }
+
+    /**
+     * get the value of an enumeration ignoring case
+     *
+     * @param enumeration
+     * @param string
+     * @param <T>
+     * @return
+     */
+    public static <T extends Enum<T>> T valueOfIgnoreCase(Enum<T> enumeration, String string) {
+        for (T value : enumeration.getDeclaringClass().getEnumConstants()) {
+            if (value.toString().equalsIgnoreCase(string))
+                return value;
+        }
+        return null;
+    }
 }
 
 /**

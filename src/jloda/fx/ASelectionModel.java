@@ -28,6 +28,8 @@ import javafx.scene.control.MultipleSelectionModel;
 
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.HashSet;
+import java.util.Set;
 
 /**
  * Selection model
@@ -219,5 +221,20 @@ public class ASelectionModel<T> extends MultipleSelectionModel<T> {
         for (T item : items) {
             this.items[i++] = item;
         }
+    }
+
+
+    /**
+     * invert the current selection
+     */
+    public void invertSelection() {
+        final Set<Integer> toSelect = new HashSet<>();
+        for (int index = 0; index < items.length; index++) {
+            if (!selectedIndices.contains(index))
+                toSelect.add(index);
+        }
+        selectedIndices.clear();
+        selectedIndices.addAll(toSelect);
+        focusIndex = -1;
     }
 }
