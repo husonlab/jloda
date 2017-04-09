@@ -627,7 +627,7 @@ public class SearchManager implements IDirectableViewer {
                                 if (!oSearcher.isCurrentSelected()) {
                                     changed = true;
                                 }
-                                oSearcher.setCurrentSelected(select);
+                                oSearcher.setCurrentSelected(true);
                                 count++;
                             }
                         }
