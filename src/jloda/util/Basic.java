@@ -3396,7 +3396,7 @@ public class Basic {
 
     /**
      * Finds the value of the given enumeration by name, case-insensitive.
-     * Throws an IllegalArgumentException if no match is found.
+     * @return enumeration value or null
      */
     public static <T extends Enum<T>> T valueOfIgnoreCase(Class<T> enumeration, String name) {
         for (T enumValue : enumeration.getEnumConstants()) {
@@ -3404,7 +3404,7 @@ public class Basic {
                 return enumValue;
             }
         }
-        throw new IllegalArgumentException("There is no value with name '" + name + " in Enum " + enumeration.getClass().getName());
+        return null;
     }
 
     /**
