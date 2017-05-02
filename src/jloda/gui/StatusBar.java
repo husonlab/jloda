@@ -1,45 +1,44 @@
 /**
- * StatusBar.java 
+ * StatusBar.java
  * Copyright (C) 2017 Daniel H. Huson
- *
+ * <p>
  * (Some files contain contributions from other authors, who are then mentioned separately.)
- *
+ * <p>
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
- *
+ * <p>
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
- *
+ * <p>
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
-*/
+ */
 package jloda.gui;
 
 import jloda.util.Basic;
-import jloda.util.ProgramProperties;
 
 import javax.swing.*;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 import java.awt.*;
+import java.util.ArrayList;
 
 /**
  * StatusBar for windows
  *
- * @author Daniel Huson, 1.2011
+ * @author Daniel Huson, 1.2011, 4.2017
  */
 public class StatusBar extends JPanel {
-    private final JTextArea text1 = new JTextArea();
+    private final JTextField text1 = new JTextField();
     private final JPanel panel1 = new JPanel();
-    private final JTextArea text2 = new JTextArea();
+    private final ArrayList<JTextField> text2items = new ArrayList<>();
     private final JPanel panel2 = new JPanel();
     private final JLabel text3 = new JLabel();
-    private final JSplitPane splitPane1;
-    private final JSplitPane splitPane2;
+    private final JPanel panel3 = new JPanel();
 
     private final ChangeListener changeListener;
 
@@ -54,50 +53,30 @@ public class StatusBar extends JPanel {
      * Constructor for the status bar of the window
      */
     public StatusBar(boolean showMemoryUsage) {
+        panel1.setLayout(new WrapLayout(FlowLayout.LEFT, 4, 2));
+        panel2.setLayout(new WrapLayout(FlowLayout.LEFT, 4, 2));
+        panel3.setLayout(new WrapLayout(FlowLayout.RIGHT, 4, 2));
+
         this.setLayout(new BorderLayout());
         this.setBorder(BorderFactory.createEtchedBorder());
 
         text1.setFont(new Font("Dialog", Font.PLAIN, 10));
         text1.setEditable(false);
-        text1.setBackground(text3.getBackground());
+        text1.setBorder(null);
+        text1.setBackground(panel1.getBackground());
         //text1.setFocusable(false);
-        text2.setFont(new Font("Dialog", Font.PLAIN, 10));
-        text2.setEditable(false);
-        text2.setBackground(text3.getBackground());
         // text2.setFocusable(false);
         text3.setFont(new Font("Dialog", Font.PLAIN, 10));
         text3.setText(Basic.getMemoryUsageString(100));
         text3.setFocusable(false);
 
         panel1.add(text1);
-        panel1.setToolTipText("Number of taxa currently displayed");
-
-        panel2.add(text2);
-        panel2.setToolTipText("Number of reads, algorithm settings");
-
-        splitPane1 = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, panel1, panel2);
-        splitPane1.setBorder(BorderFactory.createEmptyBorder());
-        splitPane1.setResizeWeight(0);
-
-        if (ProgramProperties.isMacOS())
-            splitPane1.setDividerSize(10);
-        else splitPane1.setDividerSize(1);
-
-        JPanel text3Panel = new JPanel();
-        splitPane2 = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, splitPane1, text3Panel);
-        splitPane2.setBorder(BorderFactory.createEmptyBorder());
-        splitPane2.setResizeWeight(1);
-        if (ProgramProperties.isMacOS())
-            splitPane2.setDividerSize(10);
-        else splitPane2.setDividerSize(1);
-
-        this.add(splitPane2, BorderLayout.CENTER);
 
         if (showMemoryUsage) {
             setText3("------------");
-            text3Panel.add(text3);
-            text3Panel.setToolTipText("Memory usage");
-            this.add(Box.createHorizontalStrut(10), BorderLayout.EAST);
+            panel3.add(text3);
+            panel3.setToolTipText("Memory usage");
+            panel3.add(Box.createHorizontalStrut(10), BorderLayout.EAST);
 
             changeListener = new ChangeListener() {
                 public void stateChanged(ChangeEvent changeEvent) {
@@ -108,6 +87,10 @@ public class StatusBar extends JPanel {
         } else {
             changeListener = null;
         }
+
+        add(panel1, BorderLayout.WEST);
+        add(panel2, BorderLayout.CENTER);
+        add(panel3, BorderLayout.EAST);
     }
 
     /**
@@ -115,10 +98,13 @@ public class StatusBar extends JPanel {
      *
      * @param text
      */
-    public void setText1(String text) {
-        this.text1.setText(text);
-        splitPane1.resetToPreferredSizes();
-        splitPane2.resetToPreferredSizes();
+    public void setText1(final String text) {
+        updateStatusBarInSwingThread(new Runnable() {
+            @Override
+            public void run() {
+                text1.setText(text + "     ");
+            }
+        });
     }
 
     public String getText1() {
@@ -130,49 +116,82 @@ public class StatusBar extends JPanel {
      *
      * @param text
      */
-    public void setText2(String text) {
-        this.text2.setText(text + "   ");
-        splitPane1.resetToPreferredSizes();
-        splitPane2.resetToPreferredSizes();
+    public void setText2(final String text) {
+        updateStatusBarInSwingThread(new Runnable() {
+            @Override
+            public void run() {
+                text2items.clear();
+                panel2.removeAll();
+
+                final String[] tokens = text.split("\\s+");
+                for (String label : tokens) {
+                    final JTextField textField = new JTextField();
+                    textField.setFont(new Font("Dialog", Font.PLAIN, 10));
+                    textField.setBorder(null);
+                    textField.setEditable(false);
+                    textField.setText(label);
+                    textField.setBackground(panel2.getBackground());
+                    text2items.add(textField);
+                    panel2.add(textField);
+                }
+            }
+        });
     }
 
     public String getText2() {
-        return text2.getText().trim();
+        final StringBuilder buf = new StringBuilder();
+        boolean first = true;
+        for (JTextField textField : text2items) {
+            if (first)
+                first = false;
+            else
+                buf.append(" ");
+            buf.append(textField.getText());
+        }
+        return buf.toString();
     }
 
-    public void setExternalPanel1(JComponent externalPanel, boolean visible) {
-        panel1.removeAll();
-        if (visible)
-            panel1.add(externalPanel);
-        else
-            panel1.add(text1);
-        splitPane1.resetToPreferredSizes();
-        splitPane2.resetToPreferredSizes();
-        panel1.repaint();
+    public void setExternalPanel1(final JComponent externalPanel, final boolean visible) {
+        updateStatusBarInSwingThread(new Runnable() {
+            @Override
+            public void run() {
+                panel1.removeAll();
+                if (visible)
+                    panel1.add(externalPanel);
+                else
+                    panel1.add(text1);
+            }
+        });
     }
 
-    public void setComponent2(JComponent externalPanel, boolean visible) {
-        panel2.removeAll();
-        if (visible)
-            panel2.add(externalPanel);
-        else
-            panel2.add(text2);
-        splitPane1.resetToPreferredSizes();
-        splitPane2.resetToPreferredSizes();
-        panel2.repaint();
+    public void setComponent2(final JComponent externalPanel, final boolean visible) {
+        updateStatusBarInSwingThread(new Runnable() {
+            @Override
+            public void run() {
+                panel2.removeAll();
+                if (visible)
+                    panel2.add(externalPanel);
+                else {
+                    for (JTextField textField : text2items) {
+                        panel2.add(textField);
+                    }
+                }
+            }
+        });
     }
 
     /**
      * set the text3 directly
      *
-     * @param text3
+     * @param text
      */
-    public void setText3(String text3) {
-        this.text3.setText(text3 + " ");
-        if (splitPane1 != null)
-            splitPane1.resetToPreferredSizes();
-        if (splitPane2 != null)
-            splitPane2.resetToPreferredSizes();
+    public void setText3(final String text) {
+        updateStatusBarInSwingThread(new Runnable() {
+            @Override
+            public void run() {
+                text3.setText(text + " ");
+            }
+        });
     }
 
     public String getText3() {
@@ -181,5 +200,19 @@ public class StatusBar extends JPanel {
 
     public void setToolTipText(String toolTipText) {
         panel2.setToolTipText(toolTipText);
+    }
+
+    private void updateStatusBarInSwingThread(Runnable runnable) {
+        if (SwingUtilities.isEventDispatchThread())
+            runnable.run();
+        else
+            SwingUtilities.invokeLater(runnable);
+        SwingUtilities.invokeLater(new Runnable() {
+            @Override
+            public void run() {
+                revalidate();
+                repaint();
+            }
+        });
     }
 }
