@@ -99,12 +99,10 @@ public class StatusBar extends JPanel {
      * @param text
      */
     public void setText1(final String text) {
-        updateStatusBarInSwingThread(new Runnable() {
-            @Override
-            public void run() {
-                text1.setText(text + "     ");
-            }
-        });
+        text1.setText(text + "     ");
+        revalidate();
+        repaint();
+
     }
 
     public String getText1() {
@@ -117,25 +115,23 @@ public class StatusBar extends JPanel {
      * @param text
      */
     public void setText2(final String text) {
-        updateStatusBarInSwingThread(new Runnable() {
-            @Override
-            public void run() {
-                text2items.clear();
-                panel2.removeAll();
+        text2items.clear();
+        panel2.removeAll();
 
-                final String[] tokens = text.split("\\s+");
-                for (String label : tokens) {
-                    final JTextField textField = new JTextField();
-                    textField.setFont(new Font("Dialog", Font.PLAIN, 10));
-                    textField.setBorder(null);
-                    textField.setEditable(false);
-                    textField.setText(label);
-                    textField.setBackground(panel2.getBackground());
-                    text2items.add(textField);
-                    panel2.add(textField);
-                }
-            }
-        });
+        final String[] tokens = text.split("\\s+");
+        for (String label : tokens) {
+            final JTextField textField = new JTextField();
+            textField.setFont(new Font("Dialog", Font.PLAIN, 10));
+            textField.setBorder(null);
+            textField.setEditable(false);
+            textField.setText(label);
+            textField.setBackground(panel2.getBackground());
+            text2items.add(textField);
+            panel2.add(textField);
+        }
+
+        revalidate();
+        repaint();
     }
 
     public String getText2() {
@@ -152,32 +148,27 @@ public class StatusBar extends JPanel {
     }
 
     public void setExternalPanel1(final JComponent externalPanel, final boolean visible) {
-        updateStatusBarInSwingThread(new Runnable() {
-            @Override
-            public void run() {
-                panel1.removeAll();
-                if (visible)
-                    panel1.add(externalPanel);
-                else
-                    panel1.add(text1);
-            }
-        });
+        panel1.removeAll();
+        if (visible)
+            panel1.add(externalPanel);
+        else
+            panel1.add(text1);
+        revalidate();
+        repaint();
     }
 
     public void setComponent2(final JComponent externalPanel, final boolean visible) {
-        updateStatusBarInSwingThread(new Runnable() {
-            @Override
-            public void run() {
-                panel2.removeAll();
-                if (visible)
-                    panel2.add(externalPanel);
-                else {
-                    for (JTextField textField : text2items) {
-                        panel2.add(textField);
-                    }
-                }
+        panel2.removeAll();
+        if (visible)
+            panel2.add(externalPanel);
+        else {
+            for (JTextField textField : text2items) {
+                panel2.add(textField);
             }
-        });
+        }
+        revalidate();
+        repaint();
+
     }
 
     /**
@@ -186,12 +177,9 @@ public class StatusBar extends JPanel {
      * @param text
      */
     public void setText3(final String text) {
-        updateStatusBarInSwingThread(new Runnable() {
-            @Override
-            public void run() {
-                text3.setText(text + " ");
-            }
-        });
+        text3.setText(text + " ");
+        revalidate();
+        repaint();
     }
 
     public String getText3() {
@@ -200,19 +188,5 @@ public class StatusBar extends JPanel {
 
     public void setToolTipText(String toolTipText) {
         panel2.setToolTipText(toolTipText);
-    }
-
-    private void updateStatusBarInSwingThread(Runnable runnable) {
-        if (SwingUtilities.isEventDispatchThread())
-            runnable.run();
-        else
-            SwingUtilities.invokeLater(runnable);
-        SwingUtilities.invokeLater(new Runnable() {
-            @Override
-            public void run() {
-                revalidate();
-                repaint();
-            }
-        });
     }
 }
