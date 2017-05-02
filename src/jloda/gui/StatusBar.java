@@ -99,10 +99,11 @@ public class StatusBar extends JPanel {
      * @param text
      */
     public void setText1(final String text) {
-        text1.setText(text + "     ");
-        revalidate();
-        repaint();
-
+        synchronized (panel1) {
+            text1.setText(text + "     ");
+            revalidate();
+            repaint();
+        }
     }
 
     public String getText1() {
@@ -115,23 +116,24 @@ public class StatusBar extends JPanel {
      * @param text
      */
     public void setText2(final String text) {
-        text2items.clear();
-        panel2.removeAll();
+        synchronized (panel2) {
+            text2items.clear();
+            panel2.removeAll();
 
-        final String[] tokens = text.split("\\s+");
-        for (String label : tokens) {
-            final JTextField textField = new JTextField();
-            textField.setFont(new Font("Dialog", Font.PLAIN, 10));
-            textField.setBorder(null);
-            textField.setEditable(false);
-            textField.setText(label);
-            textField.setBackground(panel2.getBackground());
-            text2items.add(textField);
-            panel2.add(textField);
+            final String[] tokens = text.split("\\s+");
+            for (String label : tokens) {
+                final JTextField textField = new JTextField();
+                textField.setFont(new Font("Dialog", Font.PLAIN, 10));
+                textField.setBorder(null);
+                textField.setEditable(false);
+                textField.setText(label);
+                textField.setBackground(panel2.getBackground());
+                text2items.add(textField);
+                panel2.add(textField);
+            }
+            revalidate();
+            repaint();
         }
-
-        revalidate();
-        repaint();
     }
 
     public String getText2() {
@@ -148,26 +150,30 @@ public class StatusBar extends JPanel {
     }
 
     public void setExternalPanel1(final JComponent externalPanel, final boolean visible) {
-        panel1.removeAll();
-        if (visible)
-            panel1.add(externalPanel);
-        else
-            panel1.add(text1);
-        revalidate();
-        repaint();
+        synchronized (panel1) {
+            panel1.removeAll();
+            if (visible)
+                panel1.add(externalPanel);
+            else
+                panel1.add(text1);
+            revalidate();
+            repaint();
+        }
     }
 
     public void setComponent2(final JComponent externalPanel, final boolean visible) {
-        panel2.removeAll();
-        if (visible)
-            panel2.add(externalPanel);
-        else {
-            for (JTextField textField : text2items) {
-                panel2.add(textField);
+        synchronized (panel2) {
+            panel2.removeAll();
+            if (visible)
+                panel2.add(externalPanel);
+            else {
+                for (JTextField textField : text2items) {
+                    panel2.add(textField);
+                }
             }
+            revalidate();
+            repaint();
         }
-        revalidate();
-        repaint();
 
     }
 
@@ -177,9 +183,11 @@ public class StatusBar extends JPanel {
      * @param text
      */
     public void setText3(final String text) {
-        text3.setText(text + " ");
-        revalidate();
-        repaint();
+        synchronized (panel3) {
+            text3.setText(text + " ");
+            revalidate();
+            repaint();
+        }
     }
 
     public String getText3() {
