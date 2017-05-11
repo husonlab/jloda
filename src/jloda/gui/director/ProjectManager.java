@@ -240,7 +240,7 @@ public class ProjectManager {
                                         mnenomicKey++;
                                     } else
                                         action.putValue(AbstractAction.NAME, "  " + title);
-                                    if (proj.getMainViewer().isLocked())
+                                    if (proj.getMainViewer() != null && proj.getMainViewer().isLocked())
                                         action.putValue(AbstractAction.SMALL_ICON, ResourceManager.getIcon("Updating16.gif"));
                                     else
                                         action.putValue(AbstractAction.SMALL_ICON, ResourceManager.getIcon("Empty16.gif"));
