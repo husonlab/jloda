@@ -67,7 +67,7 @@ public class MemoryUsageManager {
                     Basic.caught(e);
                 }
             }
-        }, 0, 2, SECONDS);
+        }, 0, 5, SECONDS);
     }
 
     public static void addChangeListener(ChangeListener changeListener) {
