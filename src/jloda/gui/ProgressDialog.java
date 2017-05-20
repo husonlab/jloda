@@ -456,26 +456,32 @@ public class ProgressDialog implements ProgressListener {
         if (!visible) {
             run(new Runnable() {
                     public void run() {
-                        if (owner != null && owner instanceof Window) {
-                            // ((Window) owner).toFront(); // this causes weird effects
-                        }
-                        if (progressBar != null) {
-                            updateTaskLabel();
-                            progressBar.setMaximum((int) (shiftedDown ? maxProgess >>> BITS : maxProgess));
-                            if (currentProgress < 0) {
-                                progressBar.setIndeterminate(true);
-                                progressBar.setString(null);
-                            } else {
-                                progressBar.setIndeterminate(false);
-                                progressBar.setValue((int) (shiftedDown ? currentProgress >>> BITS : currentProgress));
+                        if (!visible) {
+                            try {
+                                if (owner != null && owner instanceof Window) {
+                                    // ((Window) owner).toFront(); // this causes weird effects
+                                }
+                                if (progressBar != null) {
+                                    updateTaskLabel();
+                                    progressBar.setMaximum((int) (shiftedDown ? maxProgess >>> BITS : maxProgess));
+                                    if (currentProgress < 0) {
+                                        progressBar.setIndeterminate(true);
+                                        progressBar.setString(null);
+                                    } else {
+                                        progressBar.setIndeterminate(false);
+                                        progressBar.setValue((int) (shiftedDown ? currentProgress >>> BITS : currentProgress));
+                                    }
+                                }
+                                if (statusBarPanel != null) {
+                                    frameStatusBar.setComponent2(statusBarPanel, !closed);
+                                } else if (dialog != null) {
+                                    dialog.setVisible(true);
+                                }
+                                visible = true;
+                            } catch (Exception ex) {
+                                Basic.caught(ex);
                             }
                         }
-                        if (statusBarPanel != null) {
-                            frameStatusBar.setComponent2(statusBarPanel, !closed);
-                        } else if (dialog != null) {
-                            dialog.setVisible(true);
-                        }
-                        visible = true;
                     }
             });
         }
@@ -491,7 +497,7 @@ public class ProgressDialog implements ProgressListener {
             runnable.run();
         else if (true || Platform.isFxApplicationThread())
             SwingUtilities.invokeLater(runnable);
-        else // todo: this may lead to FX vs Swing deadlock. But not using this cases Inspector window to appear below current window
+        else // todo: this may lead to FX vs Swing deadlock. But not using this causes Inspector window to appear below current window
             try {
                 SwingUtilities.invokeAndWait(runnable);
             } catch (Exception e) {

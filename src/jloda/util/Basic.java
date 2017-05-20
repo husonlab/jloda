@@ -3712,6 +3712,31 @@ public class Basic {
     }
 
     /**
+     * gets the desired column from a tab-separated line of tags
+     *
+     * @param aLine
+     * @param column
+     * @return
+     */
+    public static String getTokenFromTabSeparatedLine(byte[] aLine, int column) {
+        int a = 0;
+        int count = 0;
+        for (int i = 0; i < aLine.length; i++) {
+            if (aLine[i] == '\t') {
+                if (count == column)
+                    return new String(aLine, a, i - a);
+                count++;
+                if (count == column)
+                    a = i + 1;
+            }
+        }
+        if (count == column)
+            return new String(aLine, a, aLine.length - a);
+        else
+            return "";
+    }
+
+    /**
      * return array in reverse order
      *
      * @param strings
