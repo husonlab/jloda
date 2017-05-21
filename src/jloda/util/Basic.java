@@ -1,22 +1,22 @@
 /**
- * Basic.java 
+ * Basic.java
  * Copyright (C) 2017 Daniel H. Huson
- *
+ * <p>
  * (Some files contain contributions from other authors, who are then mentioned separately.)
- *
+ * <p>
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
- *
+ * <p>
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
- *
+ * <p>
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
-*/
+ */
 package jloda.util;
 
 /**
@@ -1407,11 +1407,11 @@ public class Basic {
      * @return name without .suffix
      */
     public static String getFileBaseName(String name) {
-            if (name != null) {
-                int pos = name.lastIndexOf(".");
-                if (pos > 0)
-                    name = name.substring(0, pos);
-            }
+        if (name != null) {
+            int pos = name.lastIndexOf(".");
+            if (pos > 0)
+                name = name.substring(0, pos);
+        }
         return name;
     }
 
@@ -1439,12 +1439,12 @@ public class Basic {
      * @return name without path
      */
     public static String getFileNameWithoutPath(String name) {
-            if (name != null) {
-                int pos = name.lastIndexOf(File.separatorChar);
-                if (pos != -1 && pos < name.length() - 1) {
-                    name = name.substring(pos + 1);
-                }
+        if (name != null) {
+            int pos = name.lastIndexOf(File.separatorChar);
+            if (pos != -1 && pos < name.length() - 1) {
+                name = name.substring(pos + 1);
             }
+        }
         return name;
     }
 
@@ -2311,6 +2311,7 @@ public class Basic {
         else
             return String.format("%3d B", bytes);
     }
+
     /**
      * capitalize the first letter of a string
      *
@@ -3202,23 +3203,46 @@ public class Basic {
      * @return split string, trimmed
      */
     public static String[] split(String aLine, char splitChar) {
-        if (aLine.length() == 0)
+        return split(aLine, splitChar, Integer.MAX_VALUE);
+    }
+
+    /**
+     * split string on given character. Note that results are subsequently trimmed
+     *
+     * @param aLine
+     * @param splitChar
+     * @return split string, trimmed
+     */
+    public static String[] split(String aLine, char splitChar, int maxTokens) {
+        if (aLine.length() == 0 || maxTokens <= 0)
             return new String[0];
 
-        int count = (aLine.charAt(aLine.length() - 1) == splitChar ? 0 : 1);
-        for (int i = 0; i < aLine.length(); i++)
-            if (aLine.charAt(i) == splitChar)
-                count++;
-        if (count == 1)
-            return new String[]{aLine};
+        // need to ignore last position if it is the split character
+        final int length = (aLine.charAt(aLine.length() - 1) == splitChar ? aLine.length() - 1 : aLine.length());
+
+        // count the number of tokens
+        int count = 1;
+        if (maxTokens > 1) {
+            for (int i = 0; i < length; i++) {
+                if (aLine.charAt(i) == splitChar) {
+                    if (count < maxTokens)
+                        count++;
+                    else
+                        break;
+                }
+            }
+        }
+
         final String[] result = new String[count];
         int prev = 0;
         int which = 0;
         int pos = 0;
-        for (; pos < aLine.length(); pos++) {
+        for (; pos < length; pos++) {
             if (aLine.charAt(pos) == splitChar) {
                 result[which++] = aLine.substring(prev, pos).trim();
                 prev = pos + 1;
+                if (which == count)
+                    return result;
             }
         }
         if (pos > prev) {
@@ -4062,12 +4086,12 @@ public class Basic {
         return a.toLowerCase().endsWith(b.toLowerCase());
     }
 
-     /**
+    /**
      * get the number of bytes used to terminate a line
-      *
-      * @param file
-      * @return 1 or 2
-      */
+     *
+     * @param file
+     * @return 1 or 2
+     */
     public static int determineEndOfLinesBytes(File file) {
         try {
             RandomAccessFile r = new RandomAccessFile(file, "r");
