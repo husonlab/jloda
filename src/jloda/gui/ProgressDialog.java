@@ -336,24 +336,26 @@ public class ProgressDialog implements ProgressListener {
      * closes the dialog.
      */
     public void close() {
-        run(new Runnable() {
-            public void run() {
-                if (!closed) {
-                    if (statusBarPanel != null) {
-                        frameStatusBar.setExternalPanel1(null, false);
-                        frameStatusBar.setComponent2(statusBarPanel, false);
-                        statusBarPanel = null;
+        if (!closed) {
+            run(new Runnable() {
+                public void run() {
+                    if (!closed) {
+                        if (statusBarPanel != null) {
+                            frameStatusBar.setExternalPanel1(null, false);
+                            frameStatusBar.setComponent2(statusBarPanel, false);
+                            statusBarPanel = null;
+                        }
+                        if (dialog != null) {
+                            dialog.setVisible(false);
+                            dialog.dispose();
+                            dialog = null;
+                        }
+                        closed = true;
+                        visible = false;
                     }
-                    if (dialog != null) {
-                        dialog.setVisible(false);
-                        dialog.dispose();
-                        dialog = null;
-                    }
-                    closed = true;
-                    visible = false;
                 }
-            }
-        });
+            });
+        }
     }
 
     /**
@@ -362,15 +364,13 @@ public class ProgressDialog implements ProgressListener {
      * @throws CanceledException
      */
     public void checkForCancel() throws CanceledException {
-        checkTimeAndShow();
-
         if (this.userCancelled) {
             //dialog.setVisible(false);
             if (closeOnCancel)
                 close();
-
             throw new CanceledException();
-        }
+        } else
+            checkTimeAndShow();
     }
 
     /**
@@ -379,18 +379,15 @@ public class ProgressDialog implements ProgressListener {
      * @param subtaskName
      * @throws CanceledException
      */
-    public void setSubtask(String subtaskName) {
+    public void setSubtask(final String subtaskName) {
         checkTimeAndShow();
-
-        if ((subtaskName == null && subtask != null) || (subtaskName != null && (subtask == null || !subtask.equals(subtaskName)))) {
-            subtask = subtaskName;
 
             run(new Runnable() {
                 public void run() {
+                    subtask = subtaskName;
                     updateTaskLabel();
                 }
             });
-        }
     }
 
 
@@ -401,19 +398,15 @@ public class ProgressDialog implements ProgressListener {
      * @param subtaskName
      * @throws CanceledException
      */
-    public void setTasks(String taskName, String subtaskName) {
+    public void setTasks(final String taskName, final String subtaskName) {
         checkTimeAndShow();
-
-        if ((taskName == null && task != null) || (taskName != null && (task == null || !task.equals(taskName)))
-                || (subtaskName == null && subtask != null) || (subtaskName != null && (subtask == null || !subtask.equals(subtaskName)))) {
-            task = taskName;
-            subtask = subtaskName;
             run(new Runnable() {
                 public void run() {
+                    task = taskName;
+                    subtask = subtaskName;
                     updateTaskLabel();
                 }
             });
-        }
     }
 
     private void updateTaskLabel() {
