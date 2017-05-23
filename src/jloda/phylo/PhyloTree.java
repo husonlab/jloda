@@ -114,7 +114,7 @@ public class PhyloTree extends PhyloGraph {
      */
     public void copy(PhyloTree src, NodeArray<Node> oldNode2NewNode, EdgeArray<Edge> oldEdge2NewEdge) {
         oldNode2NewNode = super.copy(src, oldNode2NewNode, oldEdge2NewEdge);
-        super.copy(src, oldNode2NewNode, oldEdge2NewEdge);
+        // super.copy(src, oldNode2NewNode, oldEdge2NewEdge);
         if (src.getRoot() != null) {
             Node root = src.getRoot();
             setRoot(oldNode2NewNode.get(root));
