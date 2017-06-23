@@ -1689,6 +1689,8 @@ public class Basic {
     public static String toCleanName(String name) {
         if (name == null)
             return "";
+        name = name.replaceAll("\\s+", " ");
+
         StringBuilder buf = new StringBuilder();
         for (int i = 0; i < name.length(); i++) {
             char ch = name.charAt(i);
