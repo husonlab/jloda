@@ -4021,14 +4021,17 @@ public class Basic {
      */
     public static String fromCamelCase(String string) {
         boolean afterWhiteSpace = true;
+        boolean afterCapital = false;
         StringBuilder buf = new StringBuilder();
         for (int pos = 0; pos < string.length(); pos++) {
             final char ch = string.charAt(pos);
             if (Character.isUpperCase(ch)) {
-                if (!afterWhiteSpace) {
+                if (!afterWhiteSpace && !afterCapital) {
                     buf.append(" ");
                 }
-            }
+                afterCapital = true;
+            } else
+                afterCapital = false;
             buf.append(ch);
             afterWhiteSpace = (Character.isWhitespace(ch));
         }
