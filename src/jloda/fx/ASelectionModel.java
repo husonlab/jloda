@@ -20,6 +20,8 @@
 package jloda.fx;
 
 
+import javafx.beans.property.ReadOnlyBooleanProperty;
+import javafx.beans.property.SimpleSetProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.collections.ObservableSet;
@@ -45,6 +47,8 @@ public class ASelectionModel<T> extends MultipleSelectionModel<T> {
 
     private final ObservableList<Integer> unmodifiableSelectedIndices; // unmodifiable list of selected indices
     private final ObservableList<T> unmodifiableSelectedItems; // unmodifiable list of selected items
+
+    private final ReadOnlyBooleanProperty empty;
 
     /**
      * Constructor
@@ -77,6 +81,8 @@ public class ASelectionModel<T> extends MultipleSelectionModel<T> {
             unmodifiableSelectedIndices = FXCollections.unmodifiableObservableList(selectedIndicesAsList);
             unmodifiableSelectedItems = FXCollections.unmodifiableObservableList(selectedItems);
         }
+
+        empty = (new SimpleSetProperty<>(selectedIndices).emptyProperty());
     }
 
     @Override
@@ -127,14 +133,15 @@ public class ASelectionModel<T> extends MultipleSelectionModel<T> {
                 return;
             }
         }
-        final T tmp[] = (T[]) new Object[items.length + 1];
-        System.arraycopy(items, 0, tmp, 0, items.length);
-        tmp[tmp.length - 1] = item;
-        items = tmp;
-        select(tmp.length - 1);
     }
 
-    public void clearSelect(T item) {
+    public void selectItems(Collection<T> items) {
+        for (T item : items) {
+            select(item);
+        }
+    }
+
+    public void clearSelection(T item) {
         for (int i = 0; i < items.length; i++) {
             if (items[i].equals(item)) {
                 clearSelection(i);
@@ -163,7 +170,11 @@ public class ASelectionModel<T> extends MultipleSelectionModel<T> {
 
     @Override
     public boolean isEmpty() {
-        return selectedIndices.isEmpty();
+        return empty.get();
+    }
+
+    public ReadOnlyBooleanProperty emptyProperty() {
+        return empty;
     }
 
     @Override
@@ -223,6 +234,24 @@ public class ASelectionModel<T> extends MultipleSelectionModel<T> {
         }
     }
 
+    /**
+     * clear selection and set list of items
+     *
+     * @param items1
+     * @param items2
+     */
+    public void setItems(Collection<? extends T> items1, Collection<? extends T> items2) {
+        clearSelection();
+        int size = items1.size() + items2.size();
+        this.items = (T[]) new Object[size];
+        int i = 0;
+        for (T item : items1) {
+            this.items[i++] = item;
+        }
+        for (T item : items2) {
+            this.items[i++] = item;
+        }
+    }
 
     /**
      * invert the current selection
