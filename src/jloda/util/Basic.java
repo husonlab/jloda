@@ -504,7 +504,7 @@ public class Basic {
         return buf.toString();
     }
 
-    private static final Set<String> usedFileNames = new HashSet<>();
+    private static final Set<File> usedFiles = new HashSet<>();
 
     /**
      * given a file name, returns a file with a unique file name.
@@ -515,37 +515,15 @@ public class Basic {
      * @return file with new and unique name
      */
     public static File getFileWithNewUniqueName(String name) {
-        String prefix;
-        String suffix = "";
-        int cpyPos = name.lastIndexOf("_cpy");
-        int lastDot = name.lastIndexOf(".");
-
-        if (cpyPos > 0)
-            prefix = name.substring(0, cpyPos);
-        else if (lastDot > 0)
-            prefix = name.substring(0, lastDot);
-        else
-            prefix = name;
-
-        if (lastDot > cpyPos)
-            suffix = name.substring(lastDot);
-
+        final String suffix = Basic.getSuffix(name);
+        File result = new File(name);
         int count = 0;
-        while (true) {
-            String newName;
-            if (count == 0)
-                newName = name;
-            else if (count == 1)
-                newName = prefix + "_cpy" + suffix;
-            else
-                newName = prefix + "_cpy" + count + suffix;
-            File newFile = new File(newName);
-            if (!newFile.exists() && !usedFileNames.contains(newName)) {
-                usedFileNames.add(newName);
-                return newFile;
-            }
-            count++;
+        while (usedFiles.contains(result) || result.exists()) {
+            result = new File(replaceFileSuffix(name, "-" + (++count) + "." + suffix));
+
         }
+        usedFiles.add(result);
+        return result;
     }
 
     /**
