@@ -31,16 +31,16 @@ import java.util.List;
  * Compute the distortion score on a tree
  * Daniel Huson, 2.2006
  */
-public class HomoplasyScore {
-    static public int computeBestHomoplasyScoreForSplit(PhyloTree tree, BitSet A, BitSet B) throws IOException {
-        return computeBestHomoplasyScoreForSplit(tree, A, B, null);
+public class Distortion {
+    static public int computeDistortionForSplit(PhyloTree tree, BitSet A, BitSet B) throws IOException {
+        return computeDistortionForSplit(tree, A, B, null);
     }
 
     /**
      * given a phylogentic tree, multifurcations, multiple and internal labels ok, computes
-     * the best possible homplays score achievable for a given split, that is, the best
+     * the best possible homplasy score achievable for a given split, that is, the best
      * score over all possible refinements of the tree.
-     * See Huson, Steel and Witfield, in preparation.
+     * See Huson, Steel and Witfield, 2006
      *
      * @param tree
      * @param A    one side of split
@@ -50,7 +50,7 @@ public class HomoplasyScore {
      * @return homoplasy score for split
      * @throws IOException
      */
-    static public int computeBestHomoplasyScoreForSplit(PhyloTree tree, BitSet A, BitSet B, Node root) throws IOException {
+    static public int computeDistortionForSplit(PhyloTree tree, BitSet A, BitSet B, Node root) throws IOException {
         if (tree.getNumberOfNodes() < 2 || A.cardinality() <= 1 || B.cardinality() <= 1)
             return 0;
         BitSet treeTaxa = new BitSet();
@@ -119,8 +119,7 @@ public class HomoplasyScore {
      * @param scoreA
      * @param scoreB
      */
-    private static void computeScoreRec(Node v, Edge e, NodeIntegerArray scoreA,
-                                        NodeIntegerArray scoreB) {
+    private static void computeScoreRec(Node v, Edge e, NodeIntegerArray scoreA, NodeIntegerArray scoreB) {
         //System.out.println("Entering with v="+v);
         //printScores(tree,scoreA,scoreB);
         boolean hasAMuchBetterThanB = false;
