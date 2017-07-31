@@ -47,6 +47,7 @@ public class PhyloGraph extends Graph {
     final NodeArray<List<Integer>> node2taxa;
 
     public boolean edgeConfidencesSet = false; // use this to decide whether to output edge confidences
+    private String name = null;
 
     // if you add anything here, make sure it gets added to copy, too!
 
@@ -1066,7 +1067,7 @@ public class PhyloGraph extends Graph {
     }
 
     /**
-     * changes the node labels of the tree using the mapping old-to-new
+     * changes the node labels of the network using the mapping old-to-new
      *
      * @param old2new
      */
@@ -1184,5 +1185,13 @@ public class PhyloGraph extends Graph {
                 pair.setSecond(pair.getSecond() + 1);
             }
         }
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public String getName() {
+        return name;
     }
 }
