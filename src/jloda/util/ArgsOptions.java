@@ -61,7 +61,7 @@ public class ArgsOptions {
      * @param description program description
      */
     public ArgsOptions(String[] args, Object main, String description) throws CanceledException {
-        this(args, main, main != null ? Basic.getShortName(main.getClass()) : "Unknown", description);
+        this(args, main, (ProgramProperties.getProgramName() != null && ProgramProperties.getProgramName().length() > 0 ? ProgramProperties.getProgramName() : (main != null ? Basic.getShortName(main.getClass()) : "Unknown")), description);
     }
 
     /**
