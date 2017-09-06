@@ -19,14 +19,6 @@
  */
 package jloda.phylo;
 
-/**
- * @version $Id: PhyloTree.java,v 1.87 2010-05-01 09:37:58 huson Exp $
- *
- * Phylogenetic tree
- *
- * @author Daniel Huson
- */
-
 import jloda.graph.*;
 import jloda.util.Basic;
 import jloda.util.NotOwnerException;
@@ -39,6 +31,12 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
+/**
+ * @author Daniel Huson
+ * @version $Id: PhyloTree.java,v 1.87 2010-05-01 09:37:58 huson Exp $
+ * <p>
+ * Phylogenetic tree
+ */
 public class PhyloTree extends PhyloGraph {
     public static final boolean ALLOW_WRITE_RETICULATE = true;
     public static final boolean ALLOW_READ_RETICULATE = true;
