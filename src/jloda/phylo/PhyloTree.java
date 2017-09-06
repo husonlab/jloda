@@ -27,7 +27,6 @@ package jloda.phylo;
  * @author Daniel Huson
  */
 
-import com.sun.istack.internal.Nullable;
 import jloda.graph.*;
 import jloda.util.Basic;
 import jloda.util.NotOwnerException;
@@ -231,7 +230,7 @@ public class PhyloTree extends PhyloGraph {
      * @param translate   if non-null, is used to translate labels
      * @throws IOException
      */
-    public void write(final Writer writer, final boolean showWeights, @Nullable final Map<String, String> translate) throws IOException {
+    public void write(final Writer writer, final boolean showWeights, final Map<String, String> translate) throws IOException {
         if (translate == null || translate.size() == 0) {
             this.write(writer, showWeights);
 
