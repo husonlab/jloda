@@ -60,7 +60,6 @@ public class SVGStringExportType implements ExportGraphicType {
     }
 
     public void stream(JPanel imagePanel, JScrollPane imageScrollPane, boolean showWholeImage, OutputStream out) throws IOException {
-
     }
 
     public void writeToFile(File file, JPanel imagePanel, JScrollPane imageScrollPane, boolean showWholeImage) throws IOException {

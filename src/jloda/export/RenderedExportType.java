@@ -88,32 +88,33 @@ public class RenderedExportType extends FileFilter implements ExportGraphicType 
      * @throws IOException
      */
     public void stream(JPanel imagePanel, JScrollPane imageScrollPane, boolean showWholeImage, OutputStream out) throws IOException {
-        JPanel panel;
+        final JPanel panel;
         if (showWholeImage || imageScrollPane == null)
             panel = imagePanel;
         else
             panel = ExportManager.makePanelFromScrollPane(imagePanel, imageScrollPane);
-        BufferedImage img = new BufferedImage(panel.getWidth(), panel.getHeight(), BufferedImage.TYPE_INT_RGB);
+        final BufferedImage img = new BufferedImage(panel.getWidth(), panel.getHeight(), BufferedImage.TYPE_INT_RGB);
         panel.paint(img.getGraphics());
         ImageIO.write(img, "bmp", out);
     }
 
     public void writeToFile(File file, final JPanel imagePanel, JScrollPane imageScrollPane, boolean showWholeImage) throws IOException {
-        JPanel panel;
+        final JPanel panel;
         if (showWholeImage || imageScrollPane == null)
             panel = imagePanel;
         else
             panel = ExportManager.makePanelFromScrollPane(imagePanel, imageScrollPane);
 
-        ByteArrayOutputStream out = new ByteArrayOutputStream();
-        BufferedImage img = new BufferedImage(panel.getWidth(), panel.getHeight(), BufferedImage.TYPE_INT_RGB);
-        panel.paint(img.getGraphics());
+        try (ByteArrayOutputStream out = new ByteArrayOutputStream()) {
+            final BufferedImage img = new BufferedImage(panel.getWidth(), panel.getHeight(), BufferedImage.TYPE_INT_RGB);
+            panel.paint(img.getGraphics());
 
-        ImageIO.write(img, "bmp", out);
+            ImageIO.write(img, "bmp", out);
 
-        FileOutputStream fos = new FileOutputStream(file);
-        fos.write(out.toByteArray());
-        fos.close();
+            try (FileOutputStream fos = new FileOutputStream(file)) {
+                fos.write(out.toByteArray());
+            }
+        }
     }
 
     /**

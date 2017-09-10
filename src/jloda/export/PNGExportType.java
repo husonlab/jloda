@@ -20,6 +20,7 @@
 package jloda.export;
 
 import jloda.util.Basic;
+import jloda.util.ProgramProperties;
 
 import javax.imageio.ImageIO;
 import javax.swing.*;
@@ -107,15 +108,26 @@ public class PNGExportType extends FileFilter implements ExportGraphicType {
         else
             panel = ExportManager.makePanelFromScrollPane(imagePanel, imageScrollPane);
 
-        ByteArrayOutputStream out = new ByteArrayOutputStream();
-        BufferedImage img = new BufferedImage(panel.getWidth(), panel.getHeight(), BufferedImage.TYPE_INT_RGB);
-        panel.paint(img.getGraphics());
+        try (final ByteArrayOutputStream out = new ByteArrayOutputStream()) {
+            System.err.println("(Export panel size: " + panel.getWidth() + " x " + panel.getHeight() + ")"); // todo: debugging for weird giant panel bug
+            int width = panel.getWidth();
+            int height = panel.getHeight();
+            if (width <= 0 || width >= 100000) {
+                System.err.println("Invalid width=" + width + ", setting to: " + ProgramProperties.get("PNGExportFixWidth", 1000) + " (setprop PNGExportFixWidth to change)");
+                width = ProgramProperties.get("PNGExportFixWidth", 1000);
+            }
+            if (height <= 0 || height >= 100000) {
+                System.err.println("Invalid height=" + height + ", setting to: " + ProgramProperties.get("PNGExportFixHeight", 1000) + " (setprop PNGExportFixHeight to change)");
+                height = ProgramProperties.get("PNGExportFixHeight", 1000);
+            }
 
-        ImageIO.write(img, "png", out);
-
-        FileOutputStream fos = new FileOutputStream(file);
-        fos.write(out.toByteArray());
-        fos.close();
+            final BufferedImage img = new BufferedImage(width, height, BufferedImage.TYPE_INT_RGB);
+            panel.paint(img.getGraphics());
+            ImageIO.write(img, "png", out);
+            try (FileOutputStream fos = new FileOutputStream(file)) {
+                fos.write(out.toByteArray());
+            }
+        }
     }
 
     /**

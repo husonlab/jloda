@@ -60,13 +60,12 @@ public class SVGExportType extends FileFilter implements ExportGraphicType {
     }
 
     public Object getData(JPanel panel) {
-        ByteArrayOutputStream out = new ByteArrayOutputStream();
-        try {
+        try (ByteArrayOutputStream out = new ByteArrayOutputStream()) {
             stream(panel, out);
+            return new ByteArrayInputStream(out.toByteArray());
         } catch (IOException ex) {
-            Basic.caught(ex);
+            return null;
         }
-        return new ByteArrayInputStream(out.toByteArray());
     }
 
     /**
@@ -90,20 +89,19 @@ public class SVGExportType extends FileFilter implements ExportGraphicType {
      * @throws IOException
      */
     public void stream(JPanel imagePanel, JScrollPane imageScrollPane, boolean showWholeImage, OutputStream out) throws IOException {
-        JPanel panel;
+        final JPanel panel;
         if (showWholeImage || imageScrollPane == null)
             panel = imagePanel;
         else
             panel = ExportManager.makePanelFromScrollPane(imagePanel, imageScrollPane);
-        DOMImplementation dom = GenericDOMImplementation.getDOMImplementation();
-        Document doc = dom.createDocument(null, "svg", null);
-        SVGGraphics2D svgGenerator = new SVGGraphics2D(doc);
+        final DOMImplementation dom = GenericDOMImplementation.getDOMImplementation();
+        final Document doc = dom.createDocument(null, "svg", null);
+        final SVGGraphics2D svgGenerator = new SVGGraphics2D(doc);
 
         panel.paint(svgGenerator);
 
         svgGenerator.stream(new OutputStreamWriter(out, "UTF-8"));
         out.flush();
-        out.close();
     }
 
     /**
@@ -117,20 +115,20 @@ public class SVGExportType extends FileFilter implements ExportGraphicType {
      * @throws IOException
      */
     public void writeToFile(File file, final JPanel imagePanel, JScrollPane imageScrollPane, boolean showWholeImage) throws IOException {
-        JPanel panel;
+        final JPanel panel;
         if (showWholeImage || imageScrollPane == null)
             panel = imagePanel;
         else
             panel = ExportManager.makePanelFromScrollPane(imagePanel, imageScrollPane);
 
-        DOMImplementation dom = GenericDOMImplementation.getDOMImplementation();
-        Document doc = dom.createDocument(null, "svg", null);
-        SVGGraphics2D svgGenerator = new SVGGraphics2D(doc);
+        final DOMImplementation dom = GenericDOMImplementation.getDOMImplementation();
+        final Document doc = dom.createDocument(null, "svg", null);
+        final SVGGraphics2D svgGenerator = new SVGGraphics2D(doc);
         svgGenerator.setSVGCanvasSize(panel.getSize());
         panel.paint(svgGenerator);
-        BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(file)));
-        svgGenerator.stream(bw);
-        bw.close();
+        try (BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(file)))) {
+            svgGenerator.stream(bw);
+        }
     }
 
     /**

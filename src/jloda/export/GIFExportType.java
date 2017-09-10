@@ -90,29 +90,29 @@ public class GIFExportType extends FileFilter implements ExportGraphicType {
         BufferedImage img = new BufferedImage(1, 1, BufferedImage.TYPE_INT_RGB);
         panel.paint(img.getGraphics());
 
-        BufferedOutputStream bos = new BufferedOutputStream(out);
-        Gif89Encoder enc = new Gif89Encoder(img);
-        enc.setTransparentIndex(-1);
-        enc.encode(bos);
-        bos.close();
+        try (BufferedOutputStream bos = new BufferedOutputStream(out)) {
+            final Gif89Encoder enc = new Gif89Encoder(img);
+            enc.setTransparentIndex(-1);
+            enc.encode(bos);
+        }
     }
 
 
     public void writeToFile(File file, final JPanel imagePanel, JScrollPane imageScrollPane, boolean showWholeImage) throws IOException {
-        JPanel panel;
+        final JPanel panel;
         if (showWholeImage || imageScrollPane == null)
             panel = imagePanel;
         else
             panel = ExportManager.makePanelFromScrollPane(imagePanel, imageScrollPane);
 
-        Image img = imagePanel.getGraphicsConfiguration().createCompatibleImage(panel.getWidth(), panel.getHeight());
-        Graphics2D g = (Graphics2D) img.getGraphics();
+        final Image img = imagePanel.getGraphicsConfiguration().createCompatibleImage(panel.getWidth(), panel.getHeight());
+        final Graphics2D g = (Graphics2D) img.getGraphics();
         panel.paint(g);
-        BufferedOutputStream bos = new BufferedOutputStream(new FileOutputStream(file));
-        Gif89Encoder enc = new Gif89Encoder(img);
-        enc.setTransparentIndex(-1);
-        enc.encode(bos);
-        bos.close();
+        try (BufferedOutputStream bos = new BufferedOutputStream(new FileOutputStream(file))) {
+            Gif89Encoder enc = new Gif89Encoder(img);
+            enc.setTransparentIndex(-1);
+            enc.encode(bos);
+        }
     }
 
     /**

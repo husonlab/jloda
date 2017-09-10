@@ -77,16 +77,15 @@ public class PDFExportType extends SVGExportType implements ExportGraphicType {
      * @param out   the ByteArrayOutputStream.
      */
     public static void stream(JPanel panel, OutputStream out) throws IOException {
-
         int width = panel.getWidth();
         int height = panel.getHeight();
 
         // Get the Graphics object for pdf writing
-        VectorGraphics2D pdfGraphics = new VectorGraphics2D();
+        final VectorGraphics2D pdfGraphics = new VectorGraphics2D();
         panel.paint(pdfGraphics);
 
-        PDFProcessor processor = new PDFProcessor(false);
-        Document document = processor.getDocument(pdfGraphics.getCommands(), new PageSize(width, height));
+        final PDFProcessor processor = new PDFProcessor(false);
+        final Document document = processor.getDocument(pdfGraphics.getCommands(), new PageSize(width, height));
         document.writeTo(out);
         out.flush();
     }
@@ -103,14 +102,13 @@ public class PDFExportType extends SVGExportType implements ExportGraphicType {
      * @throws java.io.IOException
      */
     public void stream(JPanel imagePanel, JScrollPane imageScrollPane, boolean showWholeImage, OutputStream out) throws IOException {
-        JPanel panel;
+        final JPanel panel;
         if (showWholeImage || imageScrollPane == null)
             panel = imagePanel;
         else {
             // panel=(JPanel)((JViewport)imageScrollPane.getComponent(0)).getComponent(0) ;
             panel = ExportManager.makePanelFromScrollPane(imagePanel, imageScrollPane);
         }
-
         stream(panel, out);
     }
 
@@ -125,10 +123,9 @@ public class PDFExportType extends SVGExportType implements ExportGraphicType {
      * @throws java.io.IOException
      */
     public void writeToFile(File file, final JPanel imagePanel, JScrollPane imageScrollPane, boolean showWholeImage) throws IOException {
-        OutputStream fos = new FileOutputStream(file);
-
-        stream(imagePanel, imageScrollPane, showWholeImage, fos);
-        fos.close();
+        try (OutputStream fos = new FileOutputStream(file)) {
+            stream(imagePanel, imageScrollPane, showWholeImage, fos);
+        }
     }
 
     /**

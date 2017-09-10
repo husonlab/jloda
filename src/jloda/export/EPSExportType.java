@@ -107,9 +107,9 @@ public class EPSExportType extends FileFilter implements ExportGraphicType {
      * @throws IOException
      */
     public void writeToFile(File file, final JPanel imagePanel, JScrollPane imageScrollPane, boolean showWholeImage) throws IOException {
-        FileOutputStream fos = new FileOutputStream(file);
+        try (FileOutputStream fos = new FileOutputStream(file)) {
         stream(imagePanel, imageScrollPane, showWholeImage, fos);
-        fos.close();
+        }
     }
 
     /**
