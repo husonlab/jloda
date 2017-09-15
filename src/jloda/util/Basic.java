@@ -2219,13 +2219,13 @@ public class Basic {
     }
 
     /**
-     * get reverse complement
+     * get reverse complement of DNA
      *
      * @param sequence
      * @return reverse complement
      */
     public static String getReverseComplement(String sequence) {
-        StringBuilder buf = new StringBuilder();
+        final StringBuilder buf = new StringBuilder();
         for (int i = sequence.length() - 1; i >= 0; i--)
             switch (sequence.charAt(i)) {
                 case 'A':
