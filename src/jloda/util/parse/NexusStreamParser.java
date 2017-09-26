@@ -914,8 +914,7 @@ public class NexusStreamParser extends NexusStreamTokenizer implements Closeable
             nval = Integer.valueOf(sval);
         } catch (Exception ex) {
             popPunctuationCharacters();
-            throw new IOException("Line " + lineno() +
-                    ": INTEGER expected, got: '" + sval + "'");
+            throw new IOException("Line " + lineno() + ": INTEGER expected, got: '" + sval + "'");
         }
         popPunctuationCharacters();
         return (int) nval;
@@ -933,14 +932,11 @@ public class NexusStreamParser extends NexusStreamTokenizer implements Closeable
 
         if (result < low || result > high) {
             if (low > Integer.MIN_VALUE && high == Integer.MAX_VALUE)
-                throw new IOException("Line " + lineno() +
-                        ":  value " + result + " smaller than minimum: " + low);
+                throw new IOException("Line " + lineno() + ":  value " + result + " smaller than minimum: " + low);
             else if (low == Integer.MIN_VALUE && high < Integer.MAX_VALUE)
-                throw new IOException("Line " + lineno() +
-                        ":  value " + result + " larger than maximum: " + high);
+                throw new IOException("Line " + lineno() + ":  value " + result + " larger than maximum: " + high);
             else
-                throw new IOException("Line " + lineno() +
-                        ":  value " + result + " out of range: " + low + " - " + high);
+                throw new IOException("Line " + lineno() + ":  value " + result + " out of range: " + low + " - " + high);
         }
         return result;
     }
@@ -958,8 +954,7 @@ public class NexusStreamParser extends NexusStreamTokenizer implements Closeable
             nval = Double.valueOf(sval);
         } catch (Exception ex) {
             popPunctuationCharacters();
-            throw new IOException("Line " + lineno() +
-                    ": DOUBLE expected, got: '" + sval + "'");
+            throw new IOException("Line " + lineno() + ": DOUBLE expected, got: '" + sval + "'");
         }
         popPunctuationCharacters();
         return nval;
@@ -989,14 +984,11 @@ public class NexusStreamParser extends NexusStreamTokenizer implements Closeable
 
         if (result < low || result > high) {
             if (low > Double.MIN_VALUE && high == Double.MAX_VALUE)
-                throw new IOException("Line " + lineno() +
-                        ":  value " + result + " smaller than minimum: " + low);
+                throw new IOException("Line " + lineno() + ":  value " + result + " smaller than minimum: " + low);
             else if (low == Double.MIN_VALUE && high < Double.MAX_VALUE)
-                throw new IOException("Line " + lineno() +
-                        ":  value " + result + " larger than maximum: " + high);
+                throw new IOException("Line " + lineno() + ":  value " + result + " larger than maximum: " + high);
             else
-                throw new IOException("Line " + lineno() +
-                        ":  value " + result + " out of range: " + low + " - " + high);
+                throw new IOException("Line " + lineno() + ":  value " + result + " out of range: " + low + " - " + high);
         }
         return result;
     }
@@ -1184,8 +1176,7 @@ public class NexusStreamParser extends NexusStreamTokenizer implements Closeable
             while (!toString().equals(last)) {
                 list.add(toString());
                 if (ttype == TT_EOF)
-                    throw new IOException("Line " + lineno() + ": '" + last +
-                            "' expected, got EOF");
+                    throw new IOException("Line " + lineno() + ": '" + last + "' expected, got EOF");
                 nextToken();
             }
         } catch (IOException ex) {
@@ -1269,8 +1260,7 @@ public class NexusStreamParser extends NexusStreamTokenizer implements Closeable
                         firstNumber = Integer.parseInt(label);
 
                     } catch (Exception ex) {
-                        throw new IOException
-                                ("line " + lineno() + ": number expected: " + label);
+                        throw new IOException("line " + lineno() + ": number expected: " + label);
                     }
                     inState = 1;
                     break;
@@ -1278,8 +1268,7 @@ public class NexusStreamParser extends NexusStreamTokenizer implements Closeable
                     try {
                         secondNumber = Integer.parseInt(label);
                     } catch (Exception ex) {
-                        throw new IOException
-                                ("line " + lineno() + ": number expected: " + label);
+                        throw new IOException("line " + lineno() + ": number expected: " + label);
                     }
 
                     int imin = Math.min(firstNumber, secondNumber);
