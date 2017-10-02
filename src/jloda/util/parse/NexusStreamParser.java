@@ -1365,13 +1365,43 @@ public class NexusStreamParser extends NexusStreamTokenizer implements Closeable
      * @return matched token
      * @throws IOException
      */
+    public String getWordMatchesRespectingCase(Collection<String> legalTokens) throws IOException {
+        final String word = getWordRespectCase();
+        for (String legalToken : legalTokens)
+            if (word.equals(legalToken))
+                return legalToken;
+        throw new IOException("line " + lineno() + ": input '" + word + "' does not match any of legal tokens: " + Basic.toString(legalTokens, " "));
+    }
+
+
+    /**
+     * gets the legal token matched by next word in stream
+     *
+     * @param legalTokens
+     * @return matched token
+     * @throws IOException
+     */
     public String getWordMatchesRespectingCase(String[] legalTokens) throws IOException {
         final String word = getWordRespectCase();
         for (String legalToken : legalTokens)
             if (word.equals(legalToken))
                 return legalToken;
         throw new IOException("line " + lineno() + ": input '" + word + "' does not match any of legal tokens: " + Basic.toString(legalTokens, " "));
+    }
 
+    /**
+     * gets the legal token matched by next word in stream
+     *
+     * @param legalTokens
+     * @return matched token
+     * @throws IOException
+     */
+    public String getWordMatchesIgnoringCase(Collection<String> legalTokens) throws IOException {
+        String word = getWordRespectCase();
+        for (String legalToken : legalTokens)
+            if (word.equalsIgnoreCase(legalToken))
+                return legalToken;
+        throw new IOException("line " + lineno() + ": input '" + word + "' does not match any of legal tokens: " + Basic.toString(legalTokens, ", "));
     }
 
     /**
