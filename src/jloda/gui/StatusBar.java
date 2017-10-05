@@ -70,10 +70,8 @@ public class StatusBar extends JPanel {
         text3.setFocusable(false);
 
         panel1.add(text1);
-        panel1.setToolTipText("Number of taxa currently displayed");
 
         panel2.add(text2);
-        panel2.setToolTipText("Number of reads, algorithm settings");
 
         splitPane1 = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, panel1, panel2);
         splitPane1.setBorder(BorderFactory.createEmptyBorder());
@@ -96,7 +94,6 @@ public class StatusBar extends JPanel {
         if (showMemoryUsage) {
             setText3("------------");
             text3Panel.add(text3);
-            text3Panel.setToolTipText("Memory usage");
             this.add(Box.createHorizontalStrut(10), BorderLayout.EAST);
 
             changeListener = new ChangeListener() {
@@ -180,6 +177,10 @@ public class StatusBar extends JPanel {
     }
 
     public void setToolTipText(String toolTipText) {
+        panel1.setToolTipText(toolTipText);
+        text1.setToolTipText(toolTipText);
         panel2.setToolTipText(toolTipText);
+        text2.setToolTipText(toolTipText);
+        text3.setToolTipText(toolTipText);
     }
 }

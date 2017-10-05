@@ -217,6 +217,7 @@ public class SaveImageDialog extends JDialog {
                 eps.setDrawTextAsOutlines(textAsOutlines);
             }
             boolean visibleOnly = wholeImageButton == null || !wholeImageButton.isSelected();
+
             graphicsType.writeToFile(file, imagePanel, imageScrollPane, !visibleOnly);
             System.err.println("Written to file: " + file);
 
