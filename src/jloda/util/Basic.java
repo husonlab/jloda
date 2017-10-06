@@ -32,6 +32,7 @@ import java.awt.image.ImageObserver;
 import java.awt.image.PixelGrabber;
 import java.io.*;
 import java.io.FileFilter;
+import java.lang.reflect.Array;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
@@ -4207,6 +4208,23 @@ public class Basic {
                 return value;
         }
         return null;
+    }
+
+    /**
+     * kinda generic array construction
+     *
+     * @param collection
+     * @param <T>
+     * @return array
+     */
+    public static <T> T[] toArray(final Collection<T> collection) {
+        if (collection == null || collection.isEmpty()) {
+            return (T[]) new Object[0]; // crappy, but if length is 0 then should be ok?
+        }
+        final T t = collection.iterator().next();
+        final T[] res = (T[]) Array.newInstance(t.getClass(), collection.size());
+        collection.toArray(res);
+        return res;
     }
 }
 

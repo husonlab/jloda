@@ -27,8 +27,8 @@ import javafx.collections.ObservableList;
 import javafx.collections.ObservableSet;
 import javafx.collections.SetChangeListener;
 import javafx.scene.control.MultipleSelectionModel;
+import jloda.util.Basic;
 
-import java.lang.reflect.Array;
 import java.util.*;
 
 /**
@@ -225,7 +225,7 @@ public class ASelectionModel<T> extends MultipleSelectionModel<T> {
      */
     public void setItems(Collection<T> items) {
         clearSelection();
-        this.items = toArray(items);
+        this.items = Basic.toArray(items);
     }
 
     /**
@@ -239,7 +239,7 @@ public class ASelectionModel<T> extends MultipleSelectionModel<T> {
         final Collection<T> all = new ArrayList<>(items1.size() + items2.size());
         all.addAll(items1);
         all.addAll(items2);
-        this.items = toArray(all);
+        this.items = Basic.toArray(all);
     }
 
     /**
@@ -263,15 +263,5 @@ public class ASelectionModel<T> extends MultipleSelectionModel<T> {
      */
     public int getFocusIndex() {
         return focusIndex;
-    }
-
-    public static <T> T[] toArray(final Collection<T> collection) {
-        if (collection == null || collection.isEmpty()) {
-            return null;
-        }
-        final T t = collection.iterator().next();
-        final T[] res = (T[]) Array.newInstance(t.getClass(), collection.size());
-        collection.toArray(res);
-        return res;
     }
 }
