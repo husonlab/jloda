@@ -87,8 +87,9 @@ public class CompositeObjectSearcher implements IObjectSearcher {
     public boolean gotoNext() {
         if (whichSearcher == None)
             return false;
-        else if (searchers[whichSearcher].gotoNext())
+        else if (searchers[whichSearcher].gotoNext()) {
             return true;
+        }
         else {
             for (int i = whichSearcher + 1; i < searchers.length; i++) {
                 if (searchers[i].gotoFirst()) {

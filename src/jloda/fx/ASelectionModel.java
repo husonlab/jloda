@@ -28,10 +28,8 @@ import javafx.collections.ObservableSet;
 import javafx.collections.SetChangeListener;
 import javafx.scene.control.MultipleSelectionModel;
 
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.Set;
+import java.lang.reflect.Array;
+import java.util.*;
 
 /**
  * Selection model
@@ -105,10 +103,10 @@ public class ASelectionModel<T> extends MultipleSelectionModel<T> {
 
     @Override
     public void selectAll() {
+        focusIndex = -1;
         for (int index = 0; index < items.length; index++) {
             selectedIndices.add(index);
         }
-        focusIndex = -1;
     }
 
     @Override
@@ -120,8 +118,8 @@ public class ASelectionModel<T> extends MultipleSelectionModel<T> {
     @Override
     public void select(int index) {
         if (index >= 0 && index < items.length) {
-            selectedIndices.add(index);
             focusIndex = index;
+            selectedIndices.add(index);
         }
     }
 
@@ -159,8 +157,8 @@ public class ASelectionModel<T> extends MultipleSelectionModel<T> {
 
     @Override
     public void clearSelection() {
-        selectedIndices.clear();
         focusIndex = -1;
+        selectedIndices.clear();
     }
 
     @Override
@@ -227,11 +225,7 @@ public class ASelectionModel<T> extends MultipleSelectionModel<T> {
      */
     public void setItems(Collection<T> items) {
         clearSelection();
-        this.items = (T[]) new Object[items.size()];
-        int i = 0;
-        for (T item : items) {
-            this.items[i++] = item;
-        }
+        this.items = toArray(items);
     }
 
     /**
@@ -242,21 +236,17 @@ public class ASelectionModel<T> extends MultipleSelectionModel<T> {
      */
     public void setItems(Collection<? extends T> items1, Collection<? extends T> items2) {
         clearSelection();
-        int size = items1.size() + items2.size();
-        this.items = (T[]) new Object[size];
-        int i = 0;
-        for (T item : items1) {
-            this.items[i++] = item;
-        }
-        for (T item : items2) {
-            this.items[i++] = item;
-        }
+        final Collection<T> all = new ArrayList<>(items1.size() + items2.size());
+        all.addAll(items1);
+        all.addAll(items2);
+        this.items = toArray(all);
     }
 
     /**
      * invert the current selection
      */
     public void invertSelection() {
+        focusIndex = -1;
         final Set<Integer> toSelect = new HashSet<>();
         for (int index = 0; index < items.length; index++) {
             if (!selectedIndices.contains(index))
@@ -264,6 +254,24 @@ public class ASelectionModel<T> extends MultipleSelectionModel<T> {
         }
         selectedIndices.clear();
         selectedIndices.addAll(toSelect);
-        focusIndex = -1;
+    }
+
+    /**
+     * gets the focus index or -1
+     *
+     * @return focus index
+     */
+    public int getFocusIndex() {
+        return focusIndex;
+    }
+
+    public static <T> T[] toArray(final Collection<T> collection) {
+        if (collection == null || collection.isEmpty()) {
+            return null;
+        }
+        final T t = collection.iterator().next();
+        final T[] res = (T[]) Array.newInstance(t.getClass(), collection.size());
+        collection.toArray(res);
+        return res;
     }
 }
