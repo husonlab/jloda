@@ -462,6 +462,9 @@ public class ProgramProperties {
             ProgramProperties.programVersion = version;
     }
 
+    public static void resetProgramVersion(String version) {
+        ProgramProperties.programVersion = version;
+    }
     /**
      * gets the program versions string
      *

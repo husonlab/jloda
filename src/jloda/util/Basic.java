@@ -3924,6 +3924,26 @@ public class Basic {
     }
 
     /**
+     * does the given array contain the given object`?
+     *
+     * @param array
+     * @param obj
+     * @return true, if contained
+     */
+    public static <T> boolean contains(T[] array, T obj) {
+        if (obj == null) {
+            for (T a : array)
+                if (a == null)
+                    return true;
+        } else
+            for (T a : array) {
+                if (a != null && a.equals(obj))
+                    return true;
+            }
+        return false;
+    }
+
+    /**
      * abbreviate a string to the given length
      *
      * @param string
