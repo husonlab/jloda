@@ -28,7 +28,6 @@ import java.io.FileOutputStream;
 import java.io.OutputStream;
 import java.util.Collection;
 import java.util.LinkedList;
-import java.util.StringTokenizer;
 
 /**
  * track program properties
@@ -135,19 +134,11 @@ public class ProgramProperties {
             return def;
         else {
             try {
-                java.util.List<String> list = new LinkedList<>();
-                StringTokenizer tok = new StringTokenizer(value, ";");
-                while (tok.hasMoreTokens())
-                    list.add(tok.nextToken());
-                int[] result = new int[list.size()];
-                int i = 0;
-                for (String s : list) {
-                    result[i++] = Integer.parseInt(s);
-                }
-                if (def.length > 0 && result.length != def.length)
-                    return def;
-                else
-                    return result;
+                final String[] tokens = value.split(value.contains(";") ? ";" : "\\s+");
+                final int[] result = new int[tokens.length];
+                for (int i = 0; i < tokens.length; i++)
+                    result[i] = Integer.parseInt(tokens[i]);
+                return result;
             } catch (Exception ex) {
                 return def;
             }
@@ -228,7 +219,7 @@ public class ProgramProperties {
         if (value == null)
             return def;
         else {
-            Collection<Pair<String, String>> list = new LinkedList<>();
+            final Collection<Pair<String, String>> list = new LinkedList<>();
             String[] tokens = value.split("%%%");
             for (int i = 0; i < tokens.length - 1; i += 2)
                 list.add(new Pair<>(tokens[i].trim(), tokens[i + 1].trim()));
@@ -246,10 +237,7 @@ public class ProgramProperties {
         if (value == null)
             return def;
         else {
-            Collection<String> list = new LinkedList<>();
-            String[] tokens = value.split("%%%");
-            for (String token : tokens) list.add(token.trim());
-            return list.toArray(new String[list.size()]);
+            return value.split("%%%");
         }
     }
 
