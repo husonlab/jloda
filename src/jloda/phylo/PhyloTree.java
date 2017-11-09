@@ -1007,7 +1007,7 @@ public class PhyloTree extends PhyloGraph {
     }
 
     /**
-     * erase the current root. If it has out-degree two and is not node-labeled, then two out edges will be replaced by single ege
+     * erase the current root. If it has out-degree two and is not node-labeled, then two out edges will be replaced by single edge
      *
      * @param edgeLabels if non-null and root has two out edges, will try to copy one of the edge labels to the new edge
      */

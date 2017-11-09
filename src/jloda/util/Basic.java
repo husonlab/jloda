@@ -32,7 +32,6 @@ import java.awt.image.ImageObserver;
 import java.awt.image.PixelGrabber;
 import java.io.*;
 import java.io.FileFilter;
-import java.lang.reflect.Array;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
@@ -3152,7 +3151,6 @@ public class Basic {
      * @return true, if gz or zip file
      */
     public static boolean isZIPorGZIPFile(String fileName) {
-        fileName = fileName.toLowerCase();
         return fileName.endsWith(".gz") || fileName.endsWith(".zip");
     }
 
@@ -4238,13 +4236,7 @@ public class Basic {
      * @return array
      */
     public static <T> T[] toArray(final Collection<T> collection) {
-        if (collection == null || collection.isEmpty()) {
-            return (T[]) new Object[0]; // crappy, but if length is 0 then should be ok?
-        }
-        final T t = collection.iterator().next();
-        final T[] res = (T[]) Array.newInstance(t.getClass(), collection.size());
-        collection.toArray(res);
-        return res;
+        return (T[]) collection.toArray();
     }
 }
 
