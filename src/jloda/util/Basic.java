@@ -2731,6 +2731,8 @@ public class Basic {
     }
 
     public static boolean fileExistsAndIsNonEmpty(String fileName) {
+        if (fileName == null)
+            return false;
         File file = new File(fileName);
         return file.exists() && file.length() > 0;
     }
