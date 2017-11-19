@@ -4238,6 +4238,16 @@ public class Basic {
     public static <T> T[] toArray(final Collection<T> collection) {
         return (T[]) collection.toArray();
     }
+
+    /**
+     * count the number of words in a string
+     *
+     * @param string
+     * @return number of words
+     */
+    public static int countWords(String string) {
+        return string.split("\\s+").length;
+    }
 }
 
 /**

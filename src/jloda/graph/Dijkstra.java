@@ -60,9 +60,7 @@ public class Dijkstra {
                 if (priorityQueue.size() != size - 1)
                     throw new RuntimeException("remove u=" + u + " failed: size=" + size);
 
-                Iterator out = graph.getOutEdges(u);
-                while (out.hasNext()) {
-                    Edge e = (Edge) out.next();
+                for (Edge e : u.outEdges()) {
                     int weight = (Integer) graph.getInfo(e);
                     Node v = graph.getOpposite(u, e);
                     if (dist.getValue(v) > dist.getValue(u) + weight) {

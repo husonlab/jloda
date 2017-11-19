@@ -843,9 +843,9 @@ public class Graph<V, E> extends GraphBase {
      * @param v node
      * @return all out-edges adjacent to v
      */
-    public Iterator<Edge> getOutEdges(Node v) {
+    public Iterable<Edge> getOutEdges(Node v) {
         checkOwner(v);
-        return v.getOutEdges();
+        return v.outEdges();
     }
 
     /**
@@ -1517,10 +1517,43 @@ public class Graph<V, E> extends GraphBase {
      */
     public NodeSet getNodes() {
         NodeSet nodes = new NodeSet(this);
-        for (Node v = getFirstNode(); v != null; v = getNextNode(v))
+        for (Node v : nodes())
             nodes.add(v);
         return nodes;
     }
+
+    /**
+     * iterable over all nodes
+     *
+     * @return iterable over all nodes
+     */
+    public Iterable<Node> nodes() {
+        return new Iterable<Node>() {
+            @Override
+            public Iterator<Node> iterator() {
+                return new Iterator<Node>() {
+                    Node v = getFirstNode();
+
+                    @Override
+                    public boolean hasNext() {
+                        return v != null;
+                    }
+
+                    @Override
+                    public Node next() {
+                        Node result = v;
+                        v = getNextNode(v);
+                        return result;
+                    }
+
+                    @Override
+                    public void remove() {
+                    }
+                };
+            }
+        };
+    }
+
 
     /**
      * gets all edges
@@ -1529,11 +1562,42 @@ public class Graph<V, E> extends GraphBase {
      */
     public EdgeSet getEdges() {
         EdgeSet edges = new EdgeSet(this);
-        for (Edge v = getFirstEdge(); v != null; v = getNextEdge(v))
-            edges.add(v);
+        for (Edge e : edges())
+            edges.add(e);
         return edges;
     }
 
+    /**
+     * iterable over all edges
+     *
+     * @return all edges
+     */
+    public Iterable<Edge> edges() {
+        return new Iterable<Edge>() {
+            @Override
+            public Iterator<Edge> iterator() {
+                return new Iterator<Edge>() {
+                    Edge e = getFirstEdge();
+
+                    @Override
+                    public boolean hasNext() {
+                        return e != null;
+                    }
+
+                    @Override
+                    public Edge next() {
+                        Edge result = e;
+                        e = getNextEdge(e);
+                        return result;
+                    }
+
+                    @Override
+                    public void remove() {
+                    }
+                };
+            }
+        };
+    }
 
     /**
      * get the unhidden subset

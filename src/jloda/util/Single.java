@@ -24,8 +24,7 @@ import java.util.Comparator;
 /**
  * a mutable object
  *
- * @author huson
- *         Date: 14-May-2004
+ * Daniel Huson, 2004
  */
 public class Single<S> implements Comparable<Single<S>>, Comparator<Single<S>> {
     S value;
@@ -98,10 +97,10 @@ public class Single<S> implements Comparable<Single<S>>, Comparator<Single<S>> {
      */
     public Object clone() {
         try {
-            super.clone();
+            return super.clone();
         } catch (CloneNotSupportedException e) {
             Basic.caught(e);
         }
-        return new Single<>(get());
+        return null;
     }
 }

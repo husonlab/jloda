@@ -528,11 +528,6 @@ public class Node extends NodeEdge implements Comparable {
         };
     }
 
-    /**
-     * get iterator over all out edges
-     *
-     * @return iterator over all out edges
-     */
     public Iterator<Edge> getOutEdges() {
         return new IteratorAdapter<Edge>() {
             final Node v = Node.this;
@@ -554,6 +549,49 @@ public class Node extends NodeEdge implements Comparable {
     }
 
     /**
+     * get iterator over all out edges
+     *
+     * @return iterator over all out edges
+     */
+    public Iterable<Edge> outEdges() {
+        return new Iterable<Edge>() {
+            @Override
+            public Iterator<Edge> iterator() {
+                return getOutEdges();
+            }
+        };
+    }
+
+
+    /**
+     * get iterator over all in edges
+     *
+     * @return iterator over all in edges
+     */
+    public Iterable<Edge> inEdges() {
+        return new Iterable<Edge>() {
+            @Override
+            public Iterator<Edge> iterator() {
+                return getInEdges();
+            }
+        };
+    }
+
+    /**
+     * get iterator over all  edges
+     *
+     * @return iterator over all in edges
+     */
+    public Iterable<Edge> adjacentEdges() {
+        return new Iterable<Edge>() {
+            @Override
+            public Iterator<Edge> iterator() {
+                return getAdjacentEdges();
+            }
+        };
+    }
+
+    /**
      * get a directed edge from this node to w, or null
      *
      * @param w
@@ -561,8 +599,7 @@ public class Node extends NodeEdge implements Comparable {
      */
     public Edge findDirectedEdge(Node w) throws NotOwnerException {
         checkOwner(w);
-        for (Iterator<Edge> iterator = getOutEdges(); iterator.hasNext(); ) {
-            Edge e = iterator.next();
+        for (Edge e : outEdges()) {
             if (getOpposite(e) == w)
                 return e;
         }
