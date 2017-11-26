@@ -903,6 +903,24 @@ public class Basic {
     }
 
     /**
+     * returns the content of a file as a string
+     *
+     * @param file
+     * @param endOfLineChar
+     * @return string representation
+     */
+    public static String toString(File file, String endOfLineChar) throws IOException {
+        final StringBuilder buf = new StringBuilder();
+        try (BufferedReader r = new BufferedReader(new FileReader(file))) {
+            String aLine;
+            while ((aLine = r.readLine()) != null) {
+                buf.append(aLine).append(endOfLineChar);
+            }
+        }
+        return buf.toString();
+    }
+
+    /**
      * returns an array of integers as astring
      *
      * @param array
