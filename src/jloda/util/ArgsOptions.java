@@ -481,6 +481,11 @@ public class ArgsOptions {
     }
 
     public String getOption(String shortKey, String longKey, String description, Collection<String> legalValues, String defaultValue, boolean mandatory) throws UsageException {
+        boolean hide = false;
+        if (shortKey.startsWith("!")) {
+            hide = true;
+            shortKey = shortKey.substring(1);
+        }
         if (!shortKey.startsWith("-"))
             shortKey = "-" + shortKey;
         if (!longKey.startsWith("-"))
@@ -497,8 +502,9 @@ public class ArgsOptions {
 
         String defaultValueString = (defaultValue.length() == 0 ? "" : "Default value: " + defaultValue + ".");
 
-        usage.add("\t" + shortKey + ", " + longKey + " [string]: " + description + ". " + (mandatory ? "Mandatory option." : defaultValueString)
-                + (legalValues != null ? " Legal values: " + Basic.toString(legalValues, ", ") : ""));
+        if (!hide)
+            usage.add("\t" + shortKey + ", " + longKey + " [string]: " + description + ". " + (mandatory ? "Mandatory option." : defaultValueString)
+                    + (legalValues != null ? " Legal values: " + Basic.toString(legalValues, ", ") : ""));
 
         String result = defaultValue;
 
@@ -524,12 +530,17 @@ public class ArgsOptions {
             if (mandatory && !doHelp)
                 throw new UsageException("Mandatory option '" + longKey + "' not specified" + (legalValues != null ? ", legal values: " + Basic.toString(legalValues, ", ") : "."));
         }
-        if (verbose && result.length() > 0)
+        if (!hide && verbose && result.length() > 0)
             System.err.println("\t" + longKey + ": " + result);
         return result;
     }
 
     private List<String> getOption(String shortKey, String longKey, String description, List<String> defaultValue, boolean mandatory) throws UsageException {
+        boolean hide = false;
+        if (shortKey.startsWith("!")) {
+            hide = true;
+            shortKey = shortKey.substring(1);
+        }
         if (!shortKey.startsWith("-"))
             shortKey = "-" + shortKey;
         if (!longKey.startsWith("-"))
@@ -546,7 +557,8 @@ public class ArgsOptions {
 
         String defaultValueString = (defaultValue.size() == 0 ? "" : "Default value(s): " + Basic.toString(defaultValue, " ") + ".");
 
-        usage.add("\t" + shortKey + ", " + longKey + " [string(s)]: " + description + ". " + (mandatory ? "Mandatory option." : defaultValueString));
+        if (!hide)
+            usage.add("\t" + shortKey + ", " + longKey + " [string(s)]: " + description + ". " + (mandatory ? "Mandatory option." : defaultValueString));
 
         List<String> result = new LinkedList<>();
         boolean inArguments = false; // once in arguments, will continue until argument starts with -
@@ -579,7 +591,7 @@ public class ArgsOptions {
             else
                 result = defaultValue;
         }
-        if (verbose && result.size() > 0)
+        if (!hide && verbose && result.size() > 0)
             System.err.println("\t" + longKey + ": " + Basic.toString(result, " "));
         return result;
     }
