@@ -36,7 +36,7 @@ public class TextFileFilter extends FileFilterBase implements FilenameFilter {
         this(additionalSuffix, false);
     }
 
-    public TextFileFilter(String[] additionalSuffixes) {
+    public TextFileFilter(String... additionalSuffixes) {
         this(additionalSuffixes, false);
     }
 

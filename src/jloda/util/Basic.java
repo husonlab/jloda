@@ -31,7 +31,6 @@ import java.awt.image.BufferedImage;
 import java.awt.image.ImageObserver;
 import java.awt.image.PixelGrabber;
 import java.io.*;
-import java.io.FileFilter;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
@@ -3621,7 +3620,7 @@ public class Basic {
      * @param recursively
      * @return list of files
      */
-    public static List<File> getAllFilesInDirectory(File rootDirectory, FileFilter fileFilter, boolean recursively, ProgressListener progress) {
+    public static List<File> getAllFilesInDirectory(File rootDirectory, javax.swing.filechooser.FileFilter fileFilter, boolean recursively, ProgressListener progress) {
         final List<File> result = new LinkedList<>();
 
         try {
