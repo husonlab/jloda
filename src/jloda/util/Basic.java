@@ -3620,17 +3620,13 @@ public class Basic {
      * @param recursively
      * @return list of files
      */
-    public static List<File> getAllFilesInDirectory(File rootDirectory, javax.swing.filechooser.FileFilter fileFilter, boolean recursively, ProgressListener progress) {
+    public static List<File> getAllFilesInDirectory(File rootDirectory, javax.swing.filechooser.FileFilter fileFilter, boolean recursively) {
         final List<File> result = new LinkedList<>();
 
-        try {
-            int totalCount = 0;
             final Queue<File> queue = new LinkedList<>();
             File[] list = rootDirectory.listFiles();
             if (list != null) {
                 Collections.addAll(queue, list);
-                totalCount += queue.size();
-                progress.setMaximum(totalCount);
                 while (queue.size() > 0) {
                     File file = queue.poll();
                     if (file.isDirectory()) {
@@ -3638,19 +3634,14 @@ public class Basic {
                             File[] below = file.listFiles();
                             if (below != null) {
                                 Collections.addAll(queue, below);
-                                totalCount += below.length;
-                                progress.setMaximum(totalCount);
                             }
                         }
                     } else if (fileFilter == null || fileFilter.accept(file)) {
                         result.add(file);
                     }
-                    progress.incrementProgress();
                 }
             }
-        } catch (CanceledException ex) {
-            System.err.println("USER CANCELED, list of files may be incomplete");
-        }
+
         return result;
     }
 

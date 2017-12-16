@@ -70,10 +70,6 @@ public abstract class FileFilterBase extends FileFilter implements FilenameFilte
     /**
      * @return description of file matching the filter
      */
-
-    /**
-     * @return description of file matching the filter
-     */
     public String getDescription() {
         StringBuilder buf = new StringBuilder();
         buf.append(getBriefDescription()).append(" (extension: ");

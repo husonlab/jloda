@@ -37,31 +37,38 @@ public class FastaFileFilter extends FileFilterBase implements FilenameFilter {
     public static FastaFileFilter getInstance() {
         if (instance == null) {
             instance = new FastaFileFilter();
-            instance.setAllowGZipped(true);
-            instance.setAllowZipped(true);
         }
         return instance;
     }
 
-    /**
-     * constructor
-     */
     public FastaFileFilter() {
+        this(true);
+    }
+
+    public FastaFileFilter(String... additionalSuffixes) {
+        this(true, additionalSuffixes);
+    }
+
+
+    public FastaFileFilter(boolean allowGZip, String... additionalSuffixes) {
         add(".dna");
         add(".fa");
         add(".faa");
         add(".fna");
         add(".fasta");
+        for (String s : additionalSuffixes)
+            add(s);
+        setAllowGZipped(allowGZip);
     }
 
     public boolean accept (String fileName) {
-        boolean acceptBasedOnSuffix=super.accept(fileName);
-        if(!acceptBasedOnSuffix && isAllowGZipped() && fileName.toLowerCase().endsWith(".gz")) {   // look inside a gzipped file
+        boolean suffixOk = super.accept(Basic.getFileNameWithoutZipOrGZipSuffix(fileName));
+        if (suffixOk) {   // look inside the file
             final String[] lines=Basic.getFirstLinesFromFile(new File(fileName),2);
             return lines!=null && lines[0]!=null && isFastAHeaderLine(lines[0])   && lines[1]!=null && !lines[1].startsWith(">");
         }
         else
-            return true;
+            return false;
     }
 
     /**
