@@ -375,6 +375,24 @@ public class Basic {
     }
 
     /**
+     * given a list, returns a new collection in random order
+     *
+     * @param list
+     * @param seed
+     * @return iterator in random order
+     */
+    public static <T> ArrayList<T> randomize(ArrayList<T> list, int seed) {
+        int[] indices = new int[list.size()];
+        for (int i = 0; i < indices.length; i++)
+            indices[i] = i;
+        randomize(indices, seed);
+        final ArrayList<T> result = new ArrayList<>();
+        for (int i : indices)
+            result.add(list.get(i));
+        return result;
+    }
+
+    /**
      * given an array, returns it randomized (Durstenfeld 1964)
      *
      * @param array
@@ -416,6 +434,22 @@ public class Basic {
         for (int i = array.length - 1; i >= 1; i--) {
             int j = random.nextInt(i + 1);
             long tmp = array[i];
+            array[i] = array[j];
+            array[j] = tmp;
+        }
+    }
+
+    /**
+     * randomize array of longs using (Durstenfeld 1964)
+     *
+     * @param array
+     * @param seed
+     */
+    public static void randomize(int[] array, int seed) {
+        Random random = new Random(seed);
+        for (int i = array.length - 1; i >= 1; i--) {
+            int j = random.nextInt(i + 1);
+            int tmp = array[i];
             array[i] = array[j];
             array[j] = tmp;
         }
@@ -3370,14 +3404,12 @@ public class Basic {
      * @throws java.io.IOException
      */
     public static void readAndVerifyMagicNumber(InputStream ins, byte[] expectedMagicNumber) throws IOException {
-        {
             byte[] magicNumber = new byte[expectedMagicNumber.length];
             if (ins.read(magicNumber) != expectedMagicNumber.length || !equal(magicNumber, expectedMagicNumber)) {
                 System.err.println("Expected: " + toString(expectedMagicNumber));
                 System.err.println("Got:      " + toString(magicNumber));
                 throw new IOException("Index is too old or incorrect file (wrong magic number). Please recompute index.");
             }
-        }
     }
 
     /**
