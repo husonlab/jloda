@@ -3153,6 +3153,17 @@ public class Basic {
     }
 
     /**
+     * open reader
+     *
+     * @param fileName
+     * @return
+     * @throws IOException
+     */
+    public static Reader getReaderPossiblyZIPorGZIP(String fileName) throws IOException {
+        return new InputStreamReader(getInputStreamPossiblyZIPorGZIP(fileName));
+    }
+
+    /**
      * gets a inputstream. If file ends on gz or zip opens appropriate unzipping stream
      *
      * @param fileName
@@ -4290,6 +4301,8 @@ public class Basic {
     public static int countWords(String string) {
         return string.split("\\s+").length;
     }
+
+
 }
 
 /**
