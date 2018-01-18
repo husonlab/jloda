@@ -339,7 +339,6 @@ public class Geometry {
         } else {
             return moduloTwoPI(AngleA - AngleB);
         }
-
     }
 
 
