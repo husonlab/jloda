@@ -1877,12 +1877,12 @@ public class Basic {
      * @return current memory usage
      */
     public static String getMemoryUsageString() {
-        long used = ((Runtime.getRuntime().totalMemory() - Runtime.getRuntime().freeMemory()) / 1048576);
-        long available = (Runtime.getRuntime().maxMemory() / 1048576);
+        long used = ((Runtime.getRuntime().totalMemory() - Runtime.getRuntime().freeMemory()) / 1000000);
+        long available = (Runtime.getRuntime().maxMemory() / 1000000);
         if (available < 1024) {
             return String.format("%d of %dM", used, available);
         } else {
-            return String.format("%.1f of %.1fG", (double) used / 1024.0, (double) available / 1024.0);
+            return String.format("%.1f of %.1fG", (double) used / 1000.0, (double) available / 1000.0);
         }
     }
 
@@ -1893,8 +1893,8 @@ public class Basic {
      * @return current memory usage
      */
     public static String getMemoryUsageString(int warnLevel) {
-        long used = ((Runtime.getRuntime().totalMemory() - Runtime.getRuntime().freeMemory()) / 1048576);
-        long available = (Runtime.getRuntime().maxMemory() / 1048576);
+        long used = ((Runtime.getRuntime().totalMemory() - Runtime.getRuntime().freeMemory()) / 1000000);
+        long available = (Runtime.getRuntime().maxMemory() / 1000000);
         if (!memoryWarned && warnLevel > 0 && used + warnLevel >= available) {
             String program = ProgramProperties.getProgramName();
             System.gc();

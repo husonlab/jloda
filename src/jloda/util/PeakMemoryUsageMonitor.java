@@ -31,7 +31,7 @@ import static java.util.concurrent.TimeUnit.SECONDS;
 public class PeakMemoryUsageMonitor {
     private static PeakMemoryUsageMonitor instance;
     private final long start;
-    private long peak = ((Runtime.getRuntime().totalMemory() - Runtime.getRuntime().freeMemory()) / 1048576);
+    private long peak = ((Runtime.getRuntime().totalMemory() - Runtime.getRuntime().freeMemory()) / 1000000);
 
     /**
      * constructor
@@ -40,7 +40,7 @@ public class PeakMemoryUsageMonitor {
         start = System.currentTimeMillis();
         Executors.newScheduledThreadPool(1).scheduleAtFixedRate(new Runnable() {
             public void run() {
-                long used = ((Runtime.getRuntime().totalMemory() - Runtime.getRuntime().freeMemory()) / 1048576);
+                long used = ((Runtime.getRuntime().totalMemory() - Runtime.getRuntime().freeMemory()) / 1000000);
                 if (used > peak)
                     peak = used;
             }
@@ -67,11 +67,11 @@ public class PeakMemoryUsageMonitor {
      * @return peak usage
      */
     public static String getPeakUsageString() {
-        long available = (Runtime.getRuntime().maxMemory() / 1048576);
+        long available = (Runtime.getRuntime().maxMemory() / 1000000);
         if (available < 1024) {
             return String.format("%d of %dM", getInstance().peak, available);
         } else {
-            return String.format("%.1f of %.1fG", (double) getInstance().peak / 1024.0, (double) available / 1024.0);
+            return String.format("%.1f of %.1fG", (double) getInstance().peak / 1000.0, (double) available / 1000.0);
         }
     }
 
