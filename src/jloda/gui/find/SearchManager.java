@@ -1,6 +1,6 @@
 /**
  * SearchManager.java 
- * Copyright (C) 2017 Daniel H. Huson
+ * Copyright (C) 2018 Daniel H. Huson
  *
  * (Some files contain contributions from other authors, who are then mentioned separately.)
  *
@@ -306,95 +306,6 @@ public class SearchManager implements IDirectableViewer {
     public void applyUnselectAll() {
         findDialog.clearMessage();
         searcher.selectAll(false);
-    }
-
-    /**
-     * replace all occurrences of the query string
-     */
-    public void applyReplaceAll() {
-        if (isCommandLineMode()) {
-            final int found = doReplaceAll();
-            System.err.println("Replacements: " + found);
-        } else {
-            findDialog.clearMessage();
-            if (worker == null || !worker.isAlive()) {
-                worker = new Thread(new Runnable() {
-                    public void run() {
-                        notifyLockUserInput();
-                        final int found = doReplaceAll();
-                        SwingUtilities.invokeLater(new Runnable() {
-                            public void run() {
-                                findDialog.setMessage("Replacements: " + found);
-                            }
-                        });
-                        notifyUnlockUserInput();
-                    }
-                });
-                worker.setPriority(Thread.currentThread().getPriority() - 1);
-                worker.start();
-            }
-        }
-    }
-
-    /**
-     * replace all occurrences of the query string
-     */
-    private int doReplaceAll() {
-        int count = 0;
-        boolean changed = false;
-
-        try {
-            if (searcher instanceof IObjectSearcher) {
-                IObjectSearcher oSearcher = (IObjectSearcher) searcher;
-                boolean ok = isForwardDirection() ? oSearcher.gotoFirst() : oSearcher.gotoLast();
-
-                ProgressListener progressListener = (searcher.getParent() != null ?
-                        (new ProgressDialog("Search", "Replace all", searcher.getParent())) : new ProgressSilent());
-                progressListener.setMaximum(oSearcher.numberOfObjects());
-
-                final String regexp = prepareRegularExpression(equateUnderscoreWithSpace ? searchText.replaceAll("_", " ") : searchText);
-                final Pattern pattern = Pattern.compile(regexp);
-
-                try {
-                    while (ok) {
-                        if (isGlobalScope() || oSearcher.isCurrentSelected()) {
-                            String label = oSearcher.getCurrentLabel();
-                            if (label == null)
-                                label = "";
-                            if (equateUnderscoreWithSpace)
-                                label = label.replaceAll("_", " ");
-                            String replace = getReplacement(pattern, replaceText, label);
-                            if (replace != null && !replace.equals(label)) {
-                                oSearcher.setCurrentSelected(true);
-                                oSearcher.setCurrentLabel(replace);
-                                changed = true;
-                                count++;
-                            }
-                        }
-                        ok = isForwardDirection() ? oSearcher.gotoNext() : oSearcher.gotoPrevious();
-                        progressListener.incrementProgress();
-                    }
-                } catch (CanceledException e) {
-                    System.err.println("Search canceled");
-                } finally {
-                    progressListener.close();
-                }
-            } else if (searcher instanceof ITextSearcher) {
-                ITextSearcher tSearcher = (ITextSearcher) searcher;
-                tSearcher.setGlobalScope(isGlobalScope());
-
-                final String regexp = prepareRegularExpression(equateUnderscoreWithSpace ? searchText.replaceAll("_", " ") : searchText);
-                count = tSearcher.replaceAll(regexp, replaceText, !isGlobalScope());
-                if (count > 0)
-                    changed = true;
-            }
-            if (changed) {
-                searcher.updateView();
-            }
-        } catch (Exception ex) {
-            new Alert(findDialog.getFrame(), "Error: " + ex);
-        }
-        return count;
     }
 
     /**
@@ -734,6 +645,94 @@ public class SearchManager implements IDirectableViewer {
         }
     }
 
+    /**
+     * replace all occurrences of the query string
+     */
+    public void applyReplaceAll() {
+        if (isCommandLineMode()) {
+            final int found = doReplaceAll();
+            System.err.println("Replacements: " + found);
+        } else {
+            findDialog.clearMessage();
+            if (worker == null || !worker.isAlive()) {
+                worker = new Thread(new Runnable() {
+                    public void run() {
+                        notifyLockUserInput();
+                        final int found = doReplaceAll();
+                        SwingUtilities.invokeLater(new Runnable() {
+                            public void run() {
+                                findDialog.setMessage("Replacements: " + found);
+                            }
+                        });
+                        notifyUnlockUserInput();
+                    }
+                });
+                worker.setPriority(Thread.currentThread().getPriority() - 1);
+                worker.start();
+            }
+        }
+    }
+
+    /**
+     * replace all occurrences of the query string
+     */
+    private int doReplaceAll() {
+        int count = 0;
+        boolean changed = false;
+
+        try {
+            if (searcher instanceof IObjectSearcher) {
+                IObjectSearcher oSearcher = (IObjectSearcher) searcher;
+                boolean ok = isForwardDirection() ? oSearcher.gotoFirst() : oSearcher.gotoLast();
+
+                ProgressListener progressListener = (searcher.getParent() != null ?
+                        (new ProgressDialog("Search", "Replace all", searcher.getParent())) : new ProgressSilent());
+                progressListener.setMaximum(oSearcher.numberOfObjects());
+
+                final String regexp = prepareRegularExpression(equateUnderscoreWithSpace ? searchText.replaceAll("_", " ") : searchText);
+                final Pattern pattern = Pattern.compile(regexp);
+
+                try {
+                    while (ok) {
+                        if (isGlobalScope() || oSearcher.isCurrentSelected()) {
+                            String label = oSearcher.getCurrentLabel();
+                            if (label == null)
+                                label = "";
+                            if (equateUnderscoreWithSpace)
+                                label = label.replaceAll("_", " ");
+                            String replace = getReplacement(pattern, replaceText, label);
+                            if (replace != null && !replace.equals(label)) {
+                                oSearcher.setCurrentSelected(true);
+                                oSearcher.setCurrentLabel(replace);
+                                changed = true;
+                                count++;
+                            }
+                        }
+                        ok = isForwardDirection() ? oSearcher.gotoNext() : oSearcher.gotoPrevious();
+                        progressListener.incrementProgress();
+                    }
+                } catch (CanceledException e) {
+                    System.err.println("Search canceled");
+                } finally {
+                    progressListener.close();
+                }
+            } else if (searcher instanceof ITextSearcher) {
+                ITextSearcher tSearcher = (ITextSearcher) searcher;
+                tSearcher.setGlobalScope(isGlobalScope());
+
+                final String regexp = prepareRegularExpression(equateUnderscoreWithSpace ? searchText.replaceAll("_", " ") : searchText);
+                count = tSearcher.replaceAll(regexp, replaceText, !isGlobalScope());
+                if (count > 0)
+                    changed = true;
+            }
+            if (changed) {
+                searcher.updateView();
+            }
+        } catch (Exception ex) {
+            new Alert(findDialog.getFrame(), "Error: " + ex);
+        }
+        return count;
+    }
 
     /**
      * does label match pattern?

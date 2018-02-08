@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 2017 Daniel H. Huson and David J. Bryant
+ *  Copyright (C) 2018 Daniel H. Huson and David J. Bryant
  *
  *  (Some files contain contributions from other authors, who are then mentioned separately.)
  *

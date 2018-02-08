@@ -1,6 +1,6 @@
 /**
  * Graph.java 
- * Copyright (C) 2017 Daniel H. Huson
+ * Copyright (C) 2018 Daniel H. Huson
  *
  * (Some files contain contributions from other authors, who are then mentioned separately.)
  *
@@ -1127,6 +1127,15 @@ public class Graph<V, E> extends GraphBase {
      * @param array
      */
     void registerNodeAssociation(NodeAssociation array) {
+        {
+            final List<WeakReference> toDelete = new LinkedList<>();
+            for (WeakReference<NodeAssociation> ref : nodeAssociations) {
+                if (ref.get() == null)
+                    toDelete.add(ref); // reference is dead
+            }
+            if (toDelete.size() > 0)
+                nodeAssociations.removeAll(toDelete);
+        }
         nodeAssociations.add(new WeakReference<>(array));
     }
 
@@ -1157,6 +1166,15 @@ public class Graph<V, E> extends GraphBase {
      * @param set
      */
     void registerNodeSet(NodeSet set) {
+        {
+            final List<WeakReference> toDelete = new LinkedList<>();
+            for (WeakReference<NodeSet> ref : nodeSets) {
+                if (ref.get() == null)
+                    toDelete.add(ref); // reference is dead
+            }
+            if (toDelete.size() > 0)
+                nodeSets.removeAll(toDelete);
+        }
         nodeSets.add(new WeakReference<>(set));
     }
 
@@ -1187,6 +1205,16 @@ public class Graph<V, E> extends GraphBase {
      * @param array
      */
     void registerEdgeAssociation(EdgeAssociation array) {
+
+        {
+            final List<WeakReference> toDelete = new LinkedList<>();
+            for (WeakReference<EdgeAssociation> ref : edgeAssociations) {
+                if (ref.get() == null)
+                    toDelete.add(ref); // reference is dead
+            }
+            if (toDelete.size() > 0)
+                edgeAssociations.removeAll(toDelete);
+        }
         edgeAssociations.add(new WeakReference<>(array));
     }
 
@@ -1217,6 +1245,15 @@ public class Graph<V, E> extends GraphBase {
      * @param set
      */
     void registerEdgeSet(EdgeSet set) {
+        {
+            final List<WeakReference> toDelete = new LinkedList<>();
+            for (WeakReference<EdgeSet> ref : edgeSets) {
+                if (ref.get() == null)
+                    toDelete.add(ref); // reference is dead
+            }
+            if (toDelete.size() > 0)
+                edgeSets.removeAll(toDelete);
+        }
         edgeSets.add(new WeakReference<>(set));
     }
 
