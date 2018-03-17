@@ -176,7 +176,7 @@ public class ProgressPercentage implements ProgressListener {
         if (!reportedCompleted && steps > 0)
             reportTaskCompleted();
         if (subtaskName != null)
-            System.err.println(subtaskName);
+            System.err.println(subtaskName.endsWith("...") ? subtaskName : subtaskName + "...");
     }
 
     public void setCancelable(boolean enabled) {
