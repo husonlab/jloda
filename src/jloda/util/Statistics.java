@@ -19,8 +19,6 @@
  */
 package jloda.util;
 
-import java.util.Collection;
-
 /**
  * calculates basic statistics
  * Daniel Huson, 5.2006
@@ -38,17 +36,19 @@ public class Statistics {
      *
      * @param data
      */
-    public Statistics(Collection<? extends Number> data) {
-        count = data.size();
+    public Statistics(Iterable<? extends Number> data) {
+        int count = 0;
+        for (Number number : data) {
+            double value = number.doubleValue();
+            sum += value;
+            if (value < min)
+                min = value;
+            if (value > max)
+                max = value;
+            count++;
+        }
+        this.count = count;
         if (count > 0) {
-            for (Number number : data) {
-                double value = number.doubleValue();
-                sum += value;
-                if (value < min)
-                    min = value;
-                if (value > max)
-                    max = value;
-            }
             mean = sum / count;
             if (count > 1) {
                 double sum2 = 0;
