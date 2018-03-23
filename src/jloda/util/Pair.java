@@ -20,6 +20,7 @@
 package jloda.util;
 
 import java.util.Comparator;
+import java.util.Iterator;
 
 /**
  * a generic pair of objects
@@ -195,5 +196,73 @@ public class Pair<S, T> implements Comparable<Pair<S, T>>, Comparator<Pair<S, T>
 
     public boolean contains(Object x) {
         return x.equals(first) || x.equals(second);
+    }
+
+    /**
+     * iterable over first elements
+     *
+     * @param src
+     * @param <P>
+     * @param <Q>
+     * @return iterable over all first elements
+     */
+    public static <P, Q> Iterable<P> firstValues(final Iterable<Pair<P, Q>> src) {
+        return new Iterable<P>() {
+            @Override
+            public Iterator<P> iterator() {
+                return new Iterator<P>() {
+                    private final Iterator<Pair<P, Q>> it = src.iterator();
+
+                    @Override
+                    public boolean hasNext() {
+                        return it.hasNext();
+                    }
+
+                    @Override
+                    public P next() {
+                        return it.next().getFirst();
+                    }
+
+                    @Override
+                    public void remove() {
+                        it.remove();
+                    }
+                };
+            }
+        };
+    }
+
+    /**
+     * iterable over second elements
+     *
+     * @param src
+     * @param <P>
+     * @param <Q>
+     * @return iterable over all second elements
+     */
+    public static <P, Q> Iterable<Q> secondValues(final Iterable<Pair<P, Q>> src) {
+        return new Iterable<Q>() {
+            @Override
+            public Iterator<Q> iterator() {
+                return new Iterator<Q>() {
+                    private final Iterator<Pair<P, Q>> it = src.iterator();
+
+                    @Override
+                    public boolean hasNext() {
+                        return it.hasNext();
+                    }
+
+                    @Override
+                    public Q next() {
+                        return it.next().getSecond();
+                    }
+
+                    @Override
+                    public void remove() {
+                        it.remove();
+                    }
+                };
+            }
+        };
     }
 }
