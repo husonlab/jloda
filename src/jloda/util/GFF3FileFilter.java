@@ -26,8 +26,11 @@ import java.io.FilenameFilter;
  * Daniel Huson, 12.2017
  */
 public class GFF3FileFilter extends FileFilterBase implements FilenameFilter {
-    public GFF3FileFilter() {
-        this(true);
+    private boolean lookInside = true;
+
+    public GFF3FileFilter(boolean allowGZip, boolean lookInside, String... additionalSuffixes) {
+        this(allowGZip, additionalSuffixes);
+        this.lookInside = lookInside;
     }
 
     public GFF3FileFilter(String... additionalSuffixes) {
@@ -45,7 +48,7 @@ public class GFF3FileFilter extends FileFilterBase implements FilenameFilter {
 
     public boolean accept(String fileName) {
         boolean suffixOk = super.accept(Basic.getFileNameWithoutZipOrGZipSuffix(fileName));
-        if (suffixOk) {   // look inside the file
+        if (suffixOk && lookInside) {   // look inside the file
             final String[] lines = Basic.getFirstLinesFromFile(new File(fileName), 1);
             return lines != null && lines[0] != null && lines[0].startsWith("##gff-version 3");
         } else
@@ -56,6 +59,14 @@ public class GFF3FileFilter extends FileFilterBase implements FilenameFilter {
      * @return description of file matching the filter
      */
     public String getBriefDescription() {
-        return "GFF Files";
+        return "GFF3 Files";
+    }
+
+    public boolean isLookInside() {
+        return lookInside;
+    }
+
+    public void setLookInside(boolean lookInside) {
+        this.lookInside = lookInside;
     }
 }
