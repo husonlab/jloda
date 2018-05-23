@@ -48,9 +48,12 @@ public class GFF3FileFilter extends FileFilterBase implements FilenameFilter {
 
     public boolean accept(String fileName) {
         boolean suffixOk = super.accept(Basic.getFileNameWithoutZipOrGZipSuffix(fileName));
-        if (suffixOk && lookInside) {   // look inside the file
-            final String[] lines = Basic.getFirstLinesFromFile(new File(fileName), 1);
-            return lines != null && lines[0] != null && lines[0].startsWith("##gff-version 3");
+        if (suffixOk) {   // look inside the file
+            if (lookInside) {
+                final String[] lines = Basic.getFirstLinesFromFile(new File(fileName), 1);
+                return lines != null && lines[0] != null && lines[0].startsWith("##gff-version 3");
+            } else
+                return true;
         } else
             return false;
     }
