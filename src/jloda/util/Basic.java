@@ -2538,6 +2538,7 @@ public class Basic {
     }
 
     public static String getAccessionWord(String text) {
+        
         int a = 0;
         while (a < text.length()) {
             char ch = text.charAt(a);
