@@ -2537,6 +2537,46 @@ public class Basic {
         return src.length;
     }
 
+    public static String getAccessionWord(String text) {
+        int a = 0;
+        while (a < text.length()) {
+            char ch = text.charAt(a);
+            if (Character.isWhitespace(ch) || ch == '@' || ch == '>')
+                a++;
+            else
+                break;
+        }
+        int b = a;
+        while (b < text.length()) {
+            char ch = text.charAt(b);
+            if (Character.isLetterOrDigit(ch) || ch == '_')
+                b++;
+            else
+                break;
+        }
+        return text.substring(a, b);
+    }
+
+    public static String getAccessionWord(byte[] text) {
+        int a = 0;
+        while (a < text.length) {
+            byte ch = text[a];
+            if (Character.isWhitespace(ch) || ch == '@' || ch == '>')
+                a++;
+            else
+                break;
+        }
+        int b = a;
+        while (b < text.length) {
+            byte ch = text[b];
+            if (Character.isLetterOrDigit(ch) || ch == '_')
+                b++;
+            else
+                break;
+        }
+        return toString(text, a, b - a);
+    }
+
 
     /**
      * remove all white spaces
