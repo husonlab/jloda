@@ -843,9 +843,9 @@ public class Graph<V, E> extends GraphBase {
      * @param v node
      * @return all out-edges adjacent to v
      */
-    public Iterable<Edge> getOutEdges(Node v) {
+    public Iterator<Edge> getOutEdges(Node v) {
         checkOwner(v);
-        return v.outEdges();
+        return v.getOutEdges();
     }
 
     /**
