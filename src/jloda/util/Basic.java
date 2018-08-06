@@ -548,7 +548,7 @@ public class Basic {
      * @return file with new and unique name
      */
     public static File getFileWithNewUniqueName(String name) {
-        final String suffix = Basic.getSuffix(name);
+        final String suffix = Basic.getFileSuffix(name);
         File result = new File(name);
         int count = 0;
         while (usedFiles.contains(result) || result.exists()) {
@@ -617,30 +617,13 @@ public class Basic {
     }
 
     /**
-     * returns the suffix of a file name
-     *
-     * @param fileName
-     * @return file name extension
-     */
-    public static String getSuffix(String fileName) {
-        if (fileName == null)
-            return null;
-        int pos = fileName.lastIndexOf(".");
-        if (pos == -1 || pos == fileName.length() - 1)
-            return null;
-        else {
-            return fileName.substring(pos + 1);
-        }
-    }
-
-    /**
      * returns the short name of a class
      *
      * @param clazz
      * @return short name
      */
     public static String getShortName(Class clazz) {
-        return getSuffix(clazz.getName());
+        return getFileSuffix(clazz.getName());
     }
 
     /**
@@ -3600,10 +3583,10 @@ public class Basic {
     public static String getTemporaryFileName(String name) {
         String zipSuffix = null;
         if (isZIPorGZIPFile(name)) {
-            zipSuffix = getSuffix(name);
+            zipSuffix = getFileSuffix(name);
             name = getFileNameWithoutZipOrGZipSuffix(name);
         }
-        final String suffix = getSuffix(name);
+        final String suffix = getFileSuffix(name);
         name = getFileBaseName(name);
         final int number = (int) (System.currentTimeMillis() & ((1 << 20) - 1));
         return String.format("%s-tmp%d.%s%s", name, number, suffix, zipSuffix != null ? "." + zipSuffix : "");

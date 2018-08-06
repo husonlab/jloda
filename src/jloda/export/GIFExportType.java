@@ -129,7 +129,7 @@ public class GIFExportType extends FileFilter implements ExportGraphicType {
         if (f.isDirectory()) {
             return true;
         }
-        String extension = Basic.getSuffix(f.getName());
+        String extension = Basic.getFileSuffix(f.getName());
         if (extension != null) {
             if (extension.equalsIgnoreCase("gif"))
                 return true;

@@ -145,7 +145,7 @@ public class SVGExportType extends FileFilter implements ExportGraphicType {
         if (f.isDirectory()) {
             return true;
         }
-        String extension = Basic.getSuffix(f.getName());
+        String extension = Basic.getFileSuffix(f.getName());
         if (extension != null) {
             if (extension.equalsIgnoreCase("svg"))
                 return true;

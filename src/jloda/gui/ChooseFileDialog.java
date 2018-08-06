@@ -216,7 +216,7 @@ public class ChooseFileDialog {
                     file = new File(dialog.getDirectory(), dialog.getFile());
                     okToWrite = true;
                     if (defaultSuffix != null) {
-                        String suffix = Basic.getSuffix(file.getName());
+                        String suffix = Basic.getFileSuffix(file.getName());
                         if (suffix == null || suffix.equals(file.getName())) {
                             file = new File(file.getParent(), file.getName() + defaultSuffix);
                             // todo: don't seem to need this:
@@ -254,7 +254,7 @@ public class ChooseFileDialog {
                 okToWrite = true;
 
                 if (defaultSuffix != null) {
-                    String suffix = Basic.getSuffix(file.getName());
+                    String suffix = Basic.getFileSuffix(file.getName());
                     if (suffix == null || suffix.equals(file.getName())) {
                         file = new File(file.getParent(), file.getName() + defaultSuffix);
                     }

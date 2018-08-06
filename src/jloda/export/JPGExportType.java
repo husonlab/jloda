@@ -134,7 +134,7 @@ public class JPGExportType extends FileFilter implements ExportGraphicType {
             return true;
         }
 
-        String extension = Basic.getSuffix(f.getName());
+        String extension = Basic.getFileSuffix(f.getName());
         if (extension != null) {
             if (extension.equalsIgnoreCase("jpeg") ||
                     extension.equalsIgnoreCase("jpg")) {

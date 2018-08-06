@@ -91,12 +91,12 @@ public class ExportImageDialog extends JDialog {
                 if (file != null) {
                     fileNameChangedByText = false;
                     String fileName = file.getPath();
-                    String suffix = Basic.getSuffix(fileName);
+                    String suffix = Basic.getFileSuffix(fileName);
                     if (suffix == null || suffix.length() == 0) {
                         file = new File(file.getPath() + getFileExtension());
                     }
                     if (suffix != null && !suffix.equals(getFileExtension())) {
-                        setFormat(Basic.getSuffix(file.getPath()));
+                        setFormat(Basic.getFileSuffix(file.getPath()));
                     }
                     setFile(file);
                 }
@@ -226,7 +226,7 @@ public class ExportImageDialog extends JDialog {
         applyButton = new JButton(new AbstractAction("Apply") {
             public void actionPerformed(ActionEvent actionEvent) {
                 String fileName = getFileName();
-                String suffix = Basic.getSuffix(fileName);
+                String suffix = Basic.getFileSuffix(fileName);
                 if (suffix == null || suffix.length() == 0) {
                     fileName += getFileExtension();
                     fileField.setText(fileName);
