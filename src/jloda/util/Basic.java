@@ -744,9 +744,8 @@ public class Basic {
         return buf.toString();
     }
 
-
     /**
-     * fold to given length
+     * fold hard to given length
      *
      * @param str
      * @param length

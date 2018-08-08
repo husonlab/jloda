@@ -439,7 +439,7 @@ public class SequenceUtils {
     }
 
     /**
-     * reverse (but do NOT complement) a sequence
+     * reverses (but does NOT complement) a sequence
      *
      * @param sequence
      * @return reverse string (but not complemented
@@ -453,10 +453,10 @@ public class SequenceUtils {
     }
 
     /**
-     * reverse (but do NOT complement) a sequence
+     * reverses (but does NOT complement) a sequence
      *
      * @param sequence
-     * @return reverse string (but not complemented
+     * @return reverse string (but not complemented)
      */
     public static byte[] getReverse(byte[] sequence) {
         byte[] result = new byte[sequence.length];
