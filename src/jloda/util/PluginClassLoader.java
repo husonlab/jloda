@@ -77,7 +77,7 @@ public class PluginClassLoader {
                     if (resources[i].endsWith(".class")) {
                         try {
                             resources[i] = resources[i].substring(0, resources[i].length() - 6);
-                            Class c = Basic.classForName(packageName.concat(".").concat(resources[i]));
+                            final Class c = Basic.classForName(packageName.concat(".").concat(resources[i]));
                             if (!c.isInterface() && !Modifier.isAbstract(c.getModifiers()) && clazz1.isAssignableFrom(c) && (clazz2 == null || clazz2.isAssignableFrom(c))) {
                                 try {
                                     plugins.add(c.newInstance());
