@@ -19,6 +19,8 @@
  */
 package jloda.util;
 
+import java.util.Collection;
+
 /**
  * calculates basic statistics
  * Daniel Huson, 5.2006
@@ -187,5 +189,14 @@ public class Statistics {
 
     public double getZScore(double value) {
         return (stdDev > 0 ? (value - mean) / stdDev : 0);
+    }
+
+    public static int[] getBinnedCounts(Collection<Integer> values, int min, int max, int numberOfBins) {
+        final int[] result = new int[numberOfBins];
+
+        for (int value : values) {
+            result[(int) (numberOfBins * (double) (value - min) / (max - min + 1))]++;
+        }
+        return result;
     }
 }

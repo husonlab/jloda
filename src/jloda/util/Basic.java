@@ -3849,7 +3849,7 @@ public class Basic {
      * @param list
      * @return list in reverse order
      */
-    public static <T> Collection<T> reverse(Collection<T> list) {
+    public static <T> ArrayList<T> reverse(Collection<T> list) {
         final ArrayList<T> source = new ArrayList<>(list);
         final ArrayList<T> target = new ArrayList<>(list.size());
         for (int i = source.size() - 1; i >= 0; i--)
