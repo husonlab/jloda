@@ -3858,6 +3858,21 @@ public class Basic {
     }
 
     /**
+     * reverses an array list in place
+     *
+     * @param list
+     */
+    public static <T> void reverseInPlace(ArrayList<T> list) {
+        final int top = list.size() / 2;
+        final int size1 = list.size() - 1;
+        for (int i = 0; i < top; i++) {
+            T tmp = list.get(i);
+            list.set(i, list.get(size1 - i));
+            list.set(size1 - i, tmp);
+        }
+    }
+
+    /**
      * gets the rank of a value in a list
      *
      * @param list
