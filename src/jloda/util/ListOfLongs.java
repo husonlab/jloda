@@ -32,7 +32,7 @@ public class ListOfLongs {
     }
 
     public ListOfLongs(int initialSize) {
-        data = new long[initialSize];
+        data = new long[Math.max(16, initialSize)];
     }
 
     public void clear() {
@@ -41,7 +41,7 @@ public class ListOfLongs {
 
     public void add(long value) {
         if (size == data.length) {
-            long[] tmp = new long[(int) Math.min(Integer.MAX_VALUE, 2l * data.length)];
+            long[] tmp = new long[(int) Math.min(Basic.MAX_ARRAY_SIZE, 2L * data.length)];
             System.arraycopy(data, 0, tmp, 0, data.length);
             data = tmp;
         }
@@ -59,7 +59,7 @@ public class ListOfLongs {
     public void addAll(ListOfLongs listOfLongs) {
         long newSize = size + listOfLongs.size;
         if (newSize >= data.length) {
-            long[] tmp = new long[(int) Math.min(Integer.MAX_VALUE, newSize)];
+            long[] tmp = new long[(int) Math.min(Basic.MAX_ARRAY_SIZE, newSize)];
             System.arraycopy(data, 0, tmp, 0, data.length);
             data = tmp;
         }
