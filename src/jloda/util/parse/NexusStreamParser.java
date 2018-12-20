@@ -24,8 +24,8 @@ import jloda.util.Colors;
 
 import java.awt.*;
 import java.io.*;
-import java.util.*;
 import java.util.List;
+import java.util.*;
 
 /**
  * Parser for NexusBlock files
@@ -1426,6 +1426,7 @@ public class NexusStreamParser extends NexusStreamTokenizer implements Closeable
      * @throws IOException
      */
     public Color getColor() throws IOException {
+
         try {
             int r = 0, g = 0, b = 0, a = 0;
             for (int i = 0; i < 4; i++) {
@@ -1434,6 +1435,14 @@ public class NexusStreamParser extends NexusStreamTokenizer implements Closeable
                     case 0:
                         if (word.equals("null"))
                             return null;
+                        if (word.startsWith("#")) // format #rrggbb
+                        {
+                            javafx.scene.paint.Color fx = javafx.scene.paint.Color.web(word);
+                            return new java.awt.Color((float) fx.getRed(),
+                                    (float) fx.getGreen(),
+                                    (float) fx.getBlue(),
+                                    (float) fx.getOpacity());
+                        }
                         if (isHexInt(word)) {
                             r = parseHexInt(word);
                             return new Color(r);
