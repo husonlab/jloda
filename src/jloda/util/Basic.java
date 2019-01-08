@@ -38,9 +38,9 @@ import java.net.URLDecoder;
 import java.nio.channels.FileChannel;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
-import java.util.*;
 import java.util.List;
 import java.util.Queue;
+import java.util.*;
 import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
 import java.util.regex.Matcher;
@@ -3689,24 +3689,57 @@ public class Basic {
     public static List<File> getAllFilesInDirectory(File rootDirectory, javax.swing.filechooser.FileFilter fileFilter, boolean recursively) {
         final List<File> result = new LinkedList<>();
 
-            final Queue<File> queue = new LinkedList<>();
-            File[] list = rootDirectory.listFiles();
-            if (list != null) {
-                Collections.addAll(queue, list);
-                while (queue.size() > 0) {
-                    File file = queue.poll();
-                    if (file.isDirectory()) {
-                        if (recursively) {
-                            File[] below = file.listFiles();
-                            if (below != null) {
-                                Collections.addAll(queue, below);
-                            }
+        final Queue<File> queue = new LinkedList<>();
+        File[] list = rootDirectory.listFiles();
+        if (list != null) {
+            Collections.addAll(queue, list);
+            while (queue.size() > 0) {
+                File file = queue.poll();
+                if (file.isDirectory()) {
+                    if (recursively) {
+                        File[] below = file.listFiles();
+                        if (below != null) {
+                            Collections.addAll(queue, below);
                         }
-                    } else if (fileFilter == null || fileFilter.accept(file)) {
-                        result.add(file);
                     }
+                } else if (fileFilter == null || fileFilter.accept(file)) {
+                    result.add(file);
                 }
             }
+        }
+
+        return result;
+    }
+
+    /**
+     * get all files listed below the given root directory
+     *
+     * @param rootDirectory
+     * @param fileFilter
+     * @param recursively
+     * @return list of files
+     */
+    public static List<String> getAllFilesInDirectory(String rootDirectory, javax.swing.filechooser.FileFilter fileFilter, boolean recursively) {
+        final List<String> result = new LinkedList<>();
+
+        final Queue<File> queue = new LinkedList<>();
+        File[] list = (new File(rootDirectory)).listFiles();
+        if (list != null) {
+            Collections.addAll(queue, list);
+            while (queue.size() > 0) {
+                File file = queue.poll();
+                if (file.isDirectory()) {
+                    if (recursively) {
+                        File[] below = file.listFiles();
+                        if (below != null) {
+                            Collections.addAll(queue, below);
+                        }
+                    }
+                } else if (fileFilter == null || fileFilter.accept(file)) {
+                    result.add(file.getPath());
+                }
+            }
+        }
 
         return result;
     }

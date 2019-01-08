@@ -23,8 +23,8 @@ import jloda.gui.message.MessageWindow;
 
 import javax.swing.*;
 import java.awt.*;
-import java.util.*;
 import java.util.List;
+import java.util.*;
 
 /**
  * command line arguments
@@ -85,8 +85,7 @@ public class ArgsOptions {
         if (args.length > 0 && args[args.length - 1].equals("--argsGui")) {
             args = getDialogInput(args, args.length - 1);
         }
-        arguments = new LinkedList<>();
-        arguments.addAll(Arrays.asList(args));
+        arguments = new ArrayList<>(Arrays.asList(args));
 
         this.programName = programName;
         if (main != null)
@@ -254,6 +253,31 @@ public class ArgsOptions {
             System.err.println(comment);
         if (comment.equals(OTHER))
             alreadyHasOtherComment = true;
+    }
+
+    /**
+     * gets a command (first value in arguments)
+     *
+     * @param legalValues
+     * @return command
+     * @throws UsageException
+     */
+    public String getCommand(String... legalValues) throws UsageException {
+        usage.add("\tcommand {" + Basic.toString(legalValues, "|") + "}");
+
+        final String command;
+        if (!isDoHelp()) {
+            if (arguments.size() == 0)
+                throw new UsageException("Command expected, must be one of: " + Basic.toString(legalValues, ", "));
+            command = arguments.remove(0);
+            if (!Basic.contains(legalValues, command))
+                throw new UsageException("Command: " + command + ": must be one of: " + Basic.toString(legalValues, ", "));
+
+            if (verbose)
+                System.err.println("\tcommand: " + command);
+            return command;
+        } else
+            return "";
     }
 
     public boolean getOption(String shortKey, String longKey, String description, boolean defaultValue) throws UsageException {
@@ -509,7 +533,7 @@ public class ArgsOptions {
         String result = defaultValue;
 
         boolean found = false;
-        Iterator<String> it = arguments.iterator();
+        final Iterator<String> it = arguments.iterator();
         while (it.hasNext()) {
             String arg = it.next();
             if (arg.equals(shortKey) || arg.equals(longKey)) {

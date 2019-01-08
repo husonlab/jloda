@@ -46,5 +46,4 @@ public interface ICloseableIterator<T> extends Iterator<T>, Closeable {
      * @return current progress value
      */
     long getProgress();
-
 }

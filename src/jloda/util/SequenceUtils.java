@@ -466,6 +466,20 @@ public class SequenceUtils {
         return result;
     }
 
+    /**
+     * gets the reverse complement
+     *
+     * @param sequence
+     * @return reverse complement
+     */
+    public static byte[] getReverseComplement(byte[] sequence) {
+        byte[] result = new byte[sequence.length];
+        for (int i = 0; i < sequence.length; i++) {
+            result[i] = getComplement(sequence[sequence.length - 1 - i]);
+        }
+        return result;
+    }
+
 
     /**
      * translate a DNA sequence into protein
