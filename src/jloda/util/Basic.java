@@ -4374,6 +4374,22 @@ public class Basic {
     }
 
 
+    /**
+     * gets the last index of ch, or -1
+     *
+     * @param bytes
+     * @param offset
+     * @param len
+     * @param ch
+     * @return index or -1
+     */
+    public static int lastIndexOf(byte[] bytes, int offset, int len, char ch) {
+        while (--len >= 0) {
+            if (bytes[offset + len] == ch)
+                return offset + len;
+        }
+        return -1;
+    }
 }
 
 /**
