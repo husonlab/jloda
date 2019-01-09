@@ -189,7 +189,7 @@ public class ProgressPercentage implements ProgressListener {
     public void setUserCancelled(boolean userCancelled) {
     }
 
-    public void incrementProgress() {
+    public synchronized void incrementProgress() {
         setProgress(steps + 1);
     }
 
