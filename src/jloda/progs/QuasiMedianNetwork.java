@@ -1,6 +1,6 @@
 /**
  * QuasiMedianNetwork.java 
- * Copyright (C) 2018 Daniel H. Huson
+ * Copyright (C) 2019 Daniel H. Huson
  *
  * (Some files contain contributions from other authors, who are then mentioned separately.)
  *
@@ -35,8 +35,8 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.util.*;
 import java.util.List;
+import java.util.*;
 
 /**
  * compute the quasi median closure of a set of sequences

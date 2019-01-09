@@ -1,6 +1,6 @@
 /**
  * GraphView.java 
- * Copyright (C) 2018 Daniel H. Huson
+ * Copyright (C) 2019 Daniel H. Huson
  *
  * (Some files contain contributions from other authors, who are then mentioned separately.)
  *
@@ -45,8 +45,8 @@ import java.awt.print.PrinterException;
 import java.io.IOException;
 import java.io.Reader;
 import java.io.Writer;
-import java.util.*;
 import java.util.List;
+import java.util.*;
 
 /**
  * This class implements the visualization of a graph as a Canvas.

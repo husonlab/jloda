@@ -1,6 +1,6 @@
 /**
  * FruchtermanReingoldLayout.java
- *  Copyright (C) 2018 Mathieu Jacomy
+ *  Copyright (C) 2019 Mathieu Jacomy
  * Original implementation in Gephi by Mathieu Jacomy
  */
 package jloda.graph;
