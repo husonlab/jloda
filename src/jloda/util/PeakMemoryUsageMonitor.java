@@ -62,6 +62,14 @@ public class PeakMemoryUsageMonitor {
     }
 
     /**
+     * report the recorded memory and time
+     */
+    public static void report() {
+        System.err.println("Total time:  " + PeakMemoryUsageMonitor.getSecondsSinceStartString());
+        System.err.println("Peak memory: " + PeakMemoryUsageMonitor.getPeakUsageString());
+    }
+
+    /**
      * get peak usage string
      *
      * @return peak usage
