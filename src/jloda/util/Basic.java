@@ -4390,6 +4390,18 @@ public class Basic {
         }
         return -1;
     }
+
+    public static int skipNonWhiteSpace(String text, int pos) {
+        while (pos < text.length() && !Character.isWhitespace(text.charAt(pos)))
+            pos++;
+        return pos;
+    }
+
+    public static int skipWhiteSpace(String text, int pos) {
+        while (pos < text.length() && Character.isWhitespace(text.charAt(pos)))
+            pos++;
+        return pos;
+    }
 }
 
 /**
