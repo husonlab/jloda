@@ -47,19 +47,20 @@ public class ChooseColorDialog {
 
         final Single<Color> result = new Single<>();
 
-        ActionListener okListener = new ActionListener() {
+        final ActionListener okListener = new ActionListener() {
             public void actionPerformed(ActionEvent actionEvent) {
                 result.set(colorChooser.getColor());
             }
         };
 
-        ActionListener cancelListener = new ActionListener() {
+        final ActionListener cancelListener = new ActionListener() {
             public void actionPerformed(ActionEvent actionEvent) {
                 result.set(null);
             }
         };
 
-        JDialog chooser = JColorChooser.createDialog(parent, title, true, colorChooser, okListener, cancelListener);
+        final JDialog chooser = JColorChooser.createDialog(parent, title, true, colorChooser, okListener, cancelListener);
+
         chooser.setVisible(true);
 
         return result.get();
