@@ -153,7 +153,10 @@ public class Statistics {
      * @return string
      */
     public String toString() {
-        return "n=" + count + " mean=" + (float) mean + " stdDev=" + (float) stdDev + " min=" + (float) min + " max=" + (float) max;
+        return String.format("n=%d mean=%s stdDev=%s min=%s max=%s", count, Basic.removeTrailingZerosAfterDot("" + (float) mean),
+                Basic.removeTrailingZerosAfterDot("" + (float) stdDev),
+                Basic.removeTrailingZerosAfterDot("" + (float) min),
+                Basic.removeTrailingZerosAfterDot("" + (float) max));
     }
 
     public double getMean() {
