@@ -4402,6 +4402,13 @@ public class Basic {
             pos++;
         return pos;
     }
+
+    public static String removeTrailingZerosAfterDot(String text) {
+        if (text.contains("."))
+            return text.replaceAll("([0-9])0*$", "$1").replaceAll("\\.0$", "");
+        else
+            return text;
+    }
 }
 
 /**
