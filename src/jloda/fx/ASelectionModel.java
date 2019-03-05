@@ -20,7 +20,9 @@
 package jloda.fx;
 
 
+import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.ReadOnlyBooleanProperty;
+import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.property.SimpleSetProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -48,6 +50,9 @@ public class ASelectionModel<T> extends MultipleSelectionModel<T> {
 
     private final ReadOnlyBooleanProperty empty;
 
+    private final BooleanProperty canSelectAll = new SimpleBooleanProperty(false);
+    private final BooleanProperty canSelectNone = new SimpleBooleanProperty(false);
+
     /**
      * Constructor
      *
@@ -73,6 +78,9 @@ public class ASelectionModel<T> extends MultipleSelectionModel<T> {
                         selectedIndicesAsList.remove(c.getElementRemoved());
                         selectedItems.remove(ASelectionModel.this.getItems()[c.getElementRemoved()]);
                     }
+                    canSelectAll.set(ASelectionModel.this.items.length > 0 && selectedItems.size() < ASelectionModel.this.items.length);
+                    canSelectNone.set(ASelectionModel.this.items.length > 0 && selectedItems.size() > 0);
+
                 }
             });
             // wrap a unmodifiable observable list around the observable arrays lists
@@ -263,5 +271,21 @@ public class ASelectionModel<T> extends MultipleSelectionModel<T> {
      */
     public int getFocusIndex() {
         return focusIndex;
+    }
+
+    public boolean isCanSelectAll() {
+        return canSelectAll.get();
+    }
+
+    public ReadOnlyBooleanProperty canSelectAllProperty() {
+        return canSelectAll;
+    }
+
+    public boolean isCanSelectNone() {
+        return canSelectNone.get();
+    }
+
+    public ReadOnlyBooleanProperty canSelectNoneProperty() {
+        return canSelectNone;
     }
 }

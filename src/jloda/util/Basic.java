@@ -4184,7 +4184,7 @@ public class Basic {
         if (start == -1)
             return null;
         start += first.length();
-        while (start < text.length() && Character.isWhitespace(text.charAt(start)))
+        while (start < text.length() && (Character.isWhitespace(text.charAt(start))))
             start++;
         int finish = start;
         while (finish < text.length() && !Character.isWhitespace(text.charAt(finish)))
@@ -4193,8 +4193,8 @@ public class Basic {
             return text.substring(start, finish);
         else
             return text.substring(start);
-
     }
+
 
     /**
      * gets everything after the first word
@@ -4212,7 +4212,27 @@ public class Basic {
             start++;
         int finish = start;
         return text.substring(start);
+    }
 
+    /**
+     * gets the word between left and right, or left and then end
+     *
+     * @param left
+     * @param right
+     * @param text
+     * @return word or null
+     */
+    public static String getWordBetween(String left, String right, String text) {
+        int a = text.indexOf(left);
+        if (a == -1)
+            return null;
+        else
+            a += left.length();
+        final int b = text.indexOf(right, a);
+        if (b == -1)
+            return text.substring(a);
+        else
+            return text.substring(a, b);
     }
 
     /**
