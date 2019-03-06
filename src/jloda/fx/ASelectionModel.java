@@ -223,7 +223,9 @@ public class ASelectionModel<T> extends MultipleSelectionModel<T> {
      */
     public void setItems(T... items) {
         clearSelection();
-        this.items = Arrays.copyOf(items, items.length);  // use copy for safety
+        this.items = Arrays.copyOf(items, items.length);// use copy for safety
+        canSelectAll.set(true);
+        canSelectNone.set(false);
     }
 
     /**
@@ -234,6 +236,8 @@ public class ASelectionModel<T> extends MultipleSelectionModel<T> {
     public void setItems(Collection<T> items) {
         clearSelection();
         this.items = Basic.toArray(items);
+        canSelectAll.set(true);
+        canSelectNone.set(false);
     }
 
     /**
