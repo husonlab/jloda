@@ -48,14 +48,15 @@ public class DisjointIntervalSet<T> {
      * @return true, if overlaps
      */
     public boolean overlaps(int start, int end) {
-        final Map.Entry<Integer, Interval<T>> beforeStart = map.floorEntry(start);
+        if (start > end) {
+            int tmp = start;
+            start = end;
+            end = tmp;
+        }
         final Map.Entry<Integer, Interval<T>> beforeEnd = map.floorEntry(end);
 
-        if (beforeStart == null) {
-            return beforeEnd == null;
-        } else {
-            return beforeEnd == beforeStart && beforeStart.getValue().getEnd() < start;
-        }
+        return beforeEnd != null && beforeEnd.getValue().getEnd() >= start;
+
     }
 
     /**

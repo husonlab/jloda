@@ -5,6 +5,9 @@
  */
 package jloda.graph;
 
+import jloda.util.CanceledException;
+import jloda.util.ProgressListener;
+
 import java.awt.geom.Point2D;
 import java.util.BitSet;
 import java.util.Stack;
@@ -38,9 +41,30 @@ public class FruchtermanReingoldLayout {
      * constructor. Do not change graph after calling the constructor
      *
      * @param graph
+     */
+    public FruchtermanReingoldLayout(Graph graph) {
+        this(graph, null, null);
+    }
+
+    /**
+     * constructor. Do not change graph after calling the constructor
+     *
+     * @param graph
      * @param fixedNodes nodes not to be moved
      */
     public FruchtermanReingoldLayout(Graph graph, NodeSet fixedNodes) {
+        this(graph, fixedNodes, null);
+    }
+
+
+    /**
+     * constructor. Do not change graph after calling the constructor
+     *
+     * @param graph
+     * @param fixedNodes nodes not to be moved
+     * @param node2start starting coordinates
+     */
+    public FruchtermanReingoldLayout(Graph graph, NodeSet fixedNodes, NodeArray<float[]> node2start) {
         this.graph = graph;
         nodes = graph.getNodes().toArray();
         edges = new int[2][graph.getNumberOfEdges()];
@@ -48,13 +72,13 @@ public class FruchtermanReingoldLayout {
         forceDelta = new float[2][nodes.length];
         fixed = new BitSet();
 
-        initialize(fixedNodes);
+        initialize(fixedNodes, node2start);
     }
 
     /**
      * initialize
      */
-    private void initialize(NodeSet fixedNodes) {
+    private void initialize(NodeSet fixedNodes, NodeArray<float[]> node2start) {
         NodeArray<Integer> node2id = new NodeArray<>(graph);
         for (int v = 0; v < nodes.length; v++) {
             node2id.set(nodes[v], v);
@@ -69,27 +93,35 @@ public class FruchtermanReingoldLayout {
         }
 
         if (graph.getNumberOfNodes() > 0) {
-            NodeSet seen = new NodeSet(graph);
-            Stack<Node> stack = new Stack<>();
-            int count = 0;
-            for (Node v = graph.getFirstNode(); v != null; v = v.getNext()) {
-                if (!seen.contains(v)) {
-                    seen.add(v);
-                    stack.push(v);
-                    while (stack.size() > 0) {
-                        Node w = stack.pop();
-                        int id = node2id.get(w);
-                        coordinates[0][id] = (float) (100 * Math.sin(2 * Math.PI * count / nodes.length));
-                        coordinates[1][id] = (float) (100 * Math.cos(2 * Math.PI * count / nodes.length));
-                        count++;
-                        for (Edge e = w.getFirstAdjacentEdge(); e != null; e = w.getNextAdjacentEdge(e)) {
-                            Node u = e.getOpposite(w);
-                            if (!seen.contains(u)) {
-                                seen.add(u);
-                                stack.push(u);
+            if(node2start != null) {
+                for (Object obj : graph.nodes()) {
+                    final Node v = (Node) obj;
+                    final int id = node2id.get(v);
+                    coordinates[0][id] = 10 * node2start.get(v)[0];
+                    coordinates[1][id] = 10 * node2start.get(v)[1];
+                }
+            } else {
+                final NodeSet seen = new NodeSet(graph);
+                final Stack<Node> stack = new Stack<>();
+                int count = 0;
+                for (Node v = graph.getFirstNode(); v != null; v = v.getNext()) {
+                    if (!seen.contains(v)) {
+                        seen.add(v);
+                        stack.push(v);
+                        while (stack.size() > 0) {
+                            final Node w = stack.pop();
+                            final int id = node2id.get(w);
+                            coordinates[0][id] = (float) (100 * Math.sin(2 * Math.PI * count / nodes.length));
+                            coordinates[1][id] = (float) (100 * Math.cos(2 * Math.PI * count / nodes.length));
+                            count++;
+                            for (Edge e = w.getFirstAdjacentEdge(); e != null; e = w.getNextAdjacentEdge(e)) {
+                                final Node u = e.getOpposite(w);
+                                if (!seen.contains(u)) {
+                                    seen.add(u);
+                                    stack.push(u);
+                                }
                             }
                         }
-
                     }
                 }
             }
@@ -109,13 +141,31 @@ public class FruchtermanReingoldLayout {
     public void apply(int numberOfIterations, NodeArray<Point2D> result) {
 
         for (int i = 0; i < numberOfIterations; i++) {
-            speed = 100 * (1 - i / numberOfIterations); // linear cooling
+            speed = 100 * (1 - (double) i / numberOfIterations); // linear cooling
             iterate();
         }
 
         for (int v = 0; v < nodes.length; v++) {
             result.set(nodes[v], new Point2D.Float(coordinates[0][v], coordinates[1][v]));
+        }
+    }
 
+    /**
+     * apply the algorithm
+     *
+     * @param numberOfIterations
+     * @param result
+     */
+    public void applyFX(int numberOfIterations, NodeArray<javafx.geometry.Point2D> result, ProgressListener progress) throws CanceledException {
+
+        for (int i = 0; i < numberOfIterations; i++) {
+            speed = 100 * (1 - (double) i / numberOfIterations); // linear cooling
+            iterate();
+            progress.checkForCancel();
+        }
+
+        for (int v = 0; v < nodes.length; v++) {
+            result.set(nodes[v], new javafx.geometry.Point2D(coordinates[0][v], coordinates[1][v]));
         }
     }
 

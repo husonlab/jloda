@@ -45,7 +45,7 @@ import java.util.*;
  * Daniel Huson, 2002
  * <p/>
  */
-public class Graph<V, E> extends GraphBase {
+public class Graph extends GraphBase {
     private Node firstNode;
     private Node lastNode;
     private int numberNodes;
@@ -894,10 +894,9 @@ public class Graph<V, E> extends GraphBase {
      * @param v node
      * @return the info
      */
-    @SuppressWarnings("unchecked")
-    public V getInfo(Node v) {
+    public Object getInfo(Node v) {
         checkOwner(v);
-        return (V) v.getInfo();
+        return v.getInfo();
     }
 
     /**
@@ -906,7 +905,7 @@ public class Graph<V, E> extends GraphBase {
      * @param v   node
      * @param obj the info object
      */
-    public void setInfo(Node v, V obj) {
+    public void setInfo(Node v, Object obj) {
         checkOwner(v);
         v.setInfo(obj);
     }
@@ -917,10 +916,9 @@ public class Graph<V, E> extends GraphBase {
      * @param e edge
      * @return the info
      */
-    @SuppressWarnings("unchecked")
-    public E getInfo(Edge e) {
+    public Object getInfo(Edge e) {
         checkOwner(e);
-        return (E) e.getInfo();
+        return e.getInfo();
     }
 
     /**
@@ -929,7 +927,7 @@ public class Graph<V, E> extends GraphBase {
      * @param e   edge
      * @param obj the info object
      */
-    public void setInfo(Edge e, E obj) {
+    public void setInfo(Edge e, Object obj) {
         checkOwner(e);
         e.setInfo(obj);
     }
@@ -1065,7 +1063,7 @@ public class Graph<V, E> extends GraphBase {
         for (Node v = src.getFirstNode(); v != null; v = src.getNextNode(v)) {
             Node w = newNode();
             w.setId(v.getId());
-            setInfo(w, (V) src.getInfo(v));
+            setInfo(w, src.getInfo(v));
             oldNode2newNode.set(v, w);
         }
         idsNodes = src.idsNodes;
@@ -1082,7 +1080,7 @@ public class Graph<V, E> extends GraphBase {
             }
             if (src.isSpecial(e))
                 setSpecial(f, true);
-            setInfo(f, (E) src.getInfo(e));
+            setInfo(f, src.getInfo(e));
             oldEdge2newEdge.set(e, f);
         }
         idsEdges = src.idsEdges;
@@ -1092,6 +1090,60 @@ public class Graph<V, E> extends GraphBase {
             Node w = oldNode2newNode.get(v);
             List<Edge> newOrder = new LinkedList<>();
             for (Edge e = v.getFirstAdjacentEdge(); e != null; e = v.getNextAdjacentEdge(e)) {
+                newOrder.add(oldEdge2newEdge.get(e));
+            }
+            w.rearrangeAdjacentEdges(newOrder);
+        }
+    }
+
+    /**
+     * Copies one graph onto another. Maintains the ids of nodes and edges
+     *
+     * @param src             the source graph
+     * @param srcNodes        the nodes of the source graph to be copied
+     * @param oldNode2newNode if not null, returns map: old node id onto new node id
+     * @param oldEdge2newEdge if not null, returns map: old edge id onto new edge id
+     */
+    public void copy(Graph src, Set<Node> srcNodes, Map<Node, Node> oldNode2newNode, HashMap<Edge, Edge> oldEdge2newEdge) {
+        clear();
+
+        if (oldNode2newNode == null)
+            oldNode2newNode = new HashMap<>();
+        if (oldEdge2newEdge == null)
+            oldEdge2newEdge = new HashMap<>();
+
+        final Set<Edge> edges = new HashSet<>();// don't used an edge set here in multi-thread use
+
+        for (Node v : srcNodes) {
+            Node w = newNode();
+            w.setId(v.getId());
+            setInfo(w, src.getInfo(v));
+            oldNode2newNode.put(v, w);
+            for (Edge e : v.outEdges())
+                edges.add(e);
+        }
+
+        for (Edge e : edges) {
+            final Node p = oldNode2newNode.get(e.getSource());
+            final Node q = oldNode2newNode.get(e.getTarget());
+            Edge f = null;
+            try {
+                f = newEdge(p, q);
+                f.setId(e.getId());
+            } catch (IllegalSelfEdgeException e1) {
+                Basic.caught(e1);
+            }
+            if (src.isSpecial(e))
+                setSpecial(f, true);
+            setInfo(f, src.getInfo(e));
+            oldEdge2newEdge.put(e, f);
+        }
+
+        // change all adjacencies to reflect order in old graph:
+        for (Node v : srcNodes) {
+            final Node w = oldNode2newNode.get(v);
+            final List<Edge> newOrder = new LinkedList<>();
+            for (Edge e : v.adjacentEdges()) {
                 newOrder.add(oldEdge2newEdge.get(e));
             }
             w.rearrangeAdjacentEdges(newOrder);
@@ -1127,7 +1179,7 @@ public class Graph<V, E> extends GraphBase {
      * @param array
      */
     void registerNodeAssociation(NodeAssociation array) {
-        {
+        synchronized (nodeAssociations) {
             final List<WeakReference> toDelete = new LinkedList<>();
             for (WeakReference<NodeAssociation> ref : nodeAssociations) {
                 if (ref.get() == null)
@@ -1135,8 +1187,8 @@ public class Graph<V, E> extends GraphBase {
             }
             if (toDelete.size() > 0)
                 nodeAssociations.removeAll(toDelete);
+            nodeAssociations.add(new WeakReference<>(array));
         }
-        nodeAssociations.add(new WeakReference<>(array));
     }
 
     /**
@@ -1146,17 +1198,19 @@ public class Graph<V, E> extends GraphBase {
      */
     void deleteNodeFromArrays(Node v) {
         checkOwner(v);
-        List<WeakReference> toDelete = new LinkedList<>();
-        for (WeakReference<NodeAssociation> ref : nodeAssociations) {
-            NodeAssociation<?> as = ref.get();
-            if (as == null)
-                toDelete.add(ref); // reference is dead
-            else {
-                as.set(v, null);
+        synchronized (nodeAssociations) {
+            List<WeakReference> toDelete = new LinkedList<>();
+            for (WeakReference<NodeAssociation> ref : nodeAssociations) {
+                NodeAssociation<?> as = ref.get();
+                if (as == null)
+                    toDelete.add(ref); // reference is dead
+                else {
+                    as.set(v, null);
+                }
             }
-        }
-        for (WeakReference ref : toDelete) {
-            nodeAssociations.remove(ref);
+            for (WeakReference ref : toDelete) {
+                nodeAssociations.remove(ref);
+            }
         }
     }
 
@@ -1166,7 +1220,7 @@ public class Graph<V, E> extends GraphBase {
      * @param set
      */
     void registerNodeSet(NodeSet set) {
-        {
+        synchronized (nodeSets) {
             final List<WeakReference> toDelete = new LinkedList<>();
             for (WeakReference<NodeSet> ref : nodeSets) {
                 if (ref.get() == null)
@@ -1174,8 +1228,8 @@ public class Graph<V, E> extends GraphBase {
             }
             if (toDelete.size() > 0)
                 nodeSets.removeAll(toDelete);
+            nodeSets.add(new WeakReference<>(set));
         }
-        nodeSets.add(new WeakReference<>(set));
     }
 
     /**
@@ -1183,19 +1237,23 @@ public class Graph<V, E> extends GraphBase {
      *
      * @param v
      */
-    void deleteNodeFromSets(Node v) {
+    private void deleteNodeFromSets(Node v) {
         checkOwner(v);
-        List<WeakReference> toDelete = new LinkedList<>();
-        for (WeakReference<NodeSet> ref : nodeSets) {
-            NodeSet set = ref.get();
-            if (set == null)
-                toDelete.add(ref); // reference is dead
-            else {
-                set.remove(v);
+        synchronized (nodeSets) {
+            final List<WeakReference> toDelete = new LinkedList<>();
+            for (WeakReference<NodeSet> ref : nodeSets) {
+                if (ref != null) {
+                    final NodeSet set = ref.get();
+                    if (set == null)
+                        toDelete.add(ref); // reference is dead
+                    else {
+                        set.remove(v);
+                    }
+                }
             }
-        }
-        for (WeakReference ref : toDelete) {
-            nodeSets.remove(ref);
+            for (WeakReference ref : toDelete) {
+                nodeSets.remove(ref);
+            }
         }
     }
 
@@ -1205,7 +1263,7 @@ public class Graph<V, E> extends GraphBase {
      * @param array
      */
     void registerEdgeAssociation(EdgeAssociation array) {
-
+        synchronized (edgeAssociations)
         {
             final List<WeakReference> toDelete = new LinkedList<>();
             for (WeakReference<EdgeAssociation> ref : edgeAssociations) {
@@ -1225,17 +1283,19 @@ public class Graph<V, E> extends GraphBase {
      */
     void deleteEdgeFromArrays(Edge edge) {
         checkOwner(edge);
-        List<WeakReference> toDelete = new LinkedList<>();
-        for (WeakReference<EdgeAssociation> ref : edgeAssociations) {
-            EdgeAssociation<?> as = ref.get();
-            if (as == null)
-                toDelete.add(ref); // reference is dead
-            else {
-                as.set(edge, null);
+        synchronized (edgeAssociations) {
+            List<WeakReference> toDelete = new LinkedList<>();
+            for (WeakReference<EdgeAssociation> ref : edgeAssociations) {
+                EdgeAssociation<?> as = ref.get();
+                if (as == null)
+                    toDelete.add(ref); // reference is dead
+                else {
+                    as.set(edge, null);
+                }
             }
-        }
-        for (WeakReference ref : toDelete) {
-            edgeAssociations.remove(ref);
+            for (WeakReference ref : toDelete) {
+                edgeAssociations.remove(ref);
+            }
         }
     }
 
@@ -1245,7 +1305,7 @@ public class Graph<V, E> extends GraphBase {
      * @param set
      */
     void registerEdgeSet(EdgeSet set) {
-        {
+        synchronized (edgeSets) {
             final List<WeakReference> toDelete = new LinkedList<>();
             for (WeakReference<EdgeSet> ref : edgeSets) {
                 if (ref.get() == null)
@@ -1253,28 +1313,30 @@ public class Graph<V, E> extends GraphBase {
             }
             if (toDelete.size() > 0)
                 edgeSets.removeAll(toDelete);
+            edgeSets.add(new WeakReference<>(set));
         }
-        edgeSets.add(new WeakReference<>(set));
     }
 
     /**
      * called from deleteEdge to clean all array entries for the edge
      *
-     * @param v
+     * @param e
      */
-    void deleteEdgeFromSets(Edge v) {
-        checkOwner(v);
-        List<WeakReference> toDelete = new LinkedList<>();
-        for (WeakReference<EdgeSet> ref : edgeSets) {
-            EdgeSet set = ref.get();
-            if (set == null)
-                toDelete.add(ref); // reference is dead
-            else {
-                set.remove(v);
+    void deleteEdgeFromSets(Edge e) {
+        checkOwner(e);
+        synchronized (edgeSets) {
+            List<WeakReference> toDelete = new LinkedList<>();
+            for (WeakReference<EdgeSet> ref : edgeSets) {
+                EdgeSet set = ref.get();
+                if (set == null)
+                    toDelete.add(ref); // reference is dead
+                else {
+                    set.remove(e);
+                }
             }
-        }
-        for (WeakReference ref : toDelete) {
-            edgeSets.remove(ref);
+            for (WeakReference ref : toDelete) {
+                edgeSets.remove(ref);
+            }
         }
     }
 
@@ -1548,7 +1610,7 @@ public class Graph<V, E> extends GraphBase {
    }*/
 
     /**
-     * gets all nodes
+     * gets all nodes as a new set
      *
      * @return node set of nodes
      */
@@ -1591,9 +1653,8 @@ public class Graph<V, E> extends GraphBase {
         };
     }
 
-
     /**
-     * gets all edges
+     * gets all edges as a new set
      *
      * @return edge set of edges
      */

@@ -26,6 +26,9 @@
 package jloda.graph;
 
 
+import java.util.Iterator;
+import java.util.NoSuchElementException;
+
 /**
  * Node array
  * Daniel Huson, 2003
@@ -199,6 +202,54 @@ public class NodeArray<T> extends GraphBase implements NodeAssociation<T> {
             result.set(v, get(v));
         }
         return result;
+    }
+
+    /**
+     * get an iterator over all non-null values
+     *
+     * @return iterator
+     */
+    public Iterable<T> values() {
+        return new Iterable<T>() {
+            @Override
+            public Iterator<T> iterator() {
+                return new Iterator<T>() {
+                    private Node v = getOwner().getFirstNode();
+
+                    {
+                        while (v != null) {
+                            if (data[v.getId()] != null)
+                                break;
+                            v = v.getNext();
+                        }
+                    }
+
+                    @Override
+                    public boolean hasNext() {
+                        return v != null;
+                    }
+
+                    @Override
+                    public T next() {
+                        if (v == null)
+                            throw new NoSuchElementException();
+                        T result = data[v.getId()];
+                        v = v.getNext();
+                        while (v != null) {
+                            if (data[v.getId()] != null)
+                                break;
+                            v = v.getNext();
+                        }
+                        return result;
+                    }
+
+                    @Override
+                    public void remove() {
+
+                    }
+                };
+            }
+        };
     }
 }
 

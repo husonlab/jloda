@@ -48,10 +48,7 @@ public class Node extends NodeEdge implements Comparable {
      * @param G
      */
     public Node(Graph G) {
-        super();
-        G.registerNewNode(null, this);
-        G.fireNewNode(this);
-        G.fireGraphHasChanged();
+        this(G, null);
     }
 
     /**
