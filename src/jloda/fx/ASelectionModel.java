@@ -228,6 +228,17 @@ public class ASelectionModel<T> extends MultipleSelectionModel<T> {
         update(Update.Add, toSelect);
     }
 
+    public void clearSelection(java.util.Collection<T> collection) {
+        final Set<T> set = (collection instanceof Set ? (Set) collection : new HashSet<T>(collection));
+        final BitSet toClear = new BitSet();
+        for (int i = 0; i < items.length; i++) {
+            if (set.contains(items[i])) {
+                toClear.set(i);
+            }
+        }
+        update(Update.Remove, toClear);
+    }
+
     public void clearSelection(T item) {
         for (int i = 0; i < items.length; i++) {
             if (items[i].equals(item)) {
