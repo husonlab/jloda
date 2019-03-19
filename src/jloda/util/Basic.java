@@ -1349,6 +1349,16 @@ public class Basic {
     }
 
     /**
+     * returns true, if string can be parsed as a boolean
+     *
+     * @param next
+     * @return true, if boolean
+     */
+    public static boolean isBoolean(String next) {
+        return next.equalsIgnoreCase("true") || next.equalsIgnoreCase("false");
+    }
+
+    /**
      * returns true, if string can be parsed as long
      *
      * @param next
