@@ -28,12 +28,12 @@ package jloda.progs;
 import jloda.graph.Edge;
 import jloda.graph.Node;
 import jloda.graph.NodeIntegerArray;
-import jloda.graphview.GraphViewListener;
-import jloda.phylo.PhyloGraph;
-import jloda.phylo.PhyloGraphView;
+import jloda.graph.NotOwnerException;
+import jloda.phylo.PhyloSplitsGraph;
+import jloda.swing.graphview.GraphViewListener;
+import jloda.swing.graphview.PhyloGraphView;
+import jloda.swing.util.CommandLineOptions;
 import jloda.util.Basic;
-import jloda.util.CommandLineOptions;
-import jloda.util.NotOwnerException;
 import jloda.util.PhylipUtils;
 
 import javax.swing.*;
@@ -49,7 +49,7 @@ import java.util.Comparator;
 public class CoverDigraph {
     private int ntax;
     private GeneOccurrences[] genes;
-    private PhyloGraph graph;
+    private PhyloSplitsGraph graph;
     private String[] tax2name;
 
     /**
@@ -126,7 +126,7 @@ public class CoverDigraph {
     public void computeGraph() throws NotOwnerException {
         /* order sets of genes by their size: */
         Arrays.sort(genes, new BitSetComparator());
-        graph = new PhyloGraph();
+        graph = new PhyloSplitsGraph();
         Node[] gene2node = new Node[genes.length];
         NodeIntegerArray node2covered = new NodeIntegerArray(graph);
 

@@ -1,40 +1,35 @@
 /**
- * Node.java 
+ * Node.java
  * Copyright (C) 2019 Daniel H. Huson
- *
+ * <p>
  * (Some files contain contributions from other authors, who are then mentioned separately.)
- *
+ * <p>
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
- *
+ * <p>
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
- *
+ * <p>
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
-*/
-/**
- * @version $Id: Node.java,v 1.20 2009-04-27 07:20:20 huson Exp $
- *
- * @author Daniel Huson
- *
  */
 package jloda.graph;
 
-import jloda.util.IteratorAdapter;
-import jloda.util.NotOwnerException;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Iterator;
+import java.util.List;
 
 /**
  * Node class used by Graph class
  * Daniel Huson, 2003
  */
-public class Node extends NodeEdge implements Comparable {
+public class Node extends NodeEdge implements Comparable<Node> {
     private Edge firstAdjacentEdge;
     private Edge lastAdjacentEdge;
     private int inDegree = 0;
@@ -48,7 +43,10 @@ public class Node extends NodeEdge implements Comparable {
      * @param G
      */
     public Node(Graph G) {
-        this(G, null);
+        super();
+        G.registerNewNode(null, this);
+        G.fireNewNode(this);
+        G.fireGraphHasChanged();
     }
 
     /**
@@ -147,7 +145,7 @@ public class Node extends NodeEdge implements Comparable {
      * reverse the order of the adjacent edges
      */
     public void reverseOrderAdjacentEdges() {
-        List<Edge> order = new LinkedList<>();
+        List<Edge> order = new ArrayList<>();
         for (Edge e = getLastAdjacentEdge(); e != null; e = getPrevAdjacentEdge(e))
             order.add(e);
         rearrangeAdjacentEdges(order);
@@ -157,7 +155,7 @@ public class Node extends NodeEdge implements Comparable {
      * rotate the order of the adjacent edges
      */
     public void rotateOrderAdjacentEdges() {
-        List<Edge> order = new LinkedList<>();
+        List<Edge> order = new ArrayList<>();
         for (Edge e = getFirstAdjacentEdge(); e != null; e = getNextAdjacentEdge(e))
             order.add(e);
         Edge e = order.remove(0);
@@ -362,7 +360,7 @@ public class Node extends NodeEdge implements Comparable {
      * @param w
      * @return common edge between this node and w, or null
      */
-    public Edge getCommonEdge(Node w) throws NotOwnerException {
+    public Edge getCommonEdge(Node w) {
         checkOwner(w);
         for (Edge e = getFirstAdjacentEdge(); e != null; e = getNextAdjacentEdge(e)) {
             if (getOpposite(e) == w)
@@ -377,9 +375,9 @@ public class Node extends NodeEdge implements Comparable {
      * @param w
      * @return common edge from this node to w, or null
      */
-    public Edge getEdgeTo(Node w) throws NotOwnerException {
+    public Edge getEdgeTo(Node w) {
         checkOwner(w);
-        for (Edge e = getFirstOutEdge(); e != null; e = getNextOutEdge(e)) {
+        for (Edge e : outEdges()) {
             if (getOpposite(e) == w)
                 return e;
         }
@@ -392,9 +390,9 @@ public class Node extends NodeEdge implements Comparable {
      * @param w
      * @return common edge from this node to w, or null
      */
-    public Edge getEdgeFrom(Node w) throws NotOwnerException {
+    public Edge getEdgeFrom(Node w) {
         checkOwner(w);
-        for (Edge e = getFirstInEdge(); e != null; e = getNextInEdge(e)) {
+        for (Edge e : inEdges()) {
             if (getOpposite(e) == w)
                 return e;
         }
@@ -407,10 +405,7 @@ public class Node extends NodeEdge implements Comparable {
      * @return next node
      */
     public Node getNext() {
-        Node v = (Node) next;
-        while (v != null && v.isHidden())
-            v = (Node) v.next;
-        return v;
+        return (Node) next;
     }
 
     /**
@@ -419,10 +414,7 @@ public class Node extends NodeEdge implements Comparable {
      * @return previous node
      */
     public Node getPrev() {
-        Node v = (Node) prev;
-        while (v != null && v.isHidden())
-            v = (Node) v.prev;
-        return v;
+        return (Node) prev;
     }
 
     /**
@@ -452,141 +444,6 @@ public class Node extends NodeEdge implements Comparable {
         return outDegree;
     }
 
-    /**
-     * get iterator over all adjacent nodes
-     *
-     * @return iterator over all adjacent nodes
-     */
-    public Iterator<Node> getAdjacentNodes() {
-        final Node v = this;
-        return new IteratorAdapter<Node>() {
-            private Edge e = v.getFirstAdjacentEdge();
-
-            protected Node findNext() throws NoSuchElementException {
-                if (e != null) {
-                    Node result;
-                    do {
-                        result = v.getOpposite(e);
-                        e = v.getNextAdjacentEdge(e);
-                    }
-                    while (result != null && result.isHidden());
-                    return result;
-                } else {
-                    throw new NoSuchElementException("at end");
-                }
-            }
-        };
-    }
-
-    /**
-     * get iterator over all adjacent edges
-     *
-     * @return iterator over all adjacent edges
-     */
-    public Iterator<Edge> getAdjacentEdges() {
-        return new IteratorAdapter<Edge>() {
-            final Node v = Node.this;
-            private Edge e = v.getFirstAdjacentEdge();
-
-            protected Edge findNext() throws NoSuchElementException {
-                if (e != null) {
-                    final Edge result = e;
-                    e = v.getNextAdjacentEdge(e);
-                    return result;
-                } else {
-                    throw new NoSuchElementException("at end");
-                }
-            }
-        };
-    }
-
-    /**
-     * get iterator over all in edges
-     *
-     * @return iterator over all in edges
-     */
-    public Iterator<Edge> getInEdges() {
-        return new IteratorAdapter<Edge>() {
-            final Node v = Node.this;
-            private Edge e = v.getFirstAdjacentEdge();
-
-            protected Edge findNext() throws NoSuchElementException {
-                while (e != null && e.getTarget() != v) {
-                    e = v.getNextAdjacentEdge(e);
-                }
-                if (e != null) {
-                    final Edge result = e;
-                    e = v.getNextAdjacentEdge(e);
-                    return result;
-                } else {
-                    throw new NoSuchElementException("at end");
-                }
-            }
-        };
-    }
-
-    public Iterator<Edge> getOutEdges() {
-        return new IteratorAdapter<Edge>() {
-            final Node v = Node.this;
-            private Edge e = v.getFirstAdjacentEdge();
-
-            protected Edge findNext() throws NoSuchElementException {
-                while (e != null && e.getSource() != v) {
-                    e = v.getNextAdjacentEdge(e);
-                }
-                if (e != null) {
-                    final Edge result = e;
-                    e = v.getNextAdjacentEdge(e);
-                    return result;
-                } else {
-                    throw new NoSuchElementException("at end");
-                }
-            }
-        };
-    }
-
-    /**
-     * get iterator over all out edges
-     *
-     * @return iterator over all out edges
-     */
-    public Iterable<Edge> outEdges() {
-        return new Iterable<Edge>() {
-            @Override
-            public Iterator<Edge> iterator() {
-                return getOutEdges();
-            }
-        };
-    }
-
-
-    /**
-     * get iterator over all in edges
-     *
-     * @return iterator over all in edges
-     */
-    public Iterable<Edge> inEdges() {
-        return new Iterable<Edge>() {
-            @Override
-            public Iterator<Edge> iterator() {
-                return getInEdges();
-            }
-        };
-    }
-
-    /**
-     * get iterator over all  edges
-     *
-     * @return iterator over all in edges
-     */
-    public Iterable<Edge> adjacentEdges() {
-        return new Iterable<Edge>() {
-            @Override
-            public Iterator<Edge> iterator() {
-                return getAdjacentEdges();
-            }
-        };
-    }
 
     /**
      * get a directed edge from this node to w, or null
@@ -611,8 +468,8 @@ public class Node extends NodeEdge implements Comparable {
      */
     public boolean isAdjacent(Node w) throws NotOwnerException {
         checkOwner(w);
-        for (Iterator<Node> it = getAdjacentNodes(); it.hasNext(); ) {
-            if (it.next() == w)
+        for (Node v : adjacentNodes()) {
+            if (v == w)
                 return true;
         }
         return false;
@@ -621,18 +478,12 @@ public class Node extends NodeEdge implements Comparable {
     /**
      * compares with another node of the same graph
      *
-     * @param o
+     * @param v
      * @return -1, 1 or 0
      */
-    public int compareTo(Object o) {
-        final Node v = (Node) o;
+    public int compareTo(Node v) {
         checkOwner(v);
-        if (this.getId() < v.getId())
-            return -1;
-        else if (this.getId() > v.getId())
-            return 1;
-        else
-            return 0;
+        return Integer.compare(this.getId(), v.getId());
     }
 
     void setFirstAdjacentEdge(Edge e) {
@@ -667,6 +518,122 @@ public class Node extends NodeEdge implements Comparable {
         this.data = data;
     }
 
+    public Iterable<Edge> outEdges() {
+        return () -> new Iterator<Edge>() {
+            Edge e = getFirstOutEdge();
+
+            @Override
+            public boolean hasNext() {
+                return e != null;
+            }
+
+            @Override
+            public Edge next() {
+                Edge result = e;
+                e = getNextOutEdge(e);
+                return result;
+            }
+        };
+    }
+
+    public Iterable<Edge> inEdges() {
+        return () -> new Iterator<Edge>() {
+            Edge e = getFirstInEdge();
+
+            @Override
+            public boolean hasNext() {
+                return e != null;
+            }
+
+            @Override
+            public Edge next() {
+                Edge result = e;
+                e = getNextInEdge(e);
+                return result;
+            }
+        };
+    }
+
+    public Iterable<Edge> adjacentEdges() {
+        return () -> new Iterator<Edge>() {
+            Edge e = getFirstAdjacentEdge();
+
+            @Override
+            public boolean hasNext() {
+                return e != null;
+            }
+
+            @Override
+            public Edge next() {
+                Edge result = e;
+                e = getNextAdjacentEdge(e);
+                return result;
+            }
+        };
+    }
+
+    public Iterable<Node> adjacentNodes() {
+        return () -> new Iterator<Node>() {
+            private Edge e = getFirstAdjacentEdge();
+
+            @Override
+            public boolean hasNext() {
+                return e != null;
+            }
+
+            @Override
+            public Node next() {
+                final Node result = e.getOpposite(Node.this);
+                e = getNextAdjacentEdge(e);
+                return result;
+            }
+        };
+    }
+
+    public Iterable<Node> children() {
+        return () -> new Iterator<Node>() {
+            private Edge e = getFirstOutEdge();
+
+            @Override
+            public boolean hasNext() {
+                return e != null;
+            }
+
+            @Override
+            public Node next() {
+                final Node result = e.getTarget();
+                e = getNextOutEdge(e);
+                return result;
+            }
+        };
+    }
+
+    public Iterable<Node> parents() {
+        return () -> new Iterator<Node>() {
+            private Edge e = getFirstInEdge();
+
+            @Override
+            public boolean hasNext() {
+                return e != null;
+            }
+
+            @Override
+            public Node next() {
+                final Node result = e.getSource();
+                e = getNextInEdge(e);
+                return result;
+            }
+        };
+    }
+
+    public boolean isLeaf() {
+        return outDegree == 0;
+    }
+
+    public void deleteAllAdjacentEdges() {
+        for (Edge e : adjacentEdges())
+            e.deleteEdge();
+    }
 }
 
 // EOF

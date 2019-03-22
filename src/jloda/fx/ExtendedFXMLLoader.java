@@ -28,7 +28,7 @@ import java.net.URL;
 
 /**
  * extended FXLoader
- * Created by huson on 12/23/16.
+ * Daniel Huson, 12/2016
  */
 public class ExtendedFXMLLoader<C> {
     private final FXMLLoader fxmlLoader;
@@ -37,26 +37,30 @@ public class ExtendedFXMLLoader<C> {
 
     /**
      * load the FXML from the fxml file associated with a class
-     * For example, if the path for clazz is splitstree5.gui.TaxaFilterView, parses the file splitstree5.gui.TaxaFilterView.fxml
+     * For example, if the path for clazz is splitstree5.gui.TaxaFilterView or splitstree5.gui.TaxaFilterViewController, parses the file splitstree5.gui.TaxaFilterView.fxml
      *
      * @param clazz
      * @throws IOException
      */
-    public ExtendedFXMLLoader(Class clazz) throws IOException {
-        fxmlLoader = new FXMLLoader();
-        String path = clazz.getCanonicalName().replaceAll("\\.", "/") + ".fxml";
-        final URL url = clazz.getClassLoader().getResource(path);
-        //System.err.println("path: " + path + " URL: " + url);
-        if (url == null)
-            throw new IOException("Failed to get resource: " + path);
+    public ExtendedFXMLLoader(Class clazz) {
+        try {
+            fxmlLoader = new FXMLLoader();
+            String path = clazz.getCanonicalName().replaceAll("Controller$", "").replaceAll("\\.", "/") + ".fxml";
+            final URL url = clazz.getClassLoader().getResource(path);
+            // System.err.println("path: " + path + " URL: " + url);
+            if (url == null)
+                throw new IOException("Failed to get resource: " + path);
 
-        try (final InputStream ins = url.openStream()) {
-            if (ins == null)
-                throw new IOException("Failed to open input stream for URL: " + url);
+            try (final InputStream ins = url.openStream()) {
+                if (ins == null)
+                    throw new IOException("Failed to open input stream for URL: " + url);
 
-            root = fxmlLoader.load(ins);
+                root = fxmlLoader.load(ins);
+            }
+            controller = fxmlLoader.getController();
+        } catch (IOException ex) {
+            throw new RuntimeException(ex);
         }
-        controller = fxmlLoader.getController();
     }
 
     /**

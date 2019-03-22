@@ -20,6 +20,8 @@
 
 package jloda.util;
 
+import jloda.swing.util.CommandLineOptions;
+
 import java.io.*;
 import java.util.LinkedList;
 import java.util.List;

@@ -80,7 +80,7 @@ public class DirectedCycleDetector {
             if (this.hasCycle())
                 return;
             else if (!marked.contains(w)) {
-                edgeTo.set(w, e);
+                edgeTo.put(w, e);
                 detectRec(G, w);
             } else if (onStack.contains(w)) {
                 cycle.push(e);

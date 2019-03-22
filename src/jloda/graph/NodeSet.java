@@ -27,7 +27,6 @@ package jloda.graph;
 
 import jloda.util.Basic;
 import jloda.util.IteratorAdapter;
-import jloda.util.NotOwnerException;
 
 import java.util.*;
 

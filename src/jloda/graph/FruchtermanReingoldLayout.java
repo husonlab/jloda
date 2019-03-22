@@ -5,10 +5,11 @@
  */
 package jloda.graph;
 
+import jloda.util.APoint2D;
+import jloda.util.Basic;
 import jloda.util.CanceledException;
 import jloda.util.ProgressListener;
 
-import java.awt.geom.Point2D;
 import java.util.BitSet;
 import java.util.Stack;
 
@@ -66,7 +67,7 @@ public class FruchtermanReingoldLayout {
      */
     public FruchtermanReingoldLayout(Graph graph, NodeSet fixedNodes, NodeArray<float[]> node2start) {
         this.graph = graph;
-        nodes = graph.getNodes().toArray();
+        nodes = graph.getNodesAsSet().toArray();
         edges = new int[2][graph.getNumberOfEdges()];
         coordinates = new float[2][nodes.length];
         forceDelta = new float[2][nodes.length];
@@ -81,7 +82,7 @@ public class FruchtermanReingoldLayout {
     private void initialize(NodeSet fixedNodes, NodeArray<float[]> node2start) {
         NodeArray<Integer> node2id = new NodeArray<>(graph);
         for (int v = 0; v < nodes.length; v++) {
-            node2id.set(nodes[v], v);
+            node2id.put(nodes[v], v);
             if (fixedNodes != null && fixedNodes.contains(nodes[v]))
                 fixed.set(v);
         }
@@ -138,15 +139,11 @@ public class FruchtermanReingoldLayout {
      * @param numberOfIterations
      * @param result
      */
-    public void apply(int numberOfIterations, NodeArray<Point2D> result) {
-
-        for (int i = 0; i < numberOfIterations; i++) {
-            speed = 100 * (1 - (double) i / numberOfIterations); // linear cooling
-            iterate();
-        }
-
-        for (int v = 0; v < nodes.length; v++) {
-            result.set(nodes[v], new Point2D.Float(coordinates[0][v], coordinates[1][v]));
+    public void apply(int numberOfIterations, NodeArray<APoint2D> result) {
+        try {
+            apply(numberOfIterations, result, null);
+        } catch (CanceledException ex) {
+            Basic.caught(ex); // can't happen
         }
     }
 
@@ -156,16 +153,17 @@ public class FruchtermanReingoldLayout {
      * @param numberOfIterations
      * @param result
      */
-    public void applyFX(int numberOfIterations, NodeArray<javafx.geometry.Point2D> result, ProgressListener progress) throws CanceledException {
+    public void apply(int numberOfIterations, NodeArray<APoint2D> result, ProgressListener progress) throws CanceledException {
 
         for (int i = 0; i < numberOfIterations; i++) {
             speed = 100 * (1 - (double) i / numberOfIterations); // linear cooling
             iterate();
-            progress.checkForCancel();
+            if (progress != null)
+                progress.checkForCancel();
         }
 
         for (int v = 0; v < nodes.length; v++) {
-            result.set(nodes[v], new javafx.geometry.Point2D(coordinates[0][v], coordinates[1][v]));
+            result.put(nodes[v], new APoint2D(coordinates[0][v], coordinates[1][v]));
         }
     }
 

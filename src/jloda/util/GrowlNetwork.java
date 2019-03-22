@@ -1,5 +1,7 @@
 package jloda.util;
 
+import jloda.swing.util.ProgramProperties;
+
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.DatagramPacket;

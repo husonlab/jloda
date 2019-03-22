@@ -19,27 +19,13 @@
  */
 package jloda.util;
 
-/**
- * Some basic useful stuff
- *
- * @author Daniel Huson, 2005
- */
-
-import javax.swing.*;
-import java.awt.*;
-import java.awt.image.BufferedImage;
-import java.awt.image.ImageObserver;
-import java.awt.image.PixelGrabber;
 import java.io.*;
 import java.net.URI;
-import java.net.URISyntaxException;
 import java.net.URL;
-import java.net.URLDecoder;
 import java.nio.channels.FileChannel;
+import java.nio.file.Files;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
-import java.util.List;
-import java.util.Queue;
 import java.util.*;
 import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
@@ -47,6 +33,11 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.zip.*;
 
+/**
+ * Some basic useful stuff
+ *
+ * @author Daniel Huson, 2005
+ */
 public class Basic {
     public final static int MAX_ARRAY_SIZE = Integer.MAX_VALUE - 8; // maximum length that a Java array can have
 
@@ -165,33 +156,6 @@ public class Basic {
     }
 
     /**
-     * returns the decodeable description of a font
-     *
-     * @param font
-     * @return family-style-size
-     */
-    public static String getCode(Font font) {
-        String result = font.getFamily();
-        switch (font.getStyle()) {
-            default:
-            case Font.PLAIN:
-                result += "-PLAIN";
-                break;
-            case Font.ITALIC:
-                result += "-ITALIC";
-                break;
-            case Font.BOLD:
-                result += "-BOLD";
-                break;
-            case Font.BOLD + Font.ITALIC:
-                result += "-BOLDITALIC";
-                break;
-        }
-        result += "-" + font.getSize();
-        return result;
-    }
-
-    /**
      * skip all spaces starting at position i
      *
      * @param str
@@ -235,25 +199,6 @@ public class Basic {
             return string.substring(altPrefix.length(), string.length()).trim();
         else
             throw new IOException("Prefix <" + prefix + "> or <" + altPrefix + "> not matched in <" + string + ">");
-    }
-
-    /**
-     * returns the size in device coordinates of the string str
-     *
-     * @param str
-     * @return size
-     */
-    public static Dimension getStringSize(Graphics gc, String str, Font font) {
-        if (str == null)
-            return new Dimension(1, 1);
-        Font gcFont = gc.getFont();
-        if (font != null && !font.equals(gcFont))
-            gc.setFont(font);
-        int width = gc.getFontMetrics().stringWidth(str);
-        int height = gc.getFont().getSize();
-        if (!gc.getFont().equals(gcFont))
-            gc.setFont(gcFont);
-        return new Dimension(width, height);
     }
 
     /**
@@ -560,38 +505,6 @@ public class Basic {
     }
 
     /**
-     * selects a line in a text area
-     *
-     * @param ta
-     * @param lineno
-     */
-    public static void selectLine(JTextArea ta, int lineno) {
-        if (ta == null || lineno < 0)
-            return;
-        try {
-            String text = ta.getText();
-            if (lineno > 0) {
-                int start = 0;
-                int end;
-                int count = 1;
-                while (count++ < lineno) {
-                    start = text.indexOf('\n', start) + 1;
-                }
-
-                end = text.indexOf('\n', start);
-                if (end == -1)
-                    end = text.length() - 1;
-
-                if (start > 0 && end >= start) {
-                    ta.select(start, end);
-                }
-            }
-        } catch (Exception ex) {
-            Basic.caught(ex);
-        }
-    }
-
-    /**
      * sort a list using the given comparator
      *
      * @param list
@@ -771,37 +684,6 @@ public class Basic {
     }
 
     /**
-     * sorts all menu items alphabetically starting at first item
-     *
-     * @param menu
-     * @param firstItem
-     */
-    public static void sortMenuAlphabetically(JMenu menu, int firstItem) {
-        if (menu.getItemCount() - firstItem <= 0)
-            return;
-
-        JMenuItem[] array = new JMenuItem[menu.getItemCount() - firstItem];
-
-        for (int i = firstItem; i < menu.getItemCount(); i++) {
-            if (menu.getItem(i).getText() == null)
-                return; // won't be able to sort these!
-            array[i - firstItem] = menu.getItem(i);
-        }
-        Arrays.sort(array, new Comparator<JMenuItem>() {
-            public int compare(JMenuItem o1, JMenuItem o2) {
-                String name1 = o1.getText();
-                String name2 = o2.getText();
-                return name1.compareTo(name2);
-            }
-        });
-
-        while (menu.getItemCount() > firstItem)
-            menu.remove(menu.getItemCount() - 1);
-
-        for (JMenuItem anArray : array) menu.add(anArray);
-    }
-
-    /**
      * returns the delta between two binary strings
      *
      * @param a
@@ -871,7 +753,7 @@ public class Basic {
      * @param array
      * @return min
      */
-    public static int min(int[] array) {
+    public static int min(int... array) {
         int m = Integer.MAX_VALUE;
         for (int x : array) {
             if (x < m)
@@ -887,7 +769,7 @@ public class Basic {
      * @param array
      * @return max
      */
-    public static int max(int[] array) {
+    public static int max(int... array) {
         int m = Integer.MIN_VALUE;
         for (int x : array) {
             if (x > m)
@@ -1203,31 +1085,41 @@ public class Basic {
     }
 
     /**
-     * Fetch all resources (i.e. files) that are directly under the specified package structure.
+     * returns an iterable collection of objects as separator separated string
      *
-     * @param pckg
-     * @return files in given package
-     * @throws IOException
+     * @param iterable
+     * @param separator
+     * @return string representation
      */
-    public static String[] fetchResources(String pckg) throws IOException {
-        return fetchResources(pckg, getBasicClassLoader());
+    public static String toString(Iterable iterable, String separator) {
+        return toString(iterable.iterator(), separator);
     }
 
     /**
-     * Get the classloader that can find all resources.
-     * Currently this is the system classloader.
+     * returns a collection of objects a separated string
      *
-     * @return basic class loader
+     * @param iterator
+     * @param separator
+     * @return string representation
      */
-    public static ClassLoader getBasicClassLoader() {
-        ClassLoader loaderPlugin = Basic.class.getClassLoader();
-        if (loaderPlugin == null) loaderPlugin = ClassLoader.getSystemClassLoader();
-        return loaderPlugin;
+    public static String toString(Iterator iterator, String separator) {
+        if (iterator == null)
+            return "";
+        final StringBuilder buf = new StringBuilder();
+
+        while (iterator.hasNext()) {
+            if (buf.length() > 0)
+                buf.append(separator);
+            Object next = iterator.next();
+            String str = next.toString();
+            buf.append(next);
+        }
+        return buf.toString();
     }
 
     /**
      * Get a class instance for the given fully qualified classname.
-     * The plugin classloader is used as returned by {@link #getBasicClassLoader()}.
+     * The plugin classloader is used as returned by {@link ResourceUtils#getBasicClassLoader()}.
      * <p/>
      * <p/>
      * It is discouraged to use {@link Class#forName(java.lang.String)}.
@@ -1237,100 +1129,7 @@ public class Basic {
      * @throws ClassNotFoundException
      */
     public static Class classForName(String name) throws ClassNotFoundException {
-        return getBasicClassLoader().loadClass(name);
-    }
-
-    /**
-     * get all resources under the given package name
-     * @param packageName
-     * @param loaderPlugin
-     * @return list of resources
-     * @throws IOException
-     */
-    static String[] fetchResources(String packageName, ClassLoader loaderPlugin) throws IOException {
-        packageName = packageName.replaceAll("\\.", "/").concat("/");
-
-        Enumeration e = loaderPlugin.getResources(packageName);
-        Set<String> resources = new TreeSet<>();
-        while (e.hasMoreElements()) {
-            final URL url = ((URL) e.nextElement());
-            String urlString = URLDecoder.decode(url.getPath(), "UTF-8");
-            if (urlString.matches(".+!.+")) //the zip/jar - entry delimiter
-            {
-                String[] split = urlString.split("!", 2);
-                urlString = split[0];
-                if (urlString.startsWith("file:"))
-                    urlString = urlString.substring("file:".length());
-
-                //recurse through the jar
-                try {
-                    ZipFile archive = (urlString.endsWith(".jar") ? new JarFile(urlString) : new ZipFile(urlString));
-                    Enumeration entries = archive.entries();
-                    while (entries.hasMoreElements()) {
-                        ZipEntry ze = (ZipEntry) entries.nextElement();
-                        String name = ze.getName();
-                        if (name.startsWith(packageName)) {
-                            if (!ze.isDirectory() && name.indexOf('/', packageName.length()) < 0) {
-                                resources.add(name.substring(packageName.length()));
-                            } else        // subpackages
-                            {
-                                name = name.replaceAll("/", ".");
-                                if (name.endsWith("."))
-                                    name = name.substring(0, name.length() - 1);
-                                resources.add(name);
-                            }
-                        }
-                    }
-                } catch (IOException ex) {
-                    System.err.println("URL=" + urlString);
-                    Basic.caught(ex);
-                }
-            } else //we are still in the file system
-            {
-                final File file = new File(urlString);
-                File[] contents = null;
-                if (file.isDirectory())
-                    contents = file.listFiles();
-
-                if (contents != null)
-                    for (int i = 0; i != contents.length; ++i) {
-                        if (contents[i].isDirectory()) {
-                            String subPackageName = packageName + contents[i].getName();
-                            subPackageName = subPackageName.replaceAll("/", ".");
-                            resources.add(subPackageName);
-                        } else {
-                            resources.add(contents[i].getName());
-                        }
-                    }
-            }
-        }
-        return resources.toArray(new String[resources.size()]);
-    }
-
-    /**
-     * centers a dialog in a parent frame
-     *
-     * @param dialog
-     * @param parent
-     */
-    public static void centerDialogInParent(JDialog dialog, JFrame parent) {
-        if (parent != null)   // center
-            dialog.setLocation(new Point(parent.getLocation().x + (parent.getWidth() - dialog.getWidth()) / 2,
-                    parent.getLocation().y + (parent.getHeight() - dialog.getHeight()) / 2));
-        else
-            dialog.setLocation(new Point(300, 300));
-    }
-
-    /**
-     * centers a dialog on the screen
-     *
-     * @param dialog
-     */
-    static public void centerDialogOnScreen(JDialog dialog) {
-        Dimension dim = dialog.getToolkit().getScreenSize();
-        Rectangle abounds = dialog.getBounds();
-        dialog.setLocation((dim.width - abounds.width) / 2,
-                (dim.height - abounds.height) / 2);
+        return ResourceUtils.getBasicClassLoader().loadClass(name);
     }
 
     /**
@@ -1357,6 +1156,18 @@ public class Basic {
     public static boolean isBoolean(String next) {
         return next.equalsIgnoreCase("true") || next.equalsIgnoreCase("false");
     }
+
+    /**
+     * returns true, if string can be parsed as int
+     *
+     * @param next
+     * @return true, if int
+     */
+    public static boolean parseBoolean(String next) {
+        next = next.trim();
+        return next.length() >= 4 && next.substring(0, 4).toLowerCase().startsWith("true");
+    }
+
 
     /**
      * returns true, if string can be parsed as long
@@ -1558,21 +1369,6 @@ public class Basic {
     }
 
     /**
-     * gets color as 'r g b' or 'r g b a' string  or string "null"
-     *
-     * @param color
-     * @return r g b a
-     */
-    public static String toString3Int(Color color) {
-        if (color == null)
-            return "null";
-        final StringBuilder buf = new StringBuilder().append(color.getRed()).append(" ").append(color.getGreen()).append(" ").append(color.getBlue());
-        if (color.getAlpha() < 255)
-            buf.append(" ").append(color.getAlpha());
-        return buf.toString();
-    }
-
-    /**
      * trims away empty lines at the beginning and end of a string
      *
      * @param str
@@ -1668,38 +1464,6 @@ public class Basic {
         return count;
     }
 
-
-    /**
-     * converts an image to a buffered image
-     *
-     * @param image
-     * @param imageObserver
-     * @return buffered image
-     */
-    public static BufferedImage convertToBufferedImage(Image image, ImageObserver imageObserver) throws IOException, InterruptedException {
-        int imageWidth = image.getWidth(imageObserver);
-        int imageHeight = image.getHeight(imageObserver);
-        int[] array = convertToArray(image, imageWidth, imageHeight);
-        BufferedImage bufferedImage = new BufferedImage(imageWidth, imageHeight, BufferedImage.TYPE_INT_ARGB);
-        bufferedImage.setRGB(0, 0, imageWidth, imageHeight, array, 0, imageWidth);
-        return bufferedImage;
-    }
-
-
-    /**
-     * converts the image to a 1-D image
-     *
-     * @param image
-     * @return 1-d image
-     */
-    private static int[] convertToArray(Image image, int imageWidth, int imageHeight) throws InterruptedException, IOException {
-        int[] array = new int[imageWidth * imageHeight];
-        PixelGrabber pixelGrabber = new PixelGrabber(image, 0, 0, imageWidth, imageHeight, array, 0, imageWidth);
-        if (pixelGrabber.grabPixels() && ((pixelGrabber.getStatus() & ImageObserver.ALLBITS) != 0))
-            return array;
-        else
-            throw new IOException("Internal error: failed to convert image to 1D array");
-    }
 
     /**
      * cleans a taxon name so that it only contains of letters, digits, .'s and _'s
@@ -1861,8 +1625,6 @@ public class Basic {
         return bits;
     }
 
-    static boolean memoryWarned = false;
-
     /**
      * gets the memory usage string in MB
      *
@@ -1876,24 +1638,6 @@ public class Basic {
         } else {
             return String.format("%.1f of %.1fG", (double) used / 1000.0, (double) available / 1000.0);
         }
-    }
-
-    /**
-     * gets the memory usage string in MB
-     *
-     * @param warnLevel warn when less than this amount of memory available
-     * @return current memory usage
-     */
-    public static String getMemoryUsageString(int warnLevel) {
-        long used = ((Runtime.getRuntime().totalMemory() - Runtime.getRuntime().freeMemory()) / 1000000);
-        long available = (Runtime.getRuntime().maxMemory() / 1000000);
-        if (!memoryWarned && warnLevel > 0 && used + warnLevel >= available) {
-            String program = ProgramProperties.getProgramName();
-            System.gc();
-            new Alert(program + " may require more memory to open this file. Possible fix: cancel the current task, assign more memory to " + program + " and restart");
-            memoryWarned = true;
-        }
-        return used + " of " + available + "M";
     }
 
     /**
@@ -2460,16 +2204,6 @@ public class Basic {
 
 
     /**
-     * gets a color as a background color
-     *
-     * @param color
-     * @return color
-     */
-    static public String getBackgroundColorHTML(Color color) {
-        return String.format("<font bgcolor=#%x>", (color.getRGB() & 0xFFFFFF));
-    }
-
-    /**
      * gets the index of the first space in the string
      *
      * @param string
@@ -2530,7 +2264,7 @@ public class Basic {
     }
 
     public static String getAccessionWord(String text) {
-        
+
         int a = 0;
         while (a < text.length()) {
             char ch = text.charAt(a);
@@ -2610,17 +2344,6 @@ public class Basic {
         for (int i = 0; i < count; i++)
             buf.append(" ");
         return buf.toString();
-    }
-
-    /**
-     * change font size
-     *
-     * @param component
-     * @param newFontSize
-     */
-    static public void changeFontSize(Component component, int newFontSize) {
-        Font font = new Font(component.getFont().getName(), component.getFont().getStyle(), newFontSize);
-        component.setFont(font);
     }
 
     /**
@@ -2829,23 +2552,6 @@ public class Basic {
             throw new IOException("File is empty: " + fileName);
         if (!file.canRead())
             throw new IOException("File not readable: " + fileName);
-    }
-
-    /**
-     * encode a font as a string that can be decoded using Font.decode()
-     *
-     * @param font
-     * @return string
-     */
-    public static String encode(Font font) {
-        String style = "";
-        if (font.isBold())
-            style += "BOLD";
-        if (font.isItalic())
-            style += "ITALIC";
-        if (style.length() == 0)
-            style = "PLAIN";
-        return font.getFontName() + "-" + style + "-" + font.getSize();
     }
 
     public static boolean isDate(String s) {
@@ -3448,12 +3154,12 @@ public class Basic {
      * @throws java.io.IOException
      */
     public static void readAndVerifyMagicNumber(InputStream ins, byte[] expectedMagicNumber) throws IOException {
-            byte[] magicNumber = new byte[expectedMagicNumber.length];
-            if (ins.read(magicNumber) != expectedMagicNumber.length || !equal(magicNumber, expectedMagicNumber)) {
-                System.err.println("Expected: " + toString(expectedMagicNumber));
-                System.err.println("Got:      " + toString(magicNumber));
-                throw new IOException("Index is too old or incorrect file (wrong magic number). Please recompute index.");
-            }
+        byte[] magicNumber = new byte[expectedMagicNumber.length];
+        if (ins.read(magicNumber) != expectedMagicNumber.length || !equal(magicNumber, expectedMagicNumber)) {
+            System.err.println("Expected: " + toString(expectedMagicNumber));
+            System.err.println("Got:      " + toString(magicNumber));
+            throw new IOException("Index is too old or incorrect file (wrong magic number). Please recompute index.");
+        }
     }
 
     /**
@@ -3616,35 +3322,6 @@ public class Basic {
     }
 
     /**
-     * open the given URI in a web browser
-     *
-     * @param uri
-     */
-    public static void openWebPage(URI uri) {
-        Desktop desktop = Desktop.isDesktopSupported() ? Desktop.getDesktop() : null;
-        if (desktop != null && desktop.isSupported(Desktop.Action.BROWSE)) {
-            try {
-                desktop.browse(uri);
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-        }
-    }
-
-    /**
-     * open the given URL in a web browser
-     *
-     * @param url
-     */
-    public static void openWebPage(URL url) {
-        try {
-            openWebPage(url.toURI());
-        } catch (URISyntaxException e) {
-            e.printStackTrace();
-        }
-    }
-
-    /**
      * return the lowest power of 2 that is greater or equal to the given number
      *
      * @param i
@@ -3686,72 +3363,6 @@ public class Basic {
             buf.append((value & (1 << shift)) >>> shift);
         }
         return buf.toString();
-    }
-
-    /**
-     * get all files listed below the given root directory
-     *
-     * @param rootDirectory
-     * @param fileFilter
-     * @param recursively
-     * @return list of files
-     */
-    public static List<File> getAllFilesInDirectory(File rootDirectory, javax.swing.filechooser.FileFilter fileFilter, boolean recursively) {
-        final List<File> result = new LinkedList<>();
-
-        final Queue<File> queue = new LinkedList<>();
-        File[] list = rootDirectory.listFiles();
-        if (list != null) {
-            Collections.addAll(queue, list);
-            while (queue.size() > 0) {
-                File file = queue.poll();
-                if (file.isDirectory()) {
-                    if (recursively) {
-                        File[] below = file.listFiles();
-                        if (below != null) {
-                            Collections.addAll(queue, below);
-                        }
-                    }
-                } else if (fileFilter == null || fileFilter.accept(file)) {
-                    result.add(file);
-                }
-            }
-        }
-
-        return result;
-    }
-
-    /**
-     * get all files listed below the given root directory
-     *
-     * @param rootDirectory
-     * @param fileFilter
-     * @param recursively
-     * @return list of files
-     */
-    public static List<String> getAllFilesInDirectory(String rootDirectory, javax.swing.filechooser.FileFilter fileFilter, boolean recursively) {
-        final List<String> result = new LinkedList<>();
-
-        final Queue<File> queue = new LinkedList<>();
-        File[] list = (new File(rootDirectory)).listFiles();
-        if (list != null) {
-            Collections.addAll(queue, list);
-            while (queue.size() > 0) {
-                File file = queue.poll();
-                if (file.isDirectory()) {
-                    if (recursively) {
-                        File[] below = file.listFiles();
-                        if (below != null) {
-                            Collections.addAll(queue, below);
-                        }
-                    }
-                } else if (fileFilter == null || fileFilter.accept(file)) {
-                    result.add(file.getPath());
-                }
-            }
-        }
-
-        return result;
     }
 
     /**
@@ -4438,6 +4049,164 @@ public class Basic {
             return text.replaceAll("([0-9])0*$", "$1").replaceAll("\\.0$", "");
         else
             return text;
+    }
+
+    /**
+     * gets a unique file name for a file in the given directory and with given prefix and suffix
+     *
+     * @param directory
+     * @param prefix
+     * @param suffix
+     * @return file name
+     */
+    public synchronized static File getUniqueFileName(String directory, String prefix, String suffix) throws IOException {
+        File file = new File(directory + File.separatorChar + prefix + (suffix.startsWith(".") ? suffix : "." + suffix));
+
+        int i = 1;
+        while (file.exists()) {
+            file = new File(directory + File.separatorChar + prefix + "-" + (++i) + (suffix.startsWith(".") ? suffix : "." + suffix));
+            if (i == 10000)
+                return Files.createTempFile(prefix, suffix).toFile(); // too many temporary files in home directory, use tmp dir
+        }
+        return file;
+    }
+
+    public static boolean isArrayOfIntegers(String string) {
+        if (string == null)
+            return false;
+        final String[] tokens = string.split("[\\s+,;]");
+        if (tokens.length == 0)
+            return false;
+        for (String token : tokens) {
+            if (!isInteger(token))
+                return false;
+        }
+        return true;
+    }
+
+    public static int[] parseArrayOfIntegers(String string) {
+        if (string == null)
+            return null;
+        final String[] tokens = string.split("[\\s+,;]");
+        ArrayList<Integer> values = new ArrayList<>();
+        for (String token : tokens) {
+            if (isInteger(token))
+                values.add(Basic.parseInt(token));
+        }
+        int[] result = new int[values.size()];
+        for (int i = 0; i < values.size(); i++)
+            result[i] = values.get(i);
+        return result;
+    }
+
+    /**
+     * gets members of bit set as as string
+     *
+     * @param set
+     * @param separator
+     * @return string
+     */
+    public static String toString(BitSet set, String separator) {
+        StringBuilder buf = new StringBuilder();
+        boolean first = true;
+        for (int i = set.nextSetBit(0); i != -1; i = set.nextSetBit(i + 1)) {
+            if (first)
+                first = false;
+            else
+                buf.append(separator);
+            buf.append(i);
+        }
+        return buf.toString();
+    }
+
+    /**
+     * pretty print a double value
+     *
+     * @param value
+     * @param afterCommaDigits
+     * @return value without trailing 0's
+     */
+    public static String toString(double value, int afterCommaDigits) {
+        final String format = "%." + afterCommaDigits + "f";
+        return String.format(format, value).replaceAll("0*$", "").replaceAll("\\.$", "");
+    }
+
+    /**
+     * gets the first line in a file. File may be zgipped or zipped
+     *
+     * @param file
+     * @return first line or null
+     * @throws IOException
+     */
+    public static String getFirstLineFromFileIgnoreEmptyLines(File file, String ignoreLinesThatStartWithThis, int maxLines) {
+        try {
+            int count = 0;
+            try (BufferedReader ins = new BufferedReader(new InputStreamReader(getInputStreamPossiblyZIPorGZIP(file.getPath())))) {
+                String aLine;
+                while ((aLine = ins.readLine()) != null) {
+                    if (!aLine.startsWith(ignoreLinesThatStartWithThis) && !aLine.isEmpty())
+                        return aLine;
+                    if (++count == maxLines)
+                        break;
+                }
+            }
+        } catch (IOException ex) {
+        }
+        return null;
+    }
+
+    /**
+     * capitalizes leading character.
+     *
+     * @param string
+     * @param allOtherLowerCase
+     * @return capitalized string
+     */
+    public static String capitalize(String string, boolean allOtherLowerCase) {
+        switch (string.length()) {
+            case 0:
+                return string;
+            case 1:
+                return string.toUpperCase();
+            default:
+                return Character.toUpperCase(string.charAt(0)) + (allOtherLowerCase ? string.substring(1).toLowerCase() : string.substring(1));
+        }
+    }
+
+    /**
+     * get all files listed below the given root directory
+     *
+     * @param rootDirectory
+     * @param recursively
+     * @return list of files
+     */
+    public static ArrayList<File> getAllFilesInDirectory(File rootDirectory, String fileExtension, boolean recursively) {
+        final ArrayList<File> result = new ArrayList<>();
+
+        final Queue<File> queue = new LinkedList<>();
+        File[] list = rootDirectory.listFiles();
+        if (list != null) {
+            Collections.addAll(queue, list);
+            while (queue.size() > 0) {
+                File file = queue.poll();
+                if (file.isDirectory()) {
+                    if (recursively) {
+                        File[] below = file.listFiles();
+                        if (below != null) {
+                            Collections.addAll(queue, below);
+                        }
+                    }
+                } else if (fileExtension.length() == 0 || file.getName().endsWith(fileExtension)) {
+                    result.add(file);
+                }
+            }
+        }
+
+        return result;
+    }
+
+    public static String toString(Pair pair, String separator) {
+        return pair.getFirst().toString() + separator + pair.getSecond().toString();
     }
 }
 

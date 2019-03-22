@@ -20,16 +20,12 @@
 package jloda.phylo;
 
 import jloda.graph.*;
+import jloda.swing.util.ProgramProperties;
 import jloda.util.Basic;
-import jloda.util.NotOwnerException;
 import jloda.util.Pair;
-import jloda.util.ProgramProperties;
 
 import java.io.*;
-import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * @author Daniel Huson
@@ -37,7 +33,7 @@ import java.util.Map;
  * <p>
  * Phylogenetic tree
  */
-public class PhyloTree extends PhyloGraph {
+public class PhyloTree extends PhyloSplitsGraph {
     public static final boolean ALLOW_WRITE_RETICULATE = true;
     public static final boolean ALLOW_READ_RETICULATE = true;
     public static final boolean ALLOW_READ_WRITE_EDGE_LABELS = true;
@@ -52,6 +48,8 @@ public class PhyloTree extends PhyloGraph {
 
     private final boolean cleanLabelsOnWrite;
 
+    private boolean internalNodeLabelsAreEdgeLabels = false;
+
     private double weight = 1;
 
     protected final NodeArray<List<Node>> node2GuideTreeChildren; // keep track of children in LSA tree in network
@@ -63,6 +61,16 @@ public class PhyloTree extends PhyloGraph {
         super();
         cleanLabelsOnWrite = ProgramProperties.get("cleanTreeLabelsOnWrite", false);
         node2GuideTreeChildren = new NodeArray<>(this);
+    }
+
+    /**
+     * copy constructor
+     *
+     * @param src
+     */
+    public PhyloTree(PhyloTree src) {
+        this();
+        copy(src);
     }
 
     /**
@@ -93,9 +101,10 @@ public class PhyloTree extends PhyloGraph {
                 for (Node w : children) {
                     newChildren.add(oldNode2NewNode.get(w));
                 }
-                getNode2GuideTreeChildren().set(oldNode2NewNode.get(v), newChildren);
+                getNode2GuideTreeChildren().put(oldNode2NewNode.get(v), newChildren);
             }
         }
+
         setName(src.getName());
 
         return oldNode2NewNode;
@@ -122,7 +131,7 @@ public class PhyloTree extends PhyloGraph {
                 for (Node w : children) {
                     newChildren.add(oldNode2NewNode.get(w));
                 }
-                getNode2GuideTreeChildren().set(oldNode2NewNode.get(v), newChildren);
+                getNode2GuideTreeChildren().put(oldNode2NewNode.get(v), newChildren);
             }
         }
     }
@@ -145,7 +154,7 @@ public class PhyloTree extends PhyloGraph {
      * @param a String
      */
     public void setLabel(Edge e, String a) throws NotOwnerException {
-        edgeLabels.set(e, a);
+        super.setLabel(e, a);
     }
 
     /**
@@ -577,7 +586,7 @@ public class PhyloTree extends PhyloGraph {
         } catch (IllegalSelfEdgeException e1) {
             Basic.caught(e1);
         }
-        if (edgeWeights.get(e) != null && edgeWeights.get(f) != null)
+        if (edgeWeights.get(e) != Double.MIN_VALUE && edgeWeights.get(f) != Double.MIN_VALUE)
             setWeight(g, getWeight(e) + getWeight(f));
         if (root == v)
             root = null;
@@ -755,7 +764,7 @@ public class PhyloTree extends PhyloGraph {
             boolean first = true;
             for (Edge f = v.getFirstAdjacentEdge(); f != null; f = v.getNextAdjacentEdge(f)) {
                 if (f != e) {
-                    if (node2reticulateNumber.getInt(v) > 0 && isSpecial(f))
+                    if (node2reticulateNumber.get(v) > 0 && isSpecial(f))
                         continue; // don't climb back up a special edge
 
                     if (edgeId2Number != null)
@@ -771,21 +780,21 @@ public class PhyloTree extends PhyloGraph {
 
 
                     if (isSpecial(f)) {
-                        if (node2reticulateNumber.getInt(w) == 0) {
+                        if (node2reticulateNumber.get(w) == 0) {
                             node2reticulateNumber.set(w, ++reticulateNodeNumber);
                             String label;
                             if (getLabel(w) != null)
-                                label = getLabelForWriting(w) + PhyloTreeUtils.makeReticulateNodeLabel(inEdgeHasWeight, node2reticulateNumber.getInt(w));
+                                label = getLabelForWriting(w) + PhyloTreeUtils.makeReticulateNodeLabel(inEdgeHasWeight, node2reticulateNumber.get(w));
                             else
-                                label = PhyloTreeUtils.makeReticulateNodeLabel(inEdgeHasWeight, node2reticulateNumber.getInt(w));
+                                label = PhyloTreeUtils.makeReticulateNodeLabel(inEdgeHasWeight, node2reticulateNumber.get(w));
 
                             writeRec(outs, w, f, writeEdgeWeights, writeEdgeLabels, nodeId2Number, edgeId2Number, label);
                         } else {
                             String label;
                             if (getLabel(w) != null)
-                                label = getLabelForWriting(w) + PhyloTreeUtils.makeReticulateNodeLabel(inEdgeHasWeight, node2reticulateNumber.getInt(w));
+                                label = getLabelForWriting(w) + PhyloTreeUtils.makeReticulateNodeLabel(inEdgeHasWeight, node2reticulateNumber.get(w));
                             else
-                                label = PhyloTreeUtils.makeReticulateNodeLabel(inEdgeHasWeight, node2reticulateNumber.getInt(w));
+                                label = PhyloTreeUtils.makeReticulateNodeLabel(inEdgeHasWeight, node2reticulateNumber.get(w));
                             outs.write(label);
                             if (writeEdgeWeights) {
                                 if (getWeight(f) >= 0)
@@ -976,7 +985,7 @@ public class PhyloTree extends PhyloGraph {
      */
     public void setRoot(Edge e, double weightToSource, double weightToTarget, EdgeArray<String> edgeLabels) {
         final Node root = getRoot();
-        if (root != null && root.getDegree() == 2 && (getNode2Taxa(root) == null || getNode2Taxa(root).size() == 0)) {
+        if (root != null && root.getDegree() == 2 && (getTaxa(root) == null || getNumberOfTaxa(root) == 0)) {
             if (root == e.getSource()) {
                 Edge f = (root.getFirstAdjacentEdge() != e ? root.getFirstAdjacentEdge() : root.getLastAdjacentEdge());
                 setWeight(e, weightToSource);
@@ -998,8 +1007,8 @@ public class PhyloTree extends PhyloGraph {
         setWeight(vu, weightToSource);
         setWeight(uw, weightToTarget);
         if (edgeLabels != null) {
-            edgeLabels.set(vu, edgeLabels.get(e));
-            edgeLabels.set(uw, edgeLabels.get(e));
+            edgeLabels.put(vu, edgeLabels.get(e));
+            edgeLabels.put(uw, edgeLabels.get(e));
         }
 
         deleteEdge(e);
@@ -1021,10 +1030,10 @@ public class PhyloTree extends PhyloGraph {
                     for (Edge e = oldRoot.getFirstOutEdge(); e != null; e = oldRoot.getNextOutEdge(e)) {
                         if (label == null && edgeLabels.get(e) != null)
                             label = edgeLabels.get(e);
-                        edgeLabels.set(e, null);
+                        edgeLabels.put(e, null);
                     }
                     final Edge e = delDivertex(oldRoot);
-                    edgeLabels.set(e, label);
+                    edgeLabels.put(e, label);
                 } else
                     delDivertex(oldRoot);
             }
@@ -1090,38 +1099,6 @@ public class PhyloTree extends PhyloGraph {
      */
     public void setAllowMultiLabeledNodes(boolean allowMultiLabeledNodes) {
         this.allowMultiLabeledNodes = allowMultiLabeledNodes;
-    }
-
-    /**
-     * compute the cycle for this tree and then return it
-     *
-     * @return cycle for this tree
-     */
-    public int[] getCycle(Node v) {
-        computeCycleRec(v, null, 0);
-
-        return super.getCycle();
-    }
-
-    /**
-     * recursively compute a cycle
-     *
-     * @param v
-     * @param e
-     * @param pos
-     */
-    private int computeCycleRec(Node v, Edge e, int pos) {
-        final List<Integer> taxa = node2taxa.get(v);
-        if (taxa != null) {
-            for (Integer t : taxa) {
-                setTaxon2Cycle(t, ++pos);
-            }
-        }
-        for (Edge f = v.getFirstAdjacentEdge(); f != null; f = v.getNextAdjacentEdge(f)) {
-            if (f != e && PhyloTreeUtils.okToDescendDownThisEdge(this, f, v))
-                pos = computeCycleRec(f.getOpposite(v), f, pos);
-        }
-        return pos;
     }
 
     /**
@@ -1291,6 +1268,142 @@ public class PhyloTree extends PhyloGraph {
 
     public void setWeight(double weight) {
         this.weight = weight;
+    }
+
+    /**
+     * compute the cycle for this tree and then return it
+     *
+     * @return cycle for this tree
+     */
+    public int[] getCycle(Node v) {
+        computeCycleRec(v, null, 0);
+        return getCycle();
+    }
+
+    /**
+     * recursively compute a cycle
+     *
+     * @param v
+     * @param e
+     * @param pos
+     */
+    private int computeCycleRec(Node v, Edge e, int pos) {
+        final List<Integer> taxa = node2taxa.get(v);
+        if (taxa != null) {
+            for (Integer t : taxa) {
+                setTaxon2Cycle(t, ++pos);
+            }
+        }
+        for (Edge f = v.getFirstAdjacentEdge(); f != null; f = v.getNextAdjacentEdge(f)) {
+            if (f != e && PhyloTreeUtils.okToDescendDownThisEdge(this, f, v))
+                pos = computeCycleRec(f.getOpposite(v), f, pos);
+        }
+        return pos;
+    }
+
+    /**
+     * /**
+     * iterates over leaves
+     *
+     * @return leaves
+     */
+    public Iterable<Node> leaves() {
+        return () -> new Iterator<Node>() {
+            private Node v = getFirstNode();
+
+            {
+                while (v != null && v.getOutDegree() > 0) {
+                    v = v.getNext();
+                }
+            }
+
+            @Override
+            public boolean hasNext() {
+                return v != null;
+            }
+
+            @Override
+            public Node next() {
+                final Node result = v;
+                {
+                    while (v != null && v.getOutDegree() > 0) {
+                        v = v.getNext();
+                    }
+                }
+                return result;
+            }
+        };
+    }
+
+    /**
+     * returns a new tree in which all edges of length < min length have been contracted
+     *
+     * @param minLength
+     * @return true, if anything contracted
+     */
+    public boolean contractShortEdges(double minLength) {
+        boolean hasContractedOne = false;
+
+        while (true) {
+            boolean contracted = false;
+
+            for (Edge e : edges()) {
+                if (getWeight(e) < minLength) {
+                    contracted = true;
+                    final Node v = e.getSource();
+                    final Node w = e.getTarget();
+                    for (Edge f : v.adjacentEdges()) {
+                        if (f != e) {
+                            final Node u = f.getOpposite(v);
+                            final Edge z;
+                            if (u == f.getSource())
+                                z = newEdge(u, w);
+                            else
+                                z = newEdge(w, u);
+                            setWeight(z, getWeight(f));
+                            setConfidence(z, getConfidence(f));
+                            setLabel(z, getLabel(z));
+                        }
+                    }
+                    for (Integer taxon : getTaxa(v))
+                        addTaxon(w, taxon);
+
+                    if (getRoot() == v)
+                        setRoot(w);
+
+                    deleteNode(v);
+                    break;
+                }
+            }
+            if (contracted)
+                hasContractedOne = true;
+            else
+                break;
+        }
+        return hasContractedOne;
+    }
+
+
+    /**
+     * give all edges unit weight
+     */
+    public boolean makeEdgesUnitWeight() {
+        boolean changed = false;
+        for (Edge e : edges()) {
+            if (getWeight(e) != 1) {
+                setWeight(e, 1);
+                changed = true;
+            }
+        }
+        return changed;
+    }
+
+    public boolean isInternalNodeLabelsAreEdgeLabels() {
+        return internalNodeLabelsAreEdgeLabels;
+    }
+
+    public void setInternalNodeLabelsAreEdgeLabels(boolean internalNodeLabelsAreEdgeLabels) {
+        this.internalNodeLabelsAreEdgeLabels = internalNodeLabelsAreEdgeLabels;
     }
 }
 

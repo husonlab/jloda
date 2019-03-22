@@ -26,8 +26,6 @@
  */
 package jloda.graph;
 
-import jloda.util.NotOwnerException;
-
 /**
  * graph base class
  * Daniel Huson, 2002

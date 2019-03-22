@@ -25,7 +25,6 @@ import jloda.graph.NodeIntegerArray;
 
 import java.io.IOException;
 import java.util.BitSet;
-import java.util.List;
 
 /**
  * Compute the distortion score on a tree
@@ -58,11 +57,10 @@ public class HomoplasyScore {
         NodeIntegerArray scoreA = new NodeIntegerArray(tree); // optimal score for subtree labeled A at root
         NodeIntegerArray scoreB = new NodeIntegerArray(tree); // optimal score for subtree labeled B at root
         for (Node v = tree.getFirstNode(); v != null; v = v.getNext()) {
-            List vTaxa = tree.getNode2Taxa(v);
+
             boolean hasA = false;
             boolean hasB = false;
-            for (Object aVTaxa : vTaxa) {
-                int t = (Integer) aVTaxa;
+            for (Integer t : tree.getTaxa(v)) {
                 if (A.get(t))
                     hasA = true;
                 else if (B.get(t))

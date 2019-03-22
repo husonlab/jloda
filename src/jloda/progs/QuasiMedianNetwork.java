@@ -19,12 +19,12 @@
 */
 package jloda.progs;
 
-import jloda.export.PDFExportType;
 import jloda.graph.*;
-import jloda.graphview.GraphView;
-import jloda.graphview.NodeShape;
-import jloda.phylo.PhyloGraph;
-import jloda.phylo.PhyloGraphView;
+import jloda.phylo.PhyloSplitsGraph;
+import jloda.swing.export.PDFExportType;
+import jloda.swing.graphview.GraphView;
+import jloda.swing.graphview.NodeShape;
+import jloda.swing.graphview.PhyloGraphView;
 import jloda.util.Basic;
 import jloda.util.Pair;
 
@@ -113,7 +113,7 @@ public class QuasiMedianNetwork {
         System.err.println("Enter q, g or j");
         aLine = r.readLine();
 
-        PhyloGraph graph;
+        PhyloSplitsGraph graph;
         switch (aLine) {
             case "q":
                 outputSequences = computeQuasiMedianClosure(inputSequences, null, null);
@@ -529,8 +529,8 @@ public class QuasiMedianNetwork {
      * @param sequences
      * @return one-step graph
      */
-    public static PhyloGraph computeOneStepGraph(Set sequences) {
-        PhyloGraph graph = new PhyloGraph();
+    public static PhyloSplitsGraph computeOneStepGraph(Set sequences) {
+        PhyloSplitsGraph graph = new PhyloSplitsGraph();
         for (Object sequence : sequences) {
             String seq = (String) sequence;
             Node v = graph.newNode();
@@ -553,7 +553,7 @@ public class QuasiMedianNetwork {
      *
      * @param graph
      */
-    private static void showGraph(PhyloGraph graph) {
+    private static void showGraph(PhyloSplitsGraph graph) {
         JFrame frame = new JFrame("quasi-median network");
         frame.setSize(400, 400);
 
@@ -615,13 +615,13 @@ public class QuasiMedianNetwork {
      * @param epsilon
      * @return median joining network
      */
-    public static PhyloGraph computeMedianJoiningNetwork(Set inputSequences, double[] weights, int epsilon) {
+    public static PhyloSplitsGraph computeMedianJoiningNetwork(Set inputSequences, double[] weights, int epsilon) {
         System.err.println("Computing the median joining network for epsilon=" + epsilon);
-        PhyloGraph graph;
+        PhyloSplitsGraph graph;
         Set<String> outputSequences = computeMedianJoiningMainLoop(inputSequences, weights, epsilon);
         boolean changed;
         do {
-            graph = new PhyloGraph();
+            graph = new PhyloSplitsGraph();
             EdgeSet feasibleLinks = new EdgeSet(graph);
             computeMinimumSpanningNetwork(outputSequences, weights, 0, graph, feasibleLinks);
             List toDelete = new LinkedList();
@@ -651,7 +651,7 @@ public class QuasiMedianNetwork {
         while (changed) {
             changed = false;
             System.err.println("Median joining: Begin of main loop: " + sequences.size() + " sequences");
-            PhyloGraph graph = new PhyloGraph();
+            PhyloSplitsGraph graph = new PhyloSplitsGraph();
             EdgeSet feasibleLinks = new EdgeSet(graph);
             computeMinimumSpanningNetwork(sequences, weights, epsilon, graph, feasibleLinks);
             if (removeObsoleteNodes(graph, input, sequences)) {
@@ -679,12 +679,12 @@ public class QuasiMedianNetwork {
                         }
                     }
                 }
-                for (Edge e = feasibleLinks.getFirstElement(); e != null; e = feasibleLinks.getNextElement(e)) {
+                for (Edge e : feasibleLinks) {
                     Node u = e.getSource();
                     Node v = e.getTarget();
                     String seqU = (String) u.getInfo();
                     String seqV = (String) v.getInfo();
-                    for (Edge f = feasibleLinks.getNextElement(e); f != null; f = feasibleLinks.getNextElement(f)) {
+                    for (Edge f : feasibleLinks.successors(e)) {
                         Node w;
                         if (f.getSource() == u || f.getSource() == v)
                             w = f.getTarget();
@@ -720,7 +720,7 @@ public class QuasiMedianNetwork {
      * @param graph
      * @param feasibleLinks
      */
-    private static void computeMinimumSpanningNetwork(Set sequences, double[] weights, int epsilon, PhyloGraph graph, EdgeSet feasibleLinks) {
+    private static void computeMinimumSpanningNetwork(Set sequences, double[] weights, int epsilon, PhyloSplitsGraph graph, EdgeSet feasibleLinks) {
         String[] array = (String[]) sequences.toArray(new String[sequences.size()]);
         // compute a distance matrix between all sequences:
         double[][] matrix = new double[array.length][array.length];
@@ -813,7 +813,7 @@ public class QuasiMedianNetwork {
      * @param sequences
      * @return true, if anything was removed
      */
-    private static boolean removeObsoleteNodes(PhyloGraph graph, Set<String> input, Set<String> sequences) {
+    private static boolean removeObsoleteNodes(PhyloSplitsGraph graph, Set<String> input, Set<String> sequences) {
         int removed = 0;
         boolean changed = true;
         while (changed) {

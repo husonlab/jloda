@@ -20,14 +20,14 @@
 package jloda.progs;
 
 import jloda.graph.*;
-import jloda.graphview.EdgeView;
-import jloda.graphview.GraphView;
+import jloda.swing.graphview.EdgeView;
+import jloda.swing.graphview.GraphView;
+import jloda.util.APoint2D;
 
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
-import java.awt.geom.Point2D;
 import java.util.Random;
 
 /**
@@ -90,10 +90,10 @@ public class GraphViewDemo {
 
         // compute simple layout:
         FruchtermanReingoldLayout fruchtermanReingoldLayout = new FruchtermanReingoldLayout(graph, null);
-        NodeArray<Point2D> coordinates = new NodeArray<>(graph);
+        final NodeArray<APoint2D> coordinates = new NodeArray<>(graph);
         fruchtermanReingoldLayout.apply(1000, coordinates);
         for (Node v = graph.getFirstNode(); v != null; v = v.getNext()) {
-            graphView.setLocation(v, coordinates.get(v));
+            graphView.setLocation(v, coordinates.get(v).getX(), coordinates.get(v).getY());
             graphView.setHeight(v, 10);
             graphView.setWidth(v, 10);
         }

@@ -34,7 +34,7 @@ import java.util.*;
 
 /**
  * Selection model
- * Created by huson on 12/15/15.
+ * Daniel Huson 12/2019
  */
 public class ASelectionModel<T> extends MultipleSelectionModel<T> {
     private enum Update {ClearAndAdd, Add, Remove, RemoveAll, SelectAll}
@@ -46,13 +46,15 @@ public class ASelectionModel<T> extends MultipleSelectionModel<T> {
 
     private int focusIndex = -1; // focus index
 
-    private final ObservableList<Integer> unmodifiableSelectedIndices; // unmodifiable list of selected indices
-    private final ObservableList<T> unmodifiableSelectedItems; // unmodifiable list of selected items
+    private final ObservableList<Integer> unmodifiableSelectedIndices = FXCollections.observableArrayList(); // unmodifiable list of selected indices
+    private final ObservableList<T> unmodifiableSelectedItems = FXCollections.observableArrayList(); // unmodifiable list of selected items
 
     private final BooleanProperty empty = new SimpleBooleanProperty(true);
 
     private final BooleanProperty canSelectAll = new SimpleBooleanProperty(false);
     private final BooleanProperty canSelectNone = new SimpleBooleanProperty(false);
+
+    private final BooleanProperty listenersSuspended = new SimpleBooleanProperty(false);
 
     /**
      * Constructor
@@ -63,8 +65,7 @@ public class ASelectionModel<T> extends MultipleSelectionModel<T> {
     public ASelectionModel(T... items) {
         this.items = Arrays.copyOf(items, items.length);  // use copy for safety
 
-        // setup unmodifiable lists
-        {
+
             // first setup observable array lists that listen for changes of the selectedIndices set
             final ObservableList<T> selectedItems = FXCollections.observableArrayList();
 
@@ -78,25 +79,31 @@ public class ASelectionModel<T> extends MultipleSelectionModel<T> {
                                 set.add(ASelectionModel.this.items[i]);
                             }
                             selectedItems.addAll(set);
+                            if (!getListenersSuspended()) {
+                                unmodifiableSelectedIndices.addAll(c.getAddedSubList());
+                                unmodifiableSelectedItems.addAll(set);
+                            }
                         } else if (c.wasRemoved()) {
                             final ArrayList<T> set = new ArrayList<>(c.getRemovedSize());
                             for (int i : c.getRemoved()) {
                                 set.add(ASelectionModel.this.items[i]);
+                                if (!getListenersSuspended()) {
+                                    unmodifiableSelectedIndices.removeAll(c.getAddedSubList());
+                                    unmodifiableSelectedItems.removeAll(set);
+                                }
                             }
                             selectedItems.removeAll(set);
                         }
-                        canSelectAll.set(ASelectionModel.this.items.length > 0 && selectedItems.size() < ASelectionModel.this.items.length);
-                        canSelectNone.set(ASelectionModel.this.items.length > 0 && selectedItems.size() > 0);
-
+                        if (!getListenersSuspended()) {
+                            canSelectAll.set(ASelectionModel.this.items.length > 0 && selectedItems.size() < ASelectionModel.this.items.length);
+                            canSelectNone.set(ASelectionModel.this.items.length > 0 && selectedItems.size() > 0);
+                        }
                     }
-
                 }
             });
             // wrap a unmodifiable observable list around the observable arrays lists
-            unmodifiableSelectedIndices = FXCollections.unmodifiableObservableList(selectedIndicesList);
-            unmodifiableSelectedItems = FXCollections.unmodifiableObservableList(selectedItems);
-        }
-        empty.bind(Bindings.size(selectedIndicesList).isEqualTo(0));
+
+        empty.bind(Bindings.size(unmodifiableSelectedIndices).isEqualTo(0));
     }
 
     /**
@@ -217,7 +224,7 @@ public class ASelectionModel<T> extends MultipleSelectionModel<T> {
         }
     }
 
-    public void selectItems(java.util.Collection<T> collection) {
+    public void selectItems(java.util.Collection<? extends T> collection) {
         final Set<T> set = (collection instanceof Set ? (Set) collection : new HashSet<T>(collection));
         final BitSet toSelect = new BitSet();
         for (int i = 0; i < items.length; i++) {
@@ -228,7 +235,7 @@ public class ASelectionModel<T> extends MultipleSelectionModel<T> {
         update(Update.Add, toSelect);
     }
 
-    public void clearSelection(java.util.Collection<T> collection) {
+    public void clearSelection(java.util.Collection<? extends T> collection) {
         final Set<T> set = (collection instanceof Set ? (Set) collection : new HashSet<T>(collection));
         final BitSet toClear = new BitSet();
         for (int i = 0; i < items.length; i++) {
@@ -316,8 +323,10 @@ public class ASelectionModel<T> extends MultipleSelectionModel<T> {
     public void setItems(T... items) {
         clearSelection();
         this.items = Arrays.copyOf(items, items.length);// use copy for safety
-        canSelectAll.set(true);
-        canSelectNone.set(false);
+        if (!getListenersSuspended()) {
+            canSelectAll.set(true);
+            canSelectNone.set(false);
+        }
     }
 
     /**
@@ -328,8 +337,10 @@ public class ASelectionModel<T> extends MultipleSelectionModel<T> {
     public void setItems(Collection<T> items) {
         clearSelection();
         this.items = Basic.toArray(items);
-        canSelectAll.set(true);
-        canSelectNone.set(false);
+        if (!getListenersSuspended()) {
+            canSelectAll.set(true);
+            canSelectNone.set(false);
+        }
     }
 
     /**
@@ -381,5 +392,17 @@ public class ASelectionModel<T> extends MultipleSelectionModel<T> {
 
     public ReadOnlyBooleanProperty canSelectNoneProperty() {
         return canSelectNone;
+    }
+
+    public boolean getListenersSuspended() {
+        return listenersSuspended.get();
+    }
+
+    public BooleanProperty listenersSuspendedProperty() {
+        return listenersSuspended;
+    }
+
+    public void setListenersSuspended(boolean listenersSuspended) {
+        this.listenersSuspended.set(listenersSuspended);
     }
 }

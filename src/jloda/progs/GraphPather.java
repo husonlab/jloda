@@ -20,7 +20,7 @@
 package jloda.progs;
 
 import jloda.graph.*;
-import jloda.util.CommandLineOptions;
+import jloda.swing.util.CommandLineOptions;
 import jloda.util.UsageException;
 
 import java.io.*;
@@ -135,32 +135,32 @@ public class GraphPather {
 
             if (degree.get(v) == 0 && degree.get(w) == 0) {
                 selected.add(e);
-                degree.set(v, 1);
-                degree.set(w, 1);
-                other.set(v, w);
-                other.set(w, v);
+                degree.put(v, 1);
+                degree.put(w, 1);
+                other.put(v, w);
+                other.put(w, v);
             } else if (degree.get(v) == 0 && degree.get(w) == 1) {
                 selected.add(e);
-                degree.set(v, 1);
-                degree.set(w, 2);
+                degree.put(v, 1);
+                degree.put(w, 2);
                 Node u = other.get(w);
-                other.set(u, v);
-                other.set(v, u);
+                other.put(u, v);
+                other.put(v, u);
             } else if (degree.get(v) == 1 && degree.get(w) == 0) {
                 selected.add(e);
-                degree.set(v, 2);
-                degree.set(w, 1);
+                degree.put(v, 2);
+                degree.put(w, 1);
                 Node u = other.get(v);
-                other.set(u, w);
-                other.set(w, u);
+                other.put(u, w);
+                other.put(w, u);
             } else if (degree.get(v) == 1 && degree.get(w) == 1 && other.get(v) != w) {
                 selected.add(e);
-                degree.set(v, 2);
-                degree.set(w, 2);
+                degree.put(v, 2);
+                degree.put(w, 2);
                 Node uv = other.get(v);
                 Node uw = other.get(w);
-                other.set(uv, uw);
-                other.set(uw, uv);
+                other.put(uv, uw);
+                other.put(uw, uv);
             }
         }
         List<Edge> toDelete = new LinkedList<>();

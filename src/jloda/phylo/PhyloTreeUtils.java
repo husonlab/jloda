@@ -1,4 +1,4 @@
-/**
+/*
  * PhyloTreeUtils.java 
  * Copyright (C) 2019 Daniel H. Huson
  *
@@ -21,6 +21,8 @@ package jloda.phylo;
 
 import jloda.graph.Edge;
 import jloda.graph.Node;
+import jloda.graph.NodeSet;
+import jloda.util.Pair;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -322,5 +324,58 @@ public class PhyloTreeUtils {
 				return false;
 		}
 		return true;
+	}
+
+	/**
+	 * gets the average distance from this node to a leaf.
+	 *
+	 * @param v
+	 * @return average distance to a leaf
+	 */
+	public static double computeAverageDistanceToALeaf(PhyloTree tree, Node v) {
+		// assumes that all edges are oriented away from the root
+		NodeSet seen = new NodeSet(tree);
+		Pair<Double, Integer> pair = new Pair<>(0.0, 0);
+		computeAverageDistanceToLeafRec(tree, v, null, 0, seen, pair);
+		double sum = pair.getFirstDouble();
+		int leaves = pair.getSecondInt();
+		if (leaves > 0)
+			return sum / leaves;
+		else
+			return 0;
+	}
+
+	/**
+	 * recursively does the work
+	 *
+	 * @param v
+	 * @param distance from root
+	 * @param seen
+	 * @param pair
+	 */
+	private static void computeAverageDistanceToLeafRec(PhyloTree tree, Node v, Edge e, double distance, NodeSet seen, Pair<Double, Integer> pair) {
+		if (!seen.contains(v)) {
+			seen.add(v);
+
+			if (v.getOutDegree() > 0) {
+				for (Edge f : v.adjacentEdges()) {
+					if (f != e) {
+						computeAverageDistanceToLeafRec(tree, f.getOpposite(v), f, distance + tree.getWeight(f), seen, pair);
+					}
+				}
+			} else {
+				pair.setFirst(pair.getFirst() + distance);
+				pair.setSecond(pair.getSecond() + 1);
+			}
+		}
+	}
+
+
+	public static double computeTotalWeight(PhyloTree tree) {
+		double length = 0;
+		for (Edge e : tree.edges()) {
+			length += tree.getWeight(e);
+		}
+		return length;
 	}
 }

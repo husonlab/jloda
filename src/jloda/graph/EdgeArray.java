@@ -1,30 +1,27 @@
-/**
- * EdgeArray.java 
+/*
+ * EdgeArray.java
  * Copyright (C) 2019 Daniel H. Huson
- *
+ * <p>
  * (Some files contain contributions from other authors, who are then mentioned separately.)
- *
+ * <p>
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
- *
+ * <p>
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
- *
+ * <p>
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
-*/
-/**
- * @version $Id: EdgeArray.java,v 1.11 2005-12-05 13:25:44 huson Exp $
- *
- * @author Daniel Huson
- *
  */
 package jloda.graph;
 
+
+import java.util.Iterator;
+import java.util.NoSuchElementException;
 
 /**
  * Edge array
@@ -55,9 +52,9 @@ public class EdgeArray<T> extends GraphBase implements EdgeAssociation<T> {
      */
     public EdgeArray(Graph g, T obj) {
         this(g);
-        setAll(obj);
+        putAll(obj);
         if (obj != null && isClear)
-            isClear = true;
+            isClear = false;
     }
 
     /**
@@ -68,7 +65,7 @@ public class EdgeArray<T> extends GraphBase implements EdgeAssociation<T> {
     public EdgeArray(EdgeAssociation<T> src) {
         setOwner(src.getOwner());
         for (Edge e = getOwner().getFirstEdge(); e != null; e = e.getNext())
-            set(e, src.get(e));
+            put(e, src.getValue(e));
         isClear = src.isClear();
     }
 
@@ -78,12 +75,16 @@ public class EdgeArray<T> extends GraphBase implements EdgeAssociation<T> {
      * @param e Edge
      * @return an object the entry for edge e
      */
-    public T get(Edge e) {
+    public T getValue(Edge e) {
         checkOwner(e);
         if (e.getId() < data.length)
             return data[e.getId()];
         else
             return null;
+    }
+
+    public T get(Edge e) {
+        return getValue(e);
     }
 
     /**
@@ -92,7 +93,7 @@ public class EdgeArray<T> extends GraphBase implements EdgeAssociation<T> {
      * @param e   Edge
      * @param obj Object
      */
-    public void set(Edge e, T obj) {
+    public void put(Edge e, T obj) {
         checkOwner(e);
         int id = e.getId();
         if (id >= data.length) {
@@ -102,7 +103,17 @@ public class EdgeArray<T> extends GraphBase implements EdgeAssociation<T> {
         }
         data[id] = obj;
         if (obj != null && isClear)
-            isClear = true;
+            isClear = false;
+    }
+
+    @Override
+    public void setValue(Edge e, T obj) {
+        this.put(e, obj);
+    }
+
+    @Override
+    public void setAll(T obj) {
+        this.putAll(obj);
     }
 
     /**
@@ -130,11 +141,11 @@ public class EdgeArray<T> extends GraphBase implements EdgeAssociation<T> {
      *
      * @param obj Object
      */
-    public void setAll(T obj) {
+    public void putAll(T obj) {
         for (Edge e = getOwner().getFirstEdge(); e != null; e = e.getNext())
-            set(e, obj);
+            put(e, obj);
         if (obj != null && isClear)
-            isClear = true;
+            isClear = false;
     }
 
     /**
@@ -145,43 +156,9 @@ public class EdgeArray<T> extends GraphBase implements EdgeAssociation<T> {
             data = (T[]) new Object[getOwner().getMaxEdgeId() + 1];
         else
             for (Edge e = getOwner().getFirstEdge(); e != null; e = e.getNext())
-                set(e, null);
+                put(e, null);
         isClear = true;
     }
-
-    /**
-     * get the entry as an int
-     *
-     * @param e
-     * @return int value
-     */
-    public int getInt(Edge e) {
-        Object obj = get(e);
-        if (obj == null)
-            return 0;
-        else if (obj instanceof Double)
-            return (int) ((Double) obj).doubleValue();
-        else
-            return ((Integer) obj);
-
-    }
-
-    /**
-     * get the entry as a double
-     *
-     * @param e
-     * @return double value
-     */
-    public double getDouble(Edge e) {
-        Object obj = get(e);
-        if (obj == null)
-            return 0;
-        else if (obj instanceof Integer)
-            return ((Integer) obj);
-        else
-            return ((Double) obj);
-    }
-
 
     /**
      * is clean, that is, has never been set since last erase
@@ -191,6 +168,47 @@ public class EdgeArray<T> extends GraphBase implements EdgeAssociation<T> {
     public boolean isClear() {
         return isClear;
     }
+
+    /**
+     * get an iterator over all non-null values
+     *
+     * @return iterator
+     */
+    public Iterable<T> values() {
+        return () -> new Iterator<T>() {
+            private Edge e = getOwner().getFirstEdge();
+
+            {
+                while (e != null) {
+                    if (data[e.getId()] != null)
+                        break;
+                    e = e.getNext();
+                }
+            }
+
+            @Override
+            public boolean hasNext() {
+                return e != null;
+            }
+
+            @Override
+            public T next() {
+                if (e == null)
+                    throw new NoSuchElementException();
+                T result = data[e.getId()];
+                e = e.getNext();
+                {
+                    while (e != null) {
+                        if (data[e.getId()] != null)
+                            break;
+                        e = e.getNext();
+                    }
+                }
+                return result;
+            }
+        };
+    }
 }
+
 
 // EOF

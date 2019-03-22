@@ -21,7 +21,6 @@ package jloda.graph;
 
 
 import jloda.util.Basic;
-import jloda.util.NotOwnerException;
 
 import java.util.BitSet;
 import java.util.LinkedList;

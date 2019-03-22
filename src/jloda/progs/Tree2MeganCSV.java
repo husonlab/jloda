@@ -20,11 +20,11 @@
 package jloda.progs;
 
 import jloda.graph.Node;
-import jloda.graphview.IGraphDrawer;
-import jloda.phylo.PhyloGraphView;
 import jloda.phylo.PhyloTree;
-import jloda.phylo.TreeDrawerRadial;
-import jloda.util.CommandLineOptions;
+import jloda.swing.graphview.IGraphDrawer;
+import jloda.swing.graphview.PhyloGraphView;
+import jloda.swing.graphview.TreeDrawerRadial;
+import jloda.swing.util.CommandLineOptions;
 import jloda.util.UsageException;
 
 import javax.swing.*;

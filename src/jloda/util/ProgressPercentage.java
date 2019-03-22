@@ -1,22 +1,22 @@
 /**
- * ProgressPercentage.java 
+ * ProgressPercentage.java
  * Copyright (C) 2019 Daniel H. Huson
- *
+ * <p>
  * (Some files contain contributions from other authors, who are then mentioned separately.)
- *
+ * <p>
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
- *
+ * <p>
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
- *
+ * <p>
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
-*/
+ */
 package jloda.util;
 
 
@@ -24,7 +24,7 @@ package jloda.util;
  * progress listener that writes percentages to the command line
  *
  * @author huson
- *         Date: 26-Jun-2004
+ * Date: 26-Jun-2004
  */
 public class ProgressPercentage implements ProgressListener {
     private long steps = 0;
@@ -47,6 +47,7 @@ public class ProgressPercentage implements ProgressListener {
 
     /**
      * constructor
+     *
      * @param maxSteps
      */
     public ProgressPercentage(long maxSteps) {
@@ -57,6 +58,7 @@ public class ProgressPercentage implements ProgressListener {
 
     /**
      * constructor
+     *
      * @param taskName
      */
     public ProgressPercentage(final String taskName) {
@@ -66,6 +68,7 @@ public class ProgressPercentage implements ProgressListener {
 
     /**
      * constructor
+     *
      * @param taskName
      * @param maxSteps
      */
@@ -176,7 +179,7 @@ public class ProgressPercentage implements ProgressListener {
         if (!reportedCompleted && steps > 0)
             reportTaskCompleted();
         if (subtaskName != null)
-            System.err.println(subtaskName.endsWith("...") ? subtaskName : subtaskName + "...");
+            System.err.println(subtaskName);
     }
 
     public void setCancelable(boolean enabled) {
@@ -189,7 +192,7 @@ public class ProgressPercentage implements ProgressListener {
     public void setUserCancelled(boolean userCancelled) {
     }
 
-    public synchronized void incrementProgress() {
+    public void incrementProgress() {
         setProgress(steps + 1);
     }
 
@@ -205,4 +208,3 @@ public class ProgressPercentage implements ProgressListener {
     public void setDebug(boolean debug) {
     }
 }
-

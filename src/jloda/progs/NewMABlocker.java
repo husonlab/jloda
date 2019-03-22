@@ -22,8 +22,8 @@ package jloda.progs;
 import jloda.graph.Graph;
 import jloda.graph.Node;
 import jloda.graph.NodeIntegerArray;
+import jloda.swing.util.CommandLineOptions;
 import jloda.util.Basic;
-import jloda.util.CommandLineOptions;
 import jloda.util.FastA;
 
 import java.io.File;

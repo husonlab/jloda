@@ -19,7 +19,7 @@
 */
 package jloda.progs;
 
-import jloda.util.CommandLineOptions;
+import jloda.swing.util.CommandLineOptions;
 import jloda.util.UsageException;
 
 import java.io.*;

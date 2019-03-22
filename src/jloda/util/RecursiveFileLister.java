@@ -19,6 +19,8 @@
 
 package jloda.util;
 
+import jloda.swing.util.FileFilterBase;
+
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;

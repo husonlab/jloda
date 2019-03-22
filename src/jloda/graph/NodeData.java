@@ -1,4 +1,4 @@
-/**
+/*
  * NodeData.java 
  * Copyright (C) 2019 Daniel H. Huson
  *

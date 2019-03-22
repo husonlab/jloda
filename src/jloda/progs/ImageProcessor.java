@@ -24,7 +24,7 @@ package jloda.progs;
  * Daniel Huson, 3.2008
  */
 
-import jloda.util.CommandLineOptions;
+import jloda.swing.util.CommandLineOptions;
 import jloda.util.UsageException;
 
 import javax.imageio.ImageIO;

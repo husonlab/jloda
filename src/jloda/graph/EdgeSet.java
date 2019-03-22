@@ -1,22 +1,35 @@
 /**
- * EdgeSet.java 
+ * EdgeSet.java
  * Copyright (C) 2019 Daniel H. Huson
- *
+ * <p>
  * (Some files contain contributions from other authors, who are then mentioned separately.)
- *
+ * <p>
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
- *
+ * <p>
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
- *
+ * <p>
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
-*/
+ * <p>
+ * Edge set
+ *
+ * @author Daniel Huson, 2003
+ * <p>
+ * Edge set
+ * @author Daniel Huson, 2003
+ * <p>
+ * Edge set
+ * @author Daniel Huson, 2003
+ * <p>
+ * Edge set
+ * @author Daniel Huson, 2003
+ */
 /**
  * Edge set
  * @author Daniel Huson, 2003
@@ -24,14 +37,15 @@
  */
 package jloda.graph;
 
-import jloda.util.IteratorAdapter;
-
-import java.util.*;
+import java.util.BitSet;
+import java.util.Collection;
+import java.util.Iterator;
+import java.util.Set;
 
 /**
  * EdgeSet implements a set of edges contained in a given graph
  */
-public class EdgeSet extends GraphBase implements Set<Edge> {
+public class EdgeSet extends GraphBase implements Set<Edge>, Iterable<Edge> {
     final BitSet bits;
 
     /**
@@ -52,7 +66,7 @@ public class EdgeSet extends GraphBase implements Set<Edge> {
      * @return a boolean value
      */
     public boolean contains(Object e) {
-        return bits.get(getOwner().getId((Edge) e));
+        return e instanceof Edge && bits.get(((Edge) e).getId());
     }
 
     /**
@@ -65,7 +79,7 @@ public class EdgeSet extends GraphBase implements Set<Edge> {
         if (contains(e))
             return false;
         else {
-            bits.set(getOwner().getId(e), true);
+            bits.set(e.getId(), true);
             return true;
         }
     }
@@ -76,8 +90,8 @@ public class EdgeSet extends GraphBase implements Set<Edge> {
      * @param e Edge
      */
     public boolean remove(Object e) {
-        if (contains(e)) {
-            bits.set(getOwner().getId((Edge) e), false);
+        if (e instanceof Edge && contains(e)) {
+            bits.set(((Edge) e).getId(), false);
             return true;
         } else
             return false;
@@ -90,16 +104,15 @@ public class EdgeSet extends GraphBase implements Set<Edge> {
      * @param collection
      * @return true, if some element is new
      */
-    public boolean addAll(Collection collection) {
-        Iterator it = collection.iterator();
-
+    public boolean addAll(Collection<? extends Edge> collection) {
         boolean result = false;
-        while (it.hasNext()) {
-            if (add((Edge) it.next()))
+        for (Edge edge : collection) {
+            if (add(edge))
                 result = true;
         }
         return result;
     }
+
 
     /**
      * returns true if all elements of collection are contained in this set
@@ -140,17 +153,16 @@ public class EdgeSet extends GraphBase implements Set<Edge> {
      * @return true, if set changes
      */
     public boolean retainAll(Collection collection) {
-        boolean changed = (collection.size() != size() || !containsAll(collection));
-        EdgeSet was = (EdgeSet) this.clone();
+        final int old = bits.cardinality();
+        final BitSet newBits = new BitSet();
 
-        clear();
-        for (Object e : collection) {
-            if (e instanceof Edge) {
-                if (was.contains(e))
-                    add((Edge) e);
+        for (Object obj : collection) {
+            if (obj instanceof Edge) {
+                newBits.set(((Edge) obj).getId());
             }
         }
-        return changed;
+        bits.and(newBits);
+        return old != bits.cardinality();
     }
 
     /**
@@ -177,21 +189,16 @@ public class EdgeSet extends GraphBase implements Set<Edge> {
     public Edge[] toArray() {
         Edge[] result = new Edge[bits.cardinality()];
         int i = 0;
-        Iterator<Edge> it = getOwner().edgeIterator();
-        while (it.hasNext()) {
-            Edge e = it.next();
+        for (Edge e : getOwner().edges()) {
             if (contains(e))
                 result[i++] = e;
         }
         return result;
     }
 
-
     public <T> T[] toArray(T[] ts) {
         int i = 0;
-        Iterator<Edge> it = getOwner().edgeIterator();
-        while (it.hasNext()) {
-            Edge e = it.next();
+        for (Edge e : getOwner().edges()) {
             if (contains(e))
                 ts[i++] = (T) e;
         }
@@ -202,9 +209,9 @@ public class EdgeSet extends GraphBase implements Set<Edge> {
      * Puts all edges into set.
      */
     public void addAll() {
-        Iterator<Edge> it = getOwner().edgeIterator();
-        while (it.hasNext())
-            add(it.next());
+        for (Edge e : getOwner().edges()) {
+            add(e);
+        }
     }
 
     /**
@@ -222,97 +229,46 @@ public class EdgeSet extends GraphBase implements Set<Edge> {
      * @return an enumeration of the elements in the set
      */
     public Iterator<Edge> iterator() {
-        return new IteratorAdapter<Edge>() {
-            private Edge e = getFirstElement();
+        return successors(null).iterator();
+    }
 
-            protected Edge findNext() throws NoSuchElementException {
-                if (e != null) {
-                    final Edge result = e;
-                    e = getNextElement(e);
-                    return result;
-                } else {
-                    throw new NoSuchElementException("at end");
+    /**
+     * gets all successors
+     *
+     * @param afterMe
+     * @return all successors
+     */
+    public Iterable<Edge> successors(final Edge afterMe) {
+        return () -> new Iterator<Edge>() {
+            Edge e = (afterMe == null ? getOwner().getFirstEdge() : afterMe.getNext());
+
+            {
+                while (e != null) {
+                    if (contains(e))
+                        break;
+                    e = e.getNext();
                 }
             }
+
+            @Override
+            public boolean hasNext() {
+                return e != null;
+            }
+
+            @Override
+            public Edge next() {
+                Edge result = e;
+                {
+                    e = e.getNext();
+                    while (e != null) {
+                        if (contains(e))
+                            break;
+                        e = e.getNext();
+                    }
+                }
+                return result;
+            }
         };
-    }
-
-    /**
-     * returns the edges in the given array, if they fit, or in a new array, otherwise
-     *
-     * @param edges
-     * @return edges in this set
-     */
-    public Edge[] toArray(Edge[] edges) {
-        return toArray();
-        /*
-        if (edges == null)
-            throw new NullPointerException();
-        if (bits.cardinality() > edges.length)
-            edges = (Edge[]) Array.newInstance((edges[0]).getClass(), bits.cardinality());
-
-        int i = 0;
-        Iterator it = getOwner().edgeIterator();
-        while (it.hasNext()) {
-            Edge v = it.next();
-            if (contains(v) == true)
-                edges[i++] = it.next();
-        }
-        return edges;
-        */
-    }
-
-    /**
-     * Returns the first element in the set.
-     *
-     * @return v Edge
-     */
-    public Edge getFirstElement() {
-        Edge e;
-        for (e = getOwner().getFirstEdge(); e != null; e = getOwner().getNextEdge(e))
-            if (contains(e))
-                break;
-        return e;
-    }
-
-    /**
-     * Gets the successor element in the set.
-     *
-     * @param v Edge
-     * @return a Edge the successor of edge v
-     */
-    public Edge getNextElement(Edge v) {
-        for (v = getOwner().getNextEdge(v); v != null; v = getOwner().getNextEdge(v))
-            if (contains(v))
-                break;
-        return v;
-    }
-
-    /**
-     * Gets the predecessor element in the set.
-     *
-     * @param v Edge
-     * @return a Edge the predecessor of edge v
-     */
-    public Edge getPrevElement(Edge v) {
-        for (v = getOwner().getPrevEdge(v); v != null; v = getOwner().getPrevEdge(v))
-            if (contains(v))
-                break;
-        return v;
-    }
-
-
-    /**
-     * Returns the last element in the set.
-     *
-     * @return the Edge the last element in the set
-     */
-    public Edge getLastElement() {
-        Edge v = null;
-        for (v = getOwner().getLastEdge(); v != null; v = getOwner().getPrevEdge(v))
-            if (contains(v))
-                break;
-        return v;
     }
 
     /**
@@ -322,7 +278,7 @@ public class EdgeSet extends GraphBase implements Set<Edge> {
      */
     public Object clone() {
         EdgeSet result = new EdgeSet(getOwner());
-        for (Edge edge : this) result.add(edge);
+        result.addAll(this);
         return result;
     }
 
@@ -334,6 +290,32 @@ public class EdgeSet extends GraphBase implements Set<Edge> {
      */
     public boolean intersects(EdgeSet aset) {
         return bits.intersects(aset.bits);
+    }
+
+    /**
+     * gets the first element or null
+     *
+     * @return first element or null
+     */
+    public Edge getFirstElement() {
+        final Iterator<Edge> it = iterator();
+        if (it.hasNext())
+            return it.next();
+        else
+            return null;
+    }
+
+    /**
+     * gets the last edge or null. Not efficient,
+     *
+     * @return last edge or null
+     */
+    public Edge getLastElement() {
+        for (Edge e = getOwner().getLastEdge(); e != null; e = e.getPrev()) {
+            if (contains(e))
+                return null;
+        }
+        return null;
     }
 }
 

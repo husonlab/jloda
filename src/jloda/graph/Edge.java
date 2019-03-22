@@ -1,38 +1,30 @@
-/**
- * Edge.java 
+/*
+ * Edge.java
  * Copyright (C) 2019 Daniel H. Huson
- *
+ * <p>
  * (Some files contain contributions from other authors, who are then mentioned separately.)
- *
+ * <p>
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
- *
+ * <p>
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
- *
+ * <p>
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
-*/
-/**
- * @version $Id: Edge.java,v 1.17 2010-06-10 12:07:57 scornava Exp $
- *
- * @author Daniel Huson
- *
  */
 package jloda.graph;
-
-import jloda.util.NotOwnerException;
 
 /**
  * Edge class used by Graph class
  *
  * @author Daniel Huson, 2003
  */
-public class Edge extends NodeEdge implements Comparable {
+public class Edge extends NodeEdge implements Comparable<Edge> {
     /**
      * insert before reference edge
      */
@@ -58,7 +50,7 @@ public class Edge extends NodeEdge implements Comparable {
      * @param v
      * @param w
      */
-    public Edge(Graph G, Node v, Node w) throws IllegalSelfEdgeException {
+    Edge(Graph G, Node v, Node w) throws IllegalSelfEdgeException {
         this(G, v, null, w, null, Edge.AFTER, Edge.AFTER, null);
     }
 
@@ -71,7 +63,7 @@ public class Edge extends NodeEdge implements Comparable {
      * @param w
      * @param obj
      */
-    public Edge(Graph G, Node v, Node w, Object obj) throws IllegalSelfEdgeException {
+    Edge(Graph G, Node v, Node w, Object obj) throws IllegalSelfEdgeException {
         this(G, v, null, w, null, Edge.AFTER, Edge.AFTER, obj);
     }
 
@@ -87,7 +79,7 @@ public class Edge extends NodeEdge implements Comparable {
      * @param dir_w place before or after target reference edge
      * @param obj   the info object
      */
-    public Edge(final Graph graph, final Node v, final Edge e_v, final Node w, final Edge e_w, final int dir_v, final int dir_w, final Object obj) throws IllegalSelfEdgeException {
+    Edge(final Graph graph, final Node v, final Edge e_v, final Node w, final Edge e_w, final int dir_v, final int dir_w, final Object obj) throws IllegalSelfEdgeException {
         if (v == w)
             throw new IllegalSelfEdgeException();
         graph.registerNewEdge(v, e_v, w, e_w, dir_v, dir_w, obj, this);
@@ -287,8 +279,6 @@ public class Edge extends NodeEdge implements Comparable {
         if (getInfo() != null)
             buf.append(getInfo().toString());
         buf.append("]: ").append(source.getId()).append(" ").append(target.getId());
-        if (isHidden())
-            buf.append(" (hidden)");
         return buf.toString();
     }
 
@@ -333,10 +323,7 @@ public class Edge extends NodeEdge implements Comparable {
      * @return next edge in list of all edges
      */
     public Edge getNext() {
-        Edge e = (Edge) next;
-        while (e != null && e.isHidden())
-            e = (Edge) e.next;
-        return e;
+        return (Edge) next;
     }
 
     /**
@@ -345,10 +332,7 @@ public class Edge extends NodeEdge implements Comparable {
      * @return previous edge in list of all edges
      */
     public Edge getPrev() {
-        Edge e = (Edge) prev;
-        while (e != null && e.isHidden())
-            e = (Edge) e.prev;
-        return e;
+        return (Edge) prev;
     }
 
 
@@ -375,18 +359,12 @@ public class Edge extends NodeEdge implements Comparable {
     /**
      * compares with another edge of the same graph
      *
-     * @param o
+     * @param e
      * @return -1, 1 or 0
      */
-    public int compareTo(Object o) {
-        final Edge e = (Edge) o;
+    public int compareTo(Edge e) {
         checkOwner(e);
-        if (this.getId() < e.getId())
-            return -1;
-        else if (this.getId() > e.getId())
-            return 1;
-        else
-            return 0;
+        return Integer.compare(this.getId(), e.getId());
     }
 
     /**

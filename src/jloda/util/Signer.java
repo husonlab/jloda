@@ -19,6 +19,8 @@
 */
 package jloda.util;
 
+import jloda.swing.util.ResourceManager;
+
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;

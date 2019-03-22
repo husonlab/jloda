@@ -20,7 +20,6 @@
 package jloda.graph;
 
 import jloda.util.Basic;
-import jloda.util.NotOwnerException;
 
 import java.util.*;
 
@@ -48,7 +47,7 @@ public class Dijkstra {
             // init:
             for (Node v = graph.getFirstNode(); v != null; v = graph.getNextNode(v)) {
                 dist.set(v, 1000000);
-                predecessor.set(v, null);
+                predecessor.put(v, null);
             }
             dist.set(source, 0);
 
@@ -68,7 +67,7 @@ public class Dijkstra {
                         priorityQueue.remove(v);
                         dist.set(v, dist.getValue(u) + weight);
                         priorityQueue.add(v);
-                        predecessor.set(v, u);
+                        predecessor.put(v, u);
                     }
                 }
             }

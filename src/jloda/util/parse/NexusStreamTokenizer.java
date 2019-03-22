@@ -1,29 +1,27 @@
 /**
- * NexusStreamTokenizer.java 
+ * NexusStreamTokenizer.java
  * Copyright (C) 2019 Daniel H. Huson
- *
+ * <p>
  * (Some files contain contributions from other authors, who are then mentioned separately.)
- *
+ * <p>
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
- *
+ * <p>
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
- *
+ * <p>
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
-*/
-/**
+ * <p>
  * tokenizer for nexus streams and similar input
  *
  * @author Daniel Huson, 2002
- *
+ * <p>
  */
-
 package jloda.util.parse;
 
 import java.io.IOException;
@@ -35,7 +33,10 @@ import java.util.LinkedList;
 import java.util.Stack;
 
 /**
- * Tokenizer for NexusBlock input stream
+ * tokenizer for nexus streams and similar input
+ *
+ * @author Daniel Huson, 2002
+ *
  */
 public class NexusStreamTokenizer extends StreamTokenizer {
     final public static String STRICT_PUNCTUATION = "(){}/\\,;:=*\"`+-<>";
@@ -65,12 +66,14 @@ public class NexusStreamTokenizer extends StreamTokenizer {
 
     private boolean collectAllComments = false;
     private String comment = null;
+    private boolean echoCommentsWithExclamationMark = true;
 
     // we need these so that we can peek ahead as far as we like
     private final LinkedList<Double> nvals = new LinkedList<>();
     private final LinkedList<String> svals = new LinkedList<>();
     private final LinkedList<Integer> ttypes = new LinkedList<>();
     private final LinkedList<Integer> lines = new LinkedList<>();
+
 
     /**
      * Construct a new NexusBlock object for the specified reader
@@ -79,7 +82,6 @@ public class NexusStreamTokenizer extends StreamTokenizer {
         super(r);
         setSyntax();
     }
-
 
     /**
      * Get the next token and returns its type.
@@ -121,9 +123,9 @@ public class NexusStreamTokenizer extends StreamTokenizer {
 // Set the comment String
 
                 if (sval != null) {
-                    if (collectAllComments && comment != null)
+                    if (collectAllComments && comment != null) {
                         comment += "\n" + (sval.startsWith("!") ? sval.substring(1) : sval);
-                    else
+                    } else
                         comment = (sval.startsWith("!") ? sval.substring(1) : sval);
                 }
                 nval = super.nval;
@@ -131,16 +133,18 @@ public class NexusStreamTokenizer extends StreamTokenizer {
                 line = super.lineno();
                 if (ttype == TT_WORD && sval.charAt(0) == '!') {
                     verbose = true;
-                    System.err.print("[");
+                    if (echoCommentsWithExclamationMark)
+                        System.err.print("[");
                 }
                 while (tt != (int) ']') {
                     if (tt == TT_EOF) {
                         setSyntax();
-                        throw new java.io.IOException
-                                ("Line " + cline + ": start of unterminated comment");
+                        throw new java.io.IOException("Line " + cline + ": start of unterminated comment");
                     }
-                    if (verbose && ttype == TT_WORD)
-                        System.err.println(sval);
+                    if (verbose && ttype == TT_WORD) {
+                        if (echoCommentsWithExclamationMark)
+                            System.err.println(sval);
+                    }
                     tt = super.nextToken();
                     sval = super.sval;
                     if (sval != null) {
@@ -153,7 +157,7 @@ public class NexusStreamTokenizer extends StreamTokenizer {
                     ttype = super.ttype;
                     line = super.lineno();
                 }
-                if (verbose)
+                if (verbose && echoCommentsWithExclamationMark)
                     System.err.println("]");
                 setSyntax();
                 tt = super.nextToken();
@@ -441,6 +445,14 @@ public class NexusStreamTokenizer extends StreamTokenizer {
 
     public void setSquareBracketsSurroundComments(boolean squareBracketsSurroundComments) {
         this.squareBracketsSurroundComments = squareBracketsSurroundComments;
+    }
+
+    public boolean isEchoCommentsWithExclamationMark() {
+        return echoCommentsWithExclamationMark;
+    }
+
+    public void setEchoCommentsWithExclamationMark(boolean echoCommentsWithExclamationMark) {
+        this.echoCommentsWithExclamationMark = echoCommentsWithExclamationMark;
     }
 }
 

@@ -20,8 +20,8 @@
 package jloda.progs;
 
 import jloda.graph.Node;
-import jloda.phylo.PhyloGraph;
-import jloda.phylo.PhyloGraphView;
+import jloda.phylo.PhyloSplitsGraph;
+import jloda.swing.graphview.PhyloGraphView;
 
 import javax.swing.*;
 import java.awt.*;
@@ -127,7 +127,7 @@ public class QuasiMedianClosure {
     }
 
     private static void showGraph(Set oldSequences) {
-        PhyloGraph graph = new PhyloGraph();
+        PhyloSplitsGraph graph = new PhyloSplitsGraph();
         for (Object oldSequence : oldSequences) {
             String seq = (String) oldSequence;
             Node v = graph.newNode();

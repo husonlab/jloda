@@ -19,12 +19,8 @@
 */
 package jloda.progs;
 
-import jloda.graphview.IGraphDrawer;
-import jloda.graphview.ITransformChangeListener;
-import jloda.graphview.Transform;
-import jloda.phylo.PhyloGraphView;
 import jloda.phylo.PhyloTree;
-import jloda.phylo.TreeDrawerCircular;
+import jloda.swing.graphview.*;
 
 import javax.swing.*;
 import java.awt.*;
