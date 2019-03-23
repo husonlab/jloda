@@ -36,7 +36,7 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package jloda.fx;
+package jloda.fx.util;
 
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;

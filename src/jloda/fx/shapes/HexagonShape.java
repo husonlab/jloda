@@ -40,7 +40,7 @@ package jloda.fx.shapes;
 
 import javafx.geometry.Point2D;
 import javafx.scene.shape.Polygon;
-import jloda.fx.GeometryUtilsFX;
+import jloda.fx.util.GeometryUtilsFX;
 
 /**
  * hexagon

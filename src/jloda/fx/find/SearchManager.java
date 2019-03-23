@@ -40,9 +40,9 @@ package jloda.fx.find;
 
 import javafx.application.Platform;
 import javafx.beans.property.*;
-import jloda.fx.AService;
-import jloda.fx.ProgramExecutorService;
-import jloda.fx.TaskWithProgressListener;
+import jloda.fx.util.AService;
+import jloda.fx.util.ProgramExecutorService;
+import jloda.fx.util.TaskWithProgressListener;
 import jloda.util.CanceledException;
 import jloda.util.ProgressListener;
 

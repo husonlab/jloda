@@ -22,7 +22,7 @@ import javafx.application.Platform;
 import javafx.beans.binding.Bindings;
 import javafx.beans.property.*;
 import javafx.scene.control.MultipleSelectionModel;
-import jloda.fx.ASelectionModel;
+import jloda.fx.util.ASelectionModel;
 import jloda.graph.Edge;
 import jloda.graph.Graph;
 import jloda.phylo.PhyloSplitsGraph;

@@ -27,7 +27,7 @@ import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
-import jloda.fx.ExtendedFXMLLoader;
+import jloda.fx.util.ExtendedFXMLLoader;
 import jloda.util.Basic;
 
 import java.io.IOException;

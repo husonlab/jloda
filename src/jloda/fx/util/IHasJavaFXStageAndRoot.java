@@ -17,28 +17,14 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package jloda.fx;
+package jloda.fx.util;
 
-import javafx.scene.effect.DropShadow;
-import javafx.scene.paint.Color;
+import javafx.scene.Node;
+import javafx.stage.Stage;
 
-/**
- * effect used to indicate selection
- * Daniel Huson, 11.2017
- */
-public class SelectionEffect extends DropShadow {
-    private static SelectionEffect instance;
+public interface IHasJavaFXStageAndRoot {
+    Node getJavaFXRoot();
 
-    public static SelectionEffect getInstance() {
-        if (instance == null)
-            instance = new SelectionEffect();
-        return instance;
-    }
-
-    private SelectionEffect() {
-        setColor(Color.GOLD);
-        //setColor(Color.LIGHTBLUE);
-        setRadius(6);
-        setSpread(2);
-    }
+    Stage getJavaFXStage();
 }
+

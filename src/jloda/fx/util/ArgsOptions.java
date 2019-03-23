@@ -55,7 +55,7 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package jloda.fx;
+package jloda.fx.util;
 
 import jloda.swing.util.ProgramProperties;
 import jloda.util.Basic;
