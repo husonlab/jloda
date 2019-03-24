@@ -88,13 +88,13 @@ public class PhyloSplitsGraph extends PhyloGraph {
         super.copy(src, oldNode2NewNode, oldEdge2NewEdge);
         edgeConfidencesSet = src.edgeConfidencesSet;
 
-        for (Node v : nodes()) {
-            Node w = (oldNode2NewNode.getValue(v));
+        for (Node v : src.nodes()) {
+            final Node w = (oldNode2NewNode.getValue(v));
             setLabel(w, src.nodeLabels.getValue(v));
             node2taxa.setValue(w, src.node2taxa.getValue(v));
         }
-        for (Edge e : edges()) {
-            Edge f = (oldEdge2NewEdge.getValue(e));
+        for (Edge e : src.edges()) {
+            final Edge f = (oldEdge2NewEdge.getValue(e));
             edgeWeights.put(f, src.edgeWeights.getValue(e));
             setLabel(f, src.edgeLabels.getValue(e));
             edgeConfidences.put(f, src.edgeConfidences.getValue(e));
