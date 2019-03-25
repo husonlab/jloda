@@ -53,19 +53,13 @@ public class ProgramProperties {
     private static IStateChecker stateChecker = null;
     public static final String OPENFILE = "OpenFile";
     public static final String SAVEFILE = "SaveFile";
-    public static final String FINDFILE = "FindFile";
     public static final String SAVEFORMAT = "SaveFormat";
     public static final String EXPORTFILE = "ExportFile";
     public static final String RECENTFILES = "RecentFiles";
     public static final String MAXRECENTFILES = "MaxRecentFiles";
-    public static final String TOOLBARITEMS = "ToolbarItems";
-    public static final String SHOWTOOLBAR = "ShowToolbar";
-    public static final String EVOLVERTOOLBARITEMS = "EvolverToolbarItems";
-    public static final String SHOWEVOLVERTOOLBAR = "ShowEvolverToolbar";
     public static final String SHOWVERSIONINTITLE = "VINT";
     public static final String DRAWERKIND = "DrawerKind";
     public static final String LASTCOMMAND = "LastCommand";
-    public static final String FINDSTRING = "FindString";
     public static final String MAIN_WINDOW_GEOMETRY = "MainWindowGeometry";
     public static final String MULTI_WINDOW_GEOMETRY = "MultiWindowGeometry";
     public static PageFormat pageFormat = null;
@@ -159,6 +153,15 @@ public class ProgramProperties {
             return Color.decode(value);
     }
 
+    /**
+     * put a property
+     */
+    public static void put(String key, Color value) {
+        if (value == null)
+            props.setProperty(key, "null");
+        else
+            props.setProperty(key, "" + value.getRGB());
+    }
 
     /**
      * gets a double property
@@ -323,18 +326,6 @@ public class ProgramProperties {
      */
     public static void put(String key, File value) {
         props.setProperty(key, value.getAbsolutePath());
-    }
-
-
-    /**
-     * put a property
-     *
-     */
-    public static void put(String key, Color value) {
-        if (value == null)
-            props.setProperty(key, "null");
-        else
-            props.setProperty(key, "" + value.getRGB());
     }
 
 

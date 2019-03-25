@@ -16,26 +16,6 @@
  *  You should have received a copy of the GNU General Public License
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-
-/**
- * ProgramProperties.java
- * Copyright (C) 2019 Daniel H. Huson
- * <p>
- * (Some files contain contributions from other authors, who are then mentioned separately.)
- * <p>
- * This program is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
- * <p>
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * <p>
- * You should have received a copy of the GNU General Public License
- * along with this program.  If not, see <http://www.gnu.org/licenses/>.
- */
 package jloda.fx.util;
 
 import javafx.collections.FXCollections;
@@ -57,8 +37,8 @@ import java.util.LinkedList;
  * <p>
  * Daniel Huson,  2004, 2018
  */
-public class ProgramProperties {
-    static public final java.util.Properties props = new java.util.Properties();
+public class ProgramPropertiesFX {
+    static private final java.util.Properties props = new java.util.Properties();
 
     static private final ObservableList<Image> programIcons = FXCollections.observableArrayList();
 
@@ -120,7 +100,7 @@ public class ProgramProperties {
     }
 
     public static void setDefaultFont(Font defaultFont) {
-        ProgramProperties.defaultFont = defaultFont;
+        ProgramPropertiesFX.defaultFont = defaultFont;
     }
 
     /**
@@ -253,7 +233,7 @@ public class ProgramProperties {
      * set the default properties file name
      */
     public static void setPropertiesFileName(String defaultFileName) {
-        ProgramProperties.defaultFileName = defaultFileName;
+        ProgramPropertiesFX.defaultFileName = defaultFileName;
     }
 
     public static File getFile(String key) {
@@ -368,7 +348,7 @@ public class ProgramProperties {
      * sets the name of the program generating these properties
      */
     public static void setProgramName(String programName) {
-        ProgramProperties.programName = programName;
+        ProgramPropertiesFX.programName = programName;
     }
 
     /**
@@ -385,11 +365,11 @@ public class ProgramProperties {
      */
     public static void setProgramVersion(String version) {
         if (programVersion == null || programVersion.length() == 0)
-            ProgramProperties.programVersion = version;
+            ProgramPropertiesFX.programVersion = version;
     }
 
     public static void resetProgramVersion(String version) {
-        ProgramProperties.programVersion = version;
+        ProgramPropertiesFX.programVersion = version;
     }
 
     /**
@@ -428,7 +408,7 @@ public class ProgramProperties {
     }
 
     public static void setUseGUI(boolean useGUI) {
-        ProgramProperties.useGUI = useGUI;
+        ProgramPropertiesFX.useGUI = useGUI;
     }
 
     public static boolean isUseGUI() {

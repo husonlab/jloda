@@ -1640,6 +1640,8 @@ public class NexusStreamParser extends NexusStreamTokenizer implements Closeable
                 }
                 nextToken();
             }
+            if (peekMatchIgnoreCase("end;"))
+                matchIgnoreCase("end;");
         } catch (IOException ex) {
             throw new IOExceptionWithLineNumber(lineno(), ex);
         } finally {

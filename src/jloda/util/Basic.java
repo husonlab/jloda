@@ -536,7 +536,13 @@ public class Basic {
      * @return short name
      */
     public static String getShortName(Class clazz) {
-        return getFileSuffix(clazz.getName());
+        if (clazz == null)
+            return null;
+        final int pos = clazz.getName().lastIndexOf('.');
+        if (pos == -1)
+            return clazz.getName();
+        else
+            return clazz.getName().substring(pos + 1);
     }
 
     /**
@@ -554,7 +560,7 @@ public class Basic {
                     break; // found next space
             list.add(str.substring(i, j));
         }
-        return list.toArray(new String[list.size()]);
+        return list.toArray(new String[0]);
 
     }
 
@@ -3770,7 +3776,7 @@ public class Basic {
     }
 
     /**
-     * convert a string with spaces and/or underscores to camel case
+     * convert a string with spaces and/or underscores from camel case
      *
      * @param string
      * @return camel case

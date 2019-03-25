@@ -20,10 +20,7 @@
 package jloda.fx.util;
 
 import javafx.application.Platform;
-import javafx.beans.property.BooleanProperty;
-import javafx.beans.property.ObjectProperty;
-import javafx.beans.property.SimpleBooleanProperty;
-import javafx.beans.property.SimpleObjectProperty;
+import javafx.beans.property.*;
 import javafx.collections.FXCollections;
 import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
@@ -31,7 +28,6 @@ import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.scene.control.Menu;
 import javafx.scene.control.MenuItem;
-import jloda.swing.util.ProgramProperties;
 
 import java.io.File;
 import java.lang.ref.WeakReference;
@@ -61,10 +57,10 @@ public class RecentFilesManager {
     private RecentFilesManager() {
         recentFiles = FXCollections.observableArrayList();
 
-        maxNumberRecentFiles = ProgramProperties.get("MaxNumberRecentFiles", 40);
+        maxNumberRecentFiles = ProgramPropertiesFX.get("MaxNumberRecentFiles", 40);
 
-        for (String fileName : ProgramProperties.get("RecentFiles", new String[0])) {
-            if (new File(fileName).exists() && recentFiles.size() < maxNumberRecentFiles)
+        for (String fileName : ProgramPropertiesFX.get("RecentFiles", new String[0])) {
+            if (new File(fileName).exists() && recentFiles.size() < maxNumberRecentFiles && !recentFiles.contains(fileName))
                 recentFiles.add(fileName);
         }
 
@@ -112,7 +108,7 @@ public class RecentFilesManager {
                 if (deadRefs.size() > 0) {
                     menuReferences.removeAll(deadRefs); // purge anything that has been garbage collected
                 }
-                ProgramProperties.put("RecentFiles", recentFiles.toArray(new String[0]));
+                ProgramPropertiesFX.put("RecentFiles", recentFiles.toArray(new String[0]));
             });
         });
     }
@@ -155,8 +151,8 @@ public class RecentFilesManager {
      *
      * @return recent files
      */
-    public ObservableList<String> getRecentFiles() {
-        return recentFiles;
+    public ReadOnlyListWrapper<String> getRecentFiles() {
+        return new ReadOnlyListWrapper<>(recentFiles);
     }
 
     /**
