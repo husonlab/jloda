@@ -21,13 +21,10 @@ package jloda.fx.util;
 
 
 import javafx.beans.binding.Bindings;
-import javafx.beans.property.BooleanProperty;
-import javafx.beans.property.ReadOnlyBooleanProperty;
-import javafx.beans.property.SimpleBooleanProperty;
+import javafx.beans.property.*;
 import javafx.collections.FXCollections;
 import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
-import javafx.scene.control.MultipleSelectionModel;
 import jloda.util.Basic;
 
 import java.util.*;
@@ -36,11 +33,13 @@ import java.util.*;
  * Selection model
  * Daniel Huson 12/2019
  */
-public class ASelectionModel<T> extends MultipleSelectionModel<T> {
+public class ASelectionModel<T> {
     private enum Update {ClearAndAdd, Add, Remove, RemoveAll, SelectAll}
 
     private final BitSet selectedIndicesBits = new BitSet();
     private final ObservableList<Integer> selectedIndicesList = FXCollections.observableArrayList();
+
+    private final ObjectProperty<T> selectedItemProperty = new SimpleObjectProperty<>();
 
     private T[] items; // need a copy of this array to map indices to objects, when required
 
@@ -69,37 +68,35 @@ public class ASelectionModel<T> extends MultipleSelectionModel<T> {
             // first setup observable array lists that listen for changes of the selectedIndices set
             final ObservableList<T> selectedItems = FXCollections.observableArrayList();
 
-            selectedIndicesList.addListener(new ListChangeListener<Integer>() {
-                @Override
-                public void onChanged(Change<? extends Integer> c) {
-                    while (c.next()) {
-                        if (c.wasAdded()) {
-                            final ArrayList<T> set = new ArrayList<>(c.getAddedSize());
-                            for (int i : c.getAddedSubList()) {
-                                set.add(ASelectionModel.this.items[i]);
-                            }
-                            selectedItems.addAll(set);
-                            if (!getListenersSuspended()) {
-                                unmodifiableSelectedIndices.addAll(c.getAddedSubList());
-                                unmodifiableSelectedItems.addAll(set);
-                            }
-                        } else if (c.wasRemoved()) {
-                            final ArrayList<T> set = new ArrayList<>(c.getRemovedSize());
-                            for (int i : c.getRemoved()) {
-                                set.add(ASelectionModel.this.items[i]);
-                                if (!getListenersSuspended()) {
-                                    unmodifiableSelectedIndices.removeAll(c.getAddedSubList());
-                                    unmodifiableSelectedItems.removeAll(set);
-                                }
-                            }
-                            selectedItems.removeAll(set);
-                        }
+        selectedIndicesList.addListener((ListChangeListener<Integer>) c -> {
+            while (c.next()) {
+                if (c.wasAdded()) {
+                    final ArrayList<T> set = new ArrayList<>(c.getAddedSize());
+                    for (int i : c.getAddedSubList()) {
+                        set.add(ASelectionModel.this.items[i]);
+                    }
+                    selectedItems.addAll(set);
+                    if (!getListenersSuspended()) {
+                        unmodifiableSelectedIndices.addAll(c.getAddedSubList());
+                        unmodifiableSelectedItems.addAll(set);
+                    }
+                } else if (c.wasRemoved()) {
+                    final ArrayList<T> set = new ArrayList<>(c.getRemovedSize());
+                    for (int i : c.getRemoved()) {
+                        set.add(ASelectionModel.this.items[i]);
                         if (!getListenersSuspended()) {
-                            canSelectAll.set(ASelectionModel.this.items.length > 0 && selectedItems.size() < ASelectionModel.this.items.length);
-                            canSelectNone.set(ASelectionModel.this.items.length > 0 && selectedItems.size() > 0);
+                            unmodifiableSelectedIndices.removeAll(c.getAddedSubList());
+                            unmodifiableSelectedItems.removeAll(set);
                         }
                     }
+                    selectedItems.removeAll(set);
                 }
+                if (!getListenersSuspended()) {
+                    canSelectAll.set(ASelectionModel.this.items.length > 0 && selectedItems.size() < ASelectionModel.this.items.length);
+                    canSelectNone.set(ASelectionModel.this.items.length > 0 && selectedItems.size() > 0);
+                    }
+                }
+            selectedItemProperty.set(selectedItems.size() == 0 ? null : selectedItems.get(0));
             });
             // wrap a unmodifiable observable list around the observable arrays lists
 
@@ -174,17 +171,14 @@ public class ASelectionModel<T> extends MultipleSelectionModel<T> {
         }
     }
 
-    @Override
     public ObservableList<Integer> getSelectedIndices() {
         return unmodifiableSelectedIndices;
     }
 
-    @Override
     public ObservableList<T> getSelectedItems() {
         return unmodifiableSelectedItems;
     }
 
-    @Override
     public void selectIndices(int index, int... indices) {
         final BitSet toSelect = new BitSet();
         toSelect.set(index);
@@ -195,18 +189,15 @@ public class ASelectionModel<T> extends MultipleSelectionModel<T> {
         update(Update.Add, toSelect);
     }
 
-    @Override
     public void selectAll() {
         focusIndex = -1;
         update(Update.SelectAll);
     }
 
-    @Override
     public void clearAndSelect(int index) {
         update(Update.ClearAndAdd, index);
     }
 
-    @Override
     public void select(int index) {
         if (index >= 0 && index < items.length && !selectedIndicesBits.get(index)) {
             focusIndex = index;
@@ -214,7 +205,6 @@ public class ASelectionModel<T> extends MultipleSelectionModel<T> {
         }
     }
 
-    @Override
     public void select(T item) {
         for (int i = 0; i < items.length; i++) {
             if (items[i].equals(item)) {
@@ -255,25 +245,21 @@ public class ASelectionModel<T> extends MultipleSelectionModel<T> {
         }
     }
 
-    @Override
     public void clearSelection(int index) {
         if (index >= 0 && selectedIndicesBits.get(index)) {
             update(Update.Remove,index);
         }
     }
 
-    @Override
     public void clearSelection() {
         focusIndex = -1;
         update(Update.RemoveAll);
     }
 
-    @Override
     public boolean isSelected(int index) {
         return index >= 0 && selectedIndicesBits.get(index);
     }
 
-    @Override
     public boolean isEmpty() {
         return empty.get();
     }
@@ -282,26 +268,31 @@ public class ASelectionModel<T> extends MultipleSelectionModel<T> {
         return empty;
     }
 
-    @Override
     public void selectFirst() {
         if (items.length > 0) {
             select(0);
         }
     }
 
-    @Override
     public void selectLast() {
         if (items.length > 0) {
             select(items.length - 1);
         }
     }
 
-    @Override
+    public ReadOnlyObjectProperty<T> selectedItemProperty() {
+        return selectedItemProperty;
+    }
+
+    public T getSelectedItem() {
+        return selectedItemProperty.get();
+    }
+
+
     public void selectPrevious() {
         select(focusIndex - 1);
     }
 
-    @Override
     public void selectNext() {
         select(focusIndex + 1);
     }

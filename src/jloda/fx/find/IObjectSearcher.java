@@ -39,7 +39,7 @@
 package jloda.fx.find;
 
 import javafx.beans.property.ReadOnlyObjectProperty;
-import javafx.scene.control.MultipleSelectionModel;
+import jloda.fx.util.ASelectionModel;
 
 /**
  * implement this interface to support the Find and Find-Replace dialogs
@@ -129,7 +129,7 @@ public interface IObjectSearcher<T> extends ISearcher {
      *
      * @return selection model
      */
-    MultipleSelectionModel<T> getSelectionModel();
+    ASelectionModel<T> getSelectionModel();
 
 }
 
