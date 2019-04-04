@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 2018 Daniel H. Huson
+ *  Copyright (C) 2019 Daniel H. Huson
  *
  *  (Some files contain contributions from other authors, who are then mentioned separately.)
  *
@@ -20,7 +20,6 @@
 package jloda.fx.control;
 
 import javafx.application.Platform;
-import javafx.beans.InvalidationListener;
 import javafx.beans.binding.Bindings;
 import javafx.beans.property.*;
 import javafx.collections.FXCollections;
@@ -37,7 +36,6 @@ import javafx.scene.input.TransferMode;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.StackPane;
 import javafx.stage.Stage;
-import jloda.swing.util.ProgramProperties;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -129,13 +127,15 @@ public class SplittableTabPane extends Pane {
         }
 
         if (newTabPane != null) {
-            if(index>=0)
+            if (index >= 0 && index < newTabPane.getTabs().size())
                 newTabPane.getTabs().add(index, tab);
             else
                 newTabPane.getTabs().add(tab);
-
             setupMenu(tab, newTabPane, tabPane2ParentSplitPane.get(newTabPane));
-            newTabPane.getSelectionModel().select(tab);
+            Platform.runLater(() -> {
+                newTabPane.getSelectionModel().select(tab);
+                selectionModel.select(tab);
+            });
         }
     }
 
@@ -278,6 +278,7 @@ public class SplittableTabPane extends Pane {
             close.setOnAction((e) -> tabs.remove(tab));
             close.disableProperty().bind(Bindings.size(tabs).isEqualTo(0).or(tab.closableProperty().not()));
             menuItems.add(close);
+
             final MenuItem closeOthers = new MenuItem("Close Others");
             closeOthers.setOnAction((e) -> {
                 final ArrayList<Tab> toClose = new ArrayList<>(tabPane.getTabs());
@@ -286,6 +287,7 @@ public class SplittableTabPane extends Pane {
             });
             closeOthers.disableProperty().bind(Bindings.size(tabPane.getTabs()).lessThan(2).or(tab.closableProperty().not()));
             menuItems.add(closeOthers);
+
             final MenuItem closeAll = new MenuItem("Close All");
             closeAll.setOnAction((e) -> tabs.removeAll(tabPane.getTabs()));
             closeAll.disableProperty().bind(tab.closableProperty().not());
@@ -299,8 +301,6 @@ public class SplittableTabPane extends Pane {
         if (isAllowUndock()) {
             final MenuItem redock = new MenuItem("Redock");
             redock.setOnAction((e) -> {
-                final TabPane auxiliaryTabPane = tab.getTabPane();
-                auxiliaryTabPane.getTabs().remove(tab);
                 moveTab(tab, null, getFocusedTabPane());
             });
 
@@ -545,12 +545,9 @@ public class SplittableTabPane extends Pane {
 
     private Stage createAuxilaryWindow(final Tab tab, double screenX, double screenY, double width, double height, MenuItem redock) {
         final StackPane root = new StackPane();
-        final TabPane tabPane = new TabPane();
-        moveTab(tab, tab.getTabPane(), null);
-        tabPane.getTabs().add(tab);
         tab.setContextMenu(new ContextMenu(redock));
 
-        root.getChildren().add(tabPane);
+        root.getChildren().add(tab.getContent());
 
         final Stage stage = new Stage();
         if (tab.getText().length() > 0)
@@ -558,22 +555,12 @@ public class SplittableTabPane extends Pane {
         else if (tab.getGraphic() instanceof Labeled)
             stage.setTitle(((Labeled) tab.getGraphic()).getText());
         else
-            stage.setTitle("Undocked");
-        if (ProgramProperties.getProgramName().length() > 0)
-            stage.setTitle(stage.getTitle() + " - " + ProgramProperties.getProgramName());
+            stage.setTitle("Untitled");
 
         stage.setScene(new Scene(root, width, height));
         stage.sizeToScene();
         stage.setX(screenX);
         stage.setY(screenY);
-
-        tabPane.prefWidthProperty().bind(root.widthProperty());
-        tabPane.prefHeightProperty().bind(root.heightProperty());
-
-        tabPane.getTabs().addListener((InvalidationListener) (e) -> {
-            if (tabPane.getTabs().size() == 0)
-                stage.close();
-        });
         return stage;
     }
 }
