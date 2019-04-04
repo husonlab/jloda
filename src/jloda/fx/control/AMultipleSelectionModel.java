@@ -64,8 +64,8 @@ public class AMultipleSelectionModel<T> {
         this.items = Arrays.copyOf(items, items.length);  // use copy for safety
 
 
-            // first setup observable array lists that listen for changes of the selectedIndices set
-            final ObservableList<T> selectedItems = FXCollections.observableArrayList();
+        // first setup observable array lists that listen for changes of the selectedIndices set
+        final ObservableList<T> selectedItems = FXCollections.observableArrayList();
 
         selectedIndicesList.addListener((ListChangeListener<Integer>) c -> {
             while (c.next()) {
@@ -93,11 +93,11 @@ public class AMultipleSelectionModel<T> {
                 if (!getListenersSuspended()) {
                     canSelectAll.set(AMultipleSelectionModel.this.items.length > 0 && selectedItems.size() < AMultipleSelectionModel.this.items.length);
                     canSelectNone.set(AMultipleSelectionModel.this.items.length > 0 && selectedItems.size() > 0);
-                    }
                 }
+            }
             selectedItemProperty.set(selectedItems.size() == 0 ? null : selectedItems.get(0));
-            });
-            // wrap a unmodifiable observable list around the observable arrays lists
+        });
+        // wrap a unmodifiable observable list around the observable arrays lists
 
         empty.bind(Bindings.size(unmodifiableSelectedIndices).isEqualTo(0));
     }
@@ -310,7 +310,8 @@ public class AMultipleSelectionModel<T> {
      *
      * @param items
      */
-    public void setItems(T... items) {
+    @SafeVarargs
+    public final void setItems(T... items) {
         clearSelection();
         this.items = Arrays.copyOf(items, items.length);// use copy for safety
         if (!getListenersSuspended()) {
@@ -331,20 +332,6 @@ public class AMultipleSelectionModel<T> {
             canSelectAll.set(true);
             canSelectNone.set(false);
         }
-    }
-
-    /**
-     * clear selection and set list of items
-     *
-     * @param items1
-     * @param items2
-     */
-    public void setItems(Collection<? extends T> items1, Collection<? extends T> items2) {
-        clearSelection();
-        final Collection<T> all = new ArrayList<>(items1.size() + items2.size());
-        all.addAll(items1);
-        all.addAll(items2);
-        this.items = Basic.toArray(all);
     }
 
     /**

@@ -95,7 +95,7 @@ public class SplittableTabPane extends Pane {
 
         selectionModel.selectedItemProperty().addListener((c, o, n) -> {
             setFocusedTabPane(n != null ? n.getTabPane() : null);
-            System.err.println("Selected: " + n);
+            //System.err.println("Selected: " + n);
         });
     }
 
