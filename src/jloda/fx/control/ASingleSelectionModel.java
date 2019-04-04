@@ -44,11 +44,11 @@ public class ASingleSelectionModel<T> extends SingleSelectionModel<T> {
     }
 
     public ASingleSelectionModel(T... items) {
-        this();
         setItems(items);
     }
 
     public void setItems(Collection<T> items) {
+        clearSelection();
         this.items.setAll(items);
     }
 
