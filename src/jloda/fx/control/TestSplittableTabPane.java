@@ -27,9 +27,14 @@ import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 import jloda.fx.shapes.SquareShape;
+import jloda.swing.util.ProgramProperties;
 import jloda.util.Single;
 
 public class TestSplittableTabPane extends Application {
+    @Override
+    public void init() throws Exception {
+        ProgramProperties.setProgramName("Test");
+    }
 
     public static void main(String[] args) {
         launch(args);
@@ -37,6 +42,8 @@ public class TestSplittableTabPane extends Application {
 
     @Override
     public void start(Stage primaryStage) {
+        primaryStage.setTitle(ProgramProperties.getProgramName());
+
         final BorderPane borderPane = new BorderPane();
 
         final SplittableTabPane tabPane = new SplittableTabPane();

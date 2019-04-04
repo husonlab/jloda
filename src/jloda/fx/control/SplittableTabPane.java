@@ -102,8 +102,12 @@ public class SplittableTabPane extends Pane {
 
         selectionModel.selectedItemProperty().addListener((c, o, n) -> {
             setFocusedTabPane(n != null ? n.getTabPane() : findATabPane(splitPane.getItems()));
-            System.err.println("Selected: " + n);
+            //System.err.println("Selected: " + n);
         });
+    }
+
+    private void moveTab(Tab tab, TabPane oldTabPane, TabPane newTabPane) {
+        moveTab(tab, oldTabPane, newTabPane, -1);
     }
 
     /**
@@ -112,8 +116,9 @@ public class SplittableTabPane extends Pane {
      * @param tab
      * @param oldTabPane if not null, removed from here
      * @param newTabPane if not null, added to here
+     * @param index      index to add at, or -1
      */
-    private void moveTab(Tab tab, TabPane oldTabPane, TabPane newTabPane) {
+    private void moveTab(Tab tab, TabPane oldTabPane, TabPane newTabPane, int index) {
         if (oldTabPane != null) {
             final SplitPane oldSplitPane = tabPane2ParentSplitPane.get(oldTabPane);
             oldTabPane.getTabs().remove(tab);
@@ -124,7 +129,11 @@ public class SplittableTabPane extends Pane {
         }
 
         if (newTabPane != null) {
-            newTabPane.getTabs().add(tab);
+            if(index>=0)
+                newTabPane.getTabs().add(index, tab);
+            else
+                newTabPane.getTabs().add(tab);
+
             setupMenu(tab, newTabPane, tabPane2ParentSplitPane.get(newTabPane));
             newTabPane.getSelectionModel().select(tab);
         }
@@ -299,7 +308,7 @@ public class SplittableTabPane extends Pane {
             undock.setOnAction((e) -> {
                 final double x = tabPane.localToScreen(0, 0).getX();
                 final double y = tabPane.localToScreen(0, 0).getY();
-                final Stage stage = createAuxilaryWindow(tab, x, y, tabPane.getWidth(), tabPane.getHeight(), redock);
+                final Stage stage = createAuxilaryWindow(tab, x, y, tabPane.getWidth(), tabPane.getHeight() - 20, redock);
                 stage.setOnCloseRequest((z) -> {
                     redock.getOnAction().handle(null);
                     stage.hide();
@@ -471,6 +480,14 @@ public class SplittableTabPane extends Pane {
                 Platform.runLater(() -> tab.setGraphic(label));
             }
         });
+        label.setOnDragOver(event -> {
+            final Dragboard dragboard = event.getDragboard();
+            if (dragboard.hasString()
+                    && TAB_DRAG_KEY.equals(dragboard.getString()) && draggingTab.get() != null) {
+                event.acceptTransferModes(TransferMode.MOVE);
+                event.consume();
+            }
+        });
 
         label.setOnDragDetected(event -> {
             Dragboard dragboard = label.startDragAndDrop(TransferMode.MOVE);
@@ -480,23 +497,44 @@ public class SplittableTabPane extends Pane {
             draggingTab.set(tab);
             event.consume();
         });
+
+        label.setOnDragDropped((event -> {
+            final int index = tab.getTabPane().getTabs().indexOf(tab);
+
+            final Dragboard dragboard = event.getDragboard();
+            if (dragboard.hasString() && TAB_DRAG_KEY.equals(dragboard.getString()) && draggingTab.get() != null) {
+                final Tab draggedTab = draggingTab.get();
+
+                if (draggedTab.getTabPane() == tab.getTabPane() && index != tab.getTabPane().getTabs().indexOf(draggedTab)) {
+                    final TabPane tabPane = draggedTab.getTabPane();
+                    tabPane.getTabs().remove(draggedTab);
+                    tabPane.getTabs().add(index, draggedTab);
+                    tabPane.getSelectionModel().select(draggedTab);
+                } else {
+                    moveTab(draggedTab, draggedTab.getTabPane(), tab.getTabPane(), index);
+                }
+                event.setDropCompleted(true);
+                draggingTab.set(null);
+                event.consume();
+            }
+        }));
     }
 
     private void setupDrop(TabPane tabPane) {
         tabPane.setOnDragOver(event -> {
             final Dragboard dragboard = event.getDragboard();
             if (dragboard.hasString()
-                    && TAB_DRAG_KEY.equals(dragboard.getString())
-                    && draggingTab.get() != null
-                    && draggingTab.get().getTabPane() != tabPane) {
+                    && TAB_DRAG_KEY.equals(dragboard.getString()) && draggingTab.get() != null && draggingTab.get().getTabPane() != tabPane) {
                 event.acceptTransferModes(TransferMode.MOVE);
                 event.consume();
             }
         });
+
         tabPane.setOnDragDropped(event -> {
             final Dragboard dragboard = event.getDragboard();
             if (dragboard.hasString() && TAB_DRAG_KEY.equals(dragboard.getString()) && draggingTab.get() != null && draggingTab.get().getTabPane() != tabPane) {
                 final Tab tab = draggingTab.get();
+
                 moveTab(tab, tab.getTabPane(), tabPane);
                 event.setDropCompleted(true);
                 draggingTab.set(null);
@@ -512,7 +550,7 @@ public class SplittableTabPane extends Pane {
         tabPane.getTabs().add(tab);
         tab.setContextMenu(new ContextMenu(redock));
 
-        root.getChildren().add(tab.getContent());
+        root.getChildren().add(tabPane);
 
         final Stage stage = new Stage();
         if (tab.getText().length() > 0)
