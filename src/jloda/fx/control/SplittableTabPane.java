@@ -20,22 +20,24 @@
 package jloda.fx.control;
 
 import javafx.application.Platform;
+import javafx.beans.InvalidationListener;
 import javafx.beans.binding.Bindings;
-import javafx.beans.property.IntegerProperty;
-import javafx.beans.property.ObjectProperty;
-import javafx.beans.property.SimpleIntegerProperty;
-import javafx.beans.property.SimpleObjectProperty;
+import javafx.beans.property.*;
 import javafx.collections.FXCollections;
 import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
 import javafx.collections.ObservableMap;
 import javafx.geometry.Orientation;
 import javafx.scene.Node;
+import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.input.ClipboardContent;
 import javafx.scene.input.Dragboard;
 import javafx.scene.input.TransferMode;
 import javafx.scene.layout.Pane;
+import javafx.scene.layout.StackPane;
+import javafx.stage.Stage;
+import jloda.swing.util.ProgramProperties;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -56,6 +58,10 @@ public class SplittableTabPane extends Pane {
 
     private static final String TAB_DRAG_KEY = "tab";
     private final ObjectProperty<Tab> draggingTab = new SimpleObjectProperty<>();
+
+    private final IntegerProperty size = new SimpleIntegerProperty(0);
+
+    private final BooleanProperty allowUndock = new SimpleBooleanProperty(true);
 
     /**
      * constructor
@@ -91,10 +97,11 @@ public class SplittableTabPane extends Pane {
                 }
             }
             selectionModel.setItems(tabs);
+            size.set(tabs.size());
         });
 
         selectionModel.selectedItemProperty().addListener((c, o, n) -> {
-            setFocusedTabPane(n != null ? n.getTabPane() : null);
+            setFocusedTabPane(n != null ? n.getTabPane() : findATabPane(splitPane.getItems()));
             System.err.println("Selected: " + n);
         });
     }
@@ -110,7 +117,7 @@ public class SplittableTabPane extends Pane {
         if (oldTabPane != null) {
             final SplitPane oldSplitPane = tabPane2ParentSplitPane.get(oldTabPane);
             oldTabPane.getTabs().remove(tab);
-            if (oldTabPane.getTabs().size() == 0) {
+            if (oldTabPane.getTabs().size() == 0 && oldSplitPane != null) {
                 oldSplitPane.getItems().remove(oldTabPane);
                 tabPane2ParentSplitPane.remove(oldTabPane);
             }
@@ -120,8 +127,6 @@ public class SplittableTabPane extends Pane {
             newTabPane.getTabs().add(tab);
             setupMenu(tab, newTabPane, tabPane2ParentSplitPane.get(newTabPane));
             newTabPane.getSelectionModel().select(tab);
-        } else {
-            tabs.remove(tab);
         }
     }
 
@@ -279,6 +284,31 @@ public class SplittableTabPane extends Pane {
 
             tab.setClosable(true);
             tab.setOnCloseRequest((e) -> close.getOnAction().handle(null));
+            menuItems.add(new SeparatorMenuItem());
+        }
+
+        if (isAllowUndock()) {
+            final MenuItem redock = new MenuItem("Redock");
+            redock.setOnAction((e) -> {
+                final TabPane auxiliaryTabPane = tab.getTabPane();
+                auxiliaryTabPane.getTabs().remove(tab);
+                moveTab(tab, null, getFocusedTabPane());
+            });
+
+            final MenuItem undock = new MenuItem("Undock");
+            undock.setOnAction((e) -> {
+                final double x = tabPane.localToScreen(0, 0).getX();
+                final double y = tabPane.localToScreen(0, 0).getY();
+                final Stage stage = createAuxilaryWindow(tab, x, y, tabPane.getWidth(), tabPane.getHeight(), redock);
+                stage.setOnCloseRequest((z) -> {
+                    redock.getOnAction().handle(null);
+                    stage.hide();
+                });
+                stage.show();
+            });
+            undock.disableProperty().bind(allowUndock.not().or(sizeProperty().lessThan(2)));
+            menuItems.add(undock);
+            menuItems.add(new SeparatorMenuItem());
         }
 
         final MenuItem splitVertically = new MenuItem("Split Vertically");
@@ -331,10 +361,12 @@ public class SplittableTabPane extends Pane {
      * @param menuItems
      * @return index or -1
      */
-    private static int findMenuItem(String text, ArrayList<MenuItem> menuItems) {
-        for (int i = 0; i < menuItems.size(); i++) {
-            if (text.equals(menuItems.get(i).getText()))
+    private static int findMenuItem(String text, Collection<MenuItem> menuItems) {
+        int i = 0;
+        for (MenuItem item : menuItems) {
+            if (text.equals(item.getText()))
                 return i;
+            i++;
         }
         return -1;
     }
@@ -402,6 +434,26 @@ public class SplittableTabPane extends Pane {
         this.focusedTabPane.set(focusedTabPane);
     }
 
+    public int getSize() {
+        return size.get();
+    }
+
+    public ReadOnlyIntegerProperty sizeProperty() {
+        return size;
+    }
+
+    public boolean isAllowUndock() {
+        return allowUndock.get();
+    }
+
+    public BooleanProperty allowUndockProperty() {
+        return allowUndock;
+    }
+
+    public void setAllowUndock(boolean allowUndock) {
+        this.allowUndock.set(allowUndock);
+    }
+
     private void setupDrag(Tab tab) {
         final Label label = new Label(tab.getText());
         label.setGraphic(tab.getGraphic());
@@ -451,5 +503,39 @@ public class SplittableTabPane extends Pane {
                 event.consume();
             }
         });
+    }
+
+    private Stage createAuxilaryWindow(final Tab tab, double screenX, double screenY, double width, double height, MenuItem redock) {
+        final StackPane root = new StackPane();
+        final TabPane tabPane = new TabPane();
+        moveTab(tab, tab.getTabPane(), null);
+        tabPane.getTabs().add(tab);
+        tab.setContextMenu(new ContextMenu(redock));
+
+        root.getChildren().add(tab.getContent());
+
+        final Stage stage = new Stage();
+        if (tab.getText().length() > 0)
+            stage.setTitle(tab.getText());
+        else if (tab.getGraphic() instanceof Labeled)
+            stage.setTitle(((Labeled) tab.getGraphic()).getText());
+        else
+            stage.setTitle("Undocked");
+        if (ProgramProperties.getProgramName().length() > 0)
+            stage.setTitle(stage.getTitle() + " - " + ProgramProperties.getProgramName());
+
+        stage.setScene(new Scene(root, width, height));
+        stage.sizeToScene();
+        stage.setX(screenX);
+        stage.setY(screenY);
+
+        tabPane.prefWidthProperty().bind(root.widthProperty());
+        tabPane.prefHeightProperty().bind(root.heightProperty());
+
+        tabPane.getTabs().addListener((InvalidationListener) (e) -> {
+            if (tabPane.getTabs().size() == 0)
+                stage.close();
+        });
+        return stage;
     }
 }
