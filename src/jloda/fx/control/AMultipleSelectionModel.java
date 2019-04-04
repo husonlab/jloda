@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 2019 Daniel H. Huson
+ *  Copyright (C) 2018 Daniel H. Huson
  *
  *  (Some files contain contributions from other authors, who are then mentioned separately.)
  *
@@ -16,8 +16,7 @@
  *  You should have received a copy of the GNU General Public License
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-
-package jloda.fx.util;
+package jloda.fx.control;
 
 
 import javafx.beans.binding.Bindings;
@@ -33,7 +32,7 @@ import java.util.*;
  * Selection model
  * Daniel Huson 12/2019
  */
-public class ASelectionModel<T> {
+public class AMultipleSelectionModel<T> {
     private enum Update {ClearAndAdd, Add, Remove, RemoveAll, SelectAll}
 
     private final BitSet selectedIndicesBits = new BitSet();
@@ -61,7 +60,7 @@ public class ASelectionModel<T> {
      * @param items 0 or more items
      */
     @SafeVarargs
-    public ASelectionModel(T... items) {
+    public AMultipleSelectionModel(T... items) {
         this.items = Arrays.copyOf(items, items.length);  // use copy for safety
 
 
@@ -73,7 +72,7 @@ public class ASelectionModel<T> {
                 if (c.wasAdded()) {
                     final ArrayList<T> set = new ArrayList<>(c.getAddedSize());
                     for (int i : c.getAddedSubList()) {
-                        set.add(ASelectionModel.this.items[i]);
+                        set.add(AMultipleSelectionModel.this.items[i]);
                     }
                     selectedItems.addAll(set);
                     if (!getListenersSuspended()) {
@@ -83,7 +82,7 @@ public class ASelectionModel<T> {
                 } else if (c.wasRemoved()) {
                     final ArrayList<T> set = new ArrayList<>(c.getRemovedSize());
                     for (int i : c.getRemoved()) {
-                        set.add(ASelectionModel.this.items[i]);
+                        set.add(AMultipleSelectionModel.this.items[i]);
                         if (!getListenersSuspended()) {
                             unmodifiableSelectedIndices.removeAll(c.getAddedSubList());
                             unmodifiableSelectedItems.removeAll(set);
@@ -92,8 +91,8 @@ public class ASelectionModel<T> {
                     selectedItems.removeAll(set);
                 }
                 if (!getListenersSuspended()) {
-                    canSelectAll.set(ASelectionModel.this.items.length > 0 && selectedItems.size() < ASelectionModel.this.items.length);
-                    canSelectNone.set(ASelectionModel.this.items.length > 0 && selectedItems.size() > 0);
+                    canSelectAll.set(AMultipleSelectionModel.this.items.length > 0 && selectedItems.size() < AMultipleSelectionModel.this.items.length);
+                    canSelectNone.set(AMultipleSelectionModel.this.items.length > 0 && selectedItems.size() > 0);
                     }
                 }
             selectedItemProperty.set(selectedItems.size() == 0 ? null : selectedItems.get(0));

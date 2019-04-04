@@ -21,7 +21,7 @@ package jloda.fx.find;
 import javafx.application.Platform;
 import javafx.beans.binding.Bindings;
 import javafx.beans.property.*;
-import jloda.fx.util.ASelectionModel;
+import jloda.fx.control.AMultipleSelectionModel;
 import jloda.graph.Edge;
 import jloda.graph.Graph;
 import jloda.phylo.PhyloSplitsGraph;
@@ -36,7 +36,7 @@ import java.util.Objects;
 public class EdgeLabelSearcher implements IObjectSearcher<Edge> {
     private final String name;
     private Graph graph;
-    private final ASelectionModel<Edge> edgeSelectionModel;
+    private final AMultipleSelectionModel<Edge> edgeSelectionModel;
     private Edge current = null;
 
     private final ObjectProperty<Edge> found = new SimpleObjectProperty<>();
@@ -52,7 +52,7 @@ public class EdgeLabelSearcher implements IObjectSearcher<Edge> {
      * @param
      * @param graph
      */
-    public EdgeLabelSearcher(PhyloSplitsGraph graph, ASelectionModel<Edge> edgeSelectionModel) {
+    public EdgeLabelSearcher(PhyloSplitsGraph graph, AMultipleSelectionModel<Edge> edgeSelectionModel) {
         this(SEARCHER_NAME, graph, edgeSelectionModel);
     }
 
@@ -62,7 +62,7 @@ public class EdgeLabelSearcher implements IObjectSearcher<Edge> {
      * @param
      * @param graph
      */
-    public EdgeLabelSearcher(String name, Graph graph, ASelectionModel<Edge> edgeSelectionModel) {
+    public EdgeLabelSearcher(String name, Graph graph, AMultipleSelectionModel<Edge> edgeSelectionModel) {
         this.graph = graph;
         this.name = name;
         this.edgeSelectionModel = edgeSelectionModel;
@@ -295,7 +295,7 @@ public class EdgeLabelSearcher implements IObjectSearcher<Edge> {
     }
 
     @Override
-    public ASelectionModel<Edge> getSelectionModel() {
+    public AMultipleSelectionModel<Edge> getSelectionModel() {
         return edgeSelectionModel;
     }
 

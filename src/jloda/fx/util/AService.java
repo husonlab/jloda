@@ -26,6 +26,7 @@ import javafx.concurrent.Task;
 import javafx.concurrent.WorkerStateEvent;
 import javafx.event.EventHandler;
 import javafx.scene.layout.Pane;
+import jloda.fx.control.ProgressPane;
 import jloda.util.ProgressListener;
 
 import java.util.concurrent.Callable;

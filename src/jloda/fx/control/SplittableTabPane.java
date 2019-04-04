@@ -1,6 +1,7 @@
 /*
- *  SplittableTabPane. Copyright (C) 2019. Daniel H. Huson
+ *  Copyright (C) 2018 Daniel H. Huson
  *
+ *  (Some files contain contributions from other authors, who are then mentioned separately.)
  *
  *  This program is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -16,7 +17,7 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package jloda;
+package jloda.fx.control;
 
 import javafx.application.Platform;
 import javafx.beans.binding.Bindings;
@@ -35,7 +36,6 @@ import javafx.scene.input.ClipboardContent;
 import javafx.scene.input.Dragboard;
 import javafx.scene.input.TransferMode;
 import javafx.scene.layout.Pane;
-import jloda.fx.util.ASelectionModel;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -48,7 +48,7 @@ import java.util.Collections;
 public class SplittableTabPane extends Pane {
 
     private final ObjectProperty<TabPane> focusedTabPane = new SimpleObjectProperty<>();
-    private final ASelectionModel<Tab> selectionModel = new ASelectionModel<>();
+    private final ASingleSelectionModel<Tab> selectionModel = new ASingleSelectionModel<>();
 
     private ObservableList<Tab> tabs = FXCollections.observableArrayList();
 
@@ -95,6 +95,7 @@ public class SplittableTabPane extends Pane {
 
         selectionModel.selectedItemProperty().addListener((c, o, n) -> {
             setFocusedTabPane(n != null ? n.getTabPane() : null);
+            System.err.println("Selected: " + n);
         });
     }
 
@@ -338,7 +339,7 @@ public class SplittableTabPane extends Pane {
         return -1;
     }
 
-    public ASelectionModel<Tab> getSelectionModel() {
+    public ASingleSelectionModel<Tab> getSelectionModel() {
         return selectionModel;
     }
 
@@ -363,10 +364,20 @@ public class SplittableTabPane extends Pane {
     private TabPane createTabPane() {
         final TabPane tabPane = new TabPane();
         tabPane.getSelectionModel().selectedItemProperty().addListener((c, o, n) -> {
-            selectionModel.clearSelection();
-            selectionModel.select(n);
+            if (n == null)
+                selectionModel.clearSelection();
+            else
+                selectionModel.select(n);
         });
 
+        tabPane.focusedProperty().addListener((c, o, n) -> {
+            if (n) {
+                if (tabPane.getSelectionModel().isEmpty())
+                    selectionModel.clearSelection();
+                else
+                    selectionModel.select(tabPane.getSelectionModel().getSelectedItem());
+            }
+        });
         setupDrop(tabPane);
         return tabPane;
     }
@@ -433,10 +444,7 @@ public class SplittableTabPane extends Pane {
         });
         tabPane.setOnDragDropped(event -> {
             final Dragboard dragboard = event.getDragboard();
-            if (dragboard.hasString()
-                    && TAB_DRAG_KEY.equals(dragboard.getString())
-                    && draggingTab.get() != null
-                    && draggingTab.get().getTabPane() != tabPane) {
+            if (dragboard.hasString() && TAB_DRAG_KEY.equals(dragboard.getString()) && draggingTab.get() != null && draggingTab.get().getTabPane() != tabPane) {
                 final Tab tab = draggingTab.get();
                 moveTab(tab, tab.getTabPane(), tabPane);
                 event.setDropCompleted(true);

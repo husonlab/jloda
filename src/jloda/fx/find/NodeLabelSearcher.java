@@ -41,7 +41,7 @@ package jloda.fx.find;
 import javafx.application.Platform;
 import javafx.beans.binding.Bindings;
 import javafx.beans.property.*;
-import jloda.fx.util.ASelectionModel;
+import jloda.fx.control.AMultipleSelectionModel;
 import jloda.graph.Graph;
 import jloda.graph.Node;
 import jloda.phylo.PhyloSplitsGraph;
@@ -56,7 +56,7 @@ import java.util.Objects;
 public class NodeLabelSearcher implements IObjectSearcher<Node> {
     private final String name;
     private Graph graph;
-    private final ASelectionModel<Node> nodeSelectionModel;
+    private final AMultipleSelectionModel<Node> nodeSelectionModel;
     private Node current = null;
 
     private final ObjectProperty<Node> found = new SimpleObjectProperty<>();
@@ -72,7 +72,7 @@ public class NodeLabelSearcher implements IObjectSearcher<Node> {
      * @param
      * @param graph
      */
-    public NodeLabelSearcher(PhyloSplitsGraph graph, ASelectionModel<Node> nodeSelectionModel) {
+    public NodeLabelSearcher(PhyloSplitsGraph graph, AMultipleSelectionModel<Node> nodeSelectionModel) {
         this(SEARCHER_NAME, graph, nodeSelectionModel);
     }
 
@@ -82,7 +82,7 @@ public class NodeLabelSearcher implements IObjectSearcher<Node> {
      * @param
      * @param graph
      */
-    public NodeLabelSearcher(String name, Graph graph, ASelectionModel<Node> nodeSelectionModel) {
+    public NodeLabelSearcher(String name, Graph graph, AMultipleSelectionModel<Node> nodeSelectionModel) {
         this.graph = graph;
         this.name = name;
         this.nodeSelectionModel = nodeSelectionModel;
@@ -307,7 +307,7 @@ public class NodeLabelSearcher implements IObjectSearcher<Node> {
     }
 
     @Override
-    public ASelectionModel<Node> getSelectionModel() {
+    public AMultipleSelectionModel<Node> getSelectionModel() {
         return nodeSelectionModel;
     }
 

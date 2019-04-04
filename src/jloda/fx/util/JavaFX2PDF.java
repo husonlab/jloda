@@ -29,6 +29,7 @@ import java.io.IOException;
 
 /**
  * print JavaFX to PDF
+ * Daniel Huson, 2018
  */
 public class JavaFX2PDF {
     private Printer pdfPrinter;
