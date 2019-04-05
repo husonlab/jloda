@@ -57,4 +57,9 @@ public interface IMainWindow {
      */
     boolean isEmpty();
 
+    /**
+     * perform last closing duties
+     */
+    void close();
+
 }

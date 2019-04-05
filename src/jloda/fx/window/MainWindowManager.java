@@ -130,10 +130,10 @@ public class MainWindowManager {
         ProgramPropertiesFX.put("WindowGeometry", (new WindowGeometry(mainWindow.getStage())).toString());
         mainWindow.getStage().close();
 
+        mainWindow.close();
         mainWindows.remove(mainWindow);
         closeAndRemoveAuxiliaryWindows(mainWindow);
         changed.set(changed.get() + 1);
-
 
         if (mainWindows.size() == 0) {
             Platform.exit();
