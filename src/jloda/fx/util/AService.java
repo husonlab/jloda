@@ -23,8 +23,6 @@ import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.concurrent.Service;
 import javafx.concurrent.Task;
-import javafx.concurrent.WorkerStateEvent;
-import javafx.event.EventHandler;
 import javafx.scene.layout.Pane;
 import jloda.fx.control.ProgressPane;
 import jloda.util.ProgressListener;
@@ -77,13 +75,7 @@ public class AService<T> extends Service<T> {
             });
         }
 
-        setOnFailed(new EventHandler<WorkerStateEvent>() {
-            @Override
-            public void handle(WorkerStateEvent e) {
-                NotificationManager.showError("Computation failed: " + AService.this.getException().getMessage());
-            }
-        });
-
+        setOnFailed(e -> NotificationManager.showError("Computation failed: " + AService.this.getException().getMessage()));
     }
 
     @Override

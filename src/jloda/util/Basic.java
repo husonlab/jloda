@@ -4186,7 +4186,7 @@ public class Basic {
      * @param recursively
      * @return list of files
      */
-    public static ArrayList<File> getAllFilesInDirectory(File rootDirectory, String fileExtension, boolean recursively) {
+    public static ArrayList<File> getAllFilesInDirectory(File rootDirectory, boolean recursively, String... fileExtensions) {
         final ArrayList<File> result = new ArrayList<>();
 
         final Queue<File> queue = new LinkedList<>();
@@ -4202,8 +4202,15 @@ public class Basic {
                             Collections.addAll(queue, below);
                         }
                     }
-                } else if (fileExtension.length() == 0 || file.getName().endsWith(fileExtension)) {
+                } else if (fileExtensions.length == 0)
                     result.add(file);
+                else {
+                    for (String extension : fileExtensions) {
+                        if (file.getName().endsWith(extension)) {
+                            result.add(file);
+                            break;
+                        }
+                    }
                 }
             }
         }

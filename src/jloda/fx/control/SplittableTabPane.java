@@ -111,6 +111,8 @@ public class SplittableTabPane extends Pane {
         });
 
         selectionModel.selectedItemProperty().addListener((c, o, n) -> {
+            if (n != null && n.getTabPane() != null)
+                n.getTabPane().getSelectionModel().select(n);
             setFocusedTabPane(n != null ? n.getTabPane() : findATabPane(splitPane.getItems()));
             //System.err.println("Selected: " + n);
         });
@@ -394,7 +396,9 @@ public class SplittableTabPane extends Pane {
             menuItems.add(closeAll);
 
             tab.setClosable(true);
-            tab.setOnCloseRequest((e) -> close.getOnAction().handle(null));
+            tab.setOnCloseRequest((e) -> {
+                close.getOnAction().handle(null);
+            });
             menuItems.add(new SeparatorMenuItem());
         }
 
