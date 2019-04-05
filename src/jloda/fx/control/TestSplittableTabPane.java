@@ -76,7 +76,7 @@ public class TestSplittableTabPane extends Application {
         newTab.setDefaultButton(true);
 
         final Button closeAux = new Button("Close Aux");
-        closeAux.setOnAction((e) -> tabPane.closeAllAuxiliaryWindows());
+        closeAux.setOnAction((e) -> tabPane.redockAll());
 
         final Button quit = new Button("Quit");
         quit.setOnAction((e) -> Platform.exit());

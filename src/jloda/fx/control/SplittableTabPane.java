@@ -182,15 +182,11 @@ public class SplittableTabPane extends Pane {
     }
 
     /**
-     * close all auxiliary windows.
-     * Closeable tabs are closed, unclosable tabs are redocked
+     * redock all undocked tabs
      */
-    public void closeAllAuxiliaryWindows() {
+    public void redockAll() {
         for (AuxiliaryWindow auxiliaryWindow : auxiliaryWindows) {
-            if (!auxiliaryWindow.getTab().isClosable())
                 moveTab(auxiliaryWindow.getTab(), null, getFocusedTabPane());
-            else
-                tabs.remove(auxiliaryWindow.getTab());
             auxiliaryWindow.getStage().close();
         }
     }
