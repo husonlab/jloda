@@ -20,9 +20,11 @@ package jloda.fx.control;
 
 import javafx.application.Application;
 import javafx.application.Platform;
-import javafx.geometry.Orientation;
 import javafx.scene.Scene;
-import javafx.scene.control.*;
+import javafx.scene.control.Button;
+import javafx.scene.control.ButtonBar;
+import javafx.scene.control.Tab;
+import javafx.scene.control.TextArea;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 import javafx.stage.Stage;
@@ -71,12 +73,16 @@ public class TestSplittableTabPane extends Application {
             tab.setContent(textArea);
             tabPane.getTabs().add(tab);
         });
+        newTab.setDefaultButton(true);
+
+        final Button closeAux = new Button("Close Aux");
+        closeAux.setOnAction((e) -> tabPane.closeAllAuxiliaryWindows());
 
         final Button quit = new Button("Quit");
         quit.setOnAction((e) -> Platform.exit());
 
         final ButtonBar buttonBar = new ButtonBar();
-        buttonBar.getButtons().addAll(newTab, new Separator(Orientation.VERTICAL), quit);
+        buttonBar.getButtons().addAll(newTab, closeAux, quit);
         borderPane.setTop(buttonBar);
 
         final StackPane root = new StackPane();
