@@ -31,7 +31,6 @@ import java.util.Collection;
  * a general purpose multiple selection model
  * Assumes that all selectable items are distinct
  * Daniel Huson, 4.2019
- * todo: this is untested
  *
  * @param <T> items
  */
@@ -45,15 +44,14 @@ public class AnotherMultipleSelectionModel<T> extends MultipleSelectionModel<T> 
 
     private final BooleanProperty empty = new SimpleBooleanProperty(true);
 
-
     /**
      * constructor
      * Assumes all items are distinct
      *
-     * @param items items
+     * @param initialItems items
      */
     @SafeVarargs
-    public AnotherMultipleSelectionModel(T... items) {
+    public AnotherMultipleSelectionModel(T... initialItems) {
 
         selectedIndicesSet.addListener((SetChangeListener<Integer>) e -> {
             if (e.wasRemoved()) {
@@ -79,7 +77,7 @@ public class AnotherMultipleSelectionModel<T> extends MultipleSelectionModel<T> 
                             selectedIndicesSet.remove(index);
                     }
                 } else if (e.wasAdded()) {
-                    for (T item : e.getRemoved()) {
+                    for (T item : e.getAddedSubList()) {
                         final Integer index = item2index.get(item);
                         if (index != null)
                             selectedIndicesSet.add(index);
@@ -89,16 +87,27 @@ public class AnotherMultipleSelectionModel<T> extends MultipleSelectionModel<T> 
         });
 
         selectedIndices.addListener((ListChangeListener<Integer>) (e) -> {
+            int lastAdded = -1;
+
             while (e.next()) {
                 if (e.wasRemoved()) {
                     selectedIndicesSet.removeAll(e.getRemoved());
+                    if (e.getRemoved().contains(getSelectedIndex())) {
+                        setSelectedIndex(-1);
+                        setSelectedItem(null);
+                    }
                 } else if (e.wasAdded()) {
-                    selectedIndicesSet.addAll(e.getRemoved());
+                    selectedIndicesSet.addAll(e.getAddedSubList());
+                    lastAdded = e.getAddedSubList().get(e.getAddedSize() - 1);
+                }
+                if (lastAdded >= 0) {
+                    setSelectedIndex(lastAdded);
+                    setSelectedItem(getItems().get(lastAdded));
                 }
             }
         });
 
-        setItems(items);
+        setItems(initialItems);
     }
 
     /**
