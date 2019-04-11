@@ -44,7 +44,7 @@ public class PNGExportType extends FileFilter implements ExportGraphicType {
     private final DataFlavor flavor;
 
     public PNGExportType() {
-        flavor = new DataFlavor(mimeType + ";class=jloda.export.PNGExportType", "png image");
+        flavor = new DataFlavor(mimeType + ";class=jloda.swing.export.PNGExportType", "png image");
     }
 
     public String getMimeType() {

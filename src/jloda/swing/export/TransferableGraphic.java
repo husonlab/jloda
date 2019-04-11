@@ -29,7 +29,7 @@ import java.util.Map;
 
 /**
  * Transferable for exporting graphics to the clipboard.
- * To add a new export type, implement the <code>jloda.export.ExportGraphicType</code>
+ * To add a new export type, implement the <code>jloda.swing.export.ExportGraphicType</code>
  * interface and add it to the addCommonTypes or addCustomTypes() method.
  *
  * @author huson, schroeder
@@ -38,7 +38,7 @@ public class TransferableGraphic implements ClipboardOwner, Transferable {
 
     /**
      * map supported <code>DataFlavor</code>s to
-     * <code>jloda.export.ExportGraphicType</code>s. *
+     * <code>jloda.swing.export.ExportGraphicType</code>s. *
      */
     private final Map types = new HashMap();
 
@@ -110,7 +110,7 @@ public class TransferableGraphic implements ClipboardOwner, Transferable {
 
         addType("Encapsulated PostScript", "image/x-eps",
                 "EPS graphic",
-                "jloda.export.EPSExportType");
+                "jloda.swing.export.EPSExportType");
     }
 
     /**

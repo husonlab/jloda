@@ -45,7 +45,7 @@ public class JPGExportType extends FileFilter implements ExportGraphicType {
     private final DataFlavor flavor;
 
     public JPGExportType() {
-        flavor = new DataFlavor(mimeType + ";class=jloda.export.JPGExportType", "jpeg image");
+        flavor = new DataFlavor(mimeType + ";class=jloda.swing.export.JPGExportType", "jpeg image");
     }
 
     public String getMimeType() {

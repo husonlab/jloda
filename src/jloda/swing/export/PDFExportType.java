@@ -50,7 +50,7 @@ public class PDFExportType extends SVGExportType implements ExportGraphicType {
     private final DataFlavor flavor;
 
     public PDFExportType() {
-        flavor = new DataFlavor(mimeType + ";class=jloda.export.PDFExportType", "Portable Document Format");
+        flavor = new DataFlavor(mimeType + ";class=jloda.swing.export.PDFExportType", "Portable Document Format");
     }
 
     public String getMimeType() {

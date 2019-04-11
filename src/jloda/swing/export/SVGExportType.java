@@ -48,7 +48,7 @@ public class SVGExportType extends FileFilter implements ExportGraphicType {
     private final DataFlavor flavor;
 
     public SVGExportType() {
-        flavor = new DataFlavor(mimeType + ";class=jloda.export.SVGExportType", "Scalable Vector Graphic");
+        flavor = new DataFlavor(mimeType + ";class=jloda.swing.export.SVGExportType", "Scalable Vector Graphic");
     }
 
     public String getMimeType() {

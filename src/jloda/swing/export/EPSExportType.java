@@ -48,7 +48,7 @@ public class EPSExportType extends FileFilter implements ExportGraphicType {
 
 
     public EPSExportType() {
-        flavor = new DataFlavor(mimeType + ";class=jloda.export.EPSExportType", "EPS graphic");
+        flavor = new DataFlavor(mimeType + ";class=jloda.swing.export.EPSExportType", "EPS graphic");
     }
 
     public String getMimeType() {

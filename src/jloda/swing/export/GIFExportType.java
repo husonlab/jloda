@@ -44,7 +44,7 @@ public class GIFExportType extends FileFilter implements ExportGraphicType {
     private final DataFlavor flavor;
 
     public GIFExportType() {
-        flavor = new DataFlavor(mimeType + ";class=jloda.export.GIFExportType", "gif89 image");
+        flavor = new DataFlavor(mimeType + ";class=jloda.swing.export.GIFExportType", "gif89 image");
     }
 
     public String getMimeType() {
