@@ -21,6 +21,7 @@ package jloda.fx.find;
 import javafx.application.Platform;
 import javafx.beans.binding.Bindings;
 import javafx.beans.property.*;
+import javafx.scene.control.MultipleSelectionModel;
 import jloda.fx.control.AMultipleSelectionModel;
 import jloda.graph.Edge;
 import jloda.graph.Graph;
@@ -295,7 +296,7 @@ public class EdgeLabelSearcher implements IObjectSearcher<Edge> {
     }
 
     @Override
-    public AMultipleSelectionModel<Edge> getSelectionModel() {
+    public MultipleSelectionModel<Edge> getSelectionModel() {
         return edgeSelectionModel;
     }
 

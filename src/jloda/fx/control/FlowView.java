@@ -49,6 +49,7 @@ import javafx.scene.Node;
 import javafx.scene.control.ListCell;
 import javafx.scene.control.ListView;
 import javafx.scene.control.MultipleSelectionModel;
+import javafx.scene.input.KeyCode;
 import javafx.scene.layout.Background;
 import javafx.scene.layout.BackgroundFill;
 import javafx.scene.layout.FlowPane;
@@ -89,6 +90,8 @@ public class FlowView<T> extends Pane implements Closeable {
     private MultipleSelectionModel<T> selectionModel;
     private final ChangeListener<T> selectedItemListener;
 
+    private final BooleanProperty scrollToSelection = new SimpleBooleanProperty(false);
+
     /**
      * constructor
      *
@@ -101,6 +104,34 @@ public class FlowView<T> extends Pane implements Closeable {
         listView.prefHeightProperty().bind(heightProperty());
         getChildren().add(listView);
         listView.setSelectionModel(new EmptyMultipleSelectionModel<>());
+        listView.setOnKeyReleased((e) -> {
+        });
+        listView.setOnKeyPressed((e) -> {
+            if (selectionModel != null) {
+                if (e.getCode() == KeyCode.LEFT) {
+                    if (selectionModel.getSelectedIndex() == -1)
+                        selectionModel.selectLast();
+                    else if (selectionModel.getSelectedIndex() > 0)
+                        selectionModel.selectPrevious();
+                } else if (e.getCode() == KeyCode.RIGHT) {
+                    if (selectionModel.getSelectedIndex() == -1)
+                        selectionModel.selectFirst();
+                    else if (selectionModel.getSelectedIndex() < size())
+                        selectionModel.selectNext();
+                } else if (e.getCode() == KeyCode.UP) {
+                    if (selectionModel.getSelectedIndex() <= getBlockSize())
+                        selectionModel.selectFirst();
+                    else
+                        selectionModel.clearAndSelect(selectionModel.getSelectedIndex() - getBlockSize());
+                } else if (e.getCode() == KeyCode.DOWN) {
+                    if (selectionModel.getSelectedIndex() >= size() - getBlockSize())
+                        selectionModel.selectLast();
+                    else
+                        selectionModel.clearAndSelect(selectionModel.getSelectedIndex() + getBlockSize());
+                }
+                e.consume();
+            }
+        });
 
         listView.setCellFactory(v -> new ListCell<ArrayList<T>>() {
             {
@@ -116,6 +147,11 @@ public class FlowView<T> extends Pane implements Closeable {
                     setGraphic(null);
                 } else {
                     final FlowPane flowPane = new FlowPane();
+                    flowPane.setOnKeyPressed((e) -> {
+                    });
+                    flowPane.setOnKeyReleased((e) -> {
+                    });
+
                     flowPane.setHgap(getHgap());
                     flowPane.setVgap(getVgap());
                     flowPane.setBackground(emptyBackground);
@@ -166,7 +202,7 @@ public class FlowView<T> extends Pane implements Closeable {
         }
 
         selectedItemListener = (observable, oldValue, newValue) -> {
-            if (true) { // doesn't work very well
+            if (isScrollToSelection()) { // doesn't work very well
                 if (item2node.get(newValue) != null && item2node.get(newValue).getParent().getUserData() instanceof ArrayList) {
                     final ArrayList<T> block = (ArrayList<T>) item2node.get(newValue).getParent().getUserData();
                     listView.scrollTo(block);
@@ -305,5 +341,22 @@ public class FlowView<T> extends Pane implements Closeable {
         this.selectionModel = selectionModel;
         if (selectionModel != null)
             this.selectionModel.selectedItemProperty().addListener(selectedItemListener);
+    }
+
+    public boolean isScrollToSelection() {
+        return scrollToSelection.get();
+    }
+
+    /**
+     * scroll to selection? Doesn't work well when block size is so big that flow pane wraps around
+     *
+     * @return
+     */
+    public BooleanProperty scrollToSelectionProperty() {
+        return scrollToSelection;
+    }
+
+    public void setScrollToSelection(boolean scrollToSelection) {
+        this.scrollToSelection.set(scrollToSelection);
     }
 }

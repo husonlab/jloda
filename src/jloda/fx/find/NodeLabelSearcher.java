@@ -41,6 +41,7 @@ package jloda.fx.find;
 import javafx.application.Platform;
 import javafx.beans.binding.Bindings;
 import javafx.beans.property.*;
+import javafx.scene.control.MultipleSelectionModel;
 import jloda.fx.control.AMultipleSelectionModel;
 import jloda.graph.Graph;
 import jloda.graph.Node;
@@ -307,7 +308,7 @@ public class NodeLabelSearcher implements IObjectSearcher<Node> {
     }
 
     @Override
-    public AMultipleSelectionModel<Node> getSelectionModel() {
+    public MultipleSelectionModel<Node> getSelectionModel() {
         return nodeSelectionModel;
     }
 

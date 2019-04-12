@@ -20,10 +20,13 @@ package jloda.fx.control;
 
 
 import javafx.beans.binding.Bindings;
-import javafx.beans.property.*;
+import javafx.beans.property.BooleanProperty;
+import javafx.beans.property.ReadOnlyBooleanProperty;
+import javafx.beans.property.SimpleBooleanProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
+import javafx.scene.control.MultipleSelectionModel;
 import jloda.util.Basic;
 
 import java.util.*;
@@ -32,13 +35,12 @@ import java.util.*;
  * Selection model
  * Daniel Huson 12/2019
  */
-public class AMultipleSelectionModel<T> {
+public class AMultipleSelectionModel<T> extends MultipleSelectionModel<T> {
     private enum Update {ClearAndAdd, Add, Remove, RemoveAll, SelectAll}
 
     private final BitSet selectedIndicesBits = new BitSet();
     private final ObservableList<Integer> selectedIndicesList = FXCollections.observableArrayList();
 
-    private final ObjectProperty<T> selectedItemProperty = new SimpleObjectProperty<>();
 
     private T[] items; // need a copy of this array to map indices to objects, when required
 
@@ -95,7 +97,7 @@ public class AMultipleSelectionModel<T> {
                     canSelectNone.set(AMultipleSelectionModel.this.items.length > 0 && selectedItems.size() > 0);
                 }
             }
-            selectedItemProperty.set(selectedItems.size() == 0 ? null : selectedItems.get(0));
+            setSelectedItem(selectedItems.size() == 0 ? null : selectedItems.get(0));
         });
         // wrap a unmodifiable observable list around the observable arrays lists
 
@@ -278,15 +280,6 @@ public class AMultipleSelectionModel<T> {
             select(items.length - 1);
         }
     }
-
-    public ReadOnlyObjectProperty<T> selectedItemProperty() {
-        return selectedItemProperty;
-    }
-
-    public T getSelectedItem() {
-        return selectedItemProperty.get();
-    }
-
 
     public void selectPrevious() {
         select(focusIndex - 1);
