@@ -42,7 +42,6 @@ import javafx.application.Platform;
 import javafx.beans.property.*;
 import jloda.fx.util.AService;
 import jloda.fx.util.ProgramExecutorService;
-import jloda.fx.util.TaskWithProgressListener;
 import jloda.util.CanceledException;
 import jloda.util.ProgressListener;
 
@@ -119,14 +118,7 @@ public class SearchManager {
      * find the first occurrence
      */
     public void findFirst() {
-        final TaskWithProgressListener<Integer> task = new TaskWithProgressListener<Integer>() {
-            @Override
-            public Integer call() throws Exception {
-                return doFindFirst(getProgressListener()) ? 1 : 0;
-            }
-        };
-        service.setCallable(task);
-        service.setOnFailed((e) -> System.err.println("Failed: " + service.getException()));
+        service.setCallable(() -> doFindFirst(service.getProgressListener()) ? 1 : 0);
         service.setOnSucceeded((e) -> {
             message.set(service.getValue() > 0 ? "Found" : "No matches");
             if (service.getValue() > 0)
@@ -139,14 +131,7 @@ public class SearchManager {
      * find the first next
      */
     public void findNext() {
-        final TaskWithProgressListener<Integer> task = new TaskWithProgressListener<Integer>() {
-            @Override
-            public Integer call() throws Exception {
-                return doFindNext(getProgressListener()) ? 1 : 0;
-            }
-        };
-        service.setCallable(task);
-        service.setOnFailed((e) -> System.err.println("Failed: " + service.getException()));
+        service.setCallable(() -> doFindNext(service.getProgressListener()) ? 1 : 0);
         service.setOnSucceeded((e) -> {
             message.set(service.getValue() > 0 ? "Found" : "No matches");
             if (service.getValue() > 0)
@@ -159,14 +144,8 @@ public class SearchManager {
      * find all
      */
     public void findAll() {
-        final TaskWithProgressListener<Integer> task = new TaskWithProgressListener<Integer>() {
-            @Override
-            public Integer call() throws Exception {
-                return doFindAll(getProgressListener());
-            }
-        };
-        service.setCallable(task);
-        service.setOnFailed((e) -> System.err.println("Failed: " + service.getException()));
+        service.setCallable(() -> doFindAll(service.getProgressListener()));
+
         service.setOnSucceeded((e) -> {
             message.set(service.getValue() > 0 ? "Found " + service.getValue() : "No matches");
             if (service.getValue() > 0)
@@ -179,14 +158,7 @@ public class SearchManager {
      * replace and find
      */
     public void findAndReplace() {
-        final TaskWithProgressListener<Integer> task = new TaskWithProgressListener<Integer>() {
-            @Override
-            public Integer call() throws Exception {
-                return doFindAndReplace(getProgressListener()) ? 1 : 0;
-            }
-        };
-        service.setCallable(task);
-        service.setOnFailed((e) -> System.err.println("Failed: " + service.getException()));
+        service.setCallable(() -> doFindAndReplace(service.getProgressListener()) ? 1 : 0);
         service.setOnSucceeded((e) -> {
             message.set(service.getValue() > 0 ? "Replaced" : "No matches");
             if (service.getValue() > 0)
@@ -199,14 +171,7 @@ public class SearchManager {
      * replace all
      */
     public void replaceAll() {
-        final TaskWithProgressListener<Integer> task = new TaskWithProgressListener<Integer>() {
-            @Override
-            public Integer call() throws Exception {
-                return doReplaceAll(getProgressListener());
-            }
-        };
-        service.setCallable(task);
-        service.setOnFailed((e) -> System.err.println("Failed: " + service.getException()));
+        service.setCallable(() -> doReplaceAll(service.getProgressListener()));
         service.setOnSucceeded((e) -> {
             message.set(service.getValue() > 0 ? "Replaced " + service.getValue() : "No matches");
             if (service.getValue() > 0)
@@ -347,7 +312,6 @@ public class SearchManager {
     private boolean doFindAndReplace(ProgressListener progressListener) throws CanceledException {
         if (isDisabled())
             return false;
-
 
         boolean changed = false;
         if (getSearcher() instanceof IObjectSearcher) {

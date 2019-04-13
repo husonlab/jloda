@@ -19,6 +19,7 @@
 
 package jloda.fx.find;
 
+import javafx.application.Platform;
 import javafx.beans.binding.Bindings;
 import javafx.beans.property.*;
 import javafx.collections.ObservableList;
@@ -26,6 +27,7 @@ import javafx.scene.control.MultipleSelectionModel;
 import javafx.scene.control.SelectionMode;
 import jloda.fx.control.AnotherMultipleSelectionModel;
 
+import java.util.BitSet;
 import java.util.function.BiConsumer;
 import java.util.function.Function;
 
@@ -46,6 +48,9 @@ public class Searcher<T> implements IObjectSearcher<T> {
 
     private final BooleanProperty selectionFindable = new SimpleBooleanProperty(false);
 
+    private final BitSet toSelect = new BitSet();
+    private final BitSet toDeselect = new BitSet();
+
     private int current = 0;
 
     /**
@@ -62,7 +67,6 @@ public class Searcher<T> implements IObjectSearcher<T> {
         this.textSetter = textSetter;
 
         globalFindable.bind(selectionModel.selectionModeProperty().isEqualTo(SelectionMode.MULTIPLE).and(Bindings.size(items).greaterThan(0)));
-
     }
 
     @Override
@@ -116,12 +120,20 @@ public class Searcher<T> implements IObjectSearcher<T> {
 
     @Override
     public boolean isCurrentSelected() {
-        return isCurrentSet() && selectionModel.isSelected(current);
+        return current != -1 && !toDeselect.get(current) && (toSelect.get(current) || selectionModel.isSelected(current));
     }
 
     @Override
     public void setCurrentSelected(boolean select) {
-        selectionModel.select(current);
+        if (current != -1) {
+            if (!select) {
+                toDeselect.set(current);
+                toSelect.set(current, false);
+            } else {
+                toDeselect.set(current, false);
+                toSelect.set(current);
+            }
+        }
     }
 
     @Override
@@ -133,7 +145,6 @@ public class Searcher<T> implements IObjectSearcher<T> {
     public void setCurrentLabel(String newLabel) {
         if (textSetter != null)
             textSetter.accept(items.get(current), newLabel);
-
     }
 
     @Override
@@ -166,20 +177,39 @@ public class Searcher<T> implements IObjectSearcher<T> {
         return selectionFindable;
     }
 
+    /**
+     * run this in the FX thread to update selections
+     */
     @Override
     public void updateView() {
+        if (!Platform.isFxApplicationThread())
+            throw new RuntimeException("Not fx application thread");
 
+        for (int index = toDeselect.nextSetBit(0); index != -1; index = toDeselect.nextSetBit(index + 1)) {
+            selectionModel.clearSelection(index);
+        }
+        toDeselect.clear();
+
+        for (int index = toSelect.nextSetBit(0); index != -1; index = toSelect.nextSetBit(index + 1)) {
+            selectionModel.select(index);
+        }
+        toSelect.clear();
     }
 
     @Override
     public boolean canFindAll() {
-        return items.size() > 0 && selectionModel.getSelectedItems().size() < items.size();
+        return true;
     }
 
     @Override
     public void selectAll(boolean select) {
-        selectionModel.selectAll();
-
+        if (select) {
+            toSelect.set(0, items.size());
+            toDeselect.clear();
+        } else {
+            toSelect.clear();
+            toDeselect.set(0, items.size());
+        }
     }
 
     public StringProperty nameProperty() {

@@ -19,8 +19,6 @@
 
 package jloda.fx.util;
 
-import javafx.beans.value.ChangeListener;
-import javafx.beans.value.ObservableValue;
 import javafx.concurrent.Service;
 import javafx.concurrent.Task;
 import javafx.scene.layout.Pane;
@@ -36,8 +34,7 @@ import java.util.concurrent.Callable;
  * @param <T>
  */
 public class AService<T> extends Service<T> {
-    private Callable<T> callable;
-    private final TaskWithProgressListener<T> task;
+    private TaskWithProgressListener<T> task;
 
     public AService() {
         this(null, null);
@@ -55,23 +52,14 @@ public class AService<T> extends Service<T> {
         super();
         setExecutor(ProgramExecutorService.getInstance());
         setCallable(callable);
-        task = new TaskWithProgressListener<T>() {
-            @Override
-            public T call() throws Exception {
-                return AService.this.callable != null ? AService.this.callable.call() : null;
-            }
-        };
 
         if (progressParentPane != null) {
             final ProgressPane progressPane = new ProgressPane(this);
-            this.runningProperty().addListener(new ChangeListener<Boolean>() {
-                @Override
-                public void changed(ObservableValue<? extends Boolean> c, Boolean o, Boolean n) {
-                    if (n)
-                        progressParentPane.getChildren().add(progressPane);
-                    else
-                        progressParentPane.getChildren().remove(progressPane);
-                }
+            this.runningProperty().addListener((c, o, n) -> {
+                if (n)
+                    progressParentPane.getChildren().add(progressPane);
+                else
+                    progressParentPane.getChildren().remove(progressPane);
             });
         }
 
@@ -87,11 +75,12 @@ public class AService<T> extends Service<T> {
         return (task != null ? task.getProgressListener() : null);
     }
 
-    public Callable<T> getCallable() {
-        return callable;
-    }
-
     public void setCallable(Callable<T> callable) {
-        this.callable = callable;
+        task = new TaskWithProgressListener<T>() {
+            @Override
+            public T call() throws Exception {
+                return callable.call();
+            }
+        };
     }
 }

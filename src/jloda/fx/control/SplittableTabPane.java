@@ -81,11 +81,18 @@ public class SplittableTabPane extends Pane {
             while (c.next()) {
                 if (c.wasAdded()) {
                     for (Tab tab : c.getAddedSubList()) {
-                        final TabPane target;
+                        TabPane target;
                         if (getFocusedTabPane() != null)
                             target = getFocusedTabPane();
                         else {
                             target = findATabPane(splitPane.getItems());
+                        }
+                        if (target == null) {
+                            target = createTabPane();
+                            target.prefWidthProperty().bind(widthProperty());
+                            target.prefHeightProperty().bind(heightProperty());
+                            tabPane2ParentSplitPane.put(target, splitPane);
+                            splitPane.getItems().add(target);
                         }
                         moveTab(tab, null, target);
                         setupDrag(tab);
@@ -211,6 +218,8 @@ public class SplittableTabPane extends Pane {
             oldTabPane.getTabs().remove(tab);
             if (oldTabPane.getTabs().size() == 0 && oldSplitPane != null) {
                 oldSplitPane.getItems().remove(oldTabPane);
+                if (getFocusedTabPane() == oldTabPane)
+                    setFocusedTabPane(null);
                 tabPane2ParentSplitPane.remove(oldTabPane);
             }
         }

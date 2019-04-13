@@ -203,7 +203,7 @@ public class FlowView<T> extends Pane implements Closeable {
 
         selectedItemListener = (observable, oldValue, newValue) -> {
             if (isScrollToSelection()) { // doesn't work very well
-                if (item2node.get(newValue) != null && item2node.get(newValue).getParent().getUserData() instanceof ArrayList) {
+                if (item2node.get(newValue) != null && item2node.get(newValue).getParent() != null && item2node.get(newValue).getParent().getUserData() instanceof ArrayList) {
                     final ArrayList<T> block = (ArrayList<T>) item2node.get(newValue).getParent().getUserData();
                     listView.scrollTo(block);
                 }

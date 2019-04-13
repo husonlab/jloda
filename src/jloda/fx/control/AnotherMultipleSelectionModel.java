@@ -23,6 +23,7 @@ import javafx.beans.property.*;
 import javafx.collections.*;
 import javafx.scene.control.MultipleSelectionModel;
 import javafx.scene.control.SelectionMode;
+import jloda.util.Single;
 
 import java.util.Arrays;
 import java.util.Collection;
@@ -52,57 +53,106 @@ public class AnotherMultipleSelectionModel<T> extends MultipleSelectionModel<T> 
      */
     @SafeVarargs
     public AnotherMultipleSelectionModel(T... initialItems) {
+        final Single<Boolean> inSelectItems = new Single<>(false);
+        final Single<Boolean> inSelectIndices = new Single<>(false);
 
         selectedIndicesSet.addListener((SetChangeListener<Integer>) e -> {
             if (e.wasRemoved()) {
-                selectedIndices.remove(e.getElementRemoved());
-                selectedItems.remove(AnotherMultipleSelectionModel.this.items.get(e.getElementRemoved()));
+                if (!inSelectIndices.get()) {
+                    inSelectIndices.set(true);
+                    selectedIndices.remove(e.getElementRemoved());
+                    setSelectedIndex(-1);
+                    inSelectIndices.set(false);
+                }
+                if (!inSelectItems.get()) {
+                    inSelectItems.set(true);
+                    selectedItems.remove(AnotherMultipleSelectionModel.this.items.get(e.getElementRemoved()));
+                    setSelectedItem(null);
+                    inSelectItems.set(false);
+                }
+
             } else if (e.wasAdded()) {
-                selectedIndices.add(e.getElementAdded());
-                selectedItems.add(this.items.get(e.getElementAdded()));
+                if (!inSelectIndices.get()) {
+                    inSelectIndices.set(true);
+                    selectedIndices.add(e.getElementAdded());
+                    setSelectedIndex(e.getElementAdded());
+                    inSelectIndices.set(false);
+                }
+                if (!inSelectItems.get()) {
+                    inSelectItems.set(true);
+                    final T item = this.items.get(e.getElementAdded());
+                    selectedItems.add(item);
+                    setSelectedItem(item);
+                    inSelectItems.set(false);
+                }
             }
-            if (selectedIndices.size() == 1)
-                selectedIndex.set(selectedIndices.get(0));
-            else
-                selectedIndex.set(-1);
+            if (!inSelectIndices.get()) {
+                inSelectItems.set(true);
+                if (selectedIndices.size() == 1)
+                    selectedIndex.set(selectedIndices.get(0));
+                else
+                    selectedIndex.set(-1);
+                inSelectItems.set(false);
+            }
             empty.set(selectedIndicesSet.size() == 0);
+
         });
 
         selectedItems.addListener((ListChangeListener<T>) (e) -> {
-            while (e.next()) {
-                if (e.wasRemoved()) {
-                    for (T item : e.getRemoved()) {
-                        final Integer index = item2index.get(item);
-                        if (index != null)
-                            selectedIndicesSet.remove(index);
+            if (!inSelectItems.get()) {
+                inSelectItems.set(true);
+                try {
+                    while (e.next()) {
+                        if (e.wasRemoved()) {
+                            for (T item : e.getRemoved()) {
+                                final Integer index = item2index.get(item);
+                                if (index != null)
+                                    selectedIndicesSet.remove(index);
+                            }
+                        } else if (e.wasAdded()) {
+                            for (T item : e.getAddedSubList()) {
+                                final Integer index = item2index.get(item);
+                                if (index != null)
+                                    selectedIndicesSet.add(index);
+                            }
+                        }
                     }
-                } else if (e.wasAdded()) {
-                    for (T item : e.getAddedSubList()) {
-                        final Integer index = item2index.get(item);
-                        if (index != null)
-                            selectedIndicesSet.add(index);
-                    }
+
+                } finally {
+                    inSelectItems.set(false);
                 }
             }
         });
 
         selectedIndices.addListener((ListChangeListener<Integer>) (e) -> {
-            int lastAdded = -1;
+            if (!inSelectIndices.get()) {
+                inSelectIndices.set(true);
+                try {
+                    int lastAdded = -1;
 
-            while (e.next()) {
-                if (e.wasRemoved()) {
-                    selectedIndicesSet.removeAll(e.getRemoved());
-                    if (e.getRemoved().contains(getSelectedIndex())) {
-                        setSelectedIndex(-1);
-                        setSelectedItem(null);
+                    while (e.next()) {
+                        if (e.wasRemoved()) {
+                            selectedIndicesSet.removeAll(e.getRemoved());
+                            if (e.getRemoved().contains(getSelectedIndex())) {
+                                setSelectedIndex(-1);
+                                setSelectedItem(null);
+                            }
+                        } else if (e.wasAdded()) {
+                            selectedIndicesSet.addAll(e.getAddedSubList());
+                            lastAdded = e.getAddedSubList().get(e.getAddedSize() - 1);
+                        }
+                        if (lastAdded >= 0) {
+                            setSelectedIndex(lastAdded);
+                            setSelectedItem(getItems().get(lastAdded));
+                        }
                     }
-                } else if (e.wasAdded()) {
-                    selectedIndicesSet.addAll(e.getAddedSubList());
-                    lastAdded = e.getAddedSubList().get(e.getAddedSize() - 1);
-                }
-                if (lastAdded >= 0) {
-                    setSelectedIndex(lastAdded);
-                    setSelectedItem(getItems().get(lastAdded));
+                    if (selectedIndices.size() == 1)
+                        selectedIndex.set(selectedIndices.get(0));
+                    else
+                        selectedIndex.set(-1);
+
+                } finally {
+                    inSelectIndices.set(false);
                 }
             }
         });
@@ -270,6 +320,7 @@ public class AnotherMultipleSelectionModel<T> extends MultipleSelectionModel<T> 
                 clearSelection(index);
         }
     }
+
 
     public void selectItems(Collection<? extends T> items) {
         for (T item : items) {
