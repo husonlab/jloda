@@ -216,7 +216,7 @@ public class AnotherMultipleSelectionModel<T> extends MultipleSelectionModel<T> 
 
     @Override
     public void clearAndSelect(int index) {
-        selectedIndicesSet.clear();
+        clearSelection();
         select(index);
     }
 
