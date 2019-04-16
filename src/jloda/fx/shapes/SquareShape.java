@@ -19,6 +19,7 @@
 
 package jloda.fx.shapes;
 
+import javafx.geometry.Point2D;
 import javafx.scene.shape.Polygon;
 
 /**
@@ -30,15 +31,27 @@ public class SquareShape extends Polygon implements ISized {
     private double height;
 
     public SquareShape(double size) {
-        setSize(size, size);
+        setSize(size, size, null);
+    }
+
+    public SquareShape(double size, Point2D location) {
+        setSize(size, size, location);
     }
 
     public void setSize(double width, double height) {
+        setSize(width, height, null);
+    }
+
+    public void setSize(double width, double height, Point2D location) {
         this.width = width;
         this.height = height;
         width *= 0.5;
         height *= 0.5;
         getPoints().setAll(-width, -height, width, -height, width, height, -width, height);
+        if (location != null) {
+            setLayoutX(location.getX());
+            setLayoutY(location.getY());
+        }
     }
 
     @Override

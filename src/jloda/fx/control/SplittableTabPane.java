@@ -218,8 +218,11 @@ public class SplittableTabPane extends Pane {
             oldTabPane.getTabs().remove(tab);
             if (oldTabPane.getTabs().size() == 0 && oldSplitPane != null) {
                 oldSplitPane.getItems().remove(oldTabPane);
-                if (getFocusedTabPane() == oldTabPane)
-                    setFocusedTabPane(null);
+                if (getFocusedTabPane() == oldTabPane) {
+                    Platform.runLater(() -> {
+                        setFocusedTabPane(tabPane2ParentSplitPane.keySet().iterator().next());
+                    });
+                }
                 tabPane2ParentSplitPane.remove(oldTabPane);
             }
         }
