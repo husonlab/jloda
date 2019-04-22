@@ -43,6 +43,7 @@ public class ASingleSelectionModel<T> extends SingleSelectionModel<T> {
         setItems(items);
     }
 
+    @SafeVarargs
     public ASingleSelectionModel(T... items) {
         setItems(items);
     }
@@ -52,14 +53,14 @@ public class ASingleSelectionModel<T> extends SingleSelectionModel<T> {
         this.items.setAll(items);
     }
 
-    public void setItems(T... items) {
+    @SafeVarargs
+    public final void setItems(T... items) {
         this.items.setAll(items);
     }
 
     public ObservableList<T> getItems() {
         return items;
     }
-
 
     @Override
     protected T getModelItem(int index) {

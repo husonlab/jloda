@@ -91,6 +91,11 @@ public class NGonShape extends Polygon implements ISized {
         }
     }
 
+    public void setLayout(Point2D point2D) {
+        setLayoutX(point2D.getX());
+        setLayoutY(point2D.getY());
+    }
+
     public int getN() {
         return n.get();
     }

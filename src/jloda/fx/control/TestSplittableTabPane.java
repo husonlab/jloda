@@ -21,10 +21,7 @@ package jloda.fx.control;
 import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.scene.Scene;
-import javafx.scene.control.Button;
-import javafx.scene.control.ButtonBar;
-import javafx.scene.control.Tab;
-import javafx.scene.control.TextArea;
+import javafx.scene.control.*;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 import javafx.stage.Stage;
@@ -51,9 +48,11 @@ public class TestSplittableTabPane extends Application {
         final SplittableTabPane tabPane = new SplittableTabPane();
         borderPane.setCenter(tabPane);
 
+        final Single<Integer> counter = new Single<>(0);
+
         final Tab first = new Tab("First");
         {
-            final TextArea textArea = new TextArea(createText());
+            final TextArea textArea = new TextArea("\n" + counter + "\n" + createText());
             first.setContent(textArea);
             first.setClosable(false);
         }
@@ -62,18 +61,27 @@ public class TestSplittableTabPane extends Application {
         tabPane.setBorder(new Border(new BorderStroke(Color.BLACK, BorderStrokeStyle.SOLID, null, null)));
 
 
-        final Single<Integer> counter = new Single<>(0);
-
         final Button newTab = new Button("New tab");
         newTab.setOnAction((e) -> {
             counter.set(counter.get() + 1);
             final Tab tab = new Tab("Tab-" + counter.get());
             tab.setGraphic(new SquareShape(12));
-            final TextArea textArea = new TextArea(createText());
+            final TextArea textArea = new TextArea("\n" + counter + "\n" + createText());
             tab.setContent(textArea);
             tabPane.getTabs().add(tab);
         });
         newTab.setDefaultButton(true);
+
+        final Label focus = new Label("Has Focus");
+        focus.disableProperty().bind(tabPane.focusedTabPaneProperty().isNull());
+
+        final Label selected = new Label("Has Selected");
+        selected.disableProperty().bind(tabPane.getSelectionModel().selectedItemProperty().isNull());
+
+        final Button closeTab = new Button("Close Tab");
+        closeTab.setOnAction((e) ->
+                tabPane.getTabs().remove(tabPane.getSelectionModel().getSelectedItem()));
+        closeTab.disableProperty().bind(selected.disabledProperty().or(focus.disabledProperty()));
 
         final Button closeAux = new Button("Close Aux");
         closeAux.setOnAction((e) -> tabPane.redockAll());
@@ -82,7 +90,7 @@ public class TestSplittableTabPane extends Application {
         quit.setOnAction((e) -> Platform.exit());
 
         final ButtonBar buttonBar = new ButtonBar();
-        buttonBar.getButtons().addAll(newTab, closeAux, quit);
+        buttonBar.getButtons().addAll(newTab, focus, selected, closeTab, closeAux, quit);
         borderPane.setTop(buttonBar);
 
         final StackPane root = new StackPane();

@@ -20,6 +20,7 @@
 package jloda.fx.control;
 
 import javafx.application.Platform;
+import javafx.beans.InvalidationListener;
 import javafx.beans.binding.Bindings;
 import javafx.beans.property.*;
 import javafx.collections.FXCollections;
@@ -71,11 +72,13 @@ public class SplittableTabPane extends Pane {
         tabPane.prefWidthProperty().bind(widthProperty());
         tabPane.prefHeightProperty().bind(heightProperty());
 
-        final SplitPane splitPane = createSplitPane(tabPane);
-        tabPane2ParentSplitPane.put(tabPane, splitPane);
+        final SplitPane rootSplitPane = new SplitPane();
+        setupSplitPane(rootSplitPane, tabPane);
 
-        splitPane.setOrientation(Orientation.HORIZONTAL);
-        getChildren().add(splitPane);
+        tabPane2ParentSplitPane.put(tabPane, rootSplitPane);
+
+        rootSplitPane.setOrientation(Orientation.HORIZONTAL);
+        getChildren().add(rootSplitPane);
 
         tabs.addListener((ListChangeListener<Tab>) (c) -> {
             while (c.next()) {
@@ -85,14 +88,14 @@ public class SplittableTabPane extends Pane {
                         if (getFocusedTabPane() != null)
                             target = getFocusedTabPane();
                         else {
-                            target = findATabPane(splitPane.getItems());
+                            target = findATabPane(rootSplitPane.getItems());
                         }
                         if (target == null) {
                             target = createTabPane();
                             target.prefWidthProperty().bind(widthProperty());
                             target.prefHeightProperty().bind(heightProperty());
-                            tabPane2ParentSplitPane.put(target, splitPane);
-                            splitPane.getItems().add(target);
+                            tabPane2ParentSplitPane.put(target, rootSplitPane);
+                            rootSplitPane.getItems().add(target);
                         }
                         moveTab(tab, null, target);
                         setupDrag(tab);
@@ -117,12 +120,30 @@ public class SplittableTabPane extends Pane {
             size.set(tabs.size());
         });
 
+        rootSplitPane.getItems().addListener((InvalidationListener) (e) -> {
+            if (rootSplitPane.getItems().size() == 0) {
+                Platform.runLater(() -> {
+                    TabPane target = createTabPane();
+                    target.prefWidthProperty().bind(widthProperty());
+                    target.prefHeightProperty().bind(heightProperty());
+                    tabPane2ParentSplitPane.put(target, rootSplitPane);
+                    rootSplitPane.getItems().add(target);
+                });
+            }
+        });
+
         selectionModel.selectedItemProperty().addListener((c, o, n) -> {
             if (n != null && n.getTabPane() != null)
                 n.getTabPane().getSelectionModel().select(n);
-            setFocusedTabPane(n != null ? n.getTabPane() : findATabPane(splitPane.getItems()));
+            setFocusedTabPane(n != null ? n.getTabPane() : findATabPane(rootSplitPane.getItems()));
             //System.err.println("Selected: " + n);
         });
+
+        focusedTabPane.addListener((c, o, n) -> {
+            System.err.println("Focus: " + o + " -> " + n);
+        });
+
+        tabPane.requestFocus();
     }
 
     /**
@@ -158,6 +179,8 @@ public class SplittableTabPane extends Pane {
 
     public void setFocusedTabPane(TabPane focusedTabPane) {
         this.focusedTabPane.set(focusedTabPane);
+        if (focusedTabPane != null)
+            focusedTabPane.requestFocus();
     }
 
     /**
@@ -195,7 +218,7 @@ public class SplittableTabPane extends Pane {
      */
     public void redockAll() {
         for (AuxiliaryWindow auxiliaryWindow : auxiliaryWindows) {
-                moveTab(auxiliaryWindow.getTab(), null, getFocusedTabPane());
+            moveTab(auxiliaryWindow.getTab(), null, getFocusedTabPane());
             auxiliaryWindow.getStage().close();
         }
     }
@@ -215,15 +238,25 @@ public class SplittableTabPane extends Pane {
     private void moveTab(Tab tab, TabPane oldTabPane, TabPane newTabPane, int index) {
         if (oldTabPane != null) {
             final SplitPane oldSplitPane = tabPane2ParentSplitPane.get(oldTabPane);
-            oldTabPane.getTabs().remove(tab);
-            if (oldTabPane.getTabs().size() == 0 && oldSplitPane != null) {
-                oldSplitPane.getItems().remove(oldTabPane);
-                if (getFocusedTabPane() == oldTabPane) {
-                    Platform.runLater(() -> {
-                        setFocusedTabPane(tabPane2ParentSplitPane.keySet().iterator().next());
-                    });
+            final int oldIndex = oldTabPane.getTabs().indexOf(tab);
+            if (oldIndex >= 0) {
+                oldTabPane.getTabs().remove(tab);
+                if (oldTabPane.getTabs().size() == 0 && oldSplitPane != null) {
+                    oldSplitPane.getItems().remove(oldTabPane);
+                    if (getFocusedTabPane() == oldTabPane) {
+                        Platform.runLater(() -> {
+                            if (tabPane2ParentSplitPane.size() > 0)
+                                setFocusedTabPane(tabPane2ParentSplitPane.keySet().iterator().next());
+                        });
+                    }
+                    tabPane2ParentSplitPane.remove(oldTabPane);
                 }
-                tabPane2ParentSplitPane.remove(oldTabPane);
+                if (newTabPane == null) {
+                    if (oldTabPane.getTabs().size() > 0) {
+                        Platform.runLater(() ->
+                                selectionModel.select(oldTabPane.getTabs().get(Math.min(oldIndex, oldTabPane.getTabs().size() - 1))));
+                    }
+                }
             }
         }
 
@@ -236,6 +269,7 @@ public class SplittableTabPane extends Pane {
             Platform.runLater(() -> {
                 newTabPane.getSelectionModel().select(tab);
                 selectionModel.select(tab);
+                setFocusedTabPane(newTabPane);
             });
         }
     }
@@ -262,12 +296,8 @@ public class SplittableTabPane extends Pane {
             moveTab(tab, tabPane, newTabPane);
         } else { // change of orientation, create new split pane
 
-            final TabPane newTabPane = createTabPane();
-            final SplitPane splitPane = createSplitPane(tabPane, newTabPane);
-
-            tabPane2ParentSplitPane.put(tabPane, splitPane);
-            tabPane2ParentSplitPane.put(newTabPane, splitPane);
-
+            final SplitPane splitPane = new SplitPane();
+            splitPane.setOrientation(orientation);
             final IntegerProperty splitPaneSize = new SimpleIntegerProperty();
             splitPaneSize.bind(Bindings.size(splitPane.getItems()));
 
@@ -275,27 +305,33 @@ public class SplittableTabPane extends Pane {
                 if (o.intValue() > 0 && n.intValue() == 0) {
                     parentSplitPane.getItems().remove(splitPane);
                 } else if (o.intValue() > 1 && n.intValue() == 1) {
-                    final TabPane lastTabPane = (TabPane) splitPane.getItems().get(0);
+                    final Node lastNode = splitPane.getItems().get(0);
                     final int index = parentSplitPane.getItems().indexOf(splitPane);
                     if (index != -1) {
-                        parentSplitPane.getItems().set(index, lastTabPane);
+                        parentSplitPane.getItems().set(index, lastNode);
                     } else {
                         final double[] dividers = addDivider(parentSplitPane.getDividerPositions());
-                        parentSplitPane.getItems().add(lastTabPane);
+                        parentSplitPane.getItems().add(lastNode);
                         parentSplitPane.setDividerPositions(dividers);
                     }
                     parentSplitPane.getItems().remove(splitPane);
-                    tabPane2ParentSplitPane.put(lastTabPane, parentSplitPane);
+                    if (lastNode instanceof TabPane)
+                        tabPane2ParentSplitPane.put((TabPane) lastNode, parentSplitPane);
                 }
             });
 
-            splitPane.setOrientation(orientation);
+            final int indexInParentSplitPane = parentSplitPane.getItems().indexOf(tabPane);
+            parentSplitPane.getItems().set(indexInParentSplitPane, splitPane);
+
+            final TabPane newTabPane = createTabPane();
+            setupSplitPane(splitPane, tabPane, newTabPane);
+
+            tabPane2ParentSplitPane.put(tabPane, splitPane);
+            tabPane2ParentSplitPane.put(newTabPane, splitPane);
+
             moveToOpposite(tab, tabPane);
 
-            final int index = parentSplitPane.getItems().indexOf(tabPane);
             final double[] dividers = parentSplitPane.getDividerPositions();
-            parentSplitPane.getItems().remove(tabPane);
-            parentSplitPane.getItems().add(index, splitPane);
             parentSplitPane.setDividerPositions(dividers);
         }
     }
@@ -499,8 +535,8 @@ public class SplittableTabPane extends Pane {
         return -1;
     }
 
-    private SplitPane createSplitPane(TabPane... tabPanes) {
-        final SplitPane splitPane = new SplitPane(tabPanes);
+    private void setupSplitPane(SplitPane splitPane, TabPane... tabPanes) {
+        splitPane.getItems().setAll(tabPanes);
         splitPane.prefWidthProperty().bind(widthProperty());
         splitPane.prefHeightProperty().bind(heightProperty());
 
@@ -509,7 +545,6 @@ public class SplittableTabPane extends Pane {
             positions[i - 1] = i * (1.0 / tabPanes.length);
         }
         splitPane.setDividerPositions(positions);
-        return splitPane;
     }
 
     /**
