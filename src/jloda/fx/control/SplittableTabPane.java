@@ -455,6 +455,7 @@ public class SplittableTabPane extends Pane {
             redock.setOnAction((e) -> {
                 moveTab(tab, null, getFocusedTabPane());
             });
+            // we don't show the redock menu item because the undocked window doesn't have a tab
 
             final MenuItem undock = new MenuItem("Undock");
             undock.setOnAction((e) -> {
