@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 2015 Daniel H. Huson
+ * TreeDrawerAngled.java Copyright (C) 2019. Daniel H. Huson
  *
  *  (Some files contain contributions from other authors, who are then mentioned separately.)
  *
@@ -16,6 +16,7 @@
  *  You should have received a copy of the GNU General Public License
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
+
 package jloda.swing.graphview;
 
 import jloda.graph.Edge;
@@ -50,7 +51,7 @@ public class TreeDrawerAngled extends DefaultGraphDrawer implements IGraphDrawer
     }
 
     /**
-     * setdup the graphview
+     * setup the graphview
      *
      * @param graphView
      */
