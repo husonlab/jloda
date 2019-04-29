@@ -73,12 +73,16 @@ public class FlowView<T> extends Pane implements Closeable {
 
     private final BooleanProperty scrollToSelection = new SimpleBooleanProperty(false);
 
+    private final BooleanProperty precomputeSnapshots = new SimpleBooleanProperty(false);
+    private ListChangeListener<T> listChangeListener;
+    private ExecutorService executorService;
+
     /**
      * constructor
      *
      * @param nodeProducer
      */
-    public FlowView(final Function<T, Node> nodeProducer, boolean backgroundProduceNodes) {
+    public FlowView(final Function<T, Node> nodeProducer) {
         listView = new ListView<>();
         listView.setOrientation(Orientation.VERTICAL);
         listView.prefWidthProperty().bind(widthProperty());
@@ -178,9 +182,10 @@ public class FlowView<T> extends Pane implements Closeable {
             recomputeBlocks(items, true);
         });
 
-        if (backgroundProduceNodes) {
-            backgroundComputeNodes();
-        }
+        precomputeSnapshots.addListener((c, o, n) -> {
+            precomputeSnapshots(n);
+        });
+
 
         selectedItemListener = (observable, oldValue, newValue) -> {
             if (isScrollToSelection()) { // doesn't work very well
@@ -214,40 +219,42 @@ public class FlowView<T> extends Pane implements Closeable {
             listView.getItems().add(array);
     }
 
-    private ExecutorService executorService;
 
-    /**
-     * background computes snapshots
-     */
-    private void backgroundComputeNodes() {
-        executorService = Executors.newSingleThreadExecutor();
-
-        nodeProducerQueue.addListener((ListChangeListener<T>) (e) -> {
-            while (e.next()) {
-                if (e.wasAdded()) {
-                    for (T item : e.getAddedSubList()) {
-                        if (!executorService.isShutdown()) {
-                            executorService.submit(() -> {
-                                try {
-                                    Thread.sleep(50);
-                                } catch (InterruptedException ex) {
-                                    return; // if tab is closed, this is where we exit the loop
-                                }
-                                Platform.runLater(() ->
-                                {
-                                    synchronized (item2node) {
-                                        if (!item2node.containsKey(item)) {
-                                            final Node snapshot = nodeProducer.apply(item);
-                                            item2node.put(item, snapshot);
+    private void precomputeSnapshots(boolean precompute) {
+        if (precompute) {
+            if (executorService == null) {
+                executorService = Executors.newSingleThreadExecutor();
+                listChangeListener = (e) -> {
+                    while (e.next()) {
+                        if (e.wasAdded()) {
+                            for (T item : e.getAddedSubList()) {
+                                if (!executorService.isShutdown()) {
+                                    executorService.submit(() -> {
+                                        try {
+                                            Thread.sleep(50);
+                                        } catch (InterruptedException ex) {
+                                            return; // if tab is closed, this is where we exit the loop
                                         }
-                                    }
-                                });
-                            });
+                                        if (isPrecomputeSnapshots()) {
+                                            Platform.runLater(() ->
+                                            {
+                                                synchronized (item2node) {
+                                                    if (!item2node.containsKey(item)) {
+                                                        final Node snapshot = nodeProducer.apply(item);
+                                                        item2node.put(item, snapshot);
+                                                    }
+                                                }
+                                            });
+                                        }
+                                    });
+                                }
+                            }
                         }
                     }
-                }
+                };
             }
-        });
+            nodeProducerQueue.addListener(listChangeListener);
+        }
     }
 
     /**
@@ -339,5 +346,17 @@ public class FlowView<T> extends Pane implements Closeable {
 
     public void setScrollToSelection(boolean scrollToSelection) {
         this.scrollToSelection.set(scrollToSelection);
+    }
+
+    public boolean isPrecomputeSnapshots() {
+        return precomputeSnapshots.get();
+    }
+
+    public BooleanProperty precomputeSnapshotsProperty() {
+        return precomputeSnapshots;
+    }
+
+    public void setPrecomputeSnapshots(boolean precomputeSnapshots) {
+        this.precomputeSnapshots.set(precomputeSnapshots);
     }
 }

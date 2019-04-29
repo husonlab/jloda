@@ -37,7 +37,10 @@ import javafx.scene.input.TransferMode;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.StackPane;
 import javafx.stage.Stage;
+import jloda.util.Basic;
 
+import java.io.Closeable;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -113,6 +116,13 @@ public class SplittableTabPane extends Pane {
                         }
                         if (!gone)
                             moveTab(tab, tab.getTabPane(), null);
+                        if (tab instanceof Closeable) {
+                            try {
+                                ((Closeable) tab).close();
+                            } catch (IOException e) {
+                                Basic.caught(e);
+                            }
+                        }
                     }
                 }
             }
@@ -139,36 +149,23 @@ public class SplittableTabPane extends Pane {
             //System.err.println("Selected: " + n);
         });
 
+        /*
         focusedTabPane.addListener((c, o, n) -> {
             System.err.println("Focus: " + o + " -> " + n);
         });
+        */
 
         tabPane.requestFocus();
     }
 
-    /**
-     * get the selection model
-     *
-     * @return selection model
-     */
     public ASingleSelectionModel<Tab> getSelectionModel() {
         return selectionModel;
     }
 
-    /**
-     * the list of tabs in this splittable tab pane
-     *
-     * @return tabs
-     */
     public ObservableList<Tab> getTabs() {
         return tabs;
     }
 
-    /**
-     * the currently focused sub tab pane
-     *
-     * @return
-     */
     public TabPane getFocusedTabPane() {
         return focusedTabPane.get();
     }
@@ -253,8 +250,11 @@ public class SplittableTabPane extends Pane {
                 }
                 if (newTabPane == null) {
                     if (oldTabPane.getTabs().size() > 0) {
-                        Platform.runLater(() ->
-                                selectionModel.select(oldTabPane.getTabs().get(Math.min(oldIndex, oldTabPane.getTabs().size() - 1))));
+                        Platform.runLater(() -> {
+                            final int i = Math.min(oldIndex, oldTabPane.getTabs().size() - 1);
+                            if (i >= 0)
+                                selectionModel.select(i);
+                        });
                     }
                 }
             }
