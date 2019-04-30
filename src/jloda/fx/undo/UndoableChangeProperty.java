@@ -1,5 +1,5 @@
 /*
- *  UndoableChangeProperty.java Copyright (C) 2019 Daniel H. Huson
+ * UndoableChangeProperty.java Copyright (C) 2019. Daniel H. Huson
  *
  *  (Some files contain contributions from other authors, who are then mentioned separately.)
  *
@@ -21,6 +21,8 @@ package jloda.fx.undo;
 
 import javafx.beans.property.Property;
 
+import java.util.function.Consumer;
+
 /**
  * An undoable property change
  * Daniel Huson, 12.2016
@@ -29,40 +31,36 @@ public class UndoableChangeProperty<T> extends UndoableRedoableCommand {
     private final Property<T> property;
     private final T oldValue;
     private final T newValue;
+    private final Consumer<T> updater;
 
-    /**
-     * constructor
-     *
-     * @param property
-     * @param oldValue
-     * @param newValue
-     */
     public UndoableChangeProperty(Property<T> property, T oldValue, T newValue) {
-        this("", property, oldValue, newValue);
+        this("", property, oldValue, newValue, null);
     }
 
-    /**
-     * constructor
-     *
-     * @param name
-     * @param property
-     * @param oldValue
-     * @param newValue
-     */
     public UndoableChangeProperty(String name, Property<T> property, T oldValue, T newValue) {
+        this(name, property, oldValue, newValue, null);
+    }
+
+
+    public UndoableChangeProperty(String name, Property<T> property, T oldValue, T newValue, Consumer<T> updater) {
         super(name);
         this.property = property;
         this.oldValue = oldValue;
         this.newValue = newValue;
+        this.updater = updater;
     }
 
     @Override
     public void undo() {
         property.setValue(oldValue);
+        if (updater != null)
+            updater.accept(oldValue);
     }
 
     @Override
     public void redo() {
         property.setValue(newValue);
+        if (updater != null)
+            updater.accept(newValue);
     }
 }

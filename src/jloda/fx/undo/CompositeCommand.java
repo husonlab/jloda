@@ -1,5 +1,5 @@
 /*
- *  CompositeCommand.java Copyright (C) 2019 Daniel H. Huson
+ * CompositeCommand.java Copyright (C) 2019. Daniel H. Huson
  *
  *  (Some files contain contributions from other authors, who are then mentioned separately.)
  *
@@ -33,10 +33,15 @@ public class CompositeCommand extends UndoableRedoableCommand {
 
     @Override
     public void undo() {
-        //  for (int i = commands.length-1; i >=0; i--) { // undo in backward order
-        //      UndoableRedoableCommand command = commands[i];
-        for (UndoableRedoableCommand command : commands) {
-            command.undo();
+        if (true) {
+            for (int i = commands.length - 1; i >= 0; i--) { // undo in backward order
+                UndoableRedoableCommand command = commands[i];
+                command.undo();
+            }
+        } else {
+            for (UndoableRedoableCommand command : commands) {
+                command.undo();
+            }
         }
     }
 
