@@ -20,6 +20,7 @@
 package jloda.fx.colorscale;
 
 import javafx.beans.property.StringProperty;
+import javafx.collections.ObservableList;
 import javafx.scene.Parent;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
@@ -31,7 +32,6 @@ import jloda.fx.util.ExtendedFXMLLoader;
 import jloda.util.Basic;
 
 import java.io.IOException;
-import java.util.ArrayList;
 
 /**
  * a pane showing a scale
@@ -69,7 +69,7 @@ public class ColorScalePane extends Pane {
      * @param reverse
      * @param colors
      */
-    public void setColorScale(String title, double leftValue, double rightValue, boolean reverse, ArrayList<Color> colors) {
+    public void setColorScale(String title, double leftValue, double rightValue, boolean reverse, ObservableList<Color> colors) {
         setTitleText(title + ":");
         setLeftText(Basic.removeTrailingZerosAfterDot(String.format("%,.2f", leftValue)));
         setRightText(Basic.removeTrailingZerosAfterDot(String.format("%,.2f", rightValue)));
@@ -95,7 +95,7 @@ public class ColorScalePane extends Pane {
      * @param title
      * @param colors
      */
-    public void setColorScale(String title, ArrayList<Color> colors, double opacityFactor) {
+    public void setColorScale(String title, ObservableList<Color> colors, double opacityFactor) {
         setTitleText(title + ":");
         setLeftText("");
         setRightText("");

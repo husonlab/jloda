@@ -22,20 +22,21 @@ package jloda.fx.util;
 import javafx.beans.property.ReadOnlyStringProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.scene.paint.Color;
 import jloda.swing.util.ProgramProperties;
 import jloda.util.Basic;
 
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Map;
 import java.util.TreeMap;
 
 public class ColorSchemeManager {
-    private final Map<String, ArrayList<Color>> name2ColorSchemes = new TreeMap<>();
+    private final Map<String, ObservableList<Color>> name2ColorSchemes = new TreeMap<>();
     private final StringProperty lastColorScheme = new SimpleStringProperty("Retro29");
 
-    public static final String[] BuiltInColorTables = {
+    public static String[] BuiltInColorTables = {
             "Caspian8;8;0Xf64d1b;0X8633bc;0X41a744;0X747474;0X2746bc;0Xff9301;0Xc03150;0X2198bc;" +
                     "Fews8;8;0X5da6dc;0Xfba53a;0X60be68;0Xf27db0;0Xb39230;0Xb376b2;0Xdfd040;0Xf15954;" +
                     "Pairs12;12;0X267ab2;0Xa8cfe3;0X399f34;0Xb4df8e;0Xe11f27;0Xfa9b9b;0Xfe7f23;0Xfcbf75;0X6a4199;0Xcab3d6;0Xb05a2f;0Xffff9f;" +
@@ -94,7 +95,7 @@ public class ColorSchemeManager {
                 while (i < tokens.length) {
                     String name = tokens[i++];
                     int numberOfColors = Integer.valueOf(tokens[i++]);
-                    final ArrayList<Color> colors = new ArrayList<>();
+                    final ObservableList<Color> colors = FXCollections.observableArrayList();
                     for (int k = 0; k < numberOfColors; k++) {
                         Color color = Color.web(tokens[i++]);
                         if (alpha < 255)
@@ -123,12 +124,12 @@ public class ColorSchemeManager {
         return buf.toString();
     }
 
-    public ArrayList<Color> getColorScheme(String name) {
+    public ObservableList<Color> getColorScheme(String name) {
         lastColorScheme.set(name);
         return name2ColorSchemes.get(name);
     }
 
-    public void setColorScheme(String name, ArrayList<Color> colors) {
+    public void setColorScheme(String name, ObservableList<Color> colors) {
         name2ColorSchemes.put(name, colors);
         ProgramProperties.put("ColorSchemes", writeTables());
     }
