@@ -17,12 +17,6 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-/**
- * simulates gene evolution along a tree
- * @version $Id: GeneEvolutionSimulator.java,v 1.12 2007-01-14 02:55:44 huson Exp $
- * @author Daniel Huson
- * 8.2003
- */
 package jloda.progs;
 
 import jloda.graph.Edge;
@@ -47,6 +41,7 @@ import java.util.Random;
 
 /**
  * Simulates gene evolution along a tree
+ * Daniel Huson, 2003
  */
 public class GeneEvolutionSimulator {
     private static final Random rand = new Random();
