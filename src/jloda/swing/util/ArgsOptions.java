@@ -22,6 +22,7 @@ package jloda.swing.util;
 import jloda.swing.message.MessageWindow;
 import jloda.util.Basic;
 import jloda.util.CanceledException;
+import jloda.util.ProgramProperties;
 import jloda.util.UsageException;
 
 import javax.swing.*;

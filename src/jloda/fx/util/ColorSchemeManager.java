@@ -19,21 +19,20 @@
 
 package jloda.fx.util;
 
-import javafx.beans.property.ReadOnlyStringProperty;
-import javafx.beans.property.SimpleStringProperty;
-import javafx.beans.property.StringProperty;
+import javafx.beans.property.*;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.collections.ObservableMap;
 import javafx.scene.paint.Color;
-import jloda.swing.util.ProgramProperties;
 import jloda.util.Basic;
+import jloda.util.ProgramProperties;
 
 import java.util.Collection;
-import java.util.Map;
 import java.util.TreeMap;
+import java.util.TreeSet;
 
 public class ColorSchemeManager {
-    private final Map<String, ObservableList<Color>> name2ColorSchemes = new TreeMap<>();
+    private final ObservableMap<String, ObservableList<Color>> name2ColorSchemes = FXCollections.observableMap(new TreeMap<>());
     private final StringProperty lastColorScheme = new SimpleStringProperty("Retro29");
 
     public static String[] BuiltInColorTables = {
@@ -67,6 +66,8 @@ public class ColorSchemeManager {
                     "0xd55d4f;0xd8594b;0xd3594c;0xd65549;0xd1554a;0xd45147;0xcf5148;0xd24d46;0xcd4d46;0xd04943;0xca4944;0xcd4540;0xc84541;0xc9413e;0xc93d3b;0xc53e3d;0xc5393a;" +
                     "0xc1383b;0xc53538;0xbf3439;0xc23037;0xbd3038;0xc02c35;0xbb2b35;0xbe2733;0xb92533;0xbb2130;0xb72132;0xba1d30;0xb51d31;0xb7192f;0xb31830;0xb4142e;"
     };
+
+    private final LongProperty update = new SimpleLongProperty(0);
 
     private static ColorSchemeManager instance;
 
@@ -132,6 +133,7 @@ public class ColorSchemeManager {
     public void setColorScheme(String name, ObservableList<Color> colors) {
         name2ColorSchemes.put(name, colors);
         ProgramProperties.put("ColorSchemes", writeTables());
+        update.set(update.get() + 1);
     }
 
     public String getLastColorScheme() {
@@ -143,6 +145,10 @@ public class ColorSchemeManager {
     }
 
     public Collection<String> getNames() {
-        return name2ColorSchemes.keySet();
+        return new TreeSet<>(name2ColorSchemes.keySet());
+    }
+
+    public ObservableMap<String, ObservableList<Color>> getName2ColorSchemes() {
+        return name2ColorSchemes;
     }
 }

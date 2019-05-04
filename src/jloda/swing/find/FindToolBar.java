@@ -23,9 +23,9 @@ import jloda.swing.director.IDirectableViewer;
 import jloda.swing.director.IDirector;
 import jloda.swing.director.IViewerWithFindToolBar;
 import jloda.swing.util.BasicSwing;
-import jloda.swing.util.ProgramProperties;
 import jloda.swing.util.RememberingComboBox;
 import jloda.swing.util.ResourceManager;
+import jloda.util.ProgramProperties;
 
 import javax.swing.*;
 import java.awt.*;

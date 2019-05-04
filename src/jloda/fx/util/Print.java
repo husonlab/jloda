@@ -27,7 +27,7 @@ import javafx.scene.control.ButtonBar;
 import javafx.scene.control.ButtonType;
 import javafx.scene.transform.Scale;
 import javafx.stage.Stage;
-import jloda.swing.util.ProgramProperties;
+import jloda.util.ProgramProperties;
 
 import java.util.Optional;
 

@@ -28,6 +28,7 @@ import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.scene.control.Menu;
 import javafx.scene.control.MenuItem;
+import jloda.util.ProgramProperties;
 
 import java.io.File;
 import java.lang.ref.WeakReference;
@@ -57,9 +58,9 @@ public class RecentFilesManager {
     private RecentFilesManager() {
         recentFiles = FXCollections.observableArrayList();
 
-        maxNumberRecentFiles = ProgramPropertiesFX.get("MaxNumberRecentFiles", 40);
+        maxNumberRecentFiles = ProgramProperties.get("MaxNumberRecentFiles", 40);
 
-        for (String fileName : ProgramPropertiesFX.get("RecentFiles", new String[0])) {
+        for (String fileName : ProgramProperties.get("RecentFiles", new String[0])) {
             if (new File(fileName).exists() && recentFiles.size() < maxNumberRecentFiles && !recentFiles.contains(fileName))
                 recentFiles.add(fileName);
         }
@@ -108,7 +109,7 @@ public class RecentFilesManager {
                 if (deadRefs.size() > 0) {
                     menuReferences.removeAll(deadRefs); // purge anything that has been garbage collected
                 }
-                ProgramPropertiesFX.put("RecentFiles", recentFiles.toArray(new String[0]));
+                ProgramProperties.put("RecentFiles", recentFiles.toArray(new String[0]));
             });
         });
     }

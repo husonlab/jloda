@@ -21,11 +21,11 @@ package jloda.swing.director;
 
 
 import jloda.swing.find.SearchManager;
-import jloda.swing.util.ProgramProperties;
 import jloda.swing.util.ResourceManager;
 import jloda.util.Basic;
 import jloda.util.CanceledException;
 import jloda.util.Pair;
+import jloda.util.ProgramProperties;
 
 import javax.swing.*;
 import java.awt.event.ActionEvent;

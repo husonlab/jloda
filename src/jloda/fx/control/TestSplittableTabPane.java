@@ -27,7 +27,7 @@ import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 import jloda.fx.shapes.SquareShape;
-import jloda.swing.util.ProgramProperties;
+import jloda.util.ProgramProperties;
 import jloda.util.Single;
 
 public class TestSplittableTabPane extends Application {

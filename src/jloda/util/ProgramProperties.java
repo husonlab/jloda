@@ -17,10 +17,11 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package jloda.swing.util;
+package jloda.util;
 
-import jloda.util.IStateChecker;
-import jloda.util.Pair;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
+import javafx.scene.image.Image;
 
 import javax.swing.*;
 import java.awt.*;
@@ -39,7 +40,12 @@ import java.util.LinkedList;
  *         Date: 08-Nov-2004
  */
 public class ProgramProperties {
-    static public final java.util.Properties props = new java.util.Properties();
+    static private final java.util.Properties props = new java.util.Properties();
+
+    static private final ObservableList<Image> programIconsFX = FXCollections.observableArrayList();
+    static private javafx.scene.text.Font defaultFontFX = javafx.scene.text.Font.font("Arial", 12);
+
+
     public static Color SELECTION_COLOR = new Color(252, 208, 102);
     public static Color SELECTION_COLOR_DARKER = new Color(210, 190, 95);
     public static Color SELECTION_COLOR_ADDITIONAL_TEXT = new Color(93, 155, 206);
@@ -534,4 +540,33 @@ public class ProgramProperties {
     public static void setStateChecker(IStateChecker stateChecker) {
         ProgramProperties.stateChecker = stateChecker;
     }
+
+    public static ObservableList<javafx.scene.image.Image> getProgramIconsFX() {
+        return programIconsFX;
+    }
+
+
+    public static javafx.scene.paint.Color get(Object name, javafx.scene.paint.Color defaultColorFX) {
+        String value = (String) props.get(name);
+        if (value == null || value.equalsIgnoreCase("null"))
+            return defaultColorFX;
+        else
+            return javafx.scene.paint.Color.valueOf(value);
+    }
+
+    public static void put(String key, javafx.scene.paint.Color colorFX) {
+        if (colorFX == null)
+            props.setProperty(key, "null");
+        else
+            props.setProperty(key, "" + colorFX.toString());
+    }
+
+    public static javafx.scene.text.Font getDefaultFontFX() {
+        return defaultFontFX;
+    }
+
+    public static void setDefaultFontFX(javafx.scene.text.Font defaultFontFX) {
+        ProgramProperties.defaultFontFX = defaultFontFX;
+    }
+
 }

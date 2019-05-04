@@ -20,6 +20,7 @@
 package jloda.swing.util;
 
 import jloda.util.Basic;
+import jloda.util.ProgramProperties;
 
 import java.awt.*;
 import java.util.ArrayList;

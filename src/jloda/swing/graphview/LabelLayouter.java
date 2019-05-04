@@ -23,8 +23,8 @@ import jloda.graph.Edge;
 import jloda.graph.Graph;
 import jloda.graph.Node;
 import jloda.swing.util.Geometry;
-import jloda.swing.util.ProgramProperties;
 import jloda.util.Basic;
+import jloda.util.ProgramProperties;
 
 import java.awt.*;
 import java.awt.geom.Point2D;

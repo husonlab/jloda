@@ -21,7 +21,7 @@ package jloda.swing.graphview;
 
 import jloda.graph.Node;
 import jloda.swing.util.Geometry;
-import jloda.swing.util.ProgramProperties;
+import jloda.util.ProgramProperties;
 import jloda.util.Shapes;
 import org.apache.batik.ext.awt.geom.Polygon2D;
 

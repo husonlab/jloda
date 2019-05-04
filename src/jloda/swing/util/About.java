@@ -20,6 +20,7 @@
 package jloda.swing.util;
 
 import jloda.util.Basic;
+import jloda.util.ProgramProperties;
 import jloda.util.ResourceUtils;
 
 import javax.imageio.ImageIO;

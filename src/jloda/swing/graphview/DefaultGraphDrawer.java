@@ -22,7 +22,7 @@ package jloda.swing.graphview;
 import jloda.graph.*;
 import jloda.swing.util.BasicSwing;
 import jloda.swing.util.Geometry;
-import jloda.swing.util.ProgramProperties;
+import jloda.util.ProgramProperties;
 
 import java.awt.*;
 import java.awt.geom.Point2D;

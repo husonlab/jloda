@@ -21,7 +21,7 @@ package jloda.swing.message;
 
 
 import jloda.swing.util.MenuMnemonics;
-import jloda.swing.util.ProgramProperties;
+import jloda.util.ProgramProperties;
 
 import javax.swing.*;
 

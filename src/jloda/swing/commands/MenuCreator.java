@@ -19,8 +19,12 @@
 
 package jloda.swing.commands;
 
-import jloda.swing.util.*;
+import jloda.swing.util.AppleStuff;
+import jloda.swing.util.IMenuModifier;
+import jloda.swing.util.MenuMnemonics;
+import jloda.swing.util.ResourceManager;
 import jloda.swing.util.lang.Translator;
+import jloda.util.ProgramProperties;
 
 import javax.swing.*;
 import java.awt.*;

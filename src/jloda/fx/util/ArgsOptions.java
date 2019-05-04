@@ -19,11 +19,7 @@
 
 package jloda.fx.util;
 
-import jloda.swing.util.ProgramProperties;
-import jloda.util.Basic;
-import jloda.util.CanceledException;
-import jloda.util.UsageException;
-import jloda.util.Version;
+import jloda.util.*;
 
 import java.util.*;
 

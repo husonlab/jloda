@@ -27,7 +27,7 @@ package jloda.swing.format;
 
 import jloda.swing.director.IDirector;
 import jloda.swing.util.MenuMnemonics;
-import jloda.swing.util.ProgramProperties;
+import jloda.util.ProgramProperties;
 
 import javax.swing.*;
 

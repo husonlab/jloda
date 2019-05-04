@@ -30,7 +30,7 @@ import javafx.collections.ObservableList;
 import javafx.collections.ObservableSet;
 import javafx.stage.Stage;
 import jloda.fx.util.ClosingLastDocument;
-import jloda.fx.util.ProgramPropertiesFX;
+import jloda.util.ProgramProperties;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -109,7 +109,7 @@ public class MainWindowManager {
                 }
             }
         }
-        ProgramPropertiesFX.put("WindowGeometry", (new WindowGeometry(mainWindow.getStage())).toString());
+        ProgramProperties.put("WindowGeometry", (new WindowGeometry(mainWindow.getStage())).toString());
         mainWindow.getStage().close();
 
         mainWindow.close();
@@ -143,7 +143,7 @@ public class MainWindowManager {
                     windowGeometry.setX(windowGeometry.getX() + 50);
                     windowGeometry.setY(windowGeometry.getY() + 50);
                 } else {
-                    windowGeometry.setFromString(ProgramPropertiesFX.get("WindowGeometry", "50 50 800 800"));
+                    windowGeometry.setFromString(ProgramProperties.get("WindowGeometry", "50 50 800 800"));
                 }
                 final IMainWindow newWindow = getMainWindow(0).createNew();
                 newWindow.show(null, windowGeometry.getX(), windowGeometry.getY(), windowGeometry.getWidth(), windowGeometry.getHeight());
@@ -202,4 +202,6 @@ public class MainWindowManager {
     public IntegerBinding sizeProperty() {
         return Bindings.size(mainWindows);
     }
+
+
 }

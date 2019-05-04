@@ -20,9 +20,9 @@
 package jloda.phylo;
 
 import jloda.graph.*;
-import jloda.swing.util.ProgramProperties;
 import jloda.util.Basic;
 import jloda.util.Pair;
+import jloda.util.ProgramProperties;
 
 import java.io.*;
 import java.util.*;
