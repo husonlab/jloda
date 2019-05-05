@@ -326,7 +326,7 @@ public class Basic {
      * @param seed
      * @return iterator in random order
      */
-    public static <T> ArrayList<T> randomize(ArrayList<T> list, int seed) {
+    public static <T> ArrayList<T> randomize(List<T> list, int seed) {
         int[] indices = new int[list.size()];
         for (int i = 0; i < indices.length; i++)
             indices[i] = i;

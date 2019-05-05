@@ -50,10 +50,13 @@ public class ProgramProperties {
     public static Color SELECTION_COLOR_DARKER = new Color(210, 190, 95);
     public static Color SELECTION_COLOR_ADDITIONAL_TEXT = new Color(93, 155, 206);
 
-    static private String defaultFileName = null;
     static private String programName = "";
     static private String programVersion = "";
     static private String programTitle = "";
+    static private String programLicence = "";
+
+    static private String defaultFileName = null;
+
     private static ImageIcon programIcon = null;
     private static final boolean macOS = (System.getProperty("os.name") != null && System.getProperty("os.name").toLowerCase().startsWith("mac"));
     private static boolean useGUI = false;
@@ -476,6 +479,14 @@ public class ProgramProperties {
      */
     public static String getProgramTitle() {
         return programTitle;
+    }
+
+    public static String getProgramLicence() {
+        return programLicence;
+    }
+
+    public static void setProgramLicence(String programLicence) {
+        ProgramProperties.programLicence = programLicence;
     }
 
     /**

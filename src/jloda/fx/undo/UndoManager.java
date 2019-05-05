@@ -1,5 +1,5 @@
 /*
- *  UndoManager.java Copyright (C) 2019 Daniel H. Huson
+ * UndoManager.java Copyright (C) 2019. Daniel H. Huson
  *
  *  (Some files contain contributions from other authors, who are then mentioned separately.)
  *

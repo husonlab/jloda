@@ -192,7 +192,12 @@ public class MainWindowManager {
     }
 
     public IMainWindow getLastFocusedMainWindow() {
-        return lastFocusedMainWindow;
+        if (lastFocusedMainWindow != null)
+            return lastFocusedMainWindow;
+        else if (mainWindows.size() > 0)
+            return mainWindows.get(0);
+        else
+            return null;
     }
 
     public void setLastFocusedMainWindow(IMainWindow lastFocusedMainWindow) {
