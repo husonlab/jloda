@@ -25,6 +25,7 @@ import javafx.beans.value.ChangeListener;
 import javafx.collections.FXCollections;
 import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
+import javafx.collections.ObservableMap;
 import javafx.geometry.Orientation;
 import javafx.scene.Node;
 import javafx.scene.control.ListCell;
@@ -40,7 +41,6 @@ import javafx.scene.paint.Color;
 import java.io.Closeable;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -54,7 +54,7 @@ import java.util.function.Function;
  */
 public class FlowView<T> extends Pane implements Closeable {
     private final ObservableList<T> items = FXCollections.observableArrayList();
-    private final Map<T, Node> item2node = new HashMap<>();
+    private final ObservableMap<T, Node> item2node = FXCollections.observableHashMap();
     private final Function<T, Node> nodeProducer;
     private final ObservableList<T> nodeProducerQueue = FXCollections.observableArrayList();
 
@@ -268,6 +268,10 @@ public class FlowView<T> extends Pane implements Closeable {
 
     public ObservableList<T> getItems() {
         return items;
+    }
+
+    public Map<T, Node> getItemNodeMap() {
+        return new ReadOnlyMapWrapper<>(item2node);
     }
 
     public int getBlockSize() {
