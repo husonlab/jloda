@@ -32,8 +32,6 @@ import java.net.URL;
 public class NotificationManager {
     public enum Mode {warning, information, confirmation, error}
 
-    private static boolean isFXInitialized = false;
-
     private static String title = null;
     private static boolean useDarkStyle = true;
     private static Pos position = Pos.TOP_RIGHT;
