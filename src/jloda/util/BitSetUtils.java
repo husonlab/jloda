@@ -19,9 +19,7 @@
 
 package jloda.util;
 
-import java.util.BitSet;
-import java.util.Comparator;
-import java.util.Iterator;
+import java.util.*;
 
 /**
  * some bit set convenience methods
@@ -167,5 +165,13 @@ public class BitSetUtils {
             max = value;
         }
         return max;
+    }
+
+    public static Collection<? extends Integer> asList(BitSet set) {
+        final ArrayList<Integer> list = new ArrayList<>(set.cardinality());
+        for (Integer a : members(set)) {
+            list.add(a);
+        }
+        return list;
     }
 }

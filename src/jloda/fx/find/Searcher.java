@@ -48,6 +48,7 @@ public class Searcher<T> implements IObjectSearcher<T> {
 
     private final BooleanProperty selectionFindable = new SimpleBooleanProperty(false);
 
+    private boolean doClearAll = false;
     private final BitSet toSelect = new BitSet();
     private final BitSet toDeselect = new BitSet();
 
@@ -185,13 +186,20 @@ public class Searcher<T> implements IObjectSearcher<T> {
         if (!Platform.isFxApplicationThread())
             throw new RuntimeException("Not fx application thread");
 
-        for (int index = toDeselect.nextSetBit(0); index != -1; index = toDeselect.nextSetBit(index + 1)) {
-            selectionModel.clearSelection(index);
+        if (doClearAll) {
+            selectionModel.clearSelection();
+            doClearAll = false;
+        } else {
+            for (int index = toDeselect.nextSetBit(0); index != -1; index = toDeselect.nextSetBit(index + 1)) {
+                if (selectionModel.isSelected(index))
+                    selectionModel.clearSelection(index);
+            }
         }
         toDeselect.clear();
 
         for (int index = toSelect.nextSetBit(0); index != -1; index = toSelect.nextSetBit(index + 1)) {
-            selectionModel.select(index);
+            if (!selectionModel.isSelected(index))
+                selectionModel.select(index);
         }
         toSelect.clear();
     }
@@ -208,7 +216,8 @@ public class Searcher<T> implements IObjectSearcher<T> {
             toDeselect.clear();
         } else {
             toSelect.clear();
-            toDeselect.set(0, items.size());
+            doClearAll = true;
+
         }
     }
 

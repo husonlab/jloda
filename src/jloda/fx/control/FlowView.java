@@ -117,6 +117,7 @@ public class FlowView<T> extends Pane implements Closeable {
                 e.consume();
             }
         });
+        listView.setFocusTraversable(false);
 
         listView.setCellFactory(v -> new ListCell<ArrayList<T>>() {
             {
@@ -186,12 +187,18 @@ public class FlowView<T> extends Pane implements Closeable {
             precomputeSnapshots(n);
         });
 
+        selectedItemListener = (c, o, n) -> {
+            if (n != null && isScrollToSelection()) { // doesn't work very well
+                final Node node = item2node.get(n);
+                if (node != null) {
+                    final Node subFlowPaneContainingNode = node.getParent();
+                    if (subFlowPaneContainingNode == null)
+                        System.err.println("parentOfNode==null");
 
-        selectedItemListener = (observable, oldValue, newValue) -> {
-            if (isScrollToSelection()) { // doesn't work very well
-                if (item2node.get(newValue) != null && item2node.get(newValue).getParent() != null && item2node.get(newValue).getParent().getUserData() instanceof ArrayList) {
-                    final ArrayList<T> block = (ArrayList<T>) item2node.get(newValue).getParent().getUserData();
-                    listView.scrollTo(block);
+                    if (subFlowPaneContainingNode != null && subFlowPaneContainingNode.getUserData() instanceof ArrayList) {
+                        final ArrayList<T> block = (ArrayList<T>) subFlowPaneContainingNode.getUserData();
+                        listView.scrollTo(block);
+                    }
                 }
             }
         };
@@ -207,16 +214,16 @@ public class FlowView<T> extends Pane implements Closeable {
             listView.getItems().clear();
         }
 
-        ArrayList<T> array = new ArrayList<>(getBlockSize());
+        ArrayList<T> block = new ArrayList<>(getBlockSize());
         for (T item : items) {
-            array.add(item);
-            if (array.size() == getBlockSize()) {
-                listView.getItems().add(array);
-                array = new ArrayList<>(getBlockSize());
+            block.add(item);
+            if (block.size() == getBlockSize()) {
+                listView.getItems().add(block);
+                block = new ArrayList<>(getBlockSize());
             }
         }
-        if (array.size() > 0)
-            listView.getItems().add(array);
+        if (block.size() > 0)
+            listView.getItems().add(block);
     }
 
 

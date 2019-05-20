@@ -19,6 +19,7 @@
 
 package jloda.fx.find;
 
+import javafx.application.Platform;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.ReadOnlyBooleanProperty;
 import javafx.beans.property.SimpleBooleanProperty;
@@ -71,8 +72,10 @@ public class FindToolBar extends VBox {
             if (n) {
                 if (!getChildren().contains(controller.getAnchorPane()))
                     getChildren().add(controller.getAnchorPane());
-                controller.getSearchComboBox().requestFocus();
-                controller.getSearchComboBox().getEditor().selectAll();
+                Platform.runLater(() -> {
+                    controller.getSearchComboBox().requestFocus();
+                    controller.getSearchComboBox().getEditor().selectAll();
+                });
             } else {
                 getChildren().remove(controller.getAnchorPane());
                 cancel();

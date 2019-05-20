@@ -421,24 +421,20 @@ public class SplittableTabPane extends Pane {
 
             final MenuItem closeOthers = new MenuItem("Close Others");
             closeOthers.setOnAction((e) -> {
-                final ArrayList<Tab> toClose = new ArrayList<>();
                 for (Tab aTab : tabPane.getTabs()) {
                     if (aTab != tab && aTab.isClosable())
-                        toClose.add(aTab);
+                        Platform.runLater(() -> tabs.remove(aTab));
                 }
-                tabs.removeAll(toClose);
             });
             closeOthers.disableProperty().bind(Bindings.size(tabPane.getTabs()).lessThan(2).or(tab.closableProperty().not()));
             menuItems.add(closeOthers);
 
             final MenuItem closeAll = new MenuItem("Close All");
             closeAll.setOnAction((e) -> {
-                final ArrayList<Tab> toClose = new ArrayList<>();
                 for (Tab aTab : tabPane.getTabs()) {
                     if (aTab.isClosable())
-                        toClose.add(aTab);
+                        Platform.runLater(() -> tabs.remove(aTab));
                 }
-                tabs.removeAll(toClose);
             });
             closeAll.disableProperty().bind(tab.closableProperty().not());
             menuItems.add(closeAll);
