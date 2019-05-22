@@ -167,10 +167,12 @@ public class BitSetUtils {
         return max;
     }
 
-    public static Collection<? extends Integer> asList(BitSet set) {
-        final ArrayList<Integer> list = new ArrayList<>(set.cardinality());
-        for (Integer a : members(set)) {
-            list.add(a);
+    public static Collection<? extends Integer> asList(BitSet... sets) {
+        final ArrayList<Integer> list = new ArrayList<>();
+        for (BitSet set : sets) {
+            for (Integer a : members(set)) {
+                list.add(a);
+            }
         }
         return list;
     }
