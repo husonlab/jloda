@@ -168,11 +168,13 @@ public class BitSetUtils {
     }
 
     public static Collection<? extends Integer> asList(BitSet... sets) {
-        final ArrayList<Integer> list = new ArrayList<>();
-        for (BitSet set : sets) {
+        final BitSet set = new BitSet();
+        for (BitSet b : sets) {
+            set.or(b);
+        }
+        final ArrayList<Integer> list = new ArrayList<>(set.cardinality());
             for (Integer a : members(set)) {
                 list.add(a);
-            }
         }
         return list;
     }
