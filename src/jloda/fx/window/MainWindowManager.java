@@ -101,6 +101,7 @@ public class MainWindowManager {
             if (MainWindowManager.getInstance().size() == 1) {
                 if (!ClosingLastDocument.apply(mainWindow.getStage())) {
                     if (!mainWindow.isEmpty()) {
+                        mainWindow.getStage().close();
                         final IMainWindow newWindow = mainWindow.createNew();
                         final WindowGeometry windowGeometry = new WindowGeometry(mainWindow.getStage());
                         newWindow.show(null, windowGeometry.getX(), windowGeometry.getY(), windowGeometry.getWidth(), windowGeometry.getHeight());
@@ -148,6 +149,10 @@ public class MainWindowManager {
                 final IMainWindow newWindow = getMainWindow(0).createNew();
                 newWindow.show(null, windowGeometry.getX(), windowGeometry.getY(), windowGeometry.getWidth(), windowGeometry.getHeight());
                 addMainWindow(newWindow);
+                newWindow.getStage().focusedProperty().addListener((c, o, n) -> {
+                    if (n)
+                        setLastFocusedMainWindow(newWindow);
+                });
                 return newWindow;
             } catch (IOException ex) {
                 throw new RuntimeException(ex);

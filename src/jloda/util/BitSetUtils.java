@@ -178,4 +178,9 @@ public class BitSetUtils {
         }
         return list;
     }
+
+    public static void addAll(BitSet bits, int... values) {
+        for (int i : values)
+            bits.set(i);
+    }
 }

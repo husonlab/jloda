@@ -40,6 +40,9 @@ public class UndoManager {
     private final IntegerProperty undoStackSize = new SimpleIntegerProperty(0);
     private final IntegerProperty redoStackSize = new SimpleIntegerProperty(0);
 
+    final BooleanProperty canUndo = new SimpleBooleanProperty(false);
+    final BooleanProperty canRedo = new SimpleBooleanProperty(false);
+
 
     private final BooleanProperty isPerformingUndoOrRedo = new SimpleBooleanProperty(false);
 
@@ -57,6 +60,9 @@ public class UndoManager {
             redoName.set(redoStack.size() > 0 ? "Redo " + peek(redoStack).getName() : "Redo");
             redoStackSize.set(redoStack.size());
         });
+
+        canUndo.bind(Bindings.isNotEmpty(undoStack).and(isPerformingUndoOrRedo.not()));
+        canRedo.bind(Bindings.isNotEmpty(redoStack).and(isPerformingUndoOrRedo.not()));
     }
 
     /**
@@ -176,14 +182,10 @@ public class UndoManager {
     }
 
     public ReadOnlyBooleanProperty canUndoProperty() {
-        final BooleanProperty canUndo = new SimpleBooleanProperty();
-        canUndo.bind(Bindings.isNotEmpty(undoStack).and(isPerformingUndoOrRedo.not()));
         return canUndo;
     }
 
     public ReadOnlyBooleanProperty canRedoProperty() {
-        final BooleanProperty canRedo = new SimpleBooleanProperty();
-        canRedo.bind(Bindings.isNotEmpty(redoStack).and(isPerformingUndoOrRedo.not()));
         return canRedo;
     }
 
