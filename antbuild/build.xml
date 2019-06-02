@@ -1,67 +1,73 @@
-<project name="JLODA" default="compile" basedir=".">
-    <!-- set global properties for this build -->
-    <property name="jlodaSrcDir" value="../src"/>
-    <property name="srcDir" value="src"/>
-    <property name="classDir" value="class"/>
-    <property name="docDir" value="doc"/>
+<!--
+	~  build.xml Copyright (C) 2019 Daniel H. Huson
+	~
+	~  (Some files contain contributions from other authors, who are then mentioned separately.)
+	~
+	~  This program is free software: you can redistribute it and/or modify
+	~  it under the terms of the GNU General Public License as published by
+	~  the Free Software Foundation, either version 3 of the License, or
+	~  (at your option) any later version.
+	~
+	~  This program is distributed in the hope that it will be useful,
+	~  but WITHOUT ANY WARRANTY; without even the implied warranty of
+	~  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+	~  GNU General Public License for more details.
+	~
+	~  You should have received a copy of the GNU General Public License
+	~  along with this program.  If not, see <http://www.gnu.org/licenses/>.
+-->
+
+	<project name="JLODA" default="jar" basedir=".">
+
+		<property name="jfxDir" value="../../javafx/lib"/>
+		<property name="buildSrcDir" value="../antbuild/src"/>
+		<property name="buildModulesDir" value="../antbuild/modules"/>
+
+		<path id="build.classpath">
+			<fileset dir="../../jloda/jars"  includes="*.jar"/>
+		</path>
+
+		<path id="build.modulepath">
+			<fileset dir="../../jloda/jars"  includes="*.jar"/>
+			<fileset dir="${jfxDir}"  includes="*.jar"/>
+		</path>
+
+		<target name="jar" depends="compile">
+			<jar jarfile="../antbuild/jloda.jar" basedir="${buildModulesDir}/jloda"/>
+		</target>
+
+		<target name="compile" depends="copy_resources">
+			<javac  includeantruntime="false"
+				srcdir="../antbuild/src/jloda"
+				destdir="${buildModulesDir}/jloda"
+				debug="on"
+				modulepathref="build.modulepath"
+				>
+			</javac>
+		</target>
+
+		<target name="copy_resources" depends="copy_sources">
+			<copy todir="${buildModulesDir}/jloda">
+				<fileset dir="../../jloda/src" includes="**/*.fxml **/*.png **/*.gif **/*.css"/>
+			</copy>
+		</target>
+
+		<target name="copy_sources" depends="init">
+			<copy todir="${buildSrcDir}/jloda" >
+				<fileset dir="../../jloda/src"/>
+			</copy>
+		</target>
+
+		<target name="init">
+			<mkdir dir="${buildSrcDir}/jloda"/>
+			<mkdir dir="${buildModulesDir}/jloda"/>
+		</target>
 
 
-    <path id="build.classpath">
-	    <fileset dir="../../jloda/jars"  includes="*.jar"/>
-    	    <fileset dir="../../jloda/jars/batik-1.8"  includes="*.jar"/>
+		<target name="clean">
+			<delete dir="${buildModulesDir}" includeEmptyDirs="true"/>
+			<delete dir="${buildSrcDir}" includeEmptyDirs="true"/>
+			<delete file="jloda.jar"/>
+		</target>
 
-    </path>
-
-    <!-- init -->
-    <target name="init">
-        <mkdir dir="${srcDir}"/>
-        <mkdir dir="${classDir}"/>
-        <mkdir dir="${docDir}"/>
-    </target>
-
-
-    <!-- copy sources -->
-    <target name="copy_sources" depends="init">
-        <copy todir="${srcDir}">
-            <fileset dir="${jlodaSrcDir}" excludes="com/apple/**"/>
-        </copy>
-    </target>
-
-     <target name="compile" depends="copy_sources">
-	    <!-- Compile the java code from ${src} into ${build} -->
-	     <javac  includeantruntime="false"
-        	srcdir="${srcDir}"
-               destdir="${classDir}"
-               debug="on"
-	       classpathref="build.classpath">
-	       <compilerarg value="-XDignore.symbol.file=true"/> 
-        </javac>
-    </target>
-
-    <target name="jar" depends="compile">
-        <!-- Put everything in ${build} into a jar file -->
-        <jar jarfile="jloda.jar"
-             basedir="${classDir}"
-                />
-    </target>
-
-    <target name="clean">
-        <delete dir="${classDir}" includeEmptyDirs="true"/>
-        <delete dir="${srcDir}" includeEmptyDirs="true"/>
-        <delete file="${docDir}"/>
-    </target>
-
-    <target name="doc" depends="copy_sources">
-        <javadoc packagenames=
-                "jloda.*"
-                 sourcepath="${classDir}"
-                 destdir="${docDir}"
-                 author="true"
-                 version="true"
-                 verbose="true"
-                 use="true"
-                 windowtitle="JLODA">
-            <doctitle><![CDATA[<h1>JLODA API</h1>]]></doctitle>
-        </javadoc>
-    </target>
-</project>
+	</project>
