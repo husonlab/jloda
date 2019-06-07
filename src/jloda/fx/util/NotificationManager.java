@@ -174,19 +174,19 @@ public class NotificationManager {
                     switch (mode) {
                         default:
                         case information: {
-                            imageView = new ImageView(ResourceManagerFX.getImage(NotificationManager.class, "jloda/resources/icons/dialog", "dialog-information.png"));
+                            imageView = new ImageView(ResourceManagerFX.getIcon("dialog/dialog-information.png"));
                             break;
                         }
                         case error: {
-                            imageView = new ImageView(ResourceManagerFX.getImage(NotificationManager.class, "jloda/resources/icons/dialog", "dialog-error.png"));
+                            imageView = new ImageView(ResourceManagerFX.getIcon("dialog/dialog-error.png"));
                             break;
                         }
                         case warning: {
-                            imageView = new ImageView(ResourceManagerFX.getImage(NotificationManager.class, "jloda/resources/icons/dialog", "dialog-warning.png"));
+                            imageView = new ImageView(ResourceManagerFX.getIcon("dialog/dialog-warning.png"));
                             break;
                         }
                         case confirmation: {
-                            imageView = new ImageView(ResourceManagerFX.getImage(NotificationManager.class, "jloda/resources/icons/dialog", "dialog-confim.png"));
+                            imageView = new ImageView(ResourceManagerFX.getIcon("dialog/dialog-confim.png"));
                             break;
                         }
                     }

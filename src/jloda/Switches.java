@@ -26,4 +26,5 @@ package jloda;
  */
 public class Switches {
     public static final boolean Install4JLaunchBug = true;
+    public static final boolean notificationInSwingBug = true;
 }
