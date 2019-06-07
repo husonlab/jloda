@@ -50,7 +50,7 @@ public class ChooseFileDialog {
     public static File chooseFileToOpen(Component parent, File lastOpenFile, FileFilter fileFilter, FilenameFilter fileNameFilter, ActionEvent event, String message) {
         File file = null;
 
-        if (ProgramProperties.isMacOS() && (event == null || (event.getModifiers() & Event.SHIFT_MASK) == 0)) {
+        if (ProgramProperties.isMacOS() && (event == null || (event.getModifiers() & ActionEvent.SHIFT_MASK) == 0)) {
                 //Use native file dialog on mac
                 java.awt.FileDialog dialog;
                 if (parent != null && parent instanceof JFrame)
@@ -113,7 +113,7 @@ public class ChooseFileDialog {
         else
             frame = null;
 
-        if (ProgramProperties.isMacOS() && (event == null || (event.getModifiers() & Event.SHIFT_MASK) == 0)) {
+        if (ProgramProperties.isMacOS() && (event == null || (event.getModifiers() & ActionEvent.SHIFT_MASK) == 0)) {
             //Use native file dialog on mac
             java.awt.FileDialog dialog;
             if (parent != null && parent instanceof JFrame)
@@ -193,7 +193,7 @@ public class ChooseFileDialog {
 
         boolean okToWrite = false;
         while (!okToWrite) {
-            if (ProgramProperties.isMacOS() && (event == null || (event.getModifiers() & Event.SHIFT_MASK) == 0)) {
+            if (ProgramProperties.isMacOS() && (event == null || (event.getModifiers() & ActionEvent.SHIFT_MASK) == 0)) {
                 //Use native file dialog on mac
                 java.awt.FileDialog dialog;
                 if (parent != null && parent instanceof JFrame)

@@ -21,9 +21,7 @@ package jloda.swing.util;
 
 import jloda.util.Basic;
 import jloda.util.ProgramProperties;
-import jloda.util.ResourceUtils;
 
-import javax.imageio.ImageIO;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
@@ -39,10 +37,10 @@ import java.util.concurrent.Executors;
  */
 public class About {
     private String versionString;
-    static Point versionStringOffset = new Point(20, 20);
+    private static Point versionStringOffset = new Point(20, 20);
     private final BufferedImage aboutImage;
     private final JDialog aboutDialog;
-    boolean hasPainted = false;
+    private boolean hasPainted = false;
     private String additionalString;
     private int additionalStringVerticalPosition = 100;
 
@@ -58,45 +56,23 @@ public class About {
 
     /**
      * set the current about window
-     * @param packageName
-     * @param fileName
-     * @param version
-     */
-    public static void setAbout (String packageName, String fileName, final String version){
-        setAbout(packageName, fileName, version, JDialog.HIDE_ON_CLOSE);
-
-    }
-
-    /**
-     * set the current about window
-     * @param packageName
      * @param fileName
      * @param version
      * @param closeOperation
      */
-    public static void setAbout(String packageName, String fileName, String version, int closeOperation) {
-    instance=new About(packageName,fileName,version,closeOperation);
+    public static void setAbout(String fileName, String version, int closeOperation) {
+        instance = new About(fileName, version, closeOperation);
     }
 
     /**
      * constructs an about message for splashing the screen
-     *
-     * @param packageName    name of package containing image file
-     * @param fileName       name of image file
+     *  @param fileName       name of image file
      * @param version0       version string to include in message
      * @param closeOperation default close operation, e.g. JDialog.HIDE_ON_CLOSE
      */
-    private About(String packageName, String fileName, String version0, int closeOperation) {
+    private About(String fileName, String version0, int closeOperation) {
         this.versionString = version0;
-
-        BufferedImage image = null;
-        try {
-            image = ImageIO.read(ResourceUtils.getBasicClassLoader().getResourceAsStream(packageName.replaceAll("\\.", "/") + "/" + fileName));
-        } catch (Exception e) {
-            Basic.caught(e);
-            //new Alert("ERROR: couldn't find SPLASH screen, corrupt installation?");
-        }
-        aboutImage = image;
+        aboutImage = ResourceManager.getImage(fileName);
 
         //if this fails with null, check whether the resources are in place
 //                File file = Basic.getFileInPackage(packageName, fileName);

@@ -854,10 +854,10 @@ public class GraphViewListener implements IGraphViewListener {
     public void keyPressed(KeyEvent ke) {
         int r = 1; // rotate angle
         double s = 1.05; // scale factor
-        if ((ke.getModifiers() & InputEvent.ALT_MASK) != 0) {
+        if ((ke.getModifiersEx() & java.awt.event.InputEvent.ALT_DOWN_MASK) != 0) {
             s = 1.5;
             r = 5;
-        } else if ((ke.getModifiers() & InputEvent.CTRL_MASK) != 0) {
+        } else if ((ke.getModifiersEx() & java.awt.event.InputEvent.CTRL_DOWN_MASK) != 0) {
             s = 4;
             r = 90;
         }
@@ -955,7 +955,7 @@ public class GraphViewListener implements IGraphViewListener {
             viewer.delSelectedNodes();
             viewer.delSelectedEdges();
             viewer.repaint();
-        } else if ((ke.getModifiers() & InputEvent.SHIFT_MASK) != 0) {
+        } else if ((ke.getModifiersEx() & InputEvent.SHIFT_DOWN_MASK) != 0) {
             viewer.setCursor(Cursor.getDefaultCursor());
         }
     }
@@ -966,7 +966,7 @@ public class GraphViewListener implements IGraphViewListener {
      * @param ke KeyEvent
      */
     public void keyReleased(KeyEvent ke) {
-        if ((ke.getModifiers() & InputEvent.SHIFT_MASK) != 0) {
+        if ((ke.getModifiersEx() & InputEvent.SHIFT_DOWN_MASK) != 0) {
             viewer.resetCursor();
         }
     }

@@ -334,7 +334,7 @@ public class SearchActions {
         action.putValue(AbstractAction.NAME, "Next");
         action.putValue(AbstractAction.SHORT_DESCRIPTION, "Find next occurrence");
         action.putValue(AbstractAction.ACCELERATOR_KEY, KeyStroke.getKeyStroke(KeyEvent.VK_G,
-                Toolkit.getDefaultToolkit().getMenuShortcutKeyMask()));
+                Toolkit.getDefaultToolkit().getMenuShortcutKeyMaskEx()));
         action.putValue(CRITICAL, Boolean.TRUE);
         all.add(action);
         return findNext = action;
@@ -384,7 +384,7 @@ public class SearchActions {
         action.putValue(AbstractAction.NAME, "From File...");
         action.putValue(AbstractAction.SHORT_DESCRIPTION, "Process each line of a file as a find query");
         action.putValue(CRITICAL, Boolean.TRUE);
-        action.putValue(AbstractAction.SMALL_ICON, ResourceManager.getIcon("sun/toolbarButtonGraphics/general/Open16.gif"));
+        action.putValue(AbstractAction.SMALL_ICON, ResourceManager.getIcon("sun/Open16.gif"));
         all.add(action);
         return findFromFile = action;
     }

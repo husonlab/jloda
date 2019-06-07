@@ -52,14 +52,14 @@ public class SplashScreen {
 
     public static SplashScreen getInstance() {
         if (instance == null)
-            instance = new SplashScreen();
+            instance = new SplashScreen(null);
         return instance;
     }
 
     /**
      * constructor
      */
-    private SplashScreen() {
+    private SplashScreen(Image image) {
         stage = new Stage(StageStyle.UNDECORATED);
         stage.setResizable(false);
 
@@ -67,7 +67,6 @@ public class SplashScreen {
         final Scene scene = new Scene(stackPane);
         stage.setScene(scene);
 
-        final Image image = ResourceManagerFX.getImage(imageResourceName);
         if (image != null) {
             final ImageView imageView = new ImageView(image);
             imageView.setScaleX(0.5);
@@ -107,10 +106,8 @@ public class SplashScreen {
 
     public static void setImageResourceName(String name) {
         imageResourceName = name;
-    }
-
-    public static String getImageResourceName() {
-        return imageResourceName;
+        final Image image = ResourceManagerFX.getImage(imageResourceName);
+        instance = new SplashScreen(image);
     }
 
     public static String getVersionString() {

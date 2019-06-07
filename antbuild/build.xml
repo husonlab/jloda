@@ -32,8 +32,22 @@
 			<fileset dir="${jfxDir}"  includes="*.jar"/>
 		</path>
 
-		<target name="jar" depends="compile">
-			<jar jarfile="../antbuild/jloda.jar" basedir="${buildModulesDir}/jloda"/>
+		<target name="init">
+			<mkdir dir="${buildSrcDir}/jloda"/>
+			<mkdir dir="${buildModulesDir}/jloda"/>
+		</target>
+
+
+		<target name="copy_sources" depends="init">
+			<copy todir="${buildSrcDir}/jloda" >
+				<fileset dir="../../jloda/src"/>
+			</copy>
+		</target>
+
+		<target name="copy_resources" depends="copy_sources">
+			<copy todir="${buildModulesDir}/jloda">
+				<fileset dir="../../jloda/src" includes="**/*.fxml **/*.png **/*.gif **/*.css"/>
+			</copy>
 		</target>
 
 		<target name="compile" depends="copy_resources">
@@ -46,23 +60,9 @@
 			</javac>
 		</target>
 
-		<target name="copy_resources" depends="copy_sources">
-			<copy todir="${buildModulesDir}/jloda">
-				<fileset dir="../../jloda/src" includes="**/*.fxml **/*.png **/*.gif **/*.css"/>
-			</copy>
+		<target name="jar" depends="compile">
+			<jar jarfile="../antbuild/jloda.jar" basedir="${buildModulesDir}/jloda"/>
 		</target>
-
-		<target name="copy_sources" depends="init">
-			<copy todir="${buildSrcDir}/jloda" >
-				<fileset dir="../../jloda/src"/>
-			</copy>
-		</target>
-
-		<target name="init">
-			<mkdir dir="${buildSrcDir}/jloda"/>
-			<mkdir dir="${buildModulesDir}/jloda"/>
-		</target>
-
 
 		<target name="clean">
 			<delete dir="${buildModulesDir}" includeEmptyDirs="true"/>

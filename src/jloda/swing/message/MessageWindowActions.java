@@ -112,9 +112,9 @@ public class MessageWindowActions {
         };
         action.putValue(AbstractAction.NAME, "Print...");
         action.putValue(AbstractAction.ACCELERATOR_KEY, KeyStroke.getKeyStroke(KeyEvent.VK_P,
-                Toolkit.getDefaultToolkit().getMenuShortcutKeyMask()));
+                Toolkit.getDefaultToolkit().getMenuShortcutKeyMaskEx()));
         action.putValue(AbstractAction.SHORT_DESCRIPTION, "Print the content");
-        action.putValue(AbstractAction.SMALL_ICON, ResourceManager.getIcon("sun/toolbarButtonGraphics/general/Print16.gif"));
+        action.putValue(AbstractAction.SMALL_ICON, ResourceManager.getIcon("sun/Print16.gif"));
 
         all.add(action);
         return printIt = action;
@@ -138,8 +138,8 @@ public class MessageWindowActions {
         };
         action.putValue(AbstractAction.NAME, "Close");
         action.putValue(AbstractAction.ACCELERATOR_KEY, KeyStroke.getKeyStroke(KeyEvent.VK_W,
-                Toolkit.getDefaultToolkit().getMenuShortcutKeyMask()));
-        action.putValue(AbstractAction.MNEMONIC_KEY, new Integer('C'));
+                Toolkit.getDefaultToolkit().getMenuShortcutKeyMaskEx()));
+        action.putValue(AbstractAction.MNEMONIC_KEY, (int) ('C'));
         action.putValue(AbstractAction.SHORT_DESCRIPTION, "Close this viewer");
         action.putValue(AbstractAction.SMALL_ICON, ResourceManager.getIcon("Close16.gif"));
         // close is critical because we can't easily kill the worker thread
@@ -184,8 +184,8 @@ public class MessageWindowActions {
         };
         action.putValue(AbstractAction.NAME, "Save As...");
         action.putValue(AbstractAction.ACCELERATOR_KEY, KeyStroke.getKeyStroke('S',
-                Toolkit.getDefaultToolkit().getMenuShortcutKeyMask()));
-        action.putValue(AbstractAction.SMALL_ICON, ResourceManager.getIcon("sun/toolbarButtonGraphics/general/Save16.gif"));
+                Toolkit.getDefaultToolkit().getMenuShortcutKeyMaskEx()));
+        action.putValue(AbstractAction.SMALL_ICON, ResourceManager.getIcon("sun/Save16.gif"));
         action.putValue(AbstractAction.SHORT_DESCRIPTION, "Save as text file");
 
         all.add(action);
@@ -219,7 +219,7 @@ public class MessageWindowActions {
         action.putValue(AbstractAction.NAME, "Clear");
         action.putValue(AbstractAction.SHORT_DESCRIPTION, "Clear the messages");
         action.putValue(AbstractAction.ACCELERATOR_KEY, KeyStroke.getKeyStroke(KeyEvent.VK_BACK_SPACE,
-                Toolkit.getDefaultToolkit().getMenuShortcutKeyMask()));
+                Toolkit.getDefaultToolkit().getMenuShortcutKeyMaskEx()));
         all.add(action);
         return clear = action;
     }
@@ -246,15 +246,15 @@ public class MessageWindowActions {
         action.setEnabled(false);
 
         action.putValue(AbstractAction.NAME, "Undo");
-        action.putValue(AbstractAction.MNEMONIC_KEY, new Integer('U'));
+        action.putValue(AbstractAction.MNEMONIC_KEY, (int) ('U'));
         action.putValue(AbstractAction.ACCELERATOR_KEY, KeyStroke.getKeyStroke(KeyEvent.VK_Z,
-                Toolkit.getDefaultToolkit().getMenuShortcutKeyMask()));
+                Toolkit.getDefaultToolkit().getMenuShortcutKeyMaskEx()));
         // quit.putValue(AbstractAction.SMALL_ICON, ResourceManager.getIcon("quit"));
         action.putValue(AbstractAction.SHORT_DESCRIPTION, "Undo");
 
         action.putValue(CRITICAL, Boolean.TRUE);
 
-        action.putValue(AbstractAction.SMALL_ICON, ResourceManager.getIcon("sun/toolbarButtonGraphics/general/Undo16.gif"));
+        action.putValue(AbstractAction.SMALL_ICON, ResourceManager.getIcon("sun/Undo16.gif"));
 
         //all.add(action);
         return undo = action;
@@ -297,12 +297,12 @@ public class MessageWindowActions {
         action.setEnabled(false);
 
         action.putValue(AbstractAction.NAME, "Redo");
-        action.putValue(AbstractAction.MNEMONIC_KEY, new Integer('R'));
+        action.putValue(AbstractAction.MNEMONIC_KEY, (int) ('R'));
         action.putValue(AbstractAction.ACCELERATOR_KEY, KeyStroke.getKeyStroke(KeyEvent.VK_Z,
-                Toolkit.getDefaultToolkit().getMenuShortcutKeyMask() | java.awt.event.InputEvent.SHIFT_MASK));
+                Toolkit.getDefaultToolkit().getMenuShortcutKeyMaskEx() | java.awt.event.InputEvent.SHIFT_DOWN_MASK));
         // quit.putValue(AbstractAction.SMALL_ICON, ResourceManager.getIcon("quit"));
         action.putValue(AbstractAction.SHORT_DESCRIPTION, "Redo");
-        action.putValue(AbstractAction.SMALL_ICON, ResourceManager.getIcon("sun/toolbarButtonGraphics/general/Redo16.gif"));
+        action.putValue(AbstractAction.SMALL_ICON, ResourceManager.getIcon("sun/Redo16.gif"));
 
         action.putValue(CRITICAL, Boolean.TRUE);
         //all.add(action);
@@ -330,13 +330,13 @@ public class MessageWindowActions {
         }
         action.putValue(AbstractAction.MNEMONIC_KEY, (int) 'T');
         action.putValue(Action.ACCELERATOR_KEY, KeyStroke.getKeyStroke(KeyEvent.VK_X,
-                Toolkit.getDefaultToolkit().getMenuShortcutKeyMask()));
+                Toolkit.getDefaultToolkit().getMenuShortcutKeyMaskEx()));
 
         action.putValue(Action.SHORT_DESCRIPTION, "Cut");
 
         action.putValue(CRITICAL, Boolean.TRUE);
 
-        action.putValue(AbstractAction.SMALL_ICON, ResourceManager.getIcon("sun/toolbarButtonGraphics/general/Cut16.gif"));
+        action.putValue(AbstractAction.SMALL_ICON, ResourceManager.getIcon("sun/Cut16.gif"));
 
         all.add(action);
         return cut = action;
@@ -359,11 +359,11 @@ public class MessageWindowActions {
         }
         action.putValue(AbstractAction.MNEMONIC_KEY, (int) 'C');
         action.putValue(Action.ACCELERATOR_KEY, KeyStroke.getKeyStroke(KeyEvent.VK_C,
-                Toolkit.getDefaultToolkit().getMenuShortcutKeyMask()));
+                Toolkit.getDefaultToolkit().getMenuShortcutKeyMaskEx()));
         action.putValue(Action.SHORT_DESCRIPTION, "Copy");
         action.putValue(CRITICAL, Boolean.TRUE);
 
-        action.putValue(AbstractAction.SMALL_ICON, ResourceManager.getIcon("sun/toolbarButtonGraphics/general/Copy16.gif"));
+        action.putValue(AbstractAction.SMALL_ICON, ResourceManager.getIcon("sun/Copy16.gif"));
 
         all.add(action);
         return copy = action;
@@ -385,11 +385,11 @@ public class MessageWindowActions {
         }
         action.putValue(AbstractAction.MNEMONIC_KEY, (int) 'P');
         action.putValue(Action.ACCELERATOR_KEY, KeyStroke.getKeyStroke(KeyEvent.VK_V,
-                Toolkit.getDefaultToolkit().getMenuShortcutKeyMask()));
+                Toolkit.getDefaultToolkit().getMenuShortcutKeyMaskEx()));
         action.putValue(Action.SHORT_DESCRIPTION, "Paste");
         action.putValue(CRITICAL, Boolean.TRUE);
 
-        action.putValue(AbstractAction.SMALL_ICON, ResourceManager.getIcon("sun/toolbarButtonGraphics/general/Paste16.gif"));
+        action.putValue(AbstractAction.SMALL_ICON, ResourceManager.getIcon("sun/Paste16.gif"));
 
         all.add(action);
         return paste = action;
@@ -411,7 +411,7 @@ public class MessageWindowActions {
         }
         action.putValue(AbstractAction.MNEMONIC_KEY, (int) 'A');
         action.putValue(Action.ACCELERATOR_KEY, KeyStroke.getKeyStroke(KeyEvent.VK_A,
-                Toolkit.getDefaultToolkit().getMenuShortcutKeyMask()));
+                Toolkit.getDefaultToolkit().getMenuShortcutKeyMaskEx()));
         action.putValue(Action.SHORT_DESCRIPTION, "Select All");
 
         action.putValue(CRITICAL, Boolean.TRUE);

@@ -150,8 +150,8 @@ public class FormatterActions {
         };
         action.putValue(AbstractAction.NAME, "Close");
         action.putValue(AbstractAction.ACCELERATOR_KEY, KeyStroke.getKeyStroke(KeyEvent.VK_W,
-                Toolkit.getDefaultToolkit().getMenuShortcutKeyMask()));
-        action.putValue(AbstractAction.MNEMONIC_KEY, new Integer('C'));
+                Toolkit.getDefaultToolkit().getMenuShortcutKeyMaskEx()));
+        action.putValue(AbstractAction.MNEMONIC_KEY, (int) 'C');
         action.putValue(AbstractAction.SHORT_DESCRIPTION, "Close this window");
         action.putValue(AbstractAction.SMALL_ICON, ResourceManager.getIcon("Close16.gif"));
         // close is critical because we can't easily kill the worker thread
@@ -567,9 +567,9 @@ public class FormatterActions {
         };
         action.putValue(AbstractAction.NAME, "Cut");
         action.putValue(AbstractAction.ACCELERATOR_KEY, KeyStroke.getKeyStroke(KeyEvent.VK_X,
-                Toolkit.getDefaultToolkit().getMenuShortcutKeyMask() /*| java.awt.event.InputEvent.SHIFT_MASK*/));
+                Toolkit.getDefaultToolkit().getMenuShortcutKeyMaskEx() /*| java.awt.event.InputEvent.SHIFT_DOWN_MASK*/));
         action.putValue(AbstractAction.SHORT_DESCRIPTION, "Cut");
-        action.putValue(AbstractAction.SMALL_ICON, ResourceManager.getIcon("sun/toolbarButtonGraphics/general/Cut16.gif"));
+        action.putValue(AbstractAction.SMALL_ICON, ResourceManager.getIcon("sun/Cut16.gif"));
         action.putValue(CRITICAL, Boolean.TRUE);
         all.add(action);
         return cut = action;
@@ -590,10 +590,10 @@ public class FormatterActions {
         };
         action.putValue(AbstractAction.NAME, "Copy");
         action.putValue(AbstractAction.ACCELERATOR_KEY, KeyStroke.getKeyStroke(KeyEvent.VK_C,
-                Toolkit.getDefaultToolkit().getMenuShortcutKeyMask() /*| java.awt.event.InputEvent.SHIFT_MASK*/));
+                Toolkit.getDefaultToolkit().getMenuShortcutKeyMaskEx() /*| java.awt.event.InputEvent.SHIFT_DOWN_MASK*/));
         action.putValue(AbstractAction.SHORT_DESCRIPTION, "Copy graph to clipboard");
         action.putValue(CRITICAL, Boolean.TRUE);
-        action.putValue(AbstractAction.SMALL_ICON, ResourceManager.getIcon("sun/toolbarButtonGraphics/general/Copy16.gif"));
+        action.putValue(AbstractAction.SMALL_ICON, ResourceManager.getIcon("sun/Copy16.gif"));
         all.add(action);
         return copy = action;
     }
@@ -613,10 +613,10 @@ public class FormatterActions {
         };
         action.putValue(AbstractAction.NAME, "Paste");
         action.putValue(AbstractAction.ACCELERATOR_KEY, KeyStroke.getKeyStroke(KeyEvent.VK_V,
-                Toolkit.getDefaultToolkit().getMenuShortcutKeyMask()));
+                Toolkit.getDefaultToolkit().getMenuShortcutKeyMaskEx()));
         action.putValue(AbstractAction.SHORT_DESCRIPTION, "Paste");
         action.putValue(CRITICAL, Boolean.TRUE);
-        action.putValue(AbstractAction.SMALL_ICON, ResourceManager.getIcon("sun/toolbarButtonGraphics/general/Paste16.gif"));
+        action.putValue(AbstractAction.SMALL_ICON, ResourceManager.getIcon("sun/Paste16.gif"));
         all.add(action);
         return paste = action;
     }
@@ -634,7 +634,7 @@ public class FormatterActions {
         };
         action.putValue(AbstractAction.NAME, "Set Font as Default");
         action.putValue(AbstractAction.ACCELERATOR_KEY, KeyStroke.getKeyStroke(KeyEvent.VK_F,
-                Toolkit.getDefaultToolkit().getMenuShortcutKeyMask()));
+                Toolkit.getDefaultToolkit().getMenuShortcutKeyMaskEx()));
         action.putValue(AbstractAction.SHORT_DESCRIPTION, "Set current font as default");
         action.putValue(CRITICAL, Boolean.TRUE);
         action.putValue(AbstractAction.SMALL_ICON, ResourceManager.getIcon("Empty16.gif"));

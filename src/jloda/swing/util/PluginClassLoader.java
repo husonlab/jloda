@@ -83,7 +83,7 @@ public class PluginClassLoader {
                             final Class c = Basic.classForName(packageName.concat(".").concat(resources[i]));
                             if (!c.isInterface() && !Modifier.isAbstract(c.getModifiers()) && clazz1.isAssignableFrom(c) && (clazz2 == null || clazz2.isAssignableFrom(c))) {
                                 try {
-                                    plugins.add(c.newInstance());
+                                    plugins.add(c.getConstructor().newInstance());
                                 } catch (InstantiationException ex) {
                                     //Basic.caught(ex);
                                 }

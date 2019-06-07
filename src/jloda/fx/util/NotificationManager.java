@@ -23,7 +23,6 @@ import javafx.application.Platform;
 import javafx.geometry.Pos;
 import javafx.scene.image.ImageView;
 import javafx.util.Duration;
-import jloda.swing.util.ResourceManager;
 import jloda.util.ProgramProperties;
 import org.controlsfx.control.Notifications;
 
@@ -175,24 +174,24 @@ public class NotificationManager {
                     switch (mode) {
                         default:
                         case information: {
-                            imageView = new ImageView(Notifications.class.getResource("/org/controlsfx/dialog/dialog-information.png").toExternalForm());
+                            imageView = new ImageView(ResourceManagerFX.getImage(NotificationManager.class, "jloda/resources/icons/dialog", "dialog-information.png"));
                             break;
                         }
                         case error: {
-                            imageView = new ImageView(Notifications.class.getResource("/org/controlsfx/dialog/dialog-error.png").toExternalForm());
+                            imageView = new ImageView(ResourceManagerFX.getImage(NotificationManager.class, "jloda/resources/icons/dialog", "dialog-error.png"));
                             break;
                         }
                         case warning: {
-                            imageView = new ImageView(Notifications.class.getResource("/org/controlsfx/dialog/dialog-warning.png").toExternalForm());
+                            imageView = new ImageView(ResourceManagerFX.getImage(NotificationManager.class, "jloda/resources/icons/dialog", "dialog-warning.png"));
                             break;
                         }
                         case confirmation: {
-                            imageView = new ImageView(Notifications.class.getResource("/org/controlsfx/dialog/dialog-confim.png").toExternalForm());
+                            imageView = new ImageView(ResourceManagerFX.getImage(NotificationManager.class, "jloda/resources/icons/dialog", "dialog-confim.png"));
                             break;
                         }
                     }
-                    imageView.setFitHeight(16);
-                    imageView.setFitWidth(16);
+                    imageView.setFitHeight(32);
+                    imageView.setFitWidth(32);
                     notification.graphic(imageView);
                     notification.show();
                 }
@@ -261,7 +260,7 @@ public class NotificationManager {
      * @return
      */
     public static String getControlStylesheetURL() {
-        final URL url = ResourceManager.getCssURL("notificationpopup.css");
+        final URL url = ResourceManagerFX.getCssURL("notificationpopup.css");
         if (url != null) {
             return url.toExternalForm();
         }

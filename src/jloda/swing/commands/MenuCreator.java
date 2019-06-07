@@ -19,7 +19,7 @@
 
 package jloda.swing.commands;
 
-import jloda.swing.util.AppleStuff;
+import jloda.swing.util.AppleSystemMenuItems;
 import jloda.swing.util.IMenuModifier;
 import jloda.swing.util.MenuMnemonics;
 import jloda.swing.util.ResourceManager;
@@ -138,7 +138,7 @@ public class MenuCreator {
             } else {
                 if (CommandManager.getCommandsToIgnore().contains(label))
                     continue;
-                ICommand command = commandManager.getCommand(label);
+                final ICommand command = commandManager.getCommand(label);
                 if (command != null) {
                     label = command.getName(); // label might have been altName...
                     if (CommandManager.getCommandsToIgnore().contains(label))
@@ -147,38 +147,38 @@ public class MenuCreator {
                     if (ProgramProperties.isMacOS()) {
                         switch (label) {
                             case "Quit": {
-                                final Action action = createAction(command);
-                                AppleStuff.getInstance().setQuitAction(action);
-                                if (menu.getItemCount() > 0 && menu.getItem(menu.getItemCount() - 1) == null) {
-                                    skipNextSeparator = true;
+                                if (AppleSystemMenuItems.setQuitAction(createAction(command))) {
+                                    if (menu.getItemCount() > 0 && menu.getItem(menu.getItemCount() - 1) == null) {
+                                        skipNextSeparator = true;
+                                    }
+                                    done = true;
                                 }
-                                done = true;
                                 break;
                             }
                             case "About":
                             case "About...": {
-                                final Action action = createAction(command);
-                                AppleStuff.getInstance().setAboutAction(action);
-                                if (menu.getItemCount() > 0 && menu.getItem(menu.getItemCount() - 1) == null) {
-                                    skipNextSeparator = true;
+                                if (AppleSystemMenuItems.setAboutAction(createAction(command))) {
+                                    if (menu.getItemCount() > 0 && menu.getItem(menu.getItemCount() - 1) == null) {
+                                        skipNextSeparator = true;
+                                    }
+                                    done = true;
                                 }
-                                done = true;
                                 break;
                             }
                             case "Preferences":
                             case "Preferences...": {
-                                final Action action = createAction(command);
-                                AppleStuff.getInstance().setPreferencesAction(action);
-                                if (menu.getItemCount() > 0 && menu.getItem(menu.getItemCount() - 1) == null) {
-                                    skipNextSeparator = true;
+                                if (AppleSystemMenuItems.setPreferencesAction(createAction(command))) {
+                                    if (menu.getItemCount() > 0 && menu.getItem(menu.getItemCount() - 1) == null) {
+                                        skipNextSeparator = true;
+                                    }
+                                    done = true;
                                 }
-                                done = true;
                                 break;
                             }
                         }
                     }
                     if (!done) {
-                        JMenuItem menuItem = commandManager.getJMenuItem(command);
+                        final JMenuItem menuItem = commandManager.getJMenuItem(command);
                         menuItem.setText(Translator.get(label));
                         menuItem.setToolTipText(command.getDescription());
                         menu.add(menuItem);
@@ -187,7 +187,7 @@ public class MenuCreator {
                             menuItem.setIcon(ResourceManager.getIcon("Empty16.gif"));
                     }
                 } else {
-                    JMenuItem menuItem = new JMenuItem(label + " #");
+                    final JMenuItem menuItem = new JMenuItem(label + " #");
                     menuItem.setIcon(ResourceManager.getIcon("Empty16.gif"));
                     menu.add(menuItem);
                     menu.getItem(menu.getItemCount() - 1).setEnabled(false);

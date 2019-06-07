@@ -22,6 +22,7 @@ package jloda.fx.util;
 
 import javafx.scene.image.Image;
 import jloda.util.Basic;
+import jloda.util.Pair;
 
 import java.io.ByteArrayInputStream;
 import java.io.File;
@@ -30,6 +31,7 @@ import java.io.InputStream;
 import java.net.URI;
 import java.net.URL;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.jar.JarEntry;
@@ -41,86 +43,79 @@ import java.util.jar.JarFile;
  * Daniel Huson and others, 2003, 2018
  */
 public class ResourceManagerFX {
-    public static final String iconPackagePath = "resources.icons";
-    public static final String imagePackagePath = "resources.images";
-    public static final String filePackagePath = "resources.files";
-    public static final String cssPackagePath = "resources.css";
+    private static final ArrayList<Pair<Class, String>> classLoadersAndRoots = new ArrayList<>();
 
     private static final HashMap<String, Image> iconMap = new HashMap<>();
     private static final HashMap<String, Image> imageMap = new HashMap<>();
-    private static final HashMap<String, File> fileMap = new HashMap<>();
 
-    private static boolean warnMissing;
+    static {
+        classLoadersAndRoots.add(new Pair<>(ResourceManagerFX.class, "jloda/resources"));
+    }
 
     /**
      * gets the named icon
      */
-    public static Image getIcon(String name) {
-        if (!iconMap.containsKey(name)) {
-            Image iconImage = getImageResource(iconPackagePath, name);
+    public static Image getIcon(String fileName) {
+        if (iconMap.containsKey(fileName))
+            return iconMap.get(fileName);
+
+        for (Pair<Class, String> pair : classLoadersAndRoots) {
+            final Image iconImage = getImageResource(pair.getFirst(), pair.getSecond() + "/icons", fileName);
             if (iconImage != null) {
-                iconMap.put(name, iconImage);
-            } else {
-                if (Basic.getDebugMode() && warnMissing)
-                    System.err.println("ICON NOT FOUND: " + name + ", path: " + iconPackagePath);
-                Image image = getImageResource(iconPackagePath, "sun/toolbarButtonGraphics/general/Help16.gif");
-                if (image != null)
-                    return image;
-                else
-                    return null;
+                iconMap.put(fileName, iconImage);
+                return iconMap.get(fileName);
             }
         }
-        return iconMap.get(name);
+        if (Basic.getDebugMode())
+            System.err.println("ICON NOT FOUND: " + fileName);
+        return null;
     }
 
-    /**
-     * gets the named image
-     */
-    public static Image getImage(String name) {
-        if (!imageMap.containsKey(name)) {
-            Image image = getImageResource(imagePackagePath, name);
+
+    public static Image getImage(String fileName) {
+        if (imageMap.containsKey(fileName))
+            return imageMap.get(fileName);
+
+        for (Pair<Class, String> pair : classLoadersAndRoots) {
+            final Image image = getImageResource(pair.getFirst(), pair.getSecond() + "/images", fileName);
             if (image != null) {
-                imageMap.put(name, image);
-            } else {
-                if (Basic.getDebugMode() && warnMissing)
-                    System.err.println("IMAGE NOT FOUND: " + name + ", path: " + imagePackagePath);
-                image = getImageResource(imagePackagePath, "sun/toolbarButtonGraphics/general/Help16.gif");
-                if (image != null)
-                    return image;
-                else
-                    return null;
+                imageMap.put(fileName, image);
+                return image;
             }
         }
-        return imageMap.get(name);
+        return null;
     }
+
 
     /**
      * Gets the named file
      */
     public static File getFile(String name) {
-        if (!fileMap.containsKey(name)) {
-            File file = getFileResource(filePackagePath, name);
-            fileMap.put(name, file);
+        for (Pair<Class, String> pair : classLoadersAndRoots) {
+            final File file = getFileResource(pair.getFirst(), pair.getSecond() + "/files", name);
+            if (file != null)
+                return file;
         }
-        return fileMap.get(name);
+        return null;
     }
 
     /**
      * Returns the file with name specified by the parameter, or <code>null</code> if there is none.
      */
     public static URL getCssURL(String name) {
-        return getFileURL(cssPackagePath, name);
+        for (Pair<Class, String> pair : classLoadersAndRoots) {
+            final URL url = getFileURL(pair.getFirst(), pair.getSecond() + "/css", name);
+            if (url != null)
+                return url;
+        }
+        return null;
     }
 
     /**
      * Returns the path with name specified by the parameter, or just the name, else
      */
     public static String getFileName(String name) {
-        if (!fileMap.containsKey(name)) {
-            File data = getFileResource(filePackagePath, name);
-            fileMap.put(name, data);
-        }
-        File file = fileMap.get(name);
+        final File file = getFile(name);
         if (file != null)
             return file.getPath().replaceAll("%20", " ");
         else
@@ -136,10 +131,12 @@ public class ResourceManagerFX {
     public static InputStream getFileAsStream(String fileName) {
         if (fileName == null)
             return null;
-        fileName = fileName.trim();
-        if (fileName.length() == 0)
-            return null;
-        return getFileAsStream(filePackagePath, fileName);
+        for (Pair<Class, String> pair : classLoadersAndRoots) {
+            final InputStream stream = getFileAsStream(pair.getFirst(), pair.getSecond() + "/files", fileName);
+            if (stream != null)
+                return stream;
+        }
+        return null;
     }
 
     /**
@@ -148,7 +145,7 @@ public class ResourceManagerFX {
      * @param filePackage the package containing file
      * @param fileName    the name of the file
      */
-    public static InputStream getFileAsStream(String filePackage, String fileName) {
+    public static InputStream getFileAsStream(Class clazz, String filePackage, String fileName) {
         if (fileName.contains("/") || fileName.contains("\\")) {
             final File file = new File(fileName);
             try {
@@ -159,7 +156,7 @@ public class ResourceManagerFX {
                 return null;
             }
         } else
-            return getFileResourceAsStream(filePackage, fileName);
+            return getFileResourceAsStream(clazz, filePackage, fileName);
 
     }
 
@@ -170,10 +167,9 @@ public class ResourceManagerFX {
      * @param packageName the path through a package (the name of the subpackage) where to look for the icon
      * @param fileName    the name of the icon file
      */
-    public static Image getImageResource(String packageName, String fileName) {
-        String resname = "/" + packageName.replace('.', '/') + "/" + fileName;
-        resname = resname.replaceAll(" ", "\\ ");
-        try (InputStream is = ResourceManagerFX.class.getResourceAsStream(resname)) {
+    public static Image getImageResource(Class clazz, String packageName, String fileName) {
+        final String resname = ("/" + packageName.replace('.', '/') + "/" + fileName).replaceAll(" ", "\\ ");
+        try (InputStream is = clazz.getResourceAsStream(resname)) {
             byte[] buffer = new byte[0];
             byte[] tmpbuf = new byte[1024];
             while (true) {
@@ -194,13 +190,14 @@ public class ResourceManagerFX {
     /**
      * Returns File with specified file name at the location specified by <code>packageName</code>.
      *
+     * @param clazz
      * @param packageName the path through a package (the name of the subpackage) where to look for the icon
      * @param fileName    the name of the file
      */
-    public static File getFileResource(String packageName, String fileName) {
+    public static File getFileResource(Class clazz, String packageName, String fileName) {
         try {
             final String resourceName = ("/" + packageName.replace('.', '/') + "/" + fileName).replaceAll(" ", "\\ ");
-            final URL url = ResourceManagerFX.class.getResource(resourceName);
+            final URL url = clazz.getResource(resourceName);
             return new File(url.getFile());
         } catch (Exception exc) {
             return null;
@@ -213,10 +210,10 @@ public class ResourceManagerFX {
      * @param packageName the path through a package (the name of the subpackage) where to look for the icon
      * @param fileName    the name of the file
      */
-    public static URL getFileURL(String packageName, String fileName) {
+    public static URL getFileURL(Class clazz, String packageName, String fileName) {
         try {
             final String resourceName = ("/" + packageName.replace('.', '/') + "/" + fileName).replaceAll(" ", "\\ ");
-            return ResourceManagerFX.class.getResource(resourceName);
+            return clazz.getResource(resourceName);
         } catch (Exception exc) {
             return null;
         }
@@ -228,26 +225,12 @@ public class ResourceManagerFX {
      * @param packageName the path through a package (the name of the subpackage) where to look for the icon
      * @param fileName    the name of the file
      */
-    public static InputStream getFileResourceAsStream(String packageName, String fileName) {
+    public static InputStream getFileResourceAsStream(Class clazz, String packageName, String fileName) {
         try {
             final String resourceName = ("/" + packageName.replace('.', '/') + "/" + fileName).replace(" ", "\\ ");
-            return ResourceManagerFX.class.getResourceAsStream(resourceName);
+            return clazz.getResourceAsStream(resourceName);
         } catch (Exception ex) {
             return null;
-        }
-    }
-
-    /**
-     * does resource file exist?
-     *
-     * @param fileName
-     * @return true if file exists
-     */
-    public static boolean resourceFileExists(String fileName) {
-        try (InputStream ins = ResourceManagerFX.class.getResourceAsStream("/resources/files/" + fileName)) {
-            return (ins != null);
-        } catch (Exception e) {
-            return false;
         }
     }
 
@@ -259,8 +242,8 @@ public class ResourceManagerFX {
      * @return image
      * @throws IOException
      */
-    public static Image getImage(String packageName, String fileName) throws IOException {
-        return getImageResource(packageName, fileName);
+    public static Image getImage(Class clazz, String packageName, String fileName) {
+        return getImageResource(clazz, packageName, fileName);
     }
 
     /**
@@ -274,37 +257,36 @@ public class ResourceManagerFX {
             return false;
 
         try (InputStream ins = getFileAsStream(name)) {
-            return ins != null;
+            return (ins != null);
         } catch (IOException ex) {
             return false;
         }
     }
 
     /**
-     * does the named file exist as a resource?
+     * does the named file exist as a resource ?
      *
      * @param packageName
      * @param name
      * @return true if named file exists as a resource
      */
-    public static boolean fileResourceExists(String packageName, String name) {
+    public static boolean fileResourceExists(Class clazz, String packageName, String name) {
         if (name == null || name.length() == 0)
             return false;
 
-        boolean existsAsStream = false;
-        try (InputStream ins = getFileResourceAsStream(packageName, name)) {
-            existsAsStream = (ins != null);
-        } catch (Exception ex) {
+        try (InputStream ins = getFileResourceAsStream(clazz, packageName, name)) {
+            return (ins != null);
+        } catch (IOException ex) {
+            return false;
         }
-        return existsAsStream || (new File(name)).canRead();
     }
 
-    public static void setWarnMissing(boolean warnMissing) {
-        ResourceManagerFX.warnMissing = warnMissing;
+    public static ArrayList<Pair<Class, String>> getClassLoadersAndRoots() {
+        return classLoadersAndRoots;
     }
 
-    public static boolean isWarnMissing() {
-        return warnMissing;
+    public static void addResourceRoot(Class clazzForClassLoader, String rootPath) {
+        classLoadersAndRoots.add(new Pair<>(clazzForClassLoader, rootPath));
     }
 
     /**
@@ -317,9 +299,8 @@ public class ResourceManagerFX {
     public static String getVersion(final Class clazz, final String name) {
         String version;
         try {
-            final ClassLoader classLoader = clazz.getClassLoader();
-            String threadContexteClass = clazz.getName().replace('.', '/');
-            URL url = classLoader.getResource(threadContexteClass + ".class");
+            final String threadContexteClass = clazz.getName().replace('.', '/');
+            final URL url = clazz.getResource(threadContexteClass + ".class");
             if (url == null) {
                 version = name + " $ (no manifest) $";
             } else {

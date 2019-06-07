@@ -253,7 +253,7 @@ final public class NodeView extends ViewBase implements Cloneable {
      * Sets the node shape.
      *
      * @param a int
-     *  @deprecated use setNodeShape
+     *  Better: use setNodeShape
      */
     public void setShape(byte a) {
         nodeShape = NodeShape.values()[a];
@@ -263,7 +263,7 @@ final public class NodeView extends ViewBase implements Cloneable {
      * Gets the node shape.
      *
      * @return the shape
-     * @deprecated use getNodeShape
+     * Better: use getNodeShape
      */
     public byte getShape() {
         return (byte) nodeShape.ordinal();

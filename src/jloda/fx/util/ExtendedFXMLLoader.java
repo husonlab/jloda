@@ -43,13 +43,12 @@ public class ExtendedFXMLLoader<C> {
      * @throws IOException
      */
     public ExtendedFXMLLoader(Class clazz) {
+        String pathToFXMLFile = clazz.getCanonicalName().replaceAll("Controller$", "").replaceAll("\\.", "/") + ".fxml";
         try {
             fxmlLoader = new FXMLLoader();
-            String path = clazz.getCanonicalName().replaceAll("Controller$", "").replaceAll("\\.", "/") + ".fxml";
-            final URL url = clazz.getClassLoader().getResource(path);
-            // System.err.println("path: " + path + " URL: " + url);
+            final URL url = clazz.getClassLoader().getResource(pathToFXMLFile);
             if (url == null)
-                throw new IOException("Failed to get resource: " + path);
+                throw new IOException("Failed to get resource: " + pathToFXMLFile);
 
             try (final InputStream ins = url.openStream()) {
                 if (ins == null)
@@ -62,6 +61,7 @@ public class ExtendedFXMLLoader<C> {
             throw new RuntimeException(ex);
         }
     }
+
 
     /**
      * get the loader

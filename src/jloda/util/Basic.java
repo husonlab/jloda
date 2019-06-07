@@ -510,7 +510,7 @@ public class Basic {
      * @param list
      * @param comparator
      */
-    public static <T> void sort(List<T> list, Comparator<T> comparator) {
+    public static <T> void sortSubsetAsContainingSet(List<T> list, Comparator<T> comparator) {
         T[] array = (T[]) list.toArray();
         Arrays.sort(array, comparator);
         list.clear();
@@ -1671,7 +1671,8 @@ public class Basic {
         char[] array = new char[bytes.length];
         for (int i = 0; i < bytes.length; i++)
             array[i] = (char) bytes[i];
-        return new String(array);
+        final String result = new String(array);
+        return result;
     }
 
     /**
@@ -4220,6 +4221,37 @@ public class Basic {
 
     public static String toString(Pair pair, String separator) {
         return pair.getFirst().toString() + separator + pair.getSecond().toString();
+    }
+
+    public static String getUniqueName(String name0, Collection<String> names) {
+        int count = 0;
+        String name = name0;
+        while (names.contains(name)) {
+            name = name0 + "-" + (++count);
+        }
+        return name;
+    }
+
+    public static Collection<String> sortSubsetAsContainingSet(ArrayList<String> containingSet, Collection<String> subsetToSort) {
+        final ArrayList<String> sorted = new ArrayList<>();
+        for (String item : containingSet) {
+            if (subsetToSort.contains(item))
+                sorted.add(item);
+        }
+        return sorted;
+    }
+
+    /**
+     * sort a list using the given comparator
+     *
+     * @param list
+     * @param comparator
+     */
+    public static <T> void sort(List<T> list, Comparator<T> comparator) {
+        T[] array = (T[]) list.toArray();
+        Arrays.sort(array, comparator);
+        list.clear();
+        list.addAll(Arrays.asList(array));
     }
 }
 

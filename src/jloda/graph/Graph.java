@@ -468,7 +468,7 @@ public class Graph extends GraphBase {
      * @param v the node
      * @param e the edge
      * @return the opposite node
-     * @deprecated use v.getOpposite(e) or e.getOpposite(v)
+     * Better: use v.getOpposite(e) or e.getOpposite(v)
      */
     public Node getOpposite(Node v, Edge e) {
         checkOwner(e);
@@ -480,7 +480,7 @@ public class Graph extends GraphBase {
      *
      * @param v the node
      * @return the first adjacent edge
-     *  @deprecated use v.getFirstAdjacentEdge()
+     *  Better: use v.getFirstAdjacentEdge()
      */
     public Edge getFirstAdjacentEdge(Node v) {
         checkOwner(v);
@@ -492,7 +492,7 @@ public class Graph extends GraphBase {
      *
      * @param v the node
      * @return the last adjacent edge
-     * @deprecated use v.getLastAdjacentEdge()
+     * Better: use v.getLastAdjacentEdge()
      */
     public Edge getLastAdjacentEdge(Node v) {
         checkOwner(v);
@@ -506,7 +506,7 @@ public class Graph extends GraphBase {
      * @param e the edge
      * @param v the node
      * @return the successor of edge adjacent to v
-     *  @deprecated use v.getNextAdjacentEdge(e)
+     *  Better: use v.getNextAdjacentEdge(e)
      */
     public Edge getNextAdjacentEdge(Edge e, Node v) {
         checkOwner(v);
@@ -519,7 +519,7 @@ public class Graph extends GraphBase {
      * @param e the edge
      * @param v the node
      * @return the predecessor of edge adjacent to v
-     *  @deprecated use v.getPrevAdjacentEdge(e)
+     *  Better: use v.getPrevAdjacentEdge(e)
      */
     public Edge getPrevAdjacentEdge(Edge e, Node v) {
         checkOwner(v);
@@ -532,7 +532,7 @@ public class Graph extends GraphBase {
      * @param e the edge
      * @param v the node
      * @return the cyclic successor of edge adjacent to v
-     *  @deprecated use v.getNextAdjacentEdgeCyclic(e)
+     *  Better: use v.getNextAdjacentEdgeCyclic(e)
      */
     public Edge getNextAdjacentEdgeCyclic(Edge e, Node v) {
         checkOwner(v);
@@ -545,7 +545,7 @@ public class Graph extends GraphBase {
      * @param e the edge
      * @param v the node
      * @return the cyclic predecessor of edge adjacent to v
-     *  @deprecated use v.getPrevAdjacentEdgeCyclic(e)
+     *  Better: use v.getPrevAdjacentEdgeCyclic(e)
      */
     public Edge getPrevAdjacentEdgeCyclic(Edge e, Node v) {
         checkOwner(v);
@@ -676,7 +676,7 @@ public class Graph extends GraphBase {
      *
      * @param e the edge
      * @return the source of e
-     * @deprecated use e.getSource()
+     * Better: use e.getSource()
      */
     public Node getSource(Edge e) {
         checkOwner(e);
@@ -688,7 +688,7 @@ public class Graph extends GraphBase {
      *
      * @param e the edge
      * @return the target of e
-     * @deprecated use e.getTarget()
+     * Better: use e.getTarget()
      */
     public Node getTarget(Edge e) {
         checkOwner(e);
@@ -699,7 +699,7 @@ public class Graph extends GraphBase {
      * Get the degree of node v.
      *
      * @return the degree
-     * @deprecated use v.getDegree()
+     * Better: use v.getDegree()
      */
     public int getDegree(Node v) {
         checkOwner(v);
@@ -710,7 +710,7 @@ public class Graph extends GraphBase {
      * Get the in-degree of node v.
      *
      * @return the in-degree
-     * @deprecated use v.getInDegree()
+     * Better: use v.getInDegree()
      */
     public int getInDegree(Node v) {
         checkOwner(v);
@@ -721,7 +721,7 @@ public class Graph extends GraphBase {
      * Get the out-degree of node v.
      *
      * @return the out-degree
-     * @deprecated use v.getOutDegree()
+     * Better: use v.getOutDegree()
      */
     public int getOutDegree(Node v) {
         checkOwner(v);
@@ -732,7 +732,7 @@ public class Graph extends GraphBase {
      * Get an iterator over all edges
      *
      * @return edge iterator
-     * @deprecated use edges()
+     * Better: use edges()
      */
     public Iterator<Edge> edgeIterator() {
         return new IteratorAdapter<Edge>() {
@@ -776,7 +776,7 @@ public class Graph extends GraphBase {
      * Get an iterator over all nodes
      *
      * @return node iterator
-     * @deprecated use nodes()
+     * Better: use nodes()
      */
     public Iterator<Node> nodeIterator() {
         return new IteratorAdapter<Node>() {
@@ -828,7 +828,7 @@ public class Graph extends GraphBase {
      *
      * @param v node
      * @return all nodes adjacent to v
-     * @deprecated use v.adjacentNodes()
+     * Better: use v.adjacentNodes()
      */
     public Iterable<Node> adjacentNodes(Node v) {
         return v.adjacentNodes();
@@ -839,7 +839,7 @@ public class Graph extends GraphBase {
      *
      * @param v node
      * @return all edges adjacent to v
-     * @deprecated use v.adjacentEdges()
+     * Better: use v.adjacentEdges()
      */
     public Iterable<Edge> adjacentEdges(Node v) {
         return v.adjacentEdges();
@@ -850,7 +850,7 @@ public class Graph extends GraphBase {
      *
      * @param v node
      * @return all in-edges adjacent to v
-     * @deprecated use v.inEdges()
+     * Better: use v.inEdges()
      */
     public Iterable<Edge> inEdges(Node v) {
         return v.inEdges();
@@ -861,7 +861,7 @@ public class Graph extends GraphBase {
      *
      * @param v node
      * @return all out-edges adjacent to v
-     * @deprecated use v.outEdges()
+     * Better: use v.outEdges()
      */
     public Iterable<Edge> outEdges(Node v) {
         return v.outEdges();
@@ -1294,7 +1294,7 @@ public class Graph extends GraphBase {
      * @param a
      * @param b
      * @return true, if adjacent
-     * @deprecated use a.isAdjacent(b)
+     * Better: use a.isAdjacent(b)
      */
     public boolean areAdjacent(Node a, Node b) {
         checkOwner(a);

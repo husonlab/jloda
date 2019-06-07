@@ -158,8 +158,8 @@ public class TextWindow extends JFrame {
         };
         action.putValue(AbstractAction.NAME, "Save");
         action.putValue(AbstractAction.SHORT_DESCRIPTION, "Save messages");
-        action.putValue(AbstractAction.MNEMONIC_KEY, new Integer('S'));
-        action.putValue(AbstractAction.ACCELERATOR_KEY, KeyStroke.getKeyStroke('S', InputEvent.CTRL_MASK));
+        action.putValue(AbstractAction.MNEMONIC_KEY, (int) 'S');
+        action.putValue(AbstractAction.ACCELERATOR_KEY, KeyStroke.getKeyStroke('S', InputEvent.CTRL_DOWN_MASK));
 
         return saveAction = action;
     }
@@ -178,8 +178,8 @@ public class TextWindow extends JFrame {
         };
         action.putValue(AbstractAction.NAME, "Close");
         action.putValue(AbstractAction.SHORT_DESCRIPTION, "Close messages");
-        action.putValue(AbstractAction.MNEMONIC_KEY, new Integer('C'));
-        action.putValue(AbstractAction.ACCELERATOR_KEY, KeyStroke.getKeyStroke('W', InputEvent.CTRL_MASK));
+        action.putValue(AbstractAction.MNEMONIC_KEY, (int) 'C');
+        action.putValue(AbstractAction.ACCELERATOR_KEY, KeyStroke.getKeyStroke('W', InputEvent.CTRL_DOWN_MASK));
         return closeAction = action;
     }
 
@@ -194,8 +194,8 @@ public class TextWindow extends JFrame {
         };
         action.putValue(AbstractAction.NAME, "Quit");
         action.putValue(AbstractAction.SHORT_DESCRIPTION, "Quit");
-        action.putValue(AbstractAction.MNEMONIC_KEY, new Integer('Q'));
-        action.putValue(AbstractAction.ACCELERATOR_KEY, KeyStroke.getKeyStroke('Q', InputEvent.CTRL_MASK));
+        action.putValue(AbstractAction.MNEMONIC_KEY, (int) 'Q');
+        action.putValue(AbstractAction.ACCELERATOR_KEY, KeyStroke.getKeyStroke('Q', InputEvent.CTRL_DOWN_MASK));
 
         return quitAction = action;
     }
@@ -222,8 +222,8 @@ public class TextWindow extends JFrame {
         };
         action.putValue(AbstractAction.NAME, "Font Size");
         action.putValue(AbstractAction.SHORT_DESCRIPTION, "Choose Font Size");
-        action.putValue(AbstractAction.MNEMONIC_KEY, new Integer('F'));
-        action.putValue(AbstractAction.ACCELERATOR_KEY, KeyStroke.getKeyStroke('F', InputEvent.CTRL_MASK));
+        action.putValue(AbstractAction.MNEMONIC_KEY, (int) 'F');
+        action.putValue(AbstractAction.ACCELERATOR_KEY, KeyStroke.getKeyStroke('F', InputEvent.CTRL_DOWN_MASK));
 
         return fontSizeAction = action;
     }
@@ -258,7 +258,7 @@ public class TextWindow extends JFrame {
         }
 
         if (action != null) {
-            action.putValue(Action.ACCELERATOR_KEY, KeyStroke.getKeyStroke(KeyEvent.VK_X, Toolkit.getDefaultToolkit().getMenuShortcutKeyMask()));
+            action.putValue(Action.ACCELERATOR_KEY, KeyStroke.getKeyStroke(KeyEvent.VK_X, Toolkit.getDefaultToolkit().getMenuShortcutKeyMaskEx()));
             action.putValue(Action.SHORT_DESCRIPTION, "Cut");
         }
         return cut = action;
@@ -279,7 +279,7 @@ public class TextWindow extends JFrame {
         }
 
         if (action != null) {
-            action.putValue(Action.ACCELERATOR_KEY, KeyStroke.getKeyStroke(KeyEvent.VK_C, Toolkit.getDefaultToolkit().getMenuShortcutKeyMask()));
+            action.putValue(Action.ACCELERATOR_KEY, KeyStroke.getKeyStroke(KeyEvent.VK_C, Toolkit.getDefaultToolkit().getMenuShortcutKeyMaskEx()));
             action.putValue(Action.SHORT_DESCRIPTION, "Copy");
         }
 
@@ -300,7 +300,7 @@ public class TextWindow extends JFrame {
         }
 
         if (action != null) {
-            action.putValue(Action.ACCELERATOR_KEY, KeyStroke.getKeyStroke(KeyEvent.VK_V, Toolkit.getDefaultToolkit().getMenuShortcutKeyMask()));
+            action.putValue(Action.ACCELERATOR_KEY, KeyStroke.getKeyStroke(KeyEvent.VK_V, Toolkit.getDefaultToolkit().getMenuShortcutKeyMaskEx()));
             action.putValue(Action.SHORT_DESCRIPTION, "Paste");
         }
 
@@ -321,7 +321,7 @@ public class TextWindow extends JFrame {
         }
 
         if (action != null) {
-            action.putValue(Action.ACCELERATOR_KEY, KeyStroke.getKeyStroke(KeyEvent.VK_A, Toolkit.getDefaultToolkit().getMenuShortcutKeyMask()));
+            action.putValue(Action.ACCELERATOR_KEY, KeyStroke.getKeyStroke(KeyEvent.VK_A, Toolkit.getDefaultToolkit().getMenuShortcutKeyMaskEx()));
             action.putValue(Action.SHORT_DESCRIPTION, "Select All");
         }
         return selectAll = action;

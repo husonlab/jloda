@@ -106,6 +106,7 @@ public class GraphViewDemo {
         frame.setSize(graphView.getSize());
         frame.addKeyListener(graphView.getGraphViewListener());
 
+
         frame.getContentPane().setLayout(new BorderLayout());
         frame.getContentPane().add(graphView.getScrollPane(), BorderLayout.CENTER);
         frame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);

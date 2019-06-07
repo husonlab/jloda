@@ -35,12 +35,7 @@ import java.util.Map;
  * @author huson, schroeder
  */
 public class TransferableGraphic implements ClipboardOwner, Transferable {
-
-    /**
-     * map supported <code>DataFlavor</code>s to
-     * <code>jloda.swing.export.ExportGraphicType</code>s. *
-     */
-    private final Map types = new HashMap();
+    private final Map<DataFlavor, ExportGraphicType> types = new HashMap<>();
 
     /**
      * the JPanel doing the paint work
@@ -130,7 +125,7 @@ public class TransferableGraphic implements ClipboardOwner, Transferable {
 
             ClassLoader loader = Thread.currentThread().getContextClassLoader();
             Class cls = loader == null ? Class.forName(className) : loader.loadClass(className);
-            ExportGraphicType type = (ExportGraphicType) cls.newInstance();
+            ExportGraphicType type = (ExportGraphicType) cls.getConstructor().newInstance();
             types.put(df, type);
 
         } catch (Throwable x) {

@@ -71,34 +71,38 @@ public class AMultipleSelectionModel<T> extends MultipleSelectionModel<T> {
         final ObservableList<T> selectedItems = FXCollections.observableArrayList();
 
         selectedIndicesList.addListener((ListChangeListener<Integer>) c -> {
-            while (c.next()) {
-                if (c.wasAdded()) {
-                    final ArrayList<T> set = new ArrayList<>(c.getAddedSize());
-                    for (int i : c.getAddedSubList()) {
-                        set.add(AMultipleSelectionModel.this.items[i]);
-                    }
-                    selectedItems.addAll(set);
-                    if (!getListenersSuspended()) {
-                        unmodifiableSelectedIndices.addAll(c.getAddedSubList());
-                        unmodifiableSelectedItems.addAll(set);
-                    }
-                } else if (c.wasRemoved()) {
-                    final ArrayList<T> set = new ArrayList<>(c.getRemovedSize());
-                    for (int i : c.getRemoved()) {
-                        set.add(AMultipleSelectionModel.this.items[i]);
-                        if (!getListenersSuspended()) {
-                            unmodifiableSelectedIndices.removeAll(c.getAddedSubList());
-                            unmodifiableSelectedItems.removeAll(set);
+            try {
+                while (c.next()) {
+                    if (c.wasAdded()) {
+                        final ArrayList<T> set = new ArrayList<>(c.getAddedSize());
+                        for (int i : c.getAddedSubList()) {
+                            set.add(AMultipleSelectionModel.this.items[i]);
                         }
+                        selectedItems.addAll(set);
+                        if (!getListenersSuspended()) {
+                            unmodifiableSelectedIndices.addAll(c.getAddedSubList());
+                            unmodifiableSelectedItems.addAll(set);
+                        }
+                    } else if (c.wasRemoved()) {
+                        final ArrayList<T> set = new ArrayList<>(c.getRemovedSize());
+                        for (int i : c.getRemoved()) {
+                            set.add(AMultipleSelectionModel.this.items[i]);
+                            if (!getListenersSuspended()) {
+                                unmodifiableSelectedIndices.removeAll(c.getAddedSubList());
+                                unmodifiableSelectedItems.removeAll(set);
+                            }
+                        }
+                        selectedItems.removeAll(set);
                     }
-                    selectedItems.removeAll(set);
+                    if (!getListenersSuspended()) {
+                        canSelectAll.set(AMultipleSelectionModel.this.items.length > 0 && selectedItems.size() < AMultipleSelectionModel.this.items.length);
+                        canSelectNone.set(AMultipleSelectionModel.this.items.length > 0 && selectedItems.size() > 0);
+                    }
                 }
-                if (!getListenersSuspended()) {
-                    canSelectAll.set(AMultipleSelectionModel.this.items.length > 0 && selectedItems.size() < AMultipleSelectionModel.this.items.length);
-                    canSelectNone.set(AMultipleSelectionModel.this.items.length > 0 && selectedItems.size() > 0);
-                }
+                setSelectedItem(selectedItems.size() == 0 ? null : selectedItems.get(0));
+            } catch (Exception ex) {
+                Basic.caught(ex);
             }
-            setSelectedItem(selectedItems.size() == 0 ? null : selectedItems.get(0));
         });
         // wrap a unmodifiable observable list around the observable arrays lists
 
@@ -126,50 +130,54 @@ public class AMultipleSelectionModel<T> extends MultipleSelectionModel<T> {
      * @param selection
      */
     private void update(Update update, BitSet selection) {
-        synchronized (selectedIndicesList) {
-            switch (update) {
-                case RemoveAll: {
-                    selectedIndicesBits.clear();
-                    selectedIndicesList.clear();
-                    break;
-                }
-                case SelectAll: {
-                    selectedIndicesBits.set(1, items.length);
-                    final ArrayList<Integer> set = new ArrayList<>(selection.cardinality());
-                    for (int i = 0; i < items.length; i++) {
-                        set.add(i);
+        try {
+            synchronized (selectedIndicesList) {
+                switch (update) {
+                    case RemoveAll: {
+                        selectedIndicesBits.clear();
+                        selectedIndicesList.clear();
+                        break;
                     }
-                    selectedIndicesList.setAll(set);
-                    break;
-                }
-                case Remove: {
-                    final ArrayList<Integer> set = new ArrayList<>(selection.cardinality());
-                    for (int i = 0; i < items.length; i++) {
-                        if (selection.get(i) && selectedIndicesBits.get(i))
+                    case SelectAll: {
+                        selectedIndicesBits.set(1, items.length);
+                        final ArrayList<Integer> set = new ArrayList<>(selection.cardinality());
+                        for (int i = 0; i < items.length; i++) {
                             set.add(i);
+                        }
+                        selectedIndicesList.setAll(set);
+                        break;
                     }
-                    if (set.size() > 0) {
-                        selectedIndicesBits.andNot(selection);
-                        selectedIndicesList.removeAll(set);
+                    case Remove: {
+                        final ArrayList<Integer> set = new ArrayList<>(selection.cardinality());
+                        for (int i = 0; i < items.length; i++) {
+                            if (selection.get(i) && selectedIndicesBits.get(i))
+                                set.add(i);
+                        }
+                        if (set.size() > 0) {
+                            selectedIndicesBits.andNot(selection);
+                            selectedIndicesList.removeAll(set);
+                        }
+                        break;
                     }
-                    break;
-                }
-                case ClearAndAdd:
-                    selectedIndicesBits.clear();
-                    selectedIndicesList.clear();
-                case Add: {
-                    final ArrayList<Integer> set = new ArrayList<>(selection.cardinality());
-                    for (int i = 0; i < items.length; i++) {
-                        if (selection.get(i) && !selectedIndicesBits.get(i))
-                            set.add(i);
+                    case ClearAndAdd:
+                        selectedIndicesBits.clear();
+                        selectedIndicesList.clear();
+                    case Add: {
+                        final ArrayList<Integer> set = new ArrayList<>(selection.cardinality());
+                        for (int i = 0; i < items.length; i++) {
+                            if (selection.get(i) && !selectedIndicesBits.get(i))
+                                set.add(i);
+                        }
+                        if (set.size() > 0) {
+                            selectedIndicesBits.or(selection);
+                            selectedIndicesList.addAll(set);
+                        }
+                        break;
                     }
-                    if (set.size() > 0) {
-                        selectedIndicesBits.or(selection);
-                        selectedIndicesList.addAll(set);
-                    }
-                    break;
                 }
             }
+        } catch (Exception ex) {
+            Basic.caught(ex);
         }
     }
 

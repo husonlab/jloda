@@ -20,6 +20,7 @@
 package jloda.fx.shapes;
 
 import javafx.geometry.Point2D;
+import javafx.scene.paint.Color;
 import javafx.scene.shape.Polygon;
 
 /**
@@ -34,6 +35,11 @@ public class SquareShape extends Polygon implements ISized {
         setSize(size, size, null);
     }
 
+    public SquareShape(double size, Color stroke, Color fill) {
+        this(size);
+        setStroke(stroke);
+        setFill(fill);
+    }
     public SquareShape(double size, Point2D location) {
         setSize(size, size, location);
     }

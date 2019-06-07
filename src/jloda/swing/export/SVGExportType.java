@@ -175,4 +175,5 @@ public class SVGExportType extends FileFilter implements ExportGraphicType {
     public String getFileExtension() {
         return ".svg";
     }
+
 }

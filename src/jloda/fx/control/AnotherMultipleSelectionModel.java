@@ -66,7 +66,9 @@ public class AnotherMultipleSelectionModel<T> extends MultipleSelectionModel<T> 
                 }
                 if (!inSelectItems.get()) {
                     inSelectItems.set(true);
-                    selectedItems.remove(AnotherMultipleSelectionModel.this.items.get(e.getElementRemoved()));
+                    final T item = AnotherMultipleSelectionModel.this.items.get(e.getElementRemoved());
+                    if (item != null)
+                        selectedItems.remove(item);
                     setSelectedItem(null);
                     inSelectItems.set(false);
                 }
@@ -74,15 +76,18 @@ public class AnotherMultipleSelectionModel<T> extends MultipleSelectionModel<T> 
             } else if (e.wasAdded()) {
                 if (!inSelectIndices.get()) {
                     inSelectIndices.set(true);
-                    selectedIndices.add(e.getElementAdded());
-                    setSelectedIndex(e.getElementAdded());
+                    final Integer index = e.getElementAdded();
+                    selectedIndices.add(index);
+                    setSelectedIndex(index);
                     inSelectIndices.set(false);
                 }
                 if (!inSelectItems.get()) {
                     inSelectItems.set(true);
                     final T item = this.items.get(e.getElementAdded());
-                    selectedItems.add(item);
-                    setSelectedItem(item);
+                    if (item != null) {
+                        selectedItems.add(item);
+                        setSelectedItem(item);
+                    }
                     inSelectItems.set(false);
                 }
             }

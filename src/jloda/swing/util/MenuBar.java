@@ -66,7 +66,7 @@ public class MenuBar extends JMenuBar {
      */
     private void setupRecentFilesMenu(final CommandManager commandManager, final JMenu recentFilesMenu) {
         this.recentFilesMenu = recentFilesMenu;
-        recentFilesMenu.setIcon(ResourceManager.getIcon("sun/toolbarButtonGraphics/general/Open16.gif"));
+        recentFilesMenu.setIcon(ResourceManager.getIcon("sun/Open16.gif"));
 
         recentFilesListener = new PropertiesListListener() {
             public boolean isInterested(String name) {
@@ -114,7 +114,7 @@ public class MenuBar extends JMenuBar {
             }
         };
         action.putValue(AbstractAction.NAME, displayName);
-        action.putValue(AbstractAction.SMALL_ICON, ResourceManager.getIcon("sun/toolbarButtonGraphics/general/Open16.gif"));
+        action.putValue(AbstractAction.SMALL_ICON, ResourceManager.getIcon("sun/Open16.gif"));
 
         return action;
     }

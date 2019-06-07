@@ -77,7 +77,7 @@ public class HistogramPanel extends JPanel {
              */
             public void actionPerformed(ActionEvent e) {
                 try {
-                    setThreshold(new Float(input.getText()));
+                    setThreshold(Float.parseFloat(input.getText()));
                 } catch (Exception ex) {
                 }
             }
@@ -165,7 +165,7 @@ public class HistogramPanel extends JPanel {
      */
     public void setValues(double[] values) {
         data.clear();
-        for (double value : values) data.add(new Float(value));
+        for (double value : values) data.add((float) (value));
         computeBuckets();
     }
 
@@ -466,7 +466,7 @@ public class HistogramPanel extends JPanel {
                 dialog.setVisible(false);
                 dialog.dispose();
                 try {
-                    result = new Float(input.getText());
+                    result = Float.parseFloat(input.getText());
                 } catch (Exception ex) {
                     new Alert(parent, "Illegal input: " + input.getText());
                 }
