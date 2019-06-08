@@ -1671,8 +1671,7 @@ public class Basic {
         char[] array = new char[bytes.length];
         for (int i = 0; i < bytes.length; i++)
             array[i] = (char) bytes[i];
-        final String result = new String(array);
-        return result;
+        return new String(array);
     }
 
     /**
