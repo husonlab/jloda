@@ -9,7 +9,6 @@ module jloda {
     requires org.controlsfx.controls;
     requires java.xml;
 
-
     exports jloda.fx.colorscale;
     exports jloda.fx.control;
     exports jloda.fx.control.table;
