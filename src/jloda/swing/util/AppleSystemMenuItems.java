@@ -37,7 +37,10 @@ public class AppleSystemMenuItems {
     public static boolean setQuitAction(final Action action) {
         final Desktop desktop = Desktop.getDesktop();
         if (desktop != null) {
-            desktop.setQuitHandler((e, r) -> action.actionPerformed(null));
+            desktop.setQuitHandler((e, r) -> {
+                action.actionPerformed(null);
+                r.cancelQuit();
+            });
             return true;
         } else
             return false;
