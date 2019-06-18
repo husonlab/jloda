@@ -1,8 +1,8 @@
 module jloda {
-    requires transitive javafx.controls;
-    requires transitive javafx.graphics;
-    requires transitive javafx.fxml;
-    requires transitive java.desktop;
+    requires static transitive javafx.controls;
+    requires static transitive javafx.graphics;
+    requires static transitive javafx.fxml;
+    requires static transitive java.desktop;
 
     requires batik.all;
     requires VectorGraphics2D;
