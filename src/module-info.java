@@ -1,13 +1,15 @@
 module jloda {
-    requires static transitive javafx.controls;
-    requires static transitive javafx.graphics;
-    requires static transitive javafx.fxml;
-    requires static transitive java.desktop;
+    requires transitive javafx.controls;
+    requires transitive javafx.graphics;
+    requires transitive javafx.fxml;
+
+    requires transitive java.desktop;
+    requires transitive java.xml;
+
+    requires transitive org.controlsfx.controls;
 
     requires batik.all;
     requires VectorGraphics2D;
-    requires org.controlsfx.controls;
-    requires java.xml;
 
     exports jloda.fx.colorscale;
     exports jloda.fx.control;
