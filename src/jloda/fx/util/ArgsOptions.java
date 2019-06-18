@@ -42,8 +42,6 @@ public class ArgsOptions {
     private final Set<String> shortKeys = new HashSet<>();
     private final Set<String> longKeys = new HashSet<>();
 
-    private final boolean usingInstall4j;
-
     private boolean alreadyHasOtherComment = false;
 
     private boolean doHelp = false;
@@ -81,15 +79,6 @@ public class ArgsOptions {
      * @param description program description
      */
     public ArgsOptions(String[] args, Object main, String programName, String description) throws CanceledException {
-
-        if (args.length > 0 && args[0].equals("--install4j")) {
-            String[] tmp = new String[args.length - 1];
-            System.arraycopy(args, 1, tmp, 0, tmp.length);
-            args = tmp;
-            usingInstall4j = true;
-        } else
-            usingInstall4j = false;
-
         if (args.length > 0 && args[args.length - 1].equals("--argsGui")) {
             args = getDialogInput(args, args.length - 1);
         }
@@ -123,15 +112,6 @@ public class ArgsOptions {
      * @param description program description
      */
     public ArgsOptions(String[] args, Class clazz, String programName, String description) throws CanceledException {
-
-        if (args.length > 0 && args[0].equals("--install4j")) {
-            String[] tmp = new String[args.length - 1];
-            System.arraycopy(args, 1, tmp, 0, tmp.length);
-            args = tmp;
-            usingInstall4j = true;
-        } else
-            usingInstall4j = false;
-
         if (args.length > 0 && args[args.length - 1].equals("--argsGui")) {
             args = getDialogInput(args, args.length - 1);
         }
@@ -735,10 +715,6 @@ public class ArgsOptions {
         } else
         */
         return new String[0];
-    }
-
-    public boolean isUsingInstall4j() {
-        return usingInstall4j;
     }
 
     public boolean isHasMessageWindow() {
