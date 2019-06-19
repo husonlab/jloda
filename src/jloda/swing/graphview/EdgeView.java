@@ -187,6 +187,9 @@ final public class EdgeView extends ViewBase implements Cloneable { //, IEdgeVie
      * @param wp Point in device coordiantes
      */
     public void draw2(Graphics2D gc, Point vp, Point wp, Transform trans, boolean hilited) {
+        if (getLineWidth() == 0)
+            return;
+
         if (fgColor != null) {
             if (hilited) {// draw edge highlighting first
                 if (fgColor.equals(ProgramProperties.SELECTION_COLOR))
@@ -264,6 +267,9 @@ final public class EdgeView extends ViewBase implements Cloneable { //, IEdgeVie
      * @param wp Point in device coordinates
      */
     public void draw(Graphics2D gc, Point vp, Point wp, Transform trans, boolean hilited) {
+        if (getLineWidth() == 0)
+            return;
+
         if (hilited) {// draw edge highlighting first
             gc.setStroke(HEAVY_STROKE);
 
