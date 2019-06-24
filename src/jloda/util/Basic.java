@@ -1506,12 +1506,13 @@ public class Basic {
      * @return list of strings
      * @throws IOException
      */
-    public static List<String> getLinesFromFile(String file) throws IOException {
-        List<String> result = new LinkedList<>();
-        BufferedReader r = new BufferedReader(new FileReader(file));
-        String aLine;
-        while ((aLine = r.readLine()) != null) {
-            result.add(aLine);
+    public static ArrayList<String> getLinesFromFile(String file) throws IOException {
+        final ArrayList<String> result = new ArrayList<>();
+        try (BufferedReader r = new BufferedReader(new FileReader(file))) {
+            String aLine;
+            while ((aLine = r.readLine()) != null) {
+                result.add(aLine);
+            }
         }
         return result;
     }
@@ -1524,9 +1525,8 @@ public class Basic {
      */
     public static List<String> getLinesFromString(String string) {
         List<String> result = new LinkedList<>();
-        BufferedReader r = new BufferedReader(new StringReader(string));
+        try (BufferedReader r = new BufferedReader(new StringReader(string))) {
         String aLine;
-        try {
             while ((aLine = r.readLine()) != null) {
                 aLine = aLine.trim();
                 if (aLine.length() > 0)
