@@ -163,38 +163,36 @@ public class NotificationManager {
         final String message = (message0.length() > maxLength + 3 ? (message0.substring(0, maxLength) + "...") : message0);
 
         if (isShowNotifications() && ProgramProperties.isUseGUI()) {
-            Platform.runLater(new Runnable() {
-                public void run() {
-                    final Notifications notification = Notifications.create();
-                    if (isUseDarkStyle())
-                        notification.darkStyle();
-                    notification.title(title).text(message).hideAfter(new Duration(milliseconds)).position(position);
+            Platform.runLater(() -> {
+                final Notifications notification = Notifications.create();
+                if (isUseDarkStyle())
+                    notification.darkStyle();
+                notification.title(title).text(message).hideAfter(new Duration(milliseconds)).position(position);
 
-                    final ImageView imageView;
-                    switch (mode) {
-                        default:
-                        case information: {
-                            imageView = new ImageView(ResourceManagerFX.getIcon("dialog/dialog-information.png"));
-                            break;
-                        }
-                        case error: {
-                            imageView = new ImageView(ResourceManagerFX.getIcon("dialog/dialog-error.png"));
-                            break;
-                        }
-                        case warning: {
-                            imageView = new ImageView(ResourceManagerFX.getIcon("dialog/dialog-warning.png"));
-                            break;
-                        }
-                        case confirmation: {
-                            imageView = new ImageView(ResourceManagerFX.getIcon("dialog/dialog-confim.png"));
-                            break;
-                        }
+                final ImageView imageView;
+                switch (mode) {
+                    default:
+                    case information: {
+                        imageView = new ImageView(ResourceManagerFX.getIcon("dialog/dialog-information.png"));
+                        break;
                     }
-                    imageView.setFitHeight(32);
-                    imageView.setFitWidth(32);
-                    notification.graphic(imageView);
-                    notification.show();
+                    case error: {
+                        imageView = new ImageView(ResourceManagerFX.getIcon("dialog/dialog-error.png"));
+                        break;
+                    }
+                    case warning: {
+                        imageView = new ImageView(ResourceManagerFX.getIcon("dialog/dialog-warning.png"));
+                        break;
+                    }
+                    case confirmation: {
+                        imageView = new ImageView(ResourceManagerFX.getIcon("dialog/dialog-confim.png"));
+                        break;
+                    }
                 }
+                imageView.setFitHeight(32);
+                imageView.setFitWidth(32);
+                notification.graphic(imageView);
+                notification.show();
             });
         }
 
