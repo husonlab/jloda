@@ -283,7 +283,6 @@ public class DefaultNodeDrawer implements INodeDrawer {
         gc.setStroke(oldStroke);
     }
 
-
     /**
      * Highlights the node label
      *
@@ -316,7 +315,7 @@ public class DefaultNodeDrawer implements INodeDrawer {
         if (nv.getLocation() == null)
             return;
 
-        if (nv.getLabelColor() != null && nv.getLabel() != null && nv.getLabel().length() > 0) {
+        if (nv.isLabelVisible() && nv.getLabelColor() != null && nv.getLabel() != null && nv.getLabel().length() > 0) {
             if (hilited)
                 hiliteLabel(nv, defaultFont);
             else {

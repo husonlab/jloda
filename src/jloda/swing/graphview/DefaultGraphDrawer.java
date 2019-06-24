@@ -116,7 +116,7 @@ public class DefaultGraphDrawer implements IGraphDrawer {
 // ensure that all nodes with labels have valid label rects
             for (Node v = graph.getFirstNode(); v != null; v = graph.getNextNode(v)) {
                 final NodeView nv = graphView.getNV(v);
-                if (nv.getLabel() != null)
+                if (nv.isLabelVisible() && nv.getLabel() != null)
                     nv.setLabelSize(BasicSwing.getStringSize(gc, graphView.getLabel(v), graphView.getFont(v))); // ensure label rect is set
             }
 
@@ -187,8 +187,9 @@ public class DefaultGraphDrawer implements IGraphDrawer {
 
             for (Node v = graph.getFirstNode(); v != null; v = graph.getNextNode(v)) {
                 if (!graphView.selectedNodes.contains(v)) {
-                    if (graphView.getNV(v).getLineWidth() != stroke.getLineWidth()) {
-                        stroke = new BasicStroke(graphView.getNV(v).getLineWidth());
+                    final NodeView nv = graphView.getNV(v);
+                    if (nv.getLineWidth() != stroke.getLineWidth()) {
+                        stroke = new BasicStroke(nv.getLineWidth());
                         gc.setStroke(stroke);
                     }
                     nodeDrawer.draw(v, false);
@@ -198,11 +199,11 @@ public class DefaultGraphDrawer implements IGraphDrawer {
             for (Node v = graph.getFirstNode(); v != null; v = graph.getNextNode(v)) {
                 if (!graphView.selectedNodes.contains(v)) {
                     final NodeView nv = graphView.getNV(v);
-                    if (graphView.getNV(v).getLineWidth() != stroke.getLineWidth()) {
+                    if (nv.getLineWidth() != stroke.getLineWidth()) {
                         stroke = new BasicStroke(graphView.getNV(v).getLineWidth());
                         gc.setStroke(stroke);
                     }
-                    if (labelOverlapAvoider.hasNoOverlapToPreviouslyDrawnLabels(v, nv)) {
+                    if (nv.isLabelVisible() && labelOverlapAvoider.hasNoOverlapToPreviouslyDrawnLabels(v, nv)) {
                         nodeDrawer.drawLabel(v, false);
                     }
                 }

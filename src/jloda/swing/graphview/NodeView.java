@@ -482,7 +482,7 @@ final public class NodeView extends ViewBase implements Cloneable {
         if (location == null)
             return;
 
-        if (labelColor != null && label != null && label.length() > 0) {
+        if (labelVisible && labelColor != null && label != null && label.length() > 0) {
             //labelShape = null;
             //gc.setColor(Color.WHITE);
             //gc.fill(getLabelRect(trans));
