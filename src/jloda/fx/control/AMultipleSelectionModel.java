@@ -87,11 +87,11 @@ public class AMultipleSelectionModel<T> extends MultipleSelectionModel<T> {
                         final ArrayList<T> set = new ArrayList<>(c.getRemovedSize());
                         for (int i : c.getRemoved()) {
                             set.add(AMultipleSelectionModel.this.items[i]);
+                        }
                             if (!getListenersSuspended()) {
                                 unmodifiableSelectedIndices.removeAll(c.getAddedSubList());
                                 unmodifiableSelectedItems.removeAll(set);
                             }
-                        }
                         selectedItems.removeAll(set);
                     }
                     if (!getListenersSuspended()) {
