@@ -19,6 +19,8 @@
 
 package jloda.swing.util;
 
+import jloda.util.ProgramProperties;
+
 import javax.swing.*;
 import javax.swing.text.DefaultEditorKit;
 import java.awt.*;
@@ -138,10 +140,10 @@ public class TextWindow extends JFrame {
 
                     if (file.exists() &&
                             JOptionPane.showConfirmDialog(null,
-                                    "This file already exists. " +
-                                            "Would you like to overwrite the existing file?",
+                                    "This file already exists. Would you like to overwrite the existing file?",
                                     "Save File",
-                                    JOptionPane.YES_NO_OPTION) == 1)
+                                    JOptionPane.YES_NO_OPTION,
+                                    JOptionPane.QUESTION_MESSAGE, ProgramProperties.getProgramIcon()) == 1)
                         return; // overwrite canceled
 
                     try {
@@ -212,7 +214,7 @@ public class TextWindow extends JFrame {
                 String def = "" + me.getFont().getSize();
                 Object selectedValue = JOptionPane.showInputDialog(null,
                         "Font Size...", "Input",
-                        JOptionPane.INFORMATION_MESSAGE, null,
+                        JOptionPane.INFORMATION_MESSAGE, ProgramProperties.getProgramIcon(),
                         possibleValues, def);
                 if (selectedValue != null && !selectedValue.equals(def)) {
                     textArea.setFont(Font.decode("Monospaced-NORMAL-" + selectedValue));

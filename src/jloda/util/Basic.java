@@ -1124,21 +1124,6 @@ public class Basic {
     }
 
     /**
-     * Get a class instance for the given fully qualified classname.
-     * The plugin classloader is used as returned by {@link ResourceUtils#getBasicClassLoader()}.
-     * <p/>
-     * <p/>
-     * It is discouraged to use {@link Class#forName(java.lang.String)}.
-     *
-     * @param name
-     * @return
-     * @throws ClassNotFoundException
-     */
-    public static Class classForName(String name) throws ClassNotFoundException {
-        return ResourceUtils.getBasicClassLoader().loadClass(name);
-    }
-
-    /**
      * returns true, if string can be parsed as int
      *
      * @param next
@@ -3122,7 +3107,7 @@ public class Basic {
      * @param <T>
      * @return symmetric different
      */
-    public static <T> HashSet<T> symmetricDifference(final HashSet<T> set1, final HashSet<T> set2) {
+    public static <T> HashSet<T> symmetricDifference(final Set<T> set1, final Set<T> set2) {
         final HashSet<T> result = new HashSet<>();
         for (T element : set1) {
             if (!set2.contains(element))
@@ -3136,20 +3121,30 @@ public class Basic {
     }
 
     /**
-     * computes the symmetric different of two hash sets
+     * computes the intersection different of two hash sets
      *
      * @param set1
      * @param set2
      * @param <T>
      * @return symmetric different
      */
-    public static <T> HashSet<T> intersection(final HashSet<T> set1, final HashSet<T> set2) {
+    public static <T> HashSet<T> intersection(final Collection<T> set1, final Collection<T> set2) {
         final HashSet<T> result = new HashSet<>();
         for (T element : set1) {
             if (set2.contains(element))
                 result.add(element);
         }
         return result;
+    }
+
+    public static <T> boolean intersects(Collection<T> a, Collection<T> b) {
+        if (a.size() == 0 || b.size() == 0)
+            return false;
+        for (T element : a) {
+            if (b.contains(element))
+                return true;
+        }
+        return false;
     }
 
     /**
@@ -4251,6 +4246,21 @@ public class Basic {
         Arrays.sort(array, comparator);
         list.clear();
         list.addAll(Arrays.asList(array));
+    }
+
+    /**
+     * trim all strings
+     *
+     * @param strings
+     * @return trimmed strings
+     */
+    public static String[] trimAll(String[] strings) {
+        final String[] result = new String[strings.length];
+        for (int i = 0; i < strings.length; i++) {
+            if (strings[i] != null)
+                result[i] = strings[i].trim();
+        }
+        return result;
     }
 }
 

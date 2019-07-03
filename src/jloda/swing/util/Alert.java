@@ -55,7 +55,7 @@ public class Alert {
             else
                 label = "Alert";
 
-            JOptionPane.showMessageDialog(parent, Basic.toMessageString(message), label, JOptionPane.ERROR_MESSAGE);
+            JOptionPane.showMessageDialog(parent, Basic.toMessageString(message), label, JOptionPane.ERROR_MESSAGE, ProgramProperties.getProgramIcon());
         } else
             System.err.println("Alert - " + message);
     }

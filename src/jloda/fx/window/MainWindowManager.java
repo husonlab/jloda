@@ -87,7 +87,7 @@ public class MainWindowManager {
     public void addMainWindow(IMainWindow mainWindow) {
         mainWindows.add(mainWindow);
         mainWindows2AdditionalWindows.put(mainWindow, new ArrayList<>());
-        changed.set(changed.get() + 1);
+        fireChanged();
     }
 
     /**
@@ -116,7 +116,7 @@ public class MainWindowManager {
         mainWindow.close();
         mainWindows.remove(mainWindow);
         closeAndRemoveAuxiliaryWindows(mainWindow);
-        changed.set(changed.get() + 1);
+        fireChanged();
 
         if (mainWindows.size() == 0) {
             Platform.exit();
@@ -166,7 +166,7 @@ public class MainWindowManager {
 
     public void addAuxiliaryWindow(IMainWindow mainWindow, Stage stage) {
         mainWindows2AdditionalWindows.get(mainWindow).add(stage);
-        changed.set(changed.get() + 1);
+        fireChanged();
     }
 
     public void closeAndRemoveAuxiliaryWindows(IMainWindow mainWindow) {
@@ -180,12 +180,16 @@ public class MainWindowManager {
     public void removeAuxiliaryWindow(IMainWindow mainWindow, Stage stage) {
         if (mainWindows2AdditionalWindows.containsKey(mainWindow)) {
             mainWindows2AdditionalWindows.get(mainWindow).remove(stage);
-            changed.set(changed.get() + 1);
+            fireChanged();
         }
     }
 
     public ReadOnlyLongProperty changedProperty() {
         return changed;
+    }
+
+    public void fireChanged() {
+        changed.set(changed.get() + 1);
     }
 
     public ObservableList<IMainWindow> getMainWindows() {

@@ -42,34 +42,23 @@ public class ResourceUtils {
      * @return files in given package
      * @throws IOException
      */
-    public static String[] fetchResources(String pckg) throws IOException {
-        return fetchResources(pckg, getBasicClassLoader());
+    public static String[] fetchResources(Class clazz, String pckg) throws IOException {
+        return fetchResources(pckg, clazz);
     }
 
-    /**
-     * Get the classloader that can find all resources.
-     * Currently this is the system classloader.
-     *
-     * @return basic class loader
-     */
-    public static ClassLoader getBasicClassLoader() {
-        ClassLoader loaderPlugin = Basic.class.getClassLoader();
-        if (loaderPlugin == null) loaderPlugin = ClassLoader.getSystemClassLoader();
-        return loaderPlugin;
-    }
 
     /**
      * get all resources under the given package name
      *
      * @param packageName
-     * @param loaderPlugin
+     * @param clazz
      * @return list of resources
      * @throws IOException
      */
-    static String[] fetchResources(String packageName, ClassLoader loaderPlugin) throws IOException {
+    static String[] fetchResources(String packageName, Class clazz) throws IOException {
         packageName = packageName.replaceAll("\\.", "/").concat("/");
 
-        Enumeration e = loaderPlugin.getResources(packageName);
+        Enumeration e = clazz.getClassLoader().getResources(packageName);
         Set<String> resources = new TreeSet<>();
         while (e.hasMoreElements()) {
             final URL url = ((URL) e.nextElement());
@@ -114,8 +103,7 @@ public class ResourceUtils {
                 if (contents != null)
                     for (int i = 0; i != contents.length; ++i) {
                         if (contents[i].isDirectory()) {
-                            String subPackageName = packageName + contents[i].getName();
-                            subPackageName = subPackageName.replaceAll("/", ".");
+                            final String subPackageName = (packageName + contents[i].getName()).replaceAll("/", ".");
                             resources.add(subPackageName);
                         } else {
                             resources.add(contents[i].getName());
@@ -126,18 +114,4 @@ public class ResourceUtils {
         return resources.toArray(new String[0]);
     }
 
-    /**
-     * Get a class instance for the given fully qualified classname.
-     * The plugin classloader is used as returned by {@link #getBasicClassLoader()}.
-     * <p/>
-     * <p/>
-     * It is discouraged to use {@link Class#forName(java.lang.String)}.
-     *
-     * @param name
-     * @return
-     * @throws ClassNotFoundException
-     */
-    public static Class classForName(String name) throws ClassNotFoundException {
-        return getBasicClassLoader().loadClass(name);
-    }
 }

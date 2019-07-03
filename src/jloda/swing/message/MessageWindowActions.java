@@ -21,6 +21,7 @@ package jloda.swing.message;
 
 import jloda.swing.util.ResourceManager;
 import jloda.swing.util.TextPrinter;
+import jloda.util.ProgramProperties;
 
 import javax.swing.*;
 import javax.swing.text.DefaultEditorKit;
@@ -164,10 +165,8 @@ public class MessageWindowActions {
 
                     if (file.exists() &&
                             JOptionPane.showConfirmDialog(null,
-                                    "This file already exists. " +
-                                            "Would you like to overwrite the existing file?",
-                                    "Save File",
-                                    JOptionPane.YES_NO_OPTION) == 1)
+                                    "This file already exists. Would you like to overwrite the existing file?", "Save File",
+                                    JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE, ProgramProperties.getProgramIcon()) == 1)
                         return; // overwrite canceled
 
                     try {

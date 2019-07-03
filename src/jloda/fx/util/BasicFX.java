@@ -19,9 +19,44 @@
 
 package jloda.fx.util;
 
+import javafx.scene.control.TextArea;
+
 /**
  * basic stuff for FX
  * Daniel Huson, 3.2019
  */
 public class BasicFX {
+    /**
+     * go to given line and given col
+     *
+     * @param lineNumber
+     * @param col        if col<=1 or col>line length, will select the whole line, else selects line starting at given col
+     */
+    public static void gotoAndSelectLine(TextArea textArea, long lineNumber, int col) {
+        if (col < 0)
+            col = 0;
+        else if (col > 0)
+            col--; // because col is 1-based
+
+        lineNumber = Math.max(1, lineNumber);
+        final String text = textArea.getText();
+        int start = 0;
+        for (int i = 1; i < lineNumber; i++) {
+            start = text.indexOf('\n', start + 1);
+            if (start == -1) {
+                System.err.println("No such line number: " + lineNumber);
+                return;
+            }
+        }
+        start++;
+        if (start < text.length()) {
+            int end = text.indexOf('\n', start);
+            if (end == -1)
+                end = text.length();
+            if (start + col < end)
+                start = start + col;
+            textArea.requestFocus();
+            textArea.selectRange(start, end);
+        }
+    }
 }

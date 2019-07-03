@@ -263,7 +263,8 @@ public class ExportImageDialog extends JDialog {
         if (file.exists()) {
             switch (
                     JOptionPane.showConfirmDialog(this,
-                            "This file already exists. Overwrite the existing file?", "Save File", JOptionPane.YES_NO_CANCEL_OPTION)) {
+                            "This file already exists. Overwrite the existing file?", "Save File", JOptionPane.YES_NO_CANCEL_OPTION,
+                            JOptionPane.QUESTION_MESSAGE, ProgramProperties.getProgramIcon())) {
                 case JOptionPane.YES_OPTION:
                     return true;
                 case JOptionPane.NO_OPTION:

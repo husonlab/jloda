@@ -261,7 +261,9 @@ public class ChooseFileDialog {
                 }
                 if (file.exists()) {
                     switch (
-                            JOptionPane.showConfirmDialog(parent, "This file already exists. Overwrite the existing file?", "Save File", JOptionPane.YES_NO_CANCEL_OPTION)) {
+                            JOptionPane.showConfirmDialog(parent, "This file already exists. Overwrite the existing file?", "Save File",
+                                    JOptionPane.YES_NO_CANCEL_OPTION,
+                                    JOptionPane.QUESTION_MESSAGE, ProgramProperties.getProgramIcon())) {
                         case JOptionPane.YES_OPTION:
                             okToWrite = true;
                             break;

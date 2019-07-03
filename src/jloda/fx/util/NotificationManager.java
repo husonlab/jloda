@@ -192,7 +192,12 @@ public class NotificationManager {
                 imageView.setFitHeight(32);
                 imageView.setFitWidth(32);
                 notification.graphic(imageView);
-                notification.show();
+                try {
+
+                    notification.show();
+                } catch (Exception ex) {
+                    // Basic.caught(ex);
+                }
             });
         }
 

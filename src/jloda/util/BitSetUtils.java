@@ -183,4 +183,18 @@ public class BitSetUtils {
         for (int i : values)
             bits.set(i);
     }
+
+    /**
+     * the set X - A
+     *
+     * @param setX
+     * @param setA
+     * @return
+     */
+    public static BitSet minus(BitSet setX, BitSet setA) {
+        final BitSet result = new BitSet();
+        result.or(setX);
+        result.andNot(setA);
+        return result;
+    }
 }

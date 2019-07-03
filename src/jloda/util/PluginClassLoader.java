@@ -70,14 +70,14 @@ public class PluginClassLoader {
         while (packageNameQueue.size() > 0) {
             try {
                 final String packageName = packageNameQueue.removeFirst();
-                final String[] resources = ResourceUtils.fetchResources(packageName);
+                final String[] resources = ResourceUtils.fetchResources(clazz1, packageName);
 
                 for (int i = 0; i != resources.length; ++i) {
                     // System.err.println("Resource: " + resources[i]);
                     if (resources[i].endsWith(".class")) {
                         try {
                             resources[i] = resources[i].substring(0, resources[i].length() - 6);
-                            final Class<C> c = ResourceUtils.classForName(packageName.concat(".").concat(resources[i]));
+                            final Class<C> c = classForName(clazz1, packageName.concat(".").concat(resources[i]));
                             if (!c.isInterface() && !Modifier.isAbstract(c.getModifiers()) && clazz1.isAssignableFrom(c) && (clazz2 == null || clazz2.isAssignableFrom(c))
                                     && (className == null || Basic.getShortName(c).equalsIgnoreCase(className))) {
                                 try {
@@ -106,6 +106,17 @@ public class PluginClassLoader {
             }
         }
         return plugins;
+    }
+
+    /**
+     * Get a class instance for the given fully qualified classname.
+     *
+     * @param name
+     * @return
+     * @throws ClassNotFoundException
+     */
+    public static Class classForName(Class clazz, String name) throws ClassNotFoundException {
+        return clazz.getClassLoader().loadClass(name);
     }
 }
 
