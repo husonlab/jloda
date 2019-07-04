@@ -215,6 +215,7 @@ public class TextAreaSearcher implements ITextSearcher {
 
 
     private void selectMatched(Matcher matcher) {
+        textArea.requestFocus();
         textArea.selectRange(matcher.start(), matcher.end());
     }
 

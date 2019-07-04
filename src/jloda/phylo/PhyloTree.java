@@ -195,7 +195,7 @@ public class PhyloTree extends PhyloSplitsGraph {
      * @return tree
      */
     public String toString() {
-        return toBracketString();
+        return "Nodes: " + getNumberOfNodes() + " Edges: " + getNumberOfEdges();
     }
 
     /**
