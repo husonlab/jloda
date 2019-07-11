@@ -25,6 +25,8 @@ import javafx.print.PrinterJob;
 import javafx.scene.Node;
 import javafx.scene.control.ButtonBar;
 import javafx.scene.control.ButtonType;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.transform.Scale;
 import javafx.stage.Stage;
 import jloda.util.ProgramProperties;
@@ -102,6 +104,34 @@ public class Print {
     }
 
     /**
+     * print a snapshot of the given node
+     * @param owner
+     * @param node
+     */
+    public static void printSnapshot(Stage owner, Node node) {
+        final PrinterJob job = PrinterJob.createPrinterJob();
+        if (job != null) {
+            if (job.showPrintDialog(owner)) {
+                //System.err.println(job.getJobSettings());
+
+                final PageLayout pageLayout = (pageLayoutSelected != null ? pageLayoutSelected : job.getJobSettings().getPageLayout());
+
+                final Image image = node.snapshot(null, null);
+                final ImageView imageView = new ImageView(image);
+                imageView.setFitWidth(pageLayout.getPrintableWidth());
+                imageView.setPreserveRatio(true);
+                if (imageView.getFitHeight() > pageLayout.getPrintableHeight())
+                    imageView.setFitHeight(pageLayout.getPrintableHeight());
+
+
+                if (job.printPage(pageLayout, imageView))
+                    job.endJob();
+            }
+        } else
+            NotificationManager.showError("Failed to create Printer Job");
+    }
+
+    /**
      * show the page layout dialog
      *
      * @param owner
@@ -111,6 +141,5 @@ public class Print {
         if (job.showPageSetupDialog(owner)) {
             pageLayoutSelected = (job.getJobSettings().getPageLayout());
         }
-
     }
 }
