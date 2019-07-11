@@ -27,7 +27,7 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 
 /**
- * Command manager
+ * Undo/redo manager
  * Daniel Huson, 12.2017
  */
 public class UndoManager {
@@ -40,9 +40,8 @@ public class UndoManager {
     private final IntegerProperty undoStackSize = new SimpleIntegerProperty(0);
     private final IntegerProperty redoStackSize = new SimpleIntegerProperty(0);
 
-    final BooleanProperty canUndo = new SimpleBooleanProperty(false);
-    final BooleanProperty canRedo = new SimpleBooleanProperty(false);
-
+    private final BooleanProperty undoable = new SimpleBooleanProperty(false);
+    private final BooleanProperty redoable = new SimpleBooleanProperty(false);
 
     private final BooleanProperty isPerformingUndoOrRedo = new SimpleBooleanProperty(false);
 
@@ -61,8 +60,8 @@ public class UndoManager {
             redoStackSize.set(redoStack.size());
         });
 
-        canUndo.bind(Bindings.isNotEmpty(undoStack).and(isPerformingUndoOrRedo.not()));
-        canRedo.bind(Bindings.isNotEmpty(redoStack).and(isPerformingUndoOrRedo.not()));
+        undoable.bind(Bindings.isNotEmpty(undoStack).and(isPerformingUndoOrRedo.not()));
+        redoable.bind(Bindings.isNotEmpty(redoStack).and(isPerformingUndoOrRedo.not()));
     }
 
     /**
@@ -181,12 +180,12 @@ public class UndoManager {
         }
     }
 
-    public ReadOnlyBooleanProperty canUndoProperty() {
-        return canUndo;
+    public ReadOnlyBooleanProperty undoableProperty() {
+        return undoable;
     }
 
-    public ReadOnlyBooleanProperty canRedoProperty() {
-        return canRedo;
+    public ReadOnlyBooleanProperty redoableProperty() {
+        return redoable;
     }
 
     /**
@@ -256,5 +255,4 @@ public class UndoManager {
             runnable.run();
         }
     }
-
 }
