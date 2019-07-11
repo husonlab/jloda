@@ -298,7 +298,7 @@ public class Basic {
         final ArrayList<T> list = new ArrayList<>();
         while (it.hasNext())
             list.add(it.next());
-        final Object[] array = randomize(list.toArray(), random);
+        final T[] array = (T[]) randomize(list.toArray(), random);
         list.clear();
         return new Iterator<T>() {
             private int i = 0;
@@ -356,8 +356,7 @@ public class Basic {
      * @return array in random order
      */
     public static <T> T[] randomize(T[] array, Random random) {
-        T[] result = (T[]) new Object[array.length];
-        System.arraycopy(array, 0, result, 0, array.length);
+        final T[] result = Arrays.copyOf(array, array.length);
 
         for (int i = result.length - 1; i >= 1; i--) {
             int j = random.nextInt(i + 1);
