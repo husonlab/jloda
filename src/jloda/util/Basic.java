@@ -4261,6 +4261,29 @@ public class Basic {
         }
         return result;
     }
+
+    /**
+     * ensure tha there is a space before and after each occurrence of z
+     *
+     * @param string
+     * @param z
+     * @return string with spaces around z added
+     */
+    public static String ensureSpaceAround(String string, char z) {
+        final StringBuilder buf = new StringBuilder();
+        for (int pos = 0; pos < string.length(); pos++) {
+            final int ch = string.charAt(pos);
+            if (ch == z) {
+                if (pos == 0 || !Character.isSpaceChar(string.charAt(pos - 1)))
+                    buf.append(' ');
+                buf.append((char) ch);
+                if (pos == string.length() - 1 || !Character.isSpaceChar(string.charAt(pos + 1)))
+                    buf.append(' ');
+            } else
+                buf.append((char) ch);
+        }
+        return buf.toString();
+    }
 }
 
 /**
