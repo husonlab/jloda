@@ -137,6 +137,18 @@ public class FruchtermanReingoldLayout {
      * apply the algorithm
      *
      * @param numberOfIterations
+     * @return
+     */
+    public NodeArray<APoint2D> apply(int numberOfIterations) {
+        final NodeArray<APoint2D> result = new NodeArray<>(graph);
+        apply(numberOfIterations, result);
+        return result;
+    }
+
+    /**
+     * apply the algorithm
+     *
+     * @param numberOfIterations
      * @param result
      */
     public void apply(int numberOfIterations, NodeArray<APoint2D> result) {

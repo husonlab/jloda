@@ -57,7 +57,7 @@ public class Basic {
             System.err.println("Caught:");
             ex.printStackTrace();
         } else
-            System.err.println(ex.getMessage());
+            System.err.println(ex.getClass().getSimpleName() + ": " + ex.getMessage());
     }
 
     /**

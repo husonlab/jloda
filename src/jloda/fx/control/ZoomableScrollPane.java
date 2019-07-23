@@ -21,14 +21,12 @@ package jloda.fx.control;
 
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.SimpleBooleanProperty;
-import javafx.event.EventHandler;
 import javafx.geometry.BoundingBox;
 import javafx.geometry.Bounds;
 import javafx.geometry.Point2D;
 import javafx.scene.Group;
 import javafx.scene.Node;
 import javafx.scene.control.ScrollPane;
-import javafx.scene.input.ScrollEvent;
 import javafx.scene.layout.StackPane;
 
 /**
@@ -42,7 +40,7 @@ public class ZoomableScrollPane extends ScrollPane {
     private final BooleanProperty lockAspectRatio = new SimpleBooleanProperty(false);
     private final BooleanProperty allowZoom = new SimpleBooleanProperty(true);
 
-    private final Node target;
+    private final Node content;
     private final Group zoomNode;
 
     private double zoomX = 1;
@@ -53,12 +51,12 @@ public class ZoomableScrollPane extends ScrollPane {
     /**
      * constructor
      *
-     * @param target
+     * @param content
      */
-    public ZoomableScrollPane(Node target) {
+    public ZoomableScrollPane(Node content) {
         super();
-        this.target = target;
-        this.zoomNode = new Group(target);
+        this.content = content;
+        this.zoomNode = new Group(content);
         setContent(outerNode(zoomNode));
     }
 
@@ -80,31 +78,28 @@ public class ZoomableScrollPane extends ScrollPane {
 
     private Node outerNode(Node node) {
         final StackPane outerNode = new StackPane(node);
-        outerNode.setOnScroll(new EventHandler<ScrollEvent>() {
-            @Override
-            public void handle(ScrollEvent e) {
-                if (ZoomableScrollPane.this.isAllowZoom()) {
-                    e.consume();
-                    final double factorX;
-                    final double factorY;
+        outerNode.setOnScroll(e -> {
+            if (ZoomableScrollPane.this.isAllowZoom() && (e.isShiftDown() || e.isControlDown())) {
+                e.consume();
+                final double factorX;
+                final double factorY;
 
-                    if ((Math.abs(e.getDeltaX()) > Math.abs(e.getDeltaY()))) {
-                        factorX = (e.getDeltaX() > 0 ? ZOOM_FACTOR : 1 / ZOOM_FACTOR);
-                        factorY = 1;
-                    } else {
-                        factorX = 1;
-                        factorY = (e.getDeltaY() > 0 ? ZOOM_FACTOR : 1 / ZOOM_FACTOR);
-                    }
-                    ZoomableScrollPane.this.doZoom(factorX, factorY, new Point2D(e.getX(), e.getY()));
+                if ((Math.abs(e.getDeltaX()) > Math.abs(e.getDeltaY()))) {
+                    factorX = (e.getDeltaX() > 0 ? ZOOM_FACTOR : 1 / ZOOM_FACTOR);
+                    factorY = 1;
+                } else {
+                    factorX = 1;
+                    factorY = (e.getDeltaY() > 0 ? ZOOM_FACTOR : 1 / ZOOM_FACTOR);
                 }
+                ZoomableScrollPane.this.doZoom(factorX, factorY, new Point2D(e.getX(), e.getY()));
             }
         });
         return outerNode;
     }
 
     public void updateScale() {
-        target.setScaleX(zoomX);
-        target.setScaleY(zoomY);
+        content.setScaleX(zoomX);
+        content.setScaleY(zoomY);
     }
 
     private void doZoom(double factorX, double factorY, Point2D mousePoint) {
@@ -133,12 +128,12 @@ public class ZoomableScrollPane extends ScrollPane {
         this.layout(); // refresh ScrollPane scroll positions & target bounds
 
         // convert target coordinates to zoomTarget coordinates
-        Point2D posInZoomTarget = target.parentToLocal(zoomNode.parentToLocal(mousePoint));
+        Point2D posInZoomTarget = content.parentToLocal(zoomNode.parentToLocal(mousePoint));
 
         posInZoomTarget = new Point2D(posInZoomTarget.getX() * (zoomFactorX - 1), posInZoomTarget.getY() * (zoomFactorY - 1));
 
         // calculate adjustment of scroll position (pixels)
-        final Point2D adjustment = target.getLocalToParentTransform().deltaTransform(posInZoomTarget);
+        final Point2D adjustment = content.getLocalToParentTransform().deltaTransform(posInZoomTarget);
 
         // convert back to [0, 1] range
         // (too large/small values are automatically corrected by ScrollPane)
