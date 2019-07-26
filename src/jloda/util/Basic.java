@@ -320,6 +320,17 @@ public class Basic {
     }
 
     /**
+     * given a iterator, returns a new iterator in random order
+     *
+     * @param iterable
+     * @param random
+     * @return iterator in random order
+     */
+    public static <T> Iterable<T> randomize(Iterable<T> iterable, Random random) {
+        return () -> randomize(iterable.iterator(), random);
+    }
+
+    /**
      * given a list, returns a new collection in random order
      *
      * @param list

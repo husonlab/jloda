@@ -234,6 +234,10 @@ public class GeometryUtilsFX {
         return (B.getX() - A.getX()) * (B.getX() - A.getX()) + (B.getY() - A.getY()) * (B.getY() - A.getY());
     }
 
+    public static double distance(double x1, double y1, double x2, double y2) {
+        return Math.sqrt((x1 - x2) * (x1 - x2) + (y1 - y2) * (y1 - y2));
+    }
+
     public static Point3D from2Dto3D(Point2D point) {
         return new Point3D(point.getX(), point.getY(), 0);
     }

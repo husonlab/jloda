@@ -28,7 +28,7 @@ import java.util.Iterator;
  * @author huson
  *         Date: 14-May-2004
  */
-public class Pair<S, T> implements Comparable<Pair<S, T>>, Comparator<Pair<S, T>> {
+public class Pair<S, T> implements Comparable<Pair<S, T>>, Comparator<Pair<S, T>>, Iterable<Object> {
     private S first;
     private T second;
 
@@ -262,6 +262,30 @@ public class Pair<S, T> implements Comparable<Pair<S, T>>, Comparator<Pair<S, T>
                         it.remove();
                     }
                 };
+            }
+        };
+    }
+
+    @Override
+    public Iterator<Object> iterator() {
+        return new Iterator<>() {
+            private int count = 0;
+
+            @Override
+            public boolean hasNext() {
+                return count < 2;
+            }
+
+            @Override
+            public Object next() {
+                if (count == 0) {
+                    count++;
+                    return getFirst();
+                } else if (count == 1) {
+                    count++;
+                    return getSecond();
+                } else
+                    return null;
             }
         };
     }

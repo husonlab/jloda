@@ -25,8 +25,10 @@ import javafx.print.PrinterJob;
 import javafx.scene.Node;
 import javafx.scene.control.ButtonBar;
 import javafx.scene.control.ButtonType;
+import javafx.scene.control.TextArea;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.text.Text;
 import javafx.scene.transform.Scale;
 import javafx.stage.Stage;
 import jloda.util.ProgramProperties;
@@ -38,15 +40,15 @@ import java.util.Optional;
  * Daniel Huson, 1.2018
  */
 public class Print {
-    private static PageLayout pageLayoutSelected;
+    public static PageLayout pageLayoutSelected;
 
     /**
      * print the given node
      *
      * @param owner
-     * @param node
+     * @param node0
      */
-    public static void print(Stage owner, Node node) {
+    public static void print(Stage owner, Node node0) {
         final PrinterJob job = PrinterJob.createPrinterJob();
         if (job != null) {
             if (job.showPrintDialog(owner)) {
@@ -54,8 +56,20 @@ public class Print {
 
                 final PageLayout pageLayout = (pageLayoutSelected != null ? pageLayoutSelected : job.getJobSettings().getPageLayout());
 
+
+                final Node node;
+                if (node0 instanceof TextArea) {
+                    final TextArea textArea = (TextArea) node0;
+                    final Text text = new Text("\n" + textArea.getText());
+                    text.setWrappingWidth(pageLayout.getPrintableWidth());
+                    text.setFont(textArea.getFont());
+                    node = text;
+                    // todo: need print to multiple pages
+                } else
+                    node = node0;
+
                 final Scale scale;
-                if (node.getBoundsInParent().getWidth() > pageLayout.getPrintableWidth() || node.getBoundsInParent().getHeight() > pageLayout.getPrintableHeight()) {
+                if (node == node0 && node.getBoundsInParent().getWidth() > pageLayout.getPrintableWidth() || node.getBoundsInParent().getHeight() > pageLayout.getPrintableHeight()) {
                     if (true) {
                         System.err.println(String.format("Scene size (%.0f x %.0f) exceeds printable area (%.0f x %.0f), scaled to fit", node.getBoundsInParent().getWidth(),
                                 node.getBoundsInParent().getHeight(), pageLayout.getPrintableWidth(), pageLayout.getPrintableHeight()));
