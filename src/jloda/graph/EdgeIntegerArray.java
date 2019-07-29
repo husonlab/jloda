@@ -177,6 +177,42 @@ public class EdgeIntegerArray extends GraphBase implements EdgeAssociation<Integ
     public boolean isClear() {
         return isClear;
     }
+
+    /**
+     * increase the count by one.
+     *
+     * @param edge
+     */
+    public void increment(Edge edge) {
+        set(edge, get(edge) + 1);
+    }
+
+    /**
+     * increase the count by the given value
+     *
+     * @param edge
+     */
+    public void increment(Edge edge, int value) {
+        set(edge, get(edge) + value);
+    }
+
+    /**
+     * decrease the count by one.
+     *
+     * @param edge
+     */
+    public void decrement(Edge edge) {
+        set(edge, get(edge) - 1);
+    }
+
+    /**
+     * decrease the count by the given value
+     *
+     * @param edge
+     */
+    public void decrement(Edge edge, int value) {
+        set(edge, get(edge) - value);
+    }
 }
 
 // EOF

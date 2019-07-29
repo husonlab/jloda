@@ -348,6 +348,14 @@ public class Basic {
         return result;
     }
 
+    public static <T> Set<T> asSet(Iterable<T> iterable) {
+        final Set<T> set = new HashSet<>();
+        for (T t : iterable) {
+            set.add(t);
+        }
+        return set;
+    }
+
     /**
      * given an array, returns it randomized (Durstenfeld 1964)
      *
