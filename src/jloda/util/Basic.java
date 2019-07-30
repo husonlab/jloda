@@ -295,22 +295,22 @@ public class Basic {
      * @return iterator in random order
      */
     public static <T> Iterator<T> randomize(Iterator<T> it, Random random) {
-        final ArrayList<T> list = new ArrayList<>();
+        final ArrayList<T> input = new ArrayList<>();
         while (it.hasNext())
-            list.add(it.next());
-        final T[] array = (T[]) randomize(list.toArray(), random);
-        list.clear();
+            input.add(it.next());
+        final ArrayList<T> array = randomize(input, random);
+
         return new Iterator<T>() {
             private int i = 0;
 
             @Override
             public boolean hasNext() {
-                return i < array.length;
+                return i < array.size();
             }
 
             @Override
             public T next() {
-                return (T) array[i++];
+                return array.get(i++);
             }
 
             @Override
@@ -338,14 +338,7 @@ public class Basic {
      * @return iterator in random order
      */
     public static <T> ArrayList<T> randomize(List<T> list, int seed) {
-        int[] indices = new int[list.size()];
-        for (int i = 0; i < indices.length; i++)
-            indices[i] = i;
-        randomize(indices, seed);
-        final ArrayList<T> result = new ArrayList<>();
-        for (int i : indices)
-            result.add(list.get(i));
-        return result;
+        return randomize(list, new Random(seed));
     }
 
     public static <T> Set<T> asSet(Iterable<T> iterable) {
@@ -387,6 +380,25 @@ public class Basic {
     }
 
     /**
+     * given an array, returns it randomized (Durstenfeld 1964)
+     *
+     * @param array
+     * @param random
+     * @return array in random order
+     */
+    public static <T> ArrayList<T> randomize(Collection<T> array, Random random) {
+        final ArrayList<T> result = new ArrayList<>(array);
+
+        for (int i = result.size() - 1; i >= 1; i--) {
+            int j = random.nextInt(i + 1);
+            T tmp = result.get(i);
+            result.set(i, result.get(j));
+            result.set(j, tmp);
+        }
+        return result;
+    }
+
+    /**
      * randomize array of longs using (Durstenfeld 1964)
      *
      * @param array
@@ -403,7 +415,7 @@ public class Basic {
     }
 
     /**
-     * randomize array of longs using (Durstenfeld 1964)
+     * randomize array of int using (Durstenfeld 1964)
      *
      * @param array
      * @param seed
