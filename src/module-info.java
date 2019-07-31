@@ -22,8 +22,6 @@ module jloda {
     exports jloda.graph;
     exports jloda.phylo;
     exports jloda.progs;
-    exports jloda.resources.icons.dialog;
-    exports jloda.resources.icons.sun;
     exports jloda.swing.commands;
     exports jloda.swing.director;
     exports jloda.swing.export;

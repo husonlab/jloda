@@ -121,13 +121,18 @@ public class SVGExportType extends FileFilter implements ExportGraphicType {
         else
             panel = ExportManager.makePanelFromScrollPane(imagePanel, imageScrollPane);
 
-        final DOMImplementation dom = GenericDOMImplementation.getDOMImplementation();
-        final Document doc = dom.createDocument(null, "svg", null);
-        final SVGGraphics2D svgGenerator = new SVGGraphics2D(doc);
-        svgGenerator.setSVGCanvasSize(panel.getSize());
-        panel.paint(svgGenerator);
-        try (BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(file)))) {
-            svgGenerator.stream(bw);
+        try {
+            final DOMImplementation dom = GenericDOMImplementation.getDOMImplementation();
+            final Document doc = dom.createDocument(null, "svg", null);
+            final SVGGraphics2D svgGenerator = new SVGGraphics2D(doc);
+            svgGenerator.setSVGCanvasSize(panel.getSize());
+            panel.paint(svgGenerator);
+            try (BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(file)))) {
+                svgGenerator.stream(bw);
+            }
+        } catch (Exception e) {
+            Basic.caught(e);
+            throw e;
         }
     }
 
