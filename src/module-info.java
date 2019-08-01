@@ -7,8 +7,9 @@ module jloda {
     requires transitive java.xml;
 
     requires transitive org.controlsfx.controls;
-
+    
     requires batik.all;
+    requires xml.apis.ext;
     requires VectorGraphics2D;
 
     exports jloda.fx.colorscale;

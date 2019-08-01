@@ -28,8 +28,11 @@ import org.w3c.dom.Document;
 
 import javax.swing.*;
 import javax.swing.filechooser.FileFilter;
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
 import java.awt.datatransfer.DataFlavor;
 import java.io.*;
+import java.nio.charset.StandardCharsets;
 
 /**
  * The export filetype for svg images.
@@ -100,7 +103,7 @@ public class SVGExportType extends FileFilter implements ExportGraphicType {
 
         panel.paint(svgGenerator);
 
-        svgGenerator.stream(new OutputStreamWriter(out, "UTF-8"));
+        svgGenerator.stream(new OutputStreamWriter(out, StandardCharsets.UTF_8));
         out.flush();
     }
 
@@ -122,8 +125,10 @@ public class SVGExportType extends FileFilter implements ExportGraphicType {
             panel = ExportManager.makePanelFromScrollPane(imagePanel, imageScrollPane);
 
         try {
-            final DOMImplementation dom = GenericDOMImplementation.getDOMImplementation();
-            final Document doc = dom.createDocument(null, "svg", null);
+            final DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
+            final DocumentBuilder builder = factory.newDocumentBuilder();
+            final Document doc = builder.newDocument();
+
             final SVGGraphics2D svgGenerator = new SVGGraphics2D(doc);
             svgGenerator.setSVGCanvasSize(panel.getSize());
             panel.paint(svgGenerator);
@@ -131,8 +136,7 @@ public class SVGExportType extends FileFilter implements ExportGraphicType {
                 svgGenerator.stream(bw);
             }
         } catch (Exception e) {
-            Basic.caught(e);
-            throw e;
+            throw new IOException(e);
         }
     }
 
@@ -142,7 +146,7 @@ public class SVGExportType extends FileFilter implements ExportGraphicType {
      * @param file  the file to write to.
      * @param panel the panel which paints the image.
      */
-    public static void writeToFile(File file, JPanel panel) throws IOException, FileNotFoundException {
+    public static void writeToFile(File file, JPanel panel) throws IOException {
         (new SVGExportType()).writeToFile(file, panel, null, false);
     }
 
@@ -150,14 +154,8 @@ public class SVGExportType extends FileFilter implements ExportGraphicType {
         if (f.isDirectory()) {
             return true;
         }
-        String extension = Basic.getFileSuffix(f.getName());
-        if (extension != null) {
-            if (extension.equalsIgnoreCase("svg"))
-                return true;
-        } else {
-            return false;
-        }
-        return false;
+        final String extension = Basic.getFileSuffix(f.getName());
+        return extension != null && extension.equalsIgnoreCase("svg");
     }
 
     public String getDescription() {
