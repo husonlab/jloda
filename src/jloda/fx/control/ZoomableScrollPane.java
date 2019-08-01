@@ -40,6 +40,8 @@ public class ZoomableScrollPane extends ScrollPane {
     private final BooleanProperty lockAspectRatio = new SimpleBooleanProperty(false);
     private final BooleanProperty allowZoom = new SimpleBooleanProperty(true);
 
+    private final BooleanProperty requireShiftOrControlToZoom = new SimpleBooleanProperty(false);
+
     private final Node content;
     private final Group zoomNode;
 
@@ -47,6 +49,7 @@ public class ZoomableScrollPane extends ScrollPane {
     private double zoomY = 1;
     private double zoomFactorX = 1;
     private double zoomFactorY = 1;
+
 
     /**
      * constructor
@@ -79,7 +82,7 @@ public class ZoomableScrollPane extends ScrollPane {
     private Node outerNode(Node node) {
         final StackPane outerNode = new StackPane(node);
         outerNode.setOnScroll(e -> {
-            if (ZoomableScrollPane.this.isAllowZoom() && (e.isShiftDown() || e.isControlDown())) {
+            if (ZoomableScrollPane.this.isAllowZoom() && (!isRequireShiftOrControlToZoom() || e.isShiftDown() || e.isControlDown())) {
                 e.consume();
                 final double factorX;
                 final double factorY;
@@ -216,5 +219,17 @@ public class ZoomableScrollPane extends ScrollPane {
             final double vValueDelta = (nodeBounds.getMinY() + viewportBounds.getHeight()) / contentBounds.getHeight();
             setVvalue(getVvalue() + vValueDelta);
         }
+    }
+
+    public boolean isRequireShiftOrControlToZoom() {
+        return requireShiftOrControlToZoom.get();
+    }
+
+    public BooleanProperty requireShiftOrControlToZoomProperty() {
+        return requireShiftOrControlToZoom;
+    }
+
+    public void setRequireShiftOrControlToZoom(boolean requireShiftOrControlToZoom) {
+        this.requireShiftOrControlToZoom.set(requireShiftOrControlToZoom);
     }
 }
