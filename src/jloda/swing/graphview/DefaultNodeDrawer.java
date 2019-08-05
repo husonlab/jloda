@@ -23,7 +23,6 @@ import jloda.graph.Node;
 import jloda.swing.util.Geometry;
 import jloda.util.ProgramProperties;
 import jloda.util.Shapes;
-import org.apache.batik.ext.awt.geom.Polygon2D;
 
 import java.awt.*;
 import java.awt.geom.AffineTransform;
@@ -383,8 +382,7 @@ public class DefaultNodeDrawer implements INodeDrawer {
             nv.getImage().draw(nv, trans, gc, hilited);
         }
 
-        if (NodeView.descriptionWriter != null && nv.getLabelVisible() && nv.getLabel() != null
-                && nv.getLabel().length() > 0) {
+        if (NodeView.descriptionWriter != null && nv.getLabelVisible() && nv.getLabel() != null && nv.getLabel().length() > 0) {
             Rectangle bounds;
             if (nv.getLabelAngle() == 0) {
                 bounds = nv.getLabelRect(trans).getBounds();
@@ -392,11 +390,24 @@ public class DefaultNodeDrawer implements INodeDrawer {
                 bounds = nv.getLabelShape(trans).getBounds();
             }
             try {
-                NodeView.descriptionWriter.write(String.format("%s; x=%d y=%d w=%d h=%d\n", nv.getLabel(),
-                        bounds.x, bounds.y, bounds.width, bounds.height));
+                NodeView.descriptionWriter.write(String.format("%s; x=%d y=%d w=%d h=%d\n", nv.getLabel(), bounds.x, bounds.y, bounds.width, bounds.height));
             } catch (IOException e) {
                 // silently ignore
             }
+        }
+    }
+
+    private static int[] float2int(float[] f) {
+        final int[] array = new int[f.length];
+        for (int i = 0; i < f.length; i++) {
+            array[i] = Math.round(f[i]);
+        }
+        return array;
+    }
+
+    private static class Polygon2D extends Polygon {
+        Polygon2D(float[] x, float[] y, int n) {
+            super(float2int(x), float2int(y), n);
         }
     }
 }
