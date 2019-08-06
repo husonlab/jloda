@@ -27,12 +27,13 @@ import jloda.util.ProgramProperties;
 import org.controlsfx.control.Notifications;
 
 import java.net.URL;
+import java.text.SimpleDateFormat;
 
 public class NotificationManager {
     public enum Mode {warning, information, confirmation, error}
 
     private static String title = null;
-    private static boolean useDarkStyle = true;
+    private static boolean useDarkStyle = false;
     private static Pos position = Pos.TOP_RIGHT;
 
     private static boolean echoToConsole = true;
@@ -167,7 +168,12 @@ public class NotificationManager {
                 final Notifications notification = Notifications.create();
                 if (isUseDarkStyle())
                     notification.darkStyle();
-                notification.title(title).text(message).hideAfter(new Duration(milliseconds)).position(position);
+
+                if (title == null || title.length() == 0) {
+                    final SimpleDateFormat simpleDateFormat = new SimpleDateFormat("hh:mm");
+                    notification.title(ProgramProperties.getProgramName() + " " + simpleDateFormat.format(System.currentTimeMillis())).text(message).hideAfter(new Duration(milliseconds)).position(position);
+                } else
+                    notification.title(title).text(message).hideAfter(new Duration(milliseconds)).position(position);
 
                 final ImageView imageView;
                 switch (mode) {
@@ -189,11 +195,10 @@ public class NotificationManager {
                         break;
                     }
                 }
-                imageView.setFitHeight(32);
-                imageView.setFitWidth(32);
+                imageView.setFitHeight(16);
+                imageView.setFitWidth(16);
                 notification.graphic(imageView);
                 try {
-
                     notification.show();
                 } catch (Exception ex) {
                     // Basic.caught(ex);

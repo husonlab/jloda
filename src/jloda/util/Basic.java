@@ -3177,6 +3177,18 @@ public class Basic {
         return false;
     }
 
+    public static <T> HashSet<T> union(Collection<T> a, Collection<T> b) {
+        final HashSet<T> union = new HashSet<>(a);
+        union.addAll(b);
+        return union;
+    }
+
+    public static <T> HashSet<T> difference(Collection<T> a, Collection<T> b) {
+        final HashSet<T> union = new HashSet<>(a);
+        union.removeAll(b);
+        return union;
+    }
+
     /**
      * read and verify a magic number from a stream
      *

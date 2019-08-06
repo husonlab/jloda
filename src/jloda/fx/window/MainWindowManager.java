@@ -119,6 +119,7 @@ public class MainWindowManager {
         fireChanged();
 
         if (mainWindows.size() == 0) {
+            ProgramProperties.store();
             Platform.exit();
             System.exit(0);
         }
