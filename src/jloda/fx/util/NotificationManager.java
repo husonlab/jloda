@@ -171,7 +171,7 @@ public class NotificationManager {
 
                 if (title == null || title.length() == 0) {
                     final SimpleDateFormat simpleDateFormat = new SimpleDateFormat("hh:mm");
-                    notification.title(ProgramProperties.getProgramName() + " " + simpleDateFormat.format(System.currentTimeMillis())).text(message).hideAfter(new Duration(milliseconds)).position(position);
+                    notification.title(ProgramProperties.getProgramName() + " at " + simpleDateFormat.format(System.currentTimeMillis())).text(message).hideAfter(new Duration(milliseconds)).position(position);
                 } else
                     notification.title(title).text(message).hideAfter(new Duration(milliseconds)).position(position);
 
