@@ -283,7 +283,7 @@ public class Basic {
      * @param seed
      * @return iterator in random order
      */
-    public static <T> Iterator<T> randomize(Iterator<T> it, int seed) {
+    public static <T> Iterator<T> randomize(Iterator<T> it, long seed) {
         return randomize(it, new Random(seed));
     }
 
@@ -337,7 +337,7 @@ public class Basic {
      * @param seed
      * @return iterator in random order
      */
-    public static <T> ArrayList<T> randomize(List<T> list, int seed) {
+    public static <T> ArrayList<T> randomize(List<T> list, long seed) {
         return randomize(list, new Random(seed));
     }
 
@@ -356,7 +356,7 @@ public class Basic {
      * @param seed
      * @return array in random order
      */
-    public static <T> T[] randomize(T[] array, int seed) {
+    public static <T> T[] randomize(T[] array, long seed) {
         return randomize(array, new Random(seed));
     }
 
@@ -372,9 +372,11 @@ public class Basic {
 
         for (int i = result.length - 1; i >= 1; i--) {
             int j = random.nextInt(i + 1);
-            T tmp = result[i];
-            result[i] = result[j];
-            result[j] = tmp;
+            if (j != i) {
+                T tmp = result[i];
+                result[i] = result[j];
+                result[j] = tmp;
+            }
         }
         return result;
     }
@@ -391,9 +393,11 @@ public class Basic {
 
         for (int i = result.size() - 1; i >= 1; i--) {
             int j = random.nextInt(i + 1);
-            T tmp = result.get(i);
-            result.set(i, result.get(j));
-            result.set(j, tmp);
+            if (j != i) {
+                T tmp = result.get(i);
+                result.set(i, result.get(j));
+                result.set(j, tmp);
+            }
         }
         return result;
     }
@@ -404,13 +408,15 @@ public class Basic {
      * @param array
      * @param seed
      */
-    public static void randomize(long[] array, int seed) {
+    public static void randomize(long[] array, long seed) {
         Random random = new Random(seed);
         for (int i = array.length - 1; i >= 1; i--) {
             int j = random.nextInt(i + 1);
-            long tmp = array[i];
-            array[i] = array[j];
-            array[j] = tmp;
+            if (j != i) {
+                long tmp = array[i];
+                array[i] = array[j];
+                array[j] = tmp;
+            }
         }
     }
 
@@ -420,13 +426,15 @@ public class Basic {
      * @param array
      * @param seed
      */
-    public static void randomize(int[] array, int seed) {
+    public static void randomize(int[] array, long seed) {
         Random random = new Random(seed);
         for (int i = array.length - 1; i >= 1; i--) {
             int j = random.nextInt(i + 1);
-            int tmp = array[i];
-            array[i] = array[j];
-            array[j] = tmp;
+            if (j != i) {
+                int tmp = array[i];
+                array[i] = array[j];
+                array[j] = tmp;
+            }
         }
     }
 
@@ -449,7 +457,6 @@ public class Basic {
         final long shifted = Math.round(num * magnitude);
         return shifted / magnitude;
     }
-
 
     /**
      * returns the sign of x
@@ -3183,9 +3190,12 @@ public class Basic {
         return union;
     }
 
-    public static <T> HashSet<T> difference(Collection<T> a, Collection<T> b) {
-        final HashSet<T> union = new HashSet<>(a);
-        union.removeAll(b);
+    public static <T> ArrayList<T> difference(Collection<T> a, Collection<T> b) {
+        final ArrayList<T> union = new ArrayList<>();
+        for (T t : a) {
+            if (!b.contains(t))
+                union.add(t);
+        }
         return union;
     }
 
