@@ -19,30 +19,48 @@
 
 package jloda.fx.window;
 
-import javafx.application.Platform;
-import javafx.geometry.Pos;
+import javafx.animation.KeyFrame;
+import javafx.animation.KeyValue;
+import javafx.animation.Timeline;
+import javafx.geometry.Insets;
+import javafx.geometry.Rectangle2D;
+import javafx.scene.Node;
+import javafx.scene.control.Button;
+import javafx.scene.control.Label;
+import javafx.scene.effect.DropShadow;
+import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.layout.*;
+import javafx.scene.paint.Color;
+import javafx.scene.text.Font;
+import javafx.stage.*;
 import javafx.util.Duration;
+import jloda.fx.util.ProgramExecutorService;
 import jloda.fx.util.ResourceManagerFX;
 import jloda.util.ProgramProperties;
-import org.controlsfx.control.Notifications;
 
-import java.net.URL;
 import java.text.SimpleDateFormat;
+import java.util.*;
 
+/**
+ * Implements notifications in JavaFX,
+ * Daniel Huson, 8.2019
+ */
 public class NotificationManager {
     public enum Mode {warning, information, confirmation, error}
 
-    private static String title = null;
-    private static boolean useDarkStyle = false;
-    private static Pos position = Pos.TOP_RIGHT;
+    private final static ArrayList<PopupWindow> activeNotificationSlots = new ArrayList<>();
+    private final static Map<PopupWindow, Integer> stage2slot = new HashMap<>();
+
+    private final static int minNotificationSize = 60;
 
     private static boolean echoToConsole = true;
 
     private static int maxLength = 150;
 
-    private static boolean showNotifications = ProgramProperties.get("ShowNotifications", true);
+    private static String title;
 
+    private static boolean showNotifications = ProgramProperties.get("ShowNotifications", true);
 
     /**
      * show an information notification
@@ -50,7 +68,7 @@ public class NotificationManager {
      * @param message
      */
     public static void showInformation(String message) {
-        showNotification(title, message, Mode.information, Pos.BOTTOM_LEFT, 10000);
+        showNotification(null, title, message, NotificationManager.Mode.information, 10000);
     }
 
     /**
@@ -59,7 +77,7 @@ public class NotificationManager {
      * @param message
      */
     public static void showInformation(String message, long milliseconds) {
-        showNotification(title, message, Mode.information, Pos.BOTTOM_LEFT, milliseconds);
+        showNotification(null, title, message, NotificationManager.Mode.information, milliseconds);
     }
 
     /**
@@ -67,8 +85,8 @@ public class NotificationManager {
      *
      * @param message
      */
-    public static void showInformation(Object parentIgnored, String message) {
-        showNotification(title, message, Mode.information, Pos.BOTTOM_LEFT, 10000);
+    public static void showInformation(Stage owner, String message) {
+        showNotification(owner, title, message, NotificationManager.Mode.information, 10000);
     }
 
     /**
@@ -77,7 +95,7 @@ public class NotificationManager {
      * @param message
      */
     public static void showError(String message) {
-        showNotification(title, message, Mode.error, Pos.BOTTOM_LEFT, 60000);
+        showNotification(null, title, message, NotificationManager.Mode.error, 60000);
     }
 
     /**
@@ -85,8 +103,8 @@ public class NotificationManager {
      *
      * @param message
      */
-    public static void showError(Object parentIgnored, String message) {
-        showNotification(title, message, Mode.error, Pos.BOTTOM_LEFT, 60000);
+    public static void showError(Stage owner, String message) {
+        showNotification(owner, title, message, NotificationManager.Mode.error, 60000);
     }
 
     /**
@@ -95,7 +113,7 @@ public class NotificationManager {
      * @param message
      */
     public static void showInternalError(String message) {
-        showNotification(title, "Internal error: " + message, Mode.error, Pos.BOTTOM_LEFT, 60000);
+        showNotification(null, title, "Internal error: " + message, NotificationManager.Mode.error, 60000);
     }
 
     /**
@@ -103,8 +121,8 @@ public class NotificationManager {
      *
      * @param message
      */
-    public static void showInternalError(Object parentIgnored, String message) {
-        showNotification(title, "Internal error: " + message, Mode.error, Pos.BOTTOM_LEFT, 60000);
+    public static void showInternalError(Stage owner, String message) {
+        showNotification(owner, title, "Internal error: " + message, NotificationManager.Mode.error, 60000);
     }
 
     /**
@@ -113,7 +131,7 @@ public class NotificationManager {
      * @param message
      */
     public static void showError(String message, long milliseconds) {
-        showNotification(title, message, Mode.error, Pos.BOTTOM_LEFT, milliseconds);
+        showNotification(null, title, message, NotificationManager.Mode.error, milliseconds);
     }
 
     /**
@@ -121,8 +139,8 @@ public class NotificationManager {
      *
      * @param message
      */
-    public static void showError(Object parentIgnored, String message, long milliseconds) {
-        showNotification(title, message, Mode.error, Pos.BOTTOM_LEFT, milliseconds);
+    public static void showError(Stage owner, String message, long milliseconds) {
+        showNotification(owner, title, message, NotificationManager.Mode.error, milliseconds);
     }
 
     /**
@@ -139,8 +157,8 @@ public class NotificationManager {
      *
      * @param message
      */
-    public static void showWarning(Object parentIgnored, String message) {
-        showWarning(parentIgnored, message, 60000);
+    public static void showWarning(Stage owner, String message) {
+        showWarning(owner, message, 60000);
     }
 
     /**
@@ -148,63 +166,107 @@ public class NotificationManager {
      *
      * @param message
      */
-    public static void showWarning(Object parentIgnored, String message, long milliseconds) {
-        showNotification(title, message, Mode.warning, Pos.BOTTOM_LEFT, milliseconds);
+    public static void showWarning(Stage owner, String message, long milliseconds) {
+        showNotification(owner, title, message, NotificationManager.Mode.warning, milliseconds);
     }
 
     /**
      * show a notification
-     *
+     * @param owner
      * @param title
      * @param message0
      * @param mode
-     * @param position
      * @param milliseconds
      */
-    public static void showNotification(final String title, final String message0, final Mode mode, final Pos position, final long milliseconds) {
+    public static void showNotification(Stage owner, String title, final String message0, final NotificationManager.Mode mode, final long milliseconds) {
         final String message = (message0.length() > maxLength + 3 ? (message0.substring(0, maxLength) + "...") : message0);
 
         if (isShowNotifications() && ProgramProperties.isUseGUI()) {
-            Platform.runLater(() -> {
-                final Notifications notification = Notifications.create();
-                if (isUseDarkStyle())
-                    notification.darkStyle();
-
+            final Window window = getWindow(getWindow(owner));
+            if (window != null) {
                 if (title == null || title.length() == 0) {
-                    final SimpleDateFormat simpleDateFormat = new SimpleDateFormat("hh:mm");
-                    notification.title(ProgramProperties.getProgramName() + " at " + simpleDateFormat.format(System.currentTimeMillis())).text(message).hideAfter(new Duration(milliseconds)).position(position);
-                } else
-                    notification.title(title).text(message).hideAfter(new Duration(milliseconds)).position(position);
+                    title = ProgramProperties.getProgramName();
+                }
+                {
+                    final SimpleDateFormat simpleDateFormat = new SimpleDateFormat("HH:mm:ss");
+                    title += " at " + simpleDateFormat.format(System.currentTimeMillis());
+                }
 
-                final ImageView imageView;
+                final Popup notificationPopup = new Popup();
+                notificationPopup.setOnHidden((e) -> {
+                });
+
+                final BorderPane mainPanel = new BorderPane();
+                mainPanel.setBackground(new Background(new BackgroundFill(javafx.scene.paint.Color.WHITE.deriveColor(1, 1, 1, 0.8), null, null)));
+                mainPanel.setEffect(new DropShadow(2, Color.GRAY));
+
+                final Label label = new Label(" " + message);
+                label.setFont(new Font(label.getFont().getName(), 14));
+
+                mainPanel.setCenter(label);
+
+                final Image icon;
                 switch (mode) {
+                    case confirmation:
+                        icon = ResourceManagerFX.getIcon("dialog/dialog-confirmation.png");
+                        break;
+                    case warning:
+                        icon = ResourceManagerFX.getIcon("dialog/dialog-warning.png");
+                        break;
                     default:
-                    case information: {
-                        imageView = new ImageView(ResourceManagerFX.getIcon("dialog/dialog-information.png"));
+                    case information:
+                        icon = ResourceManagerFX.getIcon("dialog/dialog-information.png");
                         break;
-                    }
-                    case error: {
-                        imageView = new ImageView(ResourceManagerFX.getIcon("dialog/dialog-error.png"));
+                    case error:
+                        icon = ResourceManagerFX.getIcon("dialog/dialog-error.png");
                         break;
-                    }
-                    case warning: {
-                        imageView = new ImageView(ResourceManagerFX.getIcon("dialog/dialog-warning.png"));
-                        break;
-                    }
-                    case confirmation: {
-                        imageView = new ImageView(ResourceManagerFX.getIcon("dialog/dialog-confim.png"));
-                        break;
-                    }
                 }
-                imageView.setFitHeight(16);
+
+                final BorderPane topPanel = new BorderPane();
+                topPanel.setPadding(new Insets(0, 0, 0, 20));
+
+                topPanel.setLeft(new Label(title));
+                final Button close = new Button("x");
+                close.setFont(new Font(close.getFont().getName(), 8));
+                close.setBackground(null);
+                close.setOnAction((e) -> notificationPopup.hide());
+
+                close.setMinWidth(20);
+                close.setMaxWidth(20);
+                close.setMinHeight(20);
+                close.setMaxHeight(20);
+
+                final ImageView imageView = new ImageView(icon);
                 imageView.setFitWidth(16);
-                notification.graphic(imageView);
-                try {
-                    notification.show();
-                } catch (Exception ex) {
-                    // Basic.caught(ex);
-                }
-            });
+                imageView.setFitHeight(16);
+                mainPanel.setPadding(new Insets(1, 5, 1, 5));
+                mainPanel.setLeft(new StackPane(imageView));
+
+                topPanel.setRight(close);
+                mainPanel.setTop(topPanel);
+
+                mainPanel.setMinSize(minNotificationSize, minNotificationSize);
+                mainPanel.setMaxHeight(minNotificationSize);
+
+                notificationPopup.getContent().add(mainPanel);
+                notificationPopup.sizeToScene();
+
+                Rectangle2D primaryScreenBounds = Screen.getPrimary().getVisualBounds();
+
+                notificationPopup.setX(primaryScreenBounds.getMinX() + 20);
+                notificationPopup.setY(primaryScreenBounds.getMaxY());
+
+                updateSlots();
+                if (activeNotificationSlots.size() == 0)
+                    activeNotificationSlots.add(notificationPopup);
+                else
+                    activeNotificationSlots.set(0, notificationPopup);
+                stage2slot.put(notificationPopup, 0);
+
+                notificationPopup.show(window);
+                changeY(notificationPopup, primaryScreenBounds.getMaxY() - minNotificationSize - 20);
+                createHideTimeline(notificationPopup, mainPanel, milliseconds).play();
+            }
         }
 
         if (!isShowNotifications() || isEchoToConsole()) {
@@ -231,28 +293,36 @@ public class NotificationManager {
         }
     }
 
-    public static boolean isUseDarkStyle() {
-        return useDarkStyle;
+    private static int findFirstEmptySlot() {
+        for (int i = 0; i < activeNotificationSlots.size(); i++) {
+            if (activeNotificationSlots.get(i) == null)
+                return i;
+        }
+        return activeNotificationSlots.size();
     }
 
-    public static void setUseDarkStyle(boolean useDarkStyle) {
-        NotificationManager.useDarkStyle = useDarkStyle;
+    private static void updateSlots() {
+        int top = findFirstEmptySlot();
+        for (int i = top; i > 0; i--) {
+            final PopupWindow stage = activeNotificationSlots.get(i - 1);
+            if (stage != null) {
+                changeY(stage, stage.getY() - minNotificationSize - 10);
+                if (i < activeNotificationSlots.size())
+                    activeNotificationSlots.set(i, stage);
+                else
+                    activeNotificationSlots.add(stage);
+                stage2slot.put(stage, i);
+            }
+        }
     }
 
-    public static String getTitle() {
-        return title;
+    public static boolean isShowNotifications() {
+        return showNotifications;
     }
 
-    public static void setTitle(String title) {
-        NotificationManager.title = title;
-    }
-
-    public static Pos getPosition() {
-        return position;
-    }
-
-    public static void setPosition(Pos position) {
-        NotificationManager.position = position;
+    public static void setShowNotifications(boolean showNotifications) {
+        NotificationManager.showNotifications = showNotifications;
+        ProgramProperties.put("ShowNotifications", showNotifications);
     }
 
     public static int getMaxLength() {
@@ -263,19 +333,6 @@ public class NotificationManager {
         NotificationManager.maxLength = maxLength;
     }
 
-    /**
-     * get the style sheet URL
-     *
-     * @return
-     */
-    public static String getControlStylesheetURL() {
-        final URL url = ResourceManagerFX.getCssURL("notificationpopup.css");
-        if (url != null) {
-            return url.toExternalForm();
-        }
-        return null;
-    }
-
     public static boolean isEchoToConsole() {
         return echoToConsole;
     }
@@ -284,12 +341,65 @@ public class NotificationManager {
         NotificationManager.echoToConsole = echoToConsole;
     }
 
-    public static boolean isShowNotifications() {
-        return showNotifications;
+    public static String getTitle() {
+        return title;
     }
 
-    public static void setShowNotifications(boolean showNotifications) {
-        NotificationManager.showNotifications = showNotifications;
-        ProgramProperties.put("ShowNotifications", showNotifications);
+    public static void setTitle(String title) {
+        NotificationManager.title = title;
+    }
+
+    private static void changeY(PopupWindow stage, double newValue) {
+        final long millisecond = 500;
+        ProgramExecutorService.getInstance().submit(() -> {
+                    final double delta = 100 * (newValue - stage.getY()) / millisecond;
+                    for (long time = 0; time < millisecond; time += 100) {
+                        try {
+                            Thread.sleep(100);
+                        } catch (InterruptedException e) {
+                        }
+                        stage.setY(stage.getY() + delta);
+                    }
+                }
+        );
+    }
+
+    public static Window getWindow(Object owner) throws IllegalArgumentException {
+        if (owner == null) {
+            List<Window> windows = Window.getWindows();
+            Iterator it = windows.iterator();
+
+            Window window;
+            do {
+                if (!it.hasNext()) {
+                    return null;
+                }
+
+                window = (Window) it.next();
+            } while (!window.isFocused() || window instanceof PopupWindow);
+
+            return window;
+        } else if (owner instanceof Window) {
+            return (Window) owner;
+        } else if (owner instanceof Node) {
+            return ((Node) owner).getScene().getWindow();
+        } else {
+            throw new IllegalArgumentException("Unknown owner: " + owner.getClass());
+        }
+    }
+
+    private static Timeline createHideTimeline(Popup notificationPopup, final Pane pane, long milliseconds) {
+        KeyValue fadeOutBegin = new KeyValue(pane.opacityProperty(), 1.0D);
+        KeyValue fadeOutEnd = new KeyValue(pane.opacityProperty(), 0.0D);
+        KeyFrame kfBegin = new KeyFrame(Duration.ZERO, fadeOutBegin);
+        KeyFrame kfEnd = new KeyFrame(Duration.millis(500.0D), fadeOutEnd);
+        Timeline timeline = new Timeline(kfBegin, kfEnd);
+        timeline.setDelay(Duration.millis(milliseconds));
+        timeline.setOnFinished((e) -> {
+            notificationPopup.hide();
+            activeNotificationSlots.set(stage2slot.get(notificationPopup), null);
+            stage2slot.remove(notificationPopup);
+        });
+        return timeline;
     }
 }

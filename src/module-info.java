@@ -6,8 +6,6 @@ module jloda {
     requires transitive java.desktop;
     requires transitive java.xml;
 
-    requires transitive org.controlsfx.controls;
-    
     requires batik.all;
     requires xml.apis.ext;
     requires VectorGraphics2D;
@@ -44,5 +42,6 @@ module jloda {
     opens jloda.resources.icons.sun;
     opens jloda.resources.icons.dialog;
     exports jloda;
+    exports jloda.swing.window;
 
 }

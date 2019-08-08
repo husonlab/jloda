@@ -19,20 +19,44 @@
 
 package jloda.progs;
 
-import jloda.fx.util.ResourceManagerFX;
-import jloda.swing.util.ResourceManager;
+import javafx.application.Application;
+import javafx.scene.Scene;
+import javafx.scene.control.Button;
+import javafx.scene.layout.BorderPane;
+import javafx.stage.Stage;
+import jloda.fx.window.NotificationManager;
+import jloda.util.ProgramProperties;
 
-import javax.swing.*;
+import java.util.Random;
 
-public class Test {
-    public static void main(String[] args) {
-        {
-            final ImageIcon icon = ResourceManager.getIcon("sun/About16.gif");
-            System.err.println("Got: " + icon);
-        }
-        {
-            final javafx.scene.image.Image icon = ResourceManagerFX.getIcon("sun/About16.gif");
-            System.err.println("Got: " + icon);
-        }
+public class Test extends Application {
+    @Override
+    public void start(Stage stage) throws Exception {
+
+        ProgramProperties.setUseGUI(true);
+        ProgramProperties.setProgramName("TEST");
+
+        final Button click = new Button("Click me");
+
+        click.setOnAction((e) -> {
+            switch ((new Random()).nextInt(3)) {
+                case 0:
+                    NotificationManager.showError(stage, "Good morning!");
+                    break;
+                case 1:
+                    NotificationManager.showInformation(stage, "Good morning!");
+                    break;
+                case 2:
+                    NotificationManager.showWarning(stage, "Good morning!");
+                    break;
+            }
+        });
+
+        stage.setScene(new Scene(new BorderPane(click)));
+        stage.setX(100);
+        stage.setY(100);
+        stage.setWidth(600);
+        stage.setHeight(600);
+        stage.show();
     }
 }
