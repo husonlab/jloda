@@ -22,6 +22,8 @@ package jloda.fx.window;
 import javafx.animation.KeyFrame;
 import javafx.animation.KeyValue;
 import javafx.animation.Timeline;
+import javafx.beans.property.DoubleProperty;
+import javafx.beans.property.SimpleDoubleProperty;
 import javafx.geometry.Insets;
 import javafx.geometry.Rectangle2D;
 import javafx.scene.Node;
@@ -35,7 +37,6 @@ import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import javafx.stage.*;
 import javafx.util.Duration;
-import jloda.fx.util.ProgramExecutorService;
 import jloda.fx.util.ResourceManagerFX;
 import jloda.util.ProgramProperties;
 
@@ -179,7 +180,7 @@ public class NotificationManager {
      * @param milliseconds
      */
     public static void showNotification(Stage owner, String title, final String message0, final NotificationManager.Mode mode, final long milliseconds) {
-        final String message = (message0.length() > maxLength + 3 ? (message0.substring(0, maxLength) + "...") : message0);
+        final String message = (message0.length() > maxLength + 3 ? (message0.substring(0, maxLength) + "...") : message0).replaceAll("\\s+", " ");
 
         if (isShowNotifications() && ProgramProperties.isUseGUI()) {
             final Window window = getWindow(getWindow(owner));
@@ -197,7 +198,7 @@ public class NotificationManager {
                 });
 
                 final BorderPane mainPanel = new BorderPane();
-                mainPanel.setBackground(new Background(new BackgroundFill(javafx.scene.paint.Color.WHITE.deriveColor(1, 1, 1, 0.8), null, null)));
+                mainPanel.setBackground(new Background(new BackgroundFill(javafx.scene.paint.Color.WHITE.deriveColor(1, 1, 1, 0.6), null, null)));
                 mainPanel.setEffect(new DropShadow(2, Color.GRAY));
 
                 final Label label = new Label(" " + message);
@@ -223,7 +224,7 @@ public class NotificationManager {
                 }
 
                 final BorderPane topPanel = new BorderPane();
-                topPanel.setPadding(new Insets(0, 0, 0, 20));
+                topPanel.setPadding(new Insets(0, 0, 0, 5));
 
                 topPanel.setLeft(new Label(title));
                 final Button close = new Button("x");
@@ -237,19 +238,20 @@ public class NotificationManager {
                 close.setMaxHeight(20);
 
                 final ImageView imageView = new ImageView(icon);
-                imageView.setFitWidth(16);
-                imageView.setFitHeight(16);
+                imageView.setFitWidth(32);
+                imageView.setFitHeight(32);
                 mainPanel.setPadding(new Insets(1, 5, 1, 5));
                 mainPanel.setLeft(new StackPane(imageView));
 
                 topPanel.setRight(close);
                 mainPanel.setTop(topPanel);
 
-                mainPanel.setMinSize(minNotificationSize, minNotificationSize);
+                mainPanel.setMinHeight(minNotificationSize);
                 mainPanel.setMaxHeight(minNotificationSize);
+                // mainPanel.setPrefWidth(2000);
 
                 notificationPopup.getContent().add(mainPanel);
-                notificationPopup.sizeToScene();
+                //notificationPopup.sizeToScene();
 
                 Rectangle2D primaryScreenBounds = Screen.getPrimary().getVisualBounds();
 
@@ -349,19 +351,15 @@ public class NotificationManager {
         NotificationManager.title = title;
     }
 
-    private static void changeY(PopupWindow stage, double newValue) {
-        final long millisecond = 500;
-        ProgramExecutorService.getInstance().submit(() -> {
-                    final double delta = 100 * (newValue - stage.getY()) / millisecond;
-                    for (long time = 0; time < millisecond; time += 100) {
-                        try {
-                            Thread.sleep(100);
-                        } catch (InterruptedException e) {
-                        }
-                        stage.setY(stage.getY() + delta);
-                    }
-                }
-        );
+    private static void changeY(PopupWindow popupWindow, double newValue) {
+        final DoubleProperty y = new SimpleDoubleProperty();
+        y.addListener((c, o, n) -> {
+            popupWindow.setY(n.doubleValue());
+        });
+        final KeyFrame beginKeyFrame = new KeyFrame(Duration.ZERO, new KeyValue(y, popupWindow.getY()));
+        final KeyFrame endKeyFrame = new KeyFrame(Duration.millis(200), new KeyValue(y, newValue));
+        final Timeline timeline = new Timeline(beginKeyFrame, endKeyFrame);
+        timeline.play();
     }
 
     public static Window getWindow(Object owner) throws IllegalArgumentException {
@@ -389,11 +387,11 @@ public class NotificationManager {
     }
 
     private static Timeline createHideTimeline(Popup notificationPopup, final Pane pane, long milliseconds) {
-        KeyValue fadeOutBegin = new KeyValue(pane.opacityProperty(), 1.0D);
-        KeyValue fadeOutEnd = new KeyValue(pane.opacityProperty(), 0.0D);
-        KeyFrame kfBegin = new KeyFrame(Duration.ZERO, fadeOutBegin);
-        KeyFrame kfEnd = new KeyFrame(Duration.millis(500.0D), fadeOutEnd);
-        Timeline timeline = new Timeline(kfBegin, kfEnd);
+        final KeyValue fadeOutBegin = new KeyValue(pane.opacityProperty(), 1.0D);
+        final KeyValue fadeOutEnd = new KeyValue(pane.opacityProperty(), 0.0D);
+        final KeyFrame beginKeyFrame = new KeyFrame(Duration.ZERO, fadeOutBegin);
+        final KeyFrame endKeyFrame = new KeyFrame(Duration.millis(500.0D), fadeOutEnd);
+        final Timeline timeline = new Timeline(beginKeyFrame, endKeyFrame);
         timeline.setDelay(Duration.millis(milliseconds));
         timeline.setOnFinished((e) -> {
             notificationPopup.hide();

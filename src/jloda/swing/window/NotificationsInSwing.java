@@ -176,7 +176,7 @@ public class NotificationsInSwing {
                 title = ProgramProperties.getProgramName();
             }
             {
-                final SimpleDateFormat simpleDateFormat = new SimpleDateFormat("HH:mm");
+                final SimpleDateFormat simpleDateFormat = new SimpleDateFormat("HH:mm:ss");
                 title += " at " + simpleDateFormat.format(System.currentTimeMillis());
             }
 
@@ -192,7 +192,7 @@ public class NotificationsInSwing {
             mainPanel.setLayout(new BorderLayout());
             mainPanel.add(label, BorderLayout.CENTER);
 
-            final Icon icon;
+            ImageIcon icon;
             switch (mode) {
                 case confirmation:
                     icon = ResourceManager.getIcon("dialog/dialog-confirmation.png");
@@ -208,10 +208,12 @@ public class NotificationsInSwing {
                     icon = ResourceManager.getIcon("dialog/dialog-error.png");
                     break;
             }
+            if (icon != null)
+                icon = new ImageIcon(icon.getImage().getScaledInstance(32, 32, Image.SCALE_SMOOTH));
 
             final JPanel topPanel = new JPanel();
             topPanel.setLayout(new BorderLayout());
-            topPanel.add(new JLabel(title), BorderLayout.CENTER);
+            topPanel.add(new JLabel("  " + title), BorderLayout.CENTER);
             final JButton close = new JButton(new AbstractAction("X") {
                 @Override
                 public void actionPerformed(ActionEvent e) {

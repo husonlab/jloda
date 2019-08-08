@@ -41,13 +41,13 @@ public class Test extends Application {
         click.setOnAction((e) -> {
             switch ((new Random()).nextInt(3)) {
                 case 0:
-                    NotificationManager.showError(stage, "Good morning!");
+                    NotificationManager.showError(stage, "Good morning! THis is a lot of stuff.\nI loaded one tree\nI did!");
                     break;
                 case 1:
-                    NotificationManager.showInformation(stage, "Good morning!");
+                    NotificationManager.showInformation(stage, "Good morning! THis is a lot of stuff. I loaded one tree");
                     break;
                 case 2:
-                    NotificationManager.showWarning(stage, "Good morning!");
+                    NotificationManager.showWarning(stage, "Good morning! THis is a lot of stuff. I loaded one tree");
                     break;
             }
         });
