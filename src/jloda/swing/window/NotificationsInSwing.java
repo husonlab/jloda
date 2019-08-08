@@ -53,13 +53,8 @@ public class NotificationsInSwing {
 
     private static boolean showNotifications = ProgramProperties.get("ShowNotifications", true);
 
-    @Deprecated
-    public static void initFX(boolean b) {
-
-    }
-
     /**
-     * show an information notation
+     * show an information notification
      *
      * @param message
      */
@@ -68,7 +63,7 @@ public class NotificationsInSwing {
     }
 
     /**
-     * show an information notation
+     * show an information notification
      *
      * @param message
      */
@@ -77,7 +72,7 @@ public class NotificationsInSwing {
     }
 
     /**
-     * show an information notation
+     * show an information notification
      *
      * @param message
      */
@@ -86,7 +81,7 @@ public class NotificationsInSwing {
     }
 
     /**
-     * show an error notation
+     * show an error notification
      *
      * @param message
      */
@@ -95,7 +90,7 @@ public class NotificationsInSwing {
     }
 
     /**
-     * show an error notation
+     * show an error notification
      *
      * @param message
      */
@@ -104,7 +99,7 @@ public class NotificationsInSwing {
     }
 
     /**
-     * show an error notation
+     * show an error notification
      *
      * @param message
      */
@@ -113,7 +108,7 @@ public class NotificationsInSwing {
     }
 
     /**
-     * show an error notation
+     * show an error notification
      *
      * @param message
      */
@@ -122,7 +117,7 @@ public class NotificationsInSwing {
     }
 
     /**
-     * show an error notation
+     * show an error notification
      *
      * @param message
      */
@@ -131,7 +126,7 @@ public class NotificationsInSwing {
     }
 
     /**
-     * show an error notation
+     * show an error notification
      *
      * @param message
      */
@@ -140,7 +135,7 @@ public class NotificationsInSwing {
     }
 
     /**
-     * show a warning notation
+     * show a warning notification
      *
      * @param message
      */
@@ -149,7 +144,7 @@ public class NotificationsInSwing {
     }
 
     /**
-     * show a warning notation
+     * show a warning notification
      *
      * @param message
      */
@@ -158,7 +153,7 @@ public class NotificationsInSwing {
     }
 
     /**
-     * show a warning notation
+     * show a warning notification
      *
      * @param message
      */

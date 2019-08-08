@@ -45,7 +45,7 @@ public class NotificationManager {
 
 
     /**
-     * show an information notation
+     * show an information notification
      *
      * @param message
      */
@@ -54,7 +54,7 @@ public class NotificationManager {
     }
 
     /**
-     * show an information notation
+     * show an information notification
      *
      * @param message
      */
@@ -63,7 +63,7 @@ public class NotificationManager {
     }
 
     /**
-     * show an information notation
+     * show an information notification
      *
      * @param message
      */
@@ -72,7 +72,7 @@ public class NotificationManager {
     }
 
     /**
-     * show an error notation
+     * show an error notification
      *
      * @param message
      */
@@ -81,7 +81,7 @@ public class NotificationManager {
     }
 
     /**
-     * show an error notation
+     * show an error notification
      *
      * @param message
      */
@@ -90,7 +90,7 @@ public class NotificationManager {
     }
 
     /**
-     * show an error notation
+     * show an error notification
      *
      * @param message
      */
@@ -99,7 +99,7 @@ public class NotificationManager {
     }
 
     /**
-     * show an error notation
+     * show an error notification
      *
      * @param message
      */
@@ -108,7 +108,7 @@ public class NotificationManager {
     }
 
     /**
-     * show an error notation
+     * show an error notification
      *
      * @param message
      */
@@ -117,7 +117,7 @@ public class NotificationManager {
     }
 
     /**
-     * show an error notation
+     * show an error notification
      *
      * @param message
      */
@@ -126,7 +126,7 @@ public class NotificationManager {
     }
 
     /**
-     * show a warning notation
+     * show a warning notification
      *
      * @param message
      */
@@ -135,7 +135,7 @@ public class NotificationManager {
     }
 
     /**
-     * show a warning notation
+     * show a warning notification
      *
      * @param message
      */
@@ -144,7 +144,7 @@ public class NotificationManager {
     }
 
     /**
-     * show a warning notation
+     * show a warning notification
      *
      * @param message
      */
