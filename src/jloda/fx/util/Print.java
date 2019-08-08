@@ -31,6 +31,7 @@ import javafx.scene.image.ImageView;
 import javafx.scene.text.Text;
 import javafx.scene.transform.Scale;
 import javafx.stage.Stage;
+import jloda.fx.window.NotificationManager;
 import jloda.util.ProgramProperties;
 
 import java.util.Optional;

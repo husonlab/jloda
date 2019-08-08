@@ -20,7 +20,7 @@
 package jloda.swing.message;
 
 
-import jloda.swing.util.MenuMnemonics;
+import jloda.swing.window.MenuMnemonics;
 import jloda.util.ProgramProperties;
 
 import javax.swing.*;

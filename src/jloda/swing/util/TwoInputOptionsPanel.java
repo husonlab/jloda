@@ -26,7 +26,7 @@ import java.awt.*;
 
 /**
  * two input options panel
- * Created by huson on 8/24/16.
+ * Daniel Huson, 2016
  */
 public class TwoInputOptionsPanel<T, S> {
 

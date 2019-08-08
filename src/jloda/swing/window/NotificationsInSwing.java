@@ -1,5 +1,5 @@
 /*
- * NotificationsInSwing.java Copyright (C) 2019. Daniel H. Huson
+ *  NotificationsInSwing.java Copyright (C) 2019 Daniel H. Huson
  *
  *  (Some files contain contributions from other authors, who are then mentioned separately.)
  *
@@ -17,9 +17,8 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package jloda.swing.message;
+package jloda.swing.window;
 
-import javafx.geometry.Pos;
 import jloda.fx.util.ProgramExecutorService;
 import jloda.swing.util.ResourceManager;
 import jloda.util.ProgramProperties;
@@ -33,7 +32,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * Implements notifications in Swing program,
+ * Implements notifications in Swing,
  * Daniel Huson, 8.2019
  */
 public class NotificationsInSwing {
@@ -65,7 +64,7 @@ public class NotificationsInSwing {
      * @param message
      */
     public static void showInformation(String message) {
-        showNotification(title, message, Mode.information, Pos.BOTTOM_LEFT, 10000);
+        showNotification(title, message, Mode.information, 10000);
     }
 
     /**
@@ -74,7 +73,7 @@ public class NotificationsInSwing {
      * @param message
      */
     public static void showInformation(String message, long milliseconds) {
-        showNotification(title, message, Mode.information, Pos.BOTTOM_LEFT, milliseconds);
+        showNotification(title, message, Mode.information, milliseconds);
     }
 
     /**
@@ -83,7 +82,7 @@ public class NotificationsInSwing {
      * @param message
      */
     public static void showInformation(Object parentIgnored, String message) {
-        showNotification(title, message, Mode.information, Pos.BOTTOM_LEFT, 10000);
+        showNotification(title, message, Mode.information, 10000);
     }
 
     /**
@@ -92,7 +91,7 @@ public class NotificationsInSwing {
      * @param message
      */
     public static void showError(String message) {
-        showNotification(title, message, Mode.error, Pos.BOTTOM_LEFT, 60000);
+        showNotification(title, message, Mode.error, 60000);
     }
 
     /**
@@ -101,7 +100,7 @@ public class NotificationsInSwing {
      * @param message
      */
     public static void showError(Object parentIgnored, String message) {
-        showNotification(title, message, Mode.error, Pos.BOTTOM_LEFT, 60000);
+        showNotification(title, message, Mode.error, 60000);
     }
 
     /**
@@ -110,7 +109,7 @@ public class NotificationsInSwing {
      * @param message
      */
     public static void showInternalError(String message) {
-        showNotification(title, "Internal error: " + message, Mode.error, Pos.BOTTOM_LEFT, 60000);
+        showNotification(title, "Internal error: " + message, Mode.error, 60000);
     }
 
     /**
@@ -119,7 +118,7 @@ public class NotificationsInSwing {
      * @param message
      */
     public static void showInternalError(Object parentIgnored, String message) {
-        showNotification(title, "Internal error: " + message, Mode.error, Pos.BOTTOM_LEFT, 60000);
+        showNotification(title, "Internal error: " + message, Mode.error, 60000);
     }
 
     /**
@@ -128,7 +127,7 @@ public class NotificationsInSwing {
      * @param message
      */
     public static void showError(String message, long milliseconds) {
-        showNotification(title, message, Mode.error, Pos.BOTTOM_LEFT, milliseconds);
+        showNotification(title, message, Mode.error, milliseconds);
     }
 
     /**
@@ -137,7 +136,7 @@ public class NotificationsInSwing {
      * @param message
      */
     public static void showError(Object parentIgnored, String message, long milliseconds) {
-        showNotification(title, message, Mode.error, Pos.BOTTOM_LEFT, milliseconds);
+        showNotification(title, message, Mode.error, milliseconds);
     }
 
     /**
@@ -164,19 +163,17 @@ public class NotificationsInSwing {
      * @param message
      */
     public static void showWarning(Object parentIgnored, String message, long milliseconds) {
-        showNotification(title, message, Mode.warning, Pos.BOTTOM_LEFT, milliseconds);
+        showNotification(title, message, Mode.warning, milliseconds);
     }
 
     /**
      * show a notification
-     *
-     * @param title
+     *  @param title
      * @param message0
      * @param mode
-     * @param ignored
      * @param milliseconds
      */
-    public static void showNotification(String title, final String message0, final Mode mode, final Pos ignored, final long milliseconds) {
+    public static void showNotification(String title, final String message0, final Mode mode, final long milliseconds) {
         final String message = (message0.length() > maxLength + 3 ? (message0.substring(0, maxLength) + "...") : message0);
 
         if (isShowNotifications() && ProgramProperties.isUseGUI()) {

@@ -1,5 +1,5 @@
 /*
- * IToolBarModifier.java Copyright (C) 2019. Daniel H. Huson
+ *  IPopupMenuModifier.java Copyright (C) 2019 Daniel H. Huson
  *
  *  (Some files contain contributions from other authors, who are then mentioned separately.)
  *
@@ -17,16 +17,16 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package jloda.swing.util;
+package jloda.swing.window;
 
 import jloda.swing.commands.CommandManager;
 
 import javax.swing.*;
 
 /**
- * toolbar modifier interface
+ * menu modifier interface
  * Daniel Huson, 5.2015
  */
-public interface IToolBarModifier {
-    void apply(JToolBar toolBar, Object viewer, CommandManager commandManager);
+public interface IPopupMenuModifier {
+    void apply(JPopupMenu menu, CommandManager commandManager);
 }

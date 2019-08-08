@@ -1,5 +1,5 @@
 /*
- * IMenuModifier.java Copyright (C) 2019. Daniel H. Huson
+ *  IPopMenuModifier.java Copyright (C) 2019 Daniel H. Huson
  *
  *  (Some files contain contributions from other authors, who are then mentioned separately.)
  *
@@ -17,7 +17,7 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package jloda.swing.util;
+package jloda.swing.window;
 
 import jloda.swing.commands.CommandManager;
 
@@ -27,6 +27,6 @@ import javax.swing.*;
  * menu modifier interface
  * Daniel Huson, 5.2015
  */
-public interface IMenuModifier {
-    void apply(JMenu menu, Object viewer, CommandManager commandManager);
+public interface IPopMenuModifier {
+    void apply(JPopupMenu menu, Object viewer, CommandManager commandManager);
 }

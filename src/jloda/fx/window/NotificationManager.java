@@ -1,5 +1,5 @@
 /*
- * NotificationManager.java Copyright (C) 2019. Daniel H. Huson
+ *  NotificationManager.java Copyright (C) 2019 Daniel H. Huson
  *
  *  (Some files contain contributions from other authors, who are then mentioned separately.)
  *
@@ -17,12 +17,13 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package jloda.fx.util;
+package jloda.fx.window;
 
 import javafx.application.Platform;
 import javafx.geometry.Pos;
 import javafx.scene.image.ImageView;
 import javafx.util.Duration;
+import jloda.fx.util.ResourceManagerFX;
 import jloda.util.ProgramProperties;
 import org.controlsfx.control.Notifications;
 
