@@ -62,8 +62,7 @@ public class TwoInputOptionsPanel<T, S> {
         myPanel.add(jLabel2);
         myPanel.add(field2);
 
-        final int result = JOptionPane.showConfirmDialog(parent, myPanel, title, JOptionPane.OK_CANCEL_OPTION, JOptionPane.QUESTION_MESSAGE,
-                ProgramProperties.getProgramIcon());
+        final int result = JOptionPane.showConfirmDialog(parent, myPanel, title, JOptionPane.OK_CANCEL_OPTION, JOptionPane.QUESTION_MESSAGE, ProgramProperties.getProgramIcon());
         if (result == JOptionPane.OK_OPTION) {
             return new String[]{field1.getText(), field2.getText()};
         } else

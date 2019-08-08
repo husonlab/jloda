@@ -64,8 +64,7 @@ public class FindWindow extends JFrame implements IFindDialog {
 
         this.setLocationRelativeTo(parent);
         this.setTitle(title);
-        if (ProgramProperties.getProgramIcon() != null)
-            this.setIconImage(ProgramProperties.getProgramIcon().getImage());
+        this.setIconImages(ProgramProperties.getProgramIconImages());
 
         int height = searchManager.getShowReplace() ? HEIGHT_FIND_REPLACE : HEIGHT_FIND;
         this.setSize(WIDTH_FIND, height);

@@ -83,6 +83,8 @@ public class MessageWindow {
         frame = new JFrame();
         if (icon != null)
             frame.setIconImage(icon.getImage());
+        frame.setIconImages(ProgramProperties.getProgramIconImages());
+
         frame.setJMenuBar(menuBar);
         frame.setSize(400, 200);
         frame.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);

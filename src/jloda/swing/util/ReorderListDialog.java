@@ -94,9 +94,7 @@ public class ReorderListDialog extends JDialog implements DropTargetListener, Ac
                     "Would you like to drop the selection at",
                     "Drop at the current tail postion ",
                     JOptionPane.YES_NO_CANCEL_OPTION,
-                    JOptionPane.QUESTION_MESSAGE, ProgramProperties.getProgramIcon(),
-                    options,
-                    options[1]);
+                    JOptionPane.QUESTION_MESSAGE, ProgramProperties.getProgramIcon(), options, options[1]);
             if ((n != JOptionPane.CANCEL_OPTION) && (n != JOptionPane.CLOSED_OPTION)) insertIndex += n;
             else {
                 event.getDropTargetContext().dropComplete(true);

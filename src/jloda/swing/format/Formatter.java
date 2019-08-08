@@ -86,8 +86,7 @@ public class Formatter implements IDirectableViewer {
         setUptoDate(true);
 
         frame = new JFrame();
-        if (ProgramProperties.getProgramIcon() != null)
-            frame.setIconImage(ProgramProperties.getProgramIcon().getImage());
+        frame.setIconImages(ProgramProperties.getProgramIconImages());
         frame.setJMenuBar(menuBar);
         frame.setLocationRelativeTo(viewer.getFrame());
         final int[] geometry = ProgramProperties.get(CONFIGURATOR_GEOMETRY, new int[]{100, 100, 585, 475});

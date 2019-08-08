@@ -71,6 +71,16 @@ public class ResourceManagerFX {
         return null;
     }
 
+    public static ArrayList<Image> getIcons(String... fileNames) {
+        final ArrayList<Image> list = new ArrayList<>();
+        for (String name : fileNames) {
+            final Image image = getIcon(name);
+            if (image != null)
+                list.add(image);
+        }
+        return list;
+    }
+
 
     public static Image getImage(String fileName) {
         if (imageMap.containsKey(fileName))

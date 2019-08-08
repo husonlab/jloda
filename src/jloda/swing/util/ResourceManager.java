@@ -69,6 +69,20 @@ public class ResourceManager {
         return null;
     }
 
+    /**
+     * get all named icons
+     *
+     * @param names
+     * @return icons
+     */
+    public static ArrayList<ImageIcon> getIcons(String... names) {
+        final ArrayList<ImageIcon> list = new ArrayList<>();
+        for (String name : names) {
+            list.add(getIcon(name));
+        }
+        return list;
+    }
+
     public static BufferedImage getImage(String fileName) {
         if (imageMap.get(fileName) != null)
             return imageMap.get(fileName);

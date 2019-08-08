@@ -38,6 +38,7 @@ import javafx.scene.layout.Pane;
 import javafx.scene.layout.StackPane;
 import javafx.stage.Stage;
 import jloda.util.Basic;
+import jloda.util.ProgramProperties;
 
 import java.io.Closeable;
 import java.io.IOException;
@@ -663,6 +664,7 @@ public class SplittableTabPane extends Pane {
             stage.setTitle(((Labeled) tab.getGraphic()).getText());
         else
             stage.setTitle("Untitled");
+        stage.getIcons().addAll(ProgramProperties.getProgramIconsFX());
 
         stage.setScene(new Scene(root, width, height));
         stage.sizeToScene();

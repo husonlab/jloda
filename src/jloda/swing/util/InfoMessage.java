@@ -49,8 +49,7 @@ public class InfoMessage {
             else
                 label = "Info";
 
-            JOptionPane.showMessageDialog(parent, Basic.toMessageString(message), label, JOptionPane.INFORMATION_MESSAGE,
-                    ProgramProperties.getProgramIcon());
+            JOptionPane.showMessageDialog(parent, Basic.toMessageString(message), label, JOptionPane.INFORMATION_MESSAGE, ProgramProperties.getProgramIcon());
             if (echoToConsole)
                 System.err.println("Info - " + message);
         } else

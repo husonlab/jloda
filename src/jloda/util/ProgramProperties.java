@@ -30,6 +30,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.OutputStream;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.LinkedList;
 
@@ -44,7 +45,7 @@ public class ProgramProperties {
 
     static private final ObservableList<Image> programIconsFX = FXCollections.observableArrayList();
     static private javafx.scene.text.Font defaultFontFX = javafx.scene.text.Font.font("Arial", 12);
-
+    private static final ArrayList<ImageIcon> programIcons = new ArrayList<>();
 
     public static Color SELECTION_COLOR = new Color(252, 208, 102);
     public static Color SELECTION_COLOR_DARKER = new Color(210, 190, 95);
@@ -57,7 +58,7 @@ public class ProgramProperties {
 
     static private String defaultFileName = null;
 
-    private static ImageIcon programIcon = null;
+
     private static final boolean macOS = (System.getProperty("os.name") != null && System.getProperty("os.name").toLowerCase().startsWith("mac"));
     private static boolean useGUI = false;
     private static IStateChecker stateChecker = null;
@@ -498,25 +499,38 @@ public class ProgramProperties {
         return macOS;
     }
 
+    public static PageFormat getPageFormat() {
+        return pageFormat;
+    }
+
+    public static ArrayList<ImageIcon> getProgramIcons() {
+        return programIcons;
+    }
+
+    public static void setProgramIcons(Collection<ImageIcon> icons) {
+        programIcons.addAll(icons);
+    }
+
+    public static ArrayList<java.awt.Image> getProgramIconImages() {
+        final ArrayList<java.awt.Image> images = new ArrayList<>();
+        for (ImageIcon icons : getProgramIcons()) {
+            images.add(icons.getImage());
+        }
+        return images;
+    }
+
     /**
      * gets the program icon
      *
      * @return program icon
      */
     public static ImageIcon getProgramIcon() {
-        return programIcon;
-    }
-
-    /**
-     * sets the program icon
-     *
-     */
-    public static void setProgramIcon(ImageIcon icon) {
-        ProgramProperties.programIcon = icon;
-    }
-
-    public static PageFormat getPageFormat() {
-        return pageFormat;
+        ImageIcon result = null;
+        for (ImageIcon imageIcon : getProgramIcons()) {
+            if (imageIcon.getIconHeight() == 16 || result == null) // 16x16b preferred
+                result = imageIcon;
+        }
+        return result;
     }
 
     public static void setPageFormat(PageFormat pageFormat) {
