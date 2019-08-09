@@ -29,7 +29,7 @@ import jloda.util.ProgramProperties;
 
 import java.util.Random;
 
-public class Test extends Application {
+public class TestNotificationManager extends Application {
     @Override
     public void start(Stage stage) throws Exception {
 

@@ -188,7 +188,7 @@ public class NotificationsInSwing {
             frame.setAlwaysOnTop(true);
             final JPanel mainPanel = new JPanel();
             final JLabel label = new JLabel("  " + message + "  ");
-            label.setFont(new Font(label.getFont().getName(), Font.PLAIN, 14));
+            label.setFont(new Font(label.getFont().getName(), Font.PLAIN, 12));
             mainPanel.setLayout(new BorderLayout());
             mainPanel.add(label, BorderLayout.CENTER);
 
@@ -213,7 +213,9 @@ public class NotificationsInSwing {
 
             final JPanel topPanel = new JPanel();
             topPanel.setLayout(new BorderLayout());
-            topPanel.add(new JLabel("  " + title), BorderLayout.CENTER);
+            final JLabel titleLabel = new JLabel(" " + title);
+            titleLabel.setFont(new Font(titleLabel.getFont().getName(), Font.PLAIN, 10));
+            topPanel.add(titleLabel, BorderLayout.CENTER);
             final JButton close = new JButton(new AbstractAction("X") {
                 @Override
                 public void actionPerformed(ActionEvent e) {
@@ -237,7 +239,7 @@ public class NotificationsInSwing {
 
             Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
 
-            frame.setLocation(50, (int) (screenSize.getHeight() - frame.getHeight() - 50));
+            frame.setLocation(5, (int) (screenSize.getHeight() - frame.getHeight() - 5));
 
             updateSlots();
             if (activeNotificationSlots.size() == 0)

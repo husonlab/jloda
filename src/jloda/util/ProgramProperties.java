@@ -508,13 +508,17 @@ public class ProgramProperties {
     }
 
     public static void setProgramIcons(Collection<ImageIcon> icons) {
-        programIcons.addAll(icons);
+        programIcons.clear();
+        for (ImageIcon icon : icons) {
+            if (icon != null)
+                programIcons.add(icon);
+        }
     }
 
     public static ArrayList<java.awt.Image> getProgramIconImages() {
         final ArrayList<java.awt.Image> images = new ArrayList<>();
-        for (ImageIcon icons : getProgramIcons()) {
-            images.add(icons.getImage());
+        for (ImageIcon icon : getProgramIcons()) {
+            images.add(icon.getImage());
         }
         return images;
     }

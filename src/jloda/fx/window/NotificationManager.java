@@ -54,7 +54,7 @@ public class NotificationManager {
 
     private final static Map<Popup, Integer> notification2slot = new HashMap<>();
 
-    private final static int notificationHeight = 65;
+    private final static int notificationHeight = 60;
     private final static int vGap = 4;
 
     private static boolean echoToConsole = true;
@@ -371,8 +371,8 @@ public class NotificationManager {
 
     public static Window getWindow(Object owner) throws IllegalArgumentException {
         if (owner == null) {
-            List<Window> windows = Window.getWindows();
-            Iterator it = windows.iterator();
+            final List<Window> windows = Window.getWindows();
+            final Iterator it = windows.iterator();
 
             Window window;
             do {
