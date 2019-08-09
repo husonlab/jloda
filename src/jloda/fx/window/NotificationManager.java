@@ -19,9 +19,7 @@
 
 package jloda.fx.window;
 
-import javafx.animation.KeyFrame;
-import javafx.animation.KeyValue;
-import javafx.animation.Timeline;
+import javafx.animation.*;
 import javafx.beans.property.DoubleProperty;
 import javafx.beans.property.SimpleDoubleProperty;
 import javafx.geometry.Insets;
@@ -50,10 +48,14 @@ import java.util.*;
 public class NotificationManager {
     public enum Mode {warning, information, confirmation, error}
 
-    private final static ArrayList<PopupWindow> activeNotificationSlots = new ArrayList<>();
-    private final static Map<PopupWindow, Integer> stage2slot = new HashMap<>();
+    private final static int MAX_NUMBER_MESSAGES = 100;
 
-    private final static int minNotificationSize = 60;
+    private final static Popup[] slot2notification = new Popup[MAX_NUMBER_MESSAGES];
+
+    private final static Map<Popup, Integer> notification2slot = new HashMap<>();
+
+    private final static int notificationHeight = 65;
+    private final static int vGap = 4;
 
     private static boolean echoToConsole = true;
 
@@ -173,6 +175,7 @@ public class NotificationManager {
 
     /**
      * show a notification
+     *
      * @param owner
      * @param title
      * @param message0
@@ -193,81 +196,114 @@ public class NotificationManager {
                     title += " at " + simpleDateFormat.format(System.currentTimeMillis());
                 }
 
-                final Popup notificationPopup = new Popup();
-                notificationPopup.setOnHidden((e) -> {
+                final Popup notification = new Popup();
+
+                notification.setOnHidden((e) -> {
+                    slot2notification[notification2slot.get(notification)] = null;
+                    notification2slot.remove(notification);
                 });
 
+                final AnchorPane anchorPane = new AnchorPane();
+                notification.getContent().add(anchorPane);
+                notification.setUserData(anchorPane);
+
                 final BorderPane mainPanel = new BorderPane();
-                mainPanel.setBackground(new Background(new BackgroundFill(javafx.scene.paint.Color.WHITE.deriveColor(1, 1, 1, 0.6), null, null)));
-                mainPanel.setEffect(new DropShadow(2, Color.GRAY));
+                {
+                    mainPanel.setBackground(new Background(new BackgroundFill(javafx.scene.paint.Color.WHITE.deriveColor(1, 1, 1, 0.8), null, null)));
+                    mainPanel.setEffect(new DropShadow(3, Color.BLACK));
+                    mainPanel.setMinHeight(notificationHeight);
+                    mainPanel.setMaxHeight(notificationHeight);
+                    mainPanel.setMinWidth(100);
 
-                final Label label = new Label(" " + message);
-                label.setFont(new Font(label.getFont().getName(), 14));
-
-                mainPanel.setCenter(label);
-
-                final Image icon;
-                switch (mode) {
-                    case confirmation:
-                        icon = ResourceManagerFX.getIcon("dialog/dialog-confirmation.png");
-                        break;
-                    case warning:
-                        icon = ResourceManagerFX.getIcon("dialog/dialog-warning.png");
-                        break;
-                    default:
-                    case information:
-                        icon = ResourceManagerFX.getIcon("dialog/dialog-information.png");
-                        break;
-                    case error:
-                        icon = ResourceManagerFX.getIcon("dialog/dialog-error.png");
-                        break;
+                    mainPanel.setMouseTransparent(true);
+                    AnchorPane.setLeftAnchor(mainPanel, 0d);
+                    AnchorPane.setRightAnchor(mainPanel, 0d);
+                    AnchorPane.setTopAnchor(mainPanel, 0d);
+                    AnchorPane.setBottomAnchor(mainPanel, 0d);
+                    anchorPane.getChildren().add(mainPanel);
                 }
 
-                final BorderPane topPanel = new BorderPane();
-                topPanel.setPadding(new Insets(0, 0, 0, 5));
+                {
+                    final Label messageLabel = new Label(" " + message);
+                    messageLabel.setFont(new Font(messageLabel.getFont().getName(), 12));
+                    mainPanel.setCenter(messageLabel);
+                }
 
-                topPanel.setLeft(new Label(title));
-                final Button close = new Button("x");
-                close.setFont(new Font(close.getFont().getName(), 8));
-                close.setBackground(null);
-                close.setOnAction((e) -> notificationPopup.hide());
+                {
+                    final Label titleLabel = new Label(title);
+                    titleLabel.setFont(new Font(titleLabel.getFont().getName(), 10));
+                    titleLabel.setMouseTransparent(true);
+                    AnchorPane.setTopAnchor(titleLabel, 2d);
+                    AnchorPane.setLeftAnchor(titleLabel, 10d);
+                    anchorPane.getChildren().add(titleLabel);
+                }
 
-                close.setMinWidth(20);
-                close.setMaxWidth(20);
-                close.setMinHeight(20);
-                close.setMaxHeight(20);
+                {
+                    final Button close = new Button("x");
+                    close.setFont(new Font(close.getFont().getName(), 8));
+                    close.setBackground(null);
+                    close.setOnMousePressed((e) -> {
+                        if (e.isShiftDown()) { // hide all
+                            final ArrayList<Popup> all = new ArrayList<>(notification2slot.keySet());
+                            for (Popup one : all) {
+                                createFadeTransition(one, -1, 0, one::hide).play();
+                            }
+                        } else
+                            createFadeTransition(notification, -1, 0, notification::hide).play();
+                    });
 
-                final ImageView imageView = new ImageView(icon);
-                imageView.setFitWidth(32);
-                imageView.setFitHeight(32);
-                mainPanel.setPadding(new Insets(1, 5, 1, 5));
-                mainPanel.setLeft(new StackPane(imageView));
+                    close.setMinWidth(20);
+                    close.setMaxWidth(20);
+                    close.setMinHeight(20);
+                    close.setMaxHeight(20);
 
-                topPanel.setRight(close);
-                mainPanel.setTop(topPanel);
+                    AnchorPane.setTopAnchor(close, 2d);
+                    AnchorPane.setRightAnchor(close, 2d);
 
-                mainPanel.setMinHeight(minNotificationSize);
-                mainPanel.setMaxHeight(minNotificationSize);
-                // mainPanel.setPrefWidth(2000);
+                    anchorPane.getChildren().add(close);
+                }
 
-                notificationPopup.getContent().add(mainPanel);
+                {
+                    final Image icon;
+                    switch (mode) {
+                        case confirmation:
+                            icon = ResourceManagerFX.getIcon("dialog/dialog-confirmation.png");
+                            break;
+                        case warning:
+                            icon = ResourceManagerFX.getIcon("dialog/dialog-warning.png");
+                            break;
+                        default:
+                        case information:
+                            icon = ResourceManagerFX.getIcon("dialog/dialog-information.png");
+                            break;
+                        case error:
+                            icon = ResourceManagerFX.getIcon("dialog/dialog-error.png");
+                            break;
+                    }
+
+                    final ImageView imageView = new ImageView(icon);
+                    imageView.setFitWidth(32);
+                    imageView.setFitHeight(32);
+                    mainPanel.setPadding(new Insets(1, 5, 1, 5));
+                    mainPanel.setLeft(new StackPane(imageView));
+                }
+
+
                 //notificationPopup.sizeToScene();
 
                 Rectangle2D primaryScreenBounds = Screen.getPrimary().getVisualBounds();
 
-                notificationPopup.setX(primaryScreenBounds.getMinX() + 20);
-                notificationPopup.setY(primaryScreenBounds.getMaxY());
+                notification.setX(primaryScreenBounds.getMinX() + 5);
+                notification.setY(primaryScreenBounds.getMaxY() - notificationHeight - vGap);
 
-                updateSlots();
-                if (activeNotificationSlots.size() == 0)
-                    activeNotificationSlots.add(notificationPopup);
-                else
-                    activeNotificationSlots.set(0, notificationPopup);
-                stage2slot.put(notificationPopup, 0);
+                final Transition removeAfterShowing = createFadeTransition(notification, 1, 0, notification::hide);
+                removeAfterShowing.setDelay(Duration.millis(milliseconds));
+                removeAfterShowing.play();
 
-                notificationPopup.show(window);
-                changeY(notificationPopup, primaryScreenBounds.getMaxY() - minNotificationSize - 20);
-                createHideTimeline(notificationPopup, mainPanel, milliseconds).play();
+                addToShowingNotifications(notification, primaryScreenBounds.getMaxY());
+
+                notification.show(window);
+                createFadeTransition(notification, 0, 1, null).play();
             }
         }
 
@@ -295,26 +331,65 @@ public class NotificationManager {
         }
     }
 
-    private static int findFirstEmptySlot() {
-        for (int i = 0; i < activeNotificationSlots.size(); i++) {
-            if (activeNotificationSlots.get(i) == null)
-                return i;
+    private static void addToShowingNotifications(Popup newNotification, double maxY) {
+        int firstEmptySlot = 0;
+        while (firstEmptySlot < MAX_NUMBER_MESSAGES && slot2notification[firstEmptySlot] != null) {
+            firstEmptySlot++;
         }
-        return activeNotificationSlots.size();
+
+        for (int i = firstEmptySlot; i > 0; i--) {
+            final Popup notification = slot2notification[i - 1];
+            if (notification != null) {
+                slot2notification[i] = notification;
+                notification2slot.put(notification, i);
+                createChangeYAnimation(notification, maxY - i * (notificationHeight + vGap), maxY - (i + 1) * (notificationHeight + vGap)).play();
+            }
+        }
+        slot2notification[0] = newNotification;
+        notification2slot.put(newNotification, 0);
     }
 
-    private static void updateSlots() {
-        int top = findFirstEmptySlot();
-        for (int i = top; i > 0; i--) {
-            final PopupWindow stage = activeNotificationSlots.get(i - 1);
-            if (stage != null) {
-                changeY(stage, stage.getY() - minNotificationSize - 10);
-                if (i < activeNotificationSlots.size())
-                    activeNotificationSlots.set(i, stage);
-                else
-                    activeNotificationSlots.add(stage);
-                stage2slot.put(stage, i);
-            }
+    private static Animation createChangeYAnimation(Popup notification, double oldValue, double newValue) {
+        final DoubleProperty y = new SimpleDoubleProperty();
+        y.addListener((c, o, n) -> {
+            notification.setY(n.doubleValue());
+        });
+        final KeyFrame beginKeyFrame = new KeyFrame(Duration.ZERO, new KeyValue(y, oldValue));
+        final KeyFrame endKeyFrame = new KeyFrame(Duration.millis(200), new KeyValue(y, newValue));
+        return new Timeline(beginKeyFrame, endKeyFrame);
+    }
+
+    private static Transition createFadeTransition(Popup notification, double startValue, double endValue, Runnable runOnFinished) {
+        final FadeTransition fade = new FadeTransition(Duration.millis(200), (Pane) notification.getUserData());
+        if (startValue != -1)
+            fade.setFromValue(startValue);
+        fade.setToValue(endValue);
+        if (runOnFinished != null)
+            fade.setOnFinished((e) -> runOnFinished.run());
+        return fade;
+    }
+
+    public static Window getWindow(Object owner) throws IllegalArgumentException {
+        if (owner == null) {
+            List<Window> windows = Window.getWindows();
+            Iterator it = windows.iterator();
+
+            Window window;
+            do {
+                if (!it.hasNext()) {
+                    return null;
+                }
+
+                window = (Window) it.next();
+            } while (!window.isFocused() || window instanceof PopupWindow);
+
+            return window;
+        } else if (owner instanceof Window) {
+            return (Window) owner;
+        } else if (owner instanceof Node) {
+            return ((Node) owner).getScene().getWindow();
+        } else {
+            throw new IllegalArgumentException("Unknown owner: " + owner.getClass());
         }
     }
 
@@ -349,55 +424,5 @@ public class NotificationManager {
 
     public static void setTitle(String title) {
         NotificationManager.title = title;
-    }
-
-    private static void changeY(PopupWindow popupWindow, double newValue) {
-        final DoubleProperty y = new SimpleDoubleProperty();
-        y.addListener((c, o, n) -> {
-            popupWindow.setY(n.doubleValue());
-        });
-        final KeyFrame beginKeyFrame = new KeyFrame(Duration.ZERO, new KeyValue(y, popupWindow.getY()));
-        final KeyFrame endKeyFrame = new KeyFrame(Duration.millis(200), new KeyValue(y, newValue));
-        final Timeline timeline = new Timeline(beginKeyFrame, endKeyFrame);
-        timeline.play();
-    }
-
-    public static Window getWindow(Object owner) throws IllegalArgumentException {
-        if (owner == null) {
-            List<Window> windows = Window.getWindows();
-            Iterator it = windows.iterator();
-
-            Window window;
-            do {
-                if (!it.hasNext()) {
-                    return null;
-                }
-
-                window = (Window) it.next();
-            } while (!window.isFocused() || window instanceof PopupWindow);
-
-            return window;
-        } else if (owner instanceof Window) {
-            return (Window) owner;
-        } else if (owner instanceof Node) {
-            return ((Node) owner).getScene().getWindow();
-        } else {
-            throw new IllegalArgumentException("Unknown owner: " + owner.getClass());
-        }
-    }
-
-    private static Timeline createHideTimeline(Popup notificationPopup, final Pane pane, long milliseconds) {
-        final KeyValue fadeOutBegin = new KeyValue(pane.opacityProperty(), 1.0D);
-        final KeyValue fadeOutEnd = new KeyValue(pane.opacityProperty(), 0.0D);
-        final KeyFrame beginKeyFrame = new KeyFrame(Duration.ZERO, fadeOutBegin);
-        final KeyFrame endKeyFrame = new KeyFrame(Duration.millis(500.0D), fadeOutEnd);
-        final Timeline timeline = new Timeline(beginKeyFrame, endKeyFrame);
-        timeline.setDelay(Duration.millis(milliseconds));
-        timeline.setOnFinished((e) -> {
-            notificationPopup.hide();
-            activeNotificationSlots.set(stage2slot.get(notificationPopup), null);
-            stage2slot.remove(notificationPopup);
-        });
-        return timeline;
     }
 }
