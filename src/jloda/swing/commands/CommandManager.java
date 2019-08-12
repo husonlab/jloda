@@ -366,8 +366,7 @@ public class CommandManager {
             }
         }
 
-        final Set<ICommand> additionalCommands = new HashSet<>();
-        additionalCommands.addAll(commands);
+        final Set<ICommand> additionalCommands = new HashSet<>(commands);
         additionalCommands.removeAll(seen);
         if (additionalCommands.size() > 0) {
             buf.append("Additional commands:\n");

@@ -110,12 +110,7 @@ public class Dijkstra {
                     return -1;
                 else if (weight1 > weight2)
                     return 1;
-                else if (graph.getId(v1) < graph.getId(v2))
-                    return -1;
-                else if (graph.getId(v1) > graph.getId(v2))
-                    return 1;
-                else
-                    return 0;
+                else return Integer.compare(graph.getId(v1), graph.getId(v2));
             }
         });
         for (Node v = graph.getFirstNode(); v != null; v = graph.getNextNode(v))

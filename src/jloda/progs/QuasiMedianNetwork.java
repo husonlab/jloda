@@ -731,11 +731,7 @@ public class QuasiMedianNetwork {
             for (int j = i + 1; j < array.length; j++) {
                 matrix[i][j] = computeDistance(array[i], array[j], weights);
                 Double value = matrix[i][j];
-                List<Pair<Integer, Integer>> pairs = value2pairs.get(value);
-                if (pairs == null) {
-                    pairs = new LinkedList<>();
-                    value2pairs.put(value, pairs);
-                }
+                List<Pair<Integer, Integer>> pairs = value2pairs.computeIfAbsent(value, k -> new LinkedList<>());
                 pairs.add(new Pair<>(i, j));
             }
         }

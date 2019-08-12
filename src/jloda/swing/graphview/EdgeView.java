@@ -515,8 +515,7 @@ final public class EdgeView extends ViewBase implements Cloneable { //, IEdgeVie
      */
     public boolean hitEdge(Point vp, Point wp, Transform trans, int x, int y, int i) {
         if (shape == STRAIGHT_EDGE || getInternalPoints() == null || getInternalPoints().size() == 0) {
-            if (Geometry.hitSegment(vp, wp, x, y, i))
-                return true;
+            return Geometry.hitSegment(vp, wp, x, y, i);
         } else if (shape == ROUNDED_EDGE && getInternalPoints().size() == 1) {
             final Point vp1 = trans.w2d(getInternalPoints().get(0));
             final int dist = (int) trans.w2d(ROUNDED_EDGE_INCREMENT, 0).getX() - (int) trans.w2d(0, 0).getX();
@@ -565,8 +564,7 @@ final public class EdgeView extends ViewBase implements Cloneable { //, IEdgeVie
             if (arc.contains(x, y))
                 return true;
 
-            if (Geometry.hitSegment(lineStart, wp, x, y, i))
-                return true;
+            return Geometry.hitSegment(lineStart, wp, x, y, i);
         } else // some internal points are given
         {
             Point prev = vp;
@@ -576,10 +574,8 @@ final public class EdgeView extends ViewBase implements Cloneable { //, IEdgeVie
                     return true;
                 prev = apt;
             }
-            if (Geometry.hitSegment(prev, wp, x, y, i))
-                return true;
+            return Geometry.hitSegment(prev, wp, x, y, i);
         }
-        return false;
     }
 
     /**

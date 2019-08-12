@@ -373,7 +373,7 @@ public class FindToolBar extends JPanel implements IFindDialog {
         this.closing = closing;
     }
 
-    class SearcherItem extends JButton {
+    static class SearcherItem extends JButton {
         final ISearcher searcher;
 
         SearcherItem(ISearcher searcher) {

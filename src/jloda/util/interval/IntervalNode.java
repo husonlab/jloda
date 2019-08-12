@@ -94,11 +94,7 @@ public class IntervalNode<Type> {
                 else if (interval.getStart() > center)
                     right.add(interval);
                 else {
-                    List<Interval<Type>> posting = this.intervals.get(interval);
-                    if (posting == null) {
-                        posting = new ArrayList<>();
-                        this.intervals.put(interval, posting);
-                    }
+                    List<Interval<Type>> posting = this.intervals.computeIfAbsent(interval, k -> new ArrayList<>());
                     posting.add(interval);
                 }
             }
@@ -141,11 +137,7 @@ public class IntervalNode<Type> {
             else
                 rightNode.add(interval);
         } else {
-            List<Interval<Type>> posting = intervals.get(interval);
-            if (posting == null) {
-                posting = new ArrayList<>();
-                intervals.put(interval, posting);
-            }
+            List<Interval<Type>> posting = intervals.computeIfAbsent(interval, k -> new ArrayList<>());
             posting.add(interval);
         }
     }
@@ -220,8 +212,7 @@ public class IntervalNode<Type> {
      */
     public String toStringRec(int level) {
         final StringBuilder sb = new StringBuilder();
-        for (int i = 0; i < level; i++)
-            sb.append("\t");
+        sb.append("\t".repeat(Math.max(0, level)));
         sb.append(toString()).append("\n");
         if (leftNode != null)
             sb.append(leftNode.toStringRec(level + 1));

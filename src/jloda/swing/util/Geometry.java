@@ -63,8 +63,7 @@ public class Geometry {
         if (Math.min(a.x, b.x) <= x + 1 && x <= Math.max(a.x, b.x + 1)
                 && Math.min(a.y, b.y) <= y + 1 && y <= Math.max(a.y, b.y) + 1) {
             Line2D.Float line = new Line2D.Float(a, b);
-            if (line.ptLineDist(x, y) <= maxDist)
-                return true;
+            return line.ptLineDist(x, y) <= maxDist;
         }
         return false;
     }

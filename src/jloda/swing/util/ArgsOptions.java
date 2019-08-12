@@ -152,8 +152,7 @@ public class ArgsOptions {
         else {      // replace by two or more spaces
             buf.append("  ");
             int top = Math.min(35, line.length());
-            for (int i = pos; i < top; i++)
-                buf.append(" ");
+            buf.append(" ".repeat(Math.max(0, top - pos)));
             pos++;
             while (pos < line.length()) {
                 buf.append(line.charAt(pos));
@@ -194,12 +193,12 @@ public class ArgsOptions {
                 throw new UsageException("Help");
         }
         if (arguments.size() > 0) {
-            String message = "Invalid, unknown or duplicate option:";
+            StringBuilder message = new StringBuilder("Invalid, unknown or duplicate option:");
             for (String arg : arguments) {
-                message += " " + arg;
+                message.append(" ").append(arg);
             }
-            message += "\n";
-            throw new UsageException(message);
+            message.append("\n");
+            throw new UsageException(message.toString());
         }
     }
 

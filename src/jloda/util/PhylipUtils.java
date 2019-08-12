@@ -35,15 +35,15 @@ public class PhylipUtils {
      * @param len the max length
      */
     static public String padLabel(String str, int len) {
-        String result = "";
+        StringBuilder result = new StringBuilder();
 
         for (int i = 0; i < len; i++) {
             if (i < str.length())
-                result += str.charAt(i);
+                result.append(str.charAt(i));
             else
-                result += ' ';
+                result.append(' ');
         }
-        return result;
+        return result.toString();
     }
 
 
@@ -86,8 +86,8 @@ public class PhylipUtils {
 
         st.nextToken();
         int ntax = Integer.parseInt(st.sval);
-        String names[] = data[0] = new String[ntax + 1];
-        String sequences[] = data[1] = new String[ntax + 1];
+        String[] names = data[0] = new String[ntax + 1];
+        String[] sequences = data[1] = new String[ntax + 1];
         st.nextToken();
         int nchar = Integer.parseInt(st.sval);
         dimensions[0] = ntax;

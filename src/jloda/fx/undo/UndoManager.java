@@ -167,7 +167,7 @@ public class UndoManager {
         if (redoStack.size() == 0)
             throw new IllegalStateException("Redo stack empty");
         final UndoableRedoableCommand command = pop(redoStack);
-        ;
+
         if (command.isUndoable())
             push(command, undoStack);
         else

@@ -37,20 +37,16 @@ public class GraphicsFileFilters {
 
             String extension = getExtension(f);
             if (extension != null) {
-                if (
-                        extension.equalsIgnoreCase("jpeg") ||
-                                extension.equalsIgnoreCase("jpg") ||
-                                extension.equalsIgnoreCase("eps") ||
-                                extension.equalsIgnoreCase("svg") ||
-                                extension.equalsIgnoreCase("gif") ||
-                                extension.equalsIgnoreCase("png")) {
-                    return true;
-                }
+                return extension.equalsIgnoreCase("jpeg") ||
+                        extension.equalsIgnoreCase("jpg") ||
+                        extension.equalsIgnoreCase("eps") ||
+                        extension.equalsIgnoreCase("svg") ||
+                        extension.equalsIgnoreCase("gif") ||
+                        extension.equalsIgnoreCase("png");
             } else {
                 return false;
             }
 
-            return false;
         }
 
         public String getDescription() {
@@ -67,14 +63,11 @@ public class GraphicsFileFilters {
 
             String extension = getExtension(f);
             if (extension != null) {
-                if (extension.equalsIgnoreCase("jpeg") ||
-                        extension.equalsIgnoreCase("jpg")) {
-                    return true;
-                }
+                return extension.equalsIgnoreCase("jpeg") ||
+                        extension.equalsIgnoreCase("jpg");
             } else {
                 return false;
             }
-            return false;
         }
 
         public String getDescription() {
@@ -94,12 +87,10 @@ public class GraphicsFileFilters {
             }
             String extension = getExtension(f);
             if (extension != null) {
-                if (extension.equalsIgnoreCase("eps"))
-                    return true;
+                return extension.equalsIgnoreCase("eps");
             } else {
                 return false;
             }
-            return false;
         }
 
         public String getDescription() {
@@ -119,12 +110,10 @@ public class GraphicsFileFilters {
             }
             String extension = getExtension(f);
             if (extension != null) {
-                if (extension.equalsIgnoreCase("svg"))
-                    return true;
+                return extension.equalsIgnoreCase("svg");
             } else {
                 return false;
             }
-            return false;
         }
 
         public String getDescription() {
@@ -144,12 +133,10 @@ public class GraphicsFileFilters {
             }
             String extension = getExtension(f);
             if (extension != null) {
-                if (extension.equalsIgnoreCase("gif"))
-                    return true;
+                return extension.equalsIgnoreCase("gif");
             } else {
                 return false;
             }
-            return false;
         }
 
         public String getDescription() {
@@ -169,12 +156,10 @@ public class GraphicsFileFilters {
             }
             String extension = getExtension(f);
             if (extension != null) {
-                if (extension.equalsIgnoreCase("png"))
-                    return true;
+                return extension.equalsIgnoreCase("png");
             } else {
                 return false;
             }
-            return false;
         }
 
         public String getDescription() {

@@ -275,7 +275,7 @@ public class Edge extends NodeEdge implements Comparable<Edge> {
      * @return string representation
      */
     public String toString() {
-        StringBuilder buf = new StringBuilder("[" + String.valueOf(getId()) + "] [");
+        StringBuilder buf = new StringBuilder("[" + getId() + "] [");
         if (getInfo() != null)
             buf.append(getInfo().toString());
         buf.append("]: ").append(source.getId()).append(" ").append(target.getId());

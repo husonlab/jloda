@@ -131,9 +131,11 @@ public class MaxClique {
             {
                 boolean ok = true;
 
-                for (int q = clique.nextSetBit(0); ok && q >= 0; q = clique.nextSetBit(q + 1))
-                    if (matrix[p][q] == 0)
+                for (int q = clique.nextSetBit(0); q >= 0; q = clique.nextSetBit(q + 1))
+                    if (matrix[p][q] == 0) {
                         ok = false;
+                        break;
+                    }
                 if (ok) {
                     clique.set(p);
                     // remove

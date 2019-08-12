@@ -104,7 +104,7 @@ public class Shapes {
         final float x1 = x + 0.333f * width;
         final float x2 = x + 0.5f * width;
         final float x3 = x + 0.666f * width;
-        ;
+
         final float x4 = x + width;
         final float y1 = y + 0.333f * height;
         final float y2 = y + 0.5f * height;

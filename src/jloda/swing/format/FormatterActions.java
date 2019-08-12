@@ -82,7 +82,7 @@ public class FormatterActions {
             on = false;
         for (Action action : all) {
             if (viewer == null || action.getValue(CRITICAL) != null
-                    && (((Boolean) action.getValue(CRITICAL))).equals(Boolean.TRUE))
+                    && action.getValue(CRITICAL).equals(Boolean.TRUE))
                 action.setEnabled(on);
         }
         if (on)
@@ -262,7 +262,7 @@ public class FormatterActions {
             public void actionPerformed(ActionEvent event) {
                 if (!ignore && event != null && (event.getActionCommand() == null || event.getActionCommand().equals("comboBoxChanged"))) {
                     Object source = event.getSource();
-                    if (source != null && source instanceof JComboBox) {
+                    if (source instanceof JComboBox) {
                         Object selectedValue = ((JComboBox) event.getSource()).getSelectedItem();
                         if (selectedValue != null) {
                             int size;

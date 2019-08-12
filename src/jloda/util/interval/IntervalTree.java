@@ -284,7 +284,7 @@ public class IntervalTree<T> implements Iterable<Interval<T>> {
     public Interval<T> find(T data) {
         sortList();
         for (Interval<T> interval : intervalList) {
-            if ((data == null && interval.getData() == null) || (data != null && interval.getData() != null && interval.getData().equals(data)))
+            if ((data == null && interval.getData() == null) || (interval.getData() != null && interval.getData().equals(data)))
                 return interval;
         }
         return null;

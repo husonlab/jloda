@@ -54,10 +54,10 @@ public class SharedGenesDistance {
         // read sequences in phylip format
         String[][] data = new String[2][];
         PhylipUtils.read(data, new FileReader(new File(fileName)));
-        String names[] = data[0];
-        String sequences[] = data[1];
+        String[] names = data[0];
+        String[] sequences = data[1];
 
-        BitSet genes[] = computeGenes(sequences);
+        BitSet[] genes = computeGenes(sequences);
         int ntax = names.length - 1;
 
         float[][] dist;
@@ -111,8 +111,8 @@ public class SharedGenesDistance {
         }
         m /= ntax;
 
-        double ai[] = new double[ntax + 1];
-        double aij[][] = new double[ntax + 1][ntax + 1];
+        double[] ai = new double[ntax + 1];
+        double[][] aij = new double[ntax + 1][ntax + 1];
         for (int i = 1; i <= ntax; i++) {
             ai[i] = ((double) genes[i].cardinality()) / m;
         }
@@ -147,7 +147,7 @@ public class SharedGenesDistance {
      * @return sets of genes
      */
     static private BitSet[] computeGenes(String[] sequences) {
-        BitSet genes[] = new BitSet[sequences.length];
+        BitSet[] genes = new BitSet[sequences.length];
 
         for (int s = 1; s < sequences.length; s++) {
             genes[s] = new BitSet();

@@ -313,7 +313,7 @@ public class FindWindow extends JFrame implements IFindDialog {
         }
     }
 
-    class SearcherItem extends JButton {
+    static class SearcherItem extends JButton {
         final ISearcher searcher;
 
         SearcherItem(ISearcher searcher) {

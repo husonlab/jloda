@@ -25,7 +25,7 @@ package jloda.graph;
  * Daniel Huson, 2003
  */
 public class EdgeIntegerArray extends GraphBase implements EdgeAssociation<Integer> {
-    private int data[];
+    private int[] data;
     private boolean isClear = true;
 
     /**

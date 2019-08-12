@@ -136,15 +136,12 @@ public class LabelOverlapAvoider {
      */
     private boolean intersects(Area a, Shape b) {
         if (b instanceof Rectangle) {
-            if (a.intersects((Rectangle) b))
-                return true;
+            return a.intersects((Rectangle) b);
         } else {
             Area inter = (Area) a.clone();
             inter.intersect(new Area(b));
-            if (!inter.isEmpty())
-                return true;
+            return !inter.isEmpty();
         }
-        return false;
     }
 
     /**

@@ -190,8 +190,7 @@ public class ArgsOptions {
         else {      // replace by two or more spaces
             buf.append("  ");
             int top = Math.min(35, line.length());
-            for (int i = pos; i < top; i++)
-                buf.append(" ");
+            buf.append(" ".repeat(Math.max(0, top - pos)));
             pos++;
             while (pos < line.length()) {
                 buf.append(line.charAt(pos));

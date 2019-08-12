@@ -80,7 +80,7 @@ public class TransferableGraphic implements ClipboardOwner, Transferable {
      */
     public Object getTransferData(DataFlavor dataFlavor) throws UnsupportedFlavorException, IOException {
 
-        ExportGraphicType type = (ExportGraphicType) types.get(dataFlavor);
+        ExportGraphicType type = types.get(dataFlavor);
         if (type != null) {
             return type.getData(panel);
         } else {

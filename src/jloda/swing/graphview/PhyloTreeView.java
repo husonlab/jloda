@@ -361,12 +361,7 @@ public class PhyloTreeView extends GraphView {
                     int compare = a.getFirst().compareTo(b.getFirst());
                     if (compare != 0)
                         return compare;
-                    else if (a.getSecond().getId() < b.getSecond().getId())
-                        return -1;
-                    else if (a.getSecond().getId() > b.getSecond().getId())
-                        return 1;
-                    else
-                        return 0;
+                    else return Integer.compare(a.getSecond().getId(), b.getSecond().getId());
                 }
             });
             final ArrayList<Edge> edges = new ArrayList<>(v.getDegree());
@@ -377,7 +372,7 @@ public class PhyloTreeView extends GraphView {
                 edges.add(v.getFirstInEdge());
             v.rearrangeAdjacentEdges(edges);
 
-            if (getLabel(v) != null && getLabel(v).compareTo(list.get(0).getFirst()) == -1)
+            if (getLabel(v) != null && getLabel(v).compareTo(list.get(0).getFirst()) < 0)
                 return getLabel(v);
             else
                 return list.get(0).getFirst();

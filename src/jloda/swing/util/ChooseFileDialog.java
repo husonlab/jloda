@@ -53,9 +53,9 @@ public class ChooseFileDialog {
         if (ProgramProperties.isMacOS() && (event == null || (event.getModifiers() & ActionEvent.SHIFT_MASK) == 0)) {
                 //Use native file dialog on mac
                 java.awt.FileDialog dialog;
-                if (parent != null && parent instanceof JFrame)
+            if (parent instanceof JFrame)
                     dialog = new java.awt.FileDialog((JFrame) parent, message, java.awt.FileDialog.LOAD);
-                else if (parent != null && parent instanceof Dialog)
+            else if (parent instanceof Dialog)
                     dialog = new java.awt.FileDialog((Dialog) parent, message, java.awt.FileDialog.LOAD);
                 else
                     dialog = new java.awt.FileDialog((JFrame) null, message, java.awt.FileDialog.LOAD);
@@ -108,7 +108,7 @@ public class ChooseFileDialog {
         final LinkedList<File> list = new LinkedList<>();
 
         final JFrame frame;
-        if (parent != null && parent instanceof JFrame)
+        if (parent instanceof JFrame)
             frame = (JFrame) parent;
         else
             frame = null;
@@ -116,9 +116,9 @@ public class ChooseFileDialog {
         if (ProgramProperties.isMacOS() && (event == null || (event.getModifiers() & ActionEvent.SHIFT_MASK) == 0)) {
             //Use native file dialog on mac
             java.awt.FileDialog dialog;
-            if (parent != null && parent instanceof JFrame)
+            if (parent instanceof JFrame)
                 dialog = new java.awt.FileDialog((JFrame) parent, message, java.awt.FileDialog.LOAD);
-            else if (parent != null && parent instanceof Dialog)
+            else if (parent instanceof Dialog)
                 dialog = new java.awt.FileDialog((Dialog) parent, message, java.awt.FileDialog.LOAD);
             else
                 dialog = new java.awt.FileDialog((JFrame) null, message, java.awt.FileDialog.LOAD);
@@ -196,9 +196,9 @@ public class ChooseFileDialog {
             if (ProgramProperties.isMacOS() && (event == null || (event.getModifiers() & ActionEvent.SHIFT_MASK) == 0)) {
                 //Use native file dialog on mac
                 java.awt.FileDialog dialog;
-                if (parent != null && parent instanceof JFrame)
+                if (parent instanceof JFrame)
                     dialog = new java.awt.FileDialog((JFrame) parent, message, java.awt.FileDialog.SAVE);
-                else if (parent != null && parent instanceof Dialog)
+                else if (parent instanceof Dialog)
                     dialog = new java.awt.FileDialog((Dialog) parent, message, java.awt.FileDialog.SAVE);
                 else
                     dialog = new java.awt.FileDialog((JFrame) null, message, java.awt.FileDialog.SAVE);

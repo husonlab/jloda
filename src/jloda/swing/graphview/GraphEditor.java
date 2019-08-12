@@ -320,110 +320,131 @@ class GraphEditorActionListener implements ActionListener {
     public void actionPerformed(ActionEvent ev) {
         // Basic.message("Menu action: "+ev);
 
-        if (ev.getActionCommand().equals("New")) {
+        switch (ev.getActionCommand()) {
+            case "New":
 
-            // this shouldn't work! once we leave the scope of
+                // this shouldn't work! once we leave the scope of
                 // ed, you'ed expect ed to go away, but it doesn't...
                 GraphEditor ed = new GraphEditor(GE.getGraph(), "New", 400, 400);
                 ed.getFrame().setResizable(true);
                 ed.getFrame().setVisible(true);
-        } else if (ev.getActionCommand().equals("Print...")) {
-            PrinterJob job = PrinterJob.getPrinterJob();
-            // Specify the Printable is an instance of SimplePrint
-            job.setPrintable(GE);
-            // Put up the dialog box
-            if (job.printDialog()) {
-                // Print the job if the user didn't cancel printing
-                try {
-                    job.print();
-                } catch (Exception ex) {
-                    Basic.caught(ex);
-                }
-            }
-        } else if (ev.getActionCommand().equals("Select All")) {
-            GE.selectAllNodes(true);
-            GE.selectAllEdges(true);
-            GE.repaint();
-        } else if (ev.getActionCommand().equals("Horizontal Flip")) {
-            GE.horizontalFlipSelected();
-            GE.repaint();
-        } else if (ev.getActionCommand().equals("Vertical Flip")) {
-            GE.verticalFlipSelected();
-            GE.repaint();
-        } else if (ev.getActionCommand().equals("Close")) {
-            GE.close();
-            GE = null;
-        } else if (ev.getActionCommand().equals("Quit")) {
-            // need to replace this by code that closes all windows
-            System.exit(0);
-        } else if (ev.getActionCommand().equals("Delete")) {
-            GE.delSelectedEdges();
-            GE.delSelectedNodes();
-            GE.repaint();
-        } else if (ev.getActionCommand().equals("Select All")) {
-            GE.selectAllNodes(true);
-            GE.selectAllEdges(true);
-            GE.repaint();
-        } else if (ev.getActionCommand().equals("Select All Nodes")) {
-            GE.selectAllNodes(true);
-            GE.repaint();
-        } else if (ev.getActionCommand().equals("Select All Edges")) {
-            GE.selectAllEdges(true);
-            GE.repaint();
-        } else if (ev.getActionCommand().equals("Zoom to Graph")) {
-            GE.fitGraphToWindow();
-            GE.repaint();
-        } else if (ev.getActionCommand().equals("Zoom In")) {
-            double s = 1.5;
-            GE.trans.composeScale(1.0 / s, 1.0 / s);
-            GE.repaint();
-        } else if (ev.getActionCommand().equals("Zoom Out")) {
-            double s = 1.5;
-            GE.trans.composeScale(s, s);
-            GE.repaint();
-        } else if (ev.getActionCommand().equals("Spring Embedding")) {
-            GE.computeSpringEmbedding(100, true);
-            GE.fitGraphToWindow();
-            GE.repaint();
-        } else if (ev.getActionCommand().equals("0pt")) {
-            GE.setLineWidthSelected(0);
-            GE.repaint();
-        } else if (ev.getActionCommand().equals("1pt")) {
-            GE.setLineWidthSelected(1);
-            GE.repaint();
-        } else if (ev.getActionCommand().equals("2pt")) {
-            GE.setLineWidthSelected(2);
-            GE.repaint();
-        } else if (ev.getActionCommand().equals("4pt")) {
-            GE.setLineWidthSelected(4);
-            GE.repaint();
-        } else if (ev.getActionCommand().equals("8pt")) {
-            GE.setLineWidthSelected(8);
-            GE.repaint();
-        } else if (ev.getActionCommand().equals("10pt")) {
-            GE.setLineWidthSelected(10);
-            GE.repaint();
-        } else if (ev.getActionCommand().equals("Label")) {
-            String label = JOptionPane.showInputDialog("Enter label");
-            if (label != null) {
-                try {
-                    Graph graph = GE.getGraph();
-
-                    for (Node v = graph.getFirstNode(); v != null; v = graph.getNextNode(v)) {
-                        if (GE.getSelected(v))
-                            GE.setLabel(v, label);
+                break;
+            case "Print...":
+                PrinterJob job = PrinterJob.getPrinterJob();
+                // Specify the Printable is an instance of SimplePrint
+                job.setPrintable(GE);
+                // Put up the dialog box
+                if (job.printDialog()) {
+                    // Print the job if the user didn't cancel printing
+                    try {
+                        job.print();
+                    } catch (Exception ex) {
+                        Basic.caught(ex);
                     }
-                    for (Edge e = graph.getFirstEdge(); e != null; e = graph.getNextEdge(e)) {
-                        if (GE.getSelected(e))
-                            GE.setLabel(e, label);
-                    }
-                } catch (NotOwnerException ex) {
-                    Basic.caught(ex);
                 }
+                break;
+            case "Select All":
+                GE.selectAllNodes(true);
+                GE.selectAllEdges(true);
                 GE.repaint();
+                break;
+            case "Horizontal Flip":
+                GE.horizontalFlipSelected();
+                GE.repaint();
+                break;
+            case "Vertical Flip":
+                GE.verticalFlipSelected();
+                GE.repaint();
+                break;
+            case "Close":
+                GE.close();
+                GE = null;
+                break;
+            case "Quit":
+                // need to replace this by code that closes all windows
+                System.exit(0);
+            case "Delete":
+                GE.delSelectedEdges();
+                GE.delSelectedNodes();
+                GE.repaint();
+                break;
+            case "Select All Nodes":
+                GE.selectAllNodes(true);
+                GE.repaint();
+                break;
+            case "Select All Edges":
+                GE.selectAllEdges(true);
+                GE.repaint();
+                break;
+            case "Zoom to Graph":
+                GE.fitGraphToWindow();
+                GE.repaint();
+                break;
+            case "Zoom In": {
+                double s = 1.5;
+                GE.trans.composeScale(1.0 / s, 1.0 / s);
+                GE.repaint();
+                break;
             }
-        } else
-            System.err.println("Not implemented: " + ev);
+            case "Zoom Out": {
+                double s = 1.5;
+                GE.trans.composeScale(s, s);
+                GE.repaint();
+                break;
+            }
+            case "Spring Embedding":
+                GE.computeSpringEmbedding(100, true);
+                GE.fitGraphToWindow();
+                GE.repaint();
+                break;
+            case "0pt":
+                GE.setLineWidthSelected(0);
+                GE.repaint();
+                break;
+            case "1pt":
+                GE.setLineWidthSelected(1);
+                GE.repaint();
+                break;
+            case "2pt":
+                GE.setLineWidthSelected(2);
+                GE.repaint();
+                break;
+            case "4pt":
+                GE.setLineWidthSelected(4);
+                GE.repaint();
+                break;
+            case "8pt":
+                GE.setLineWidthSelected(8);
+                GE.repaint();
+                break;
+            case "10pt":
+                GE.setLineWidthSelected(10);
+                GE.repaint();
+                break;
+            case "Label":
+                String label = JOptionPane.showInputDialog("Enter label");
+                if (label != null) {
+                    try {
+                        Graph graph = GE.getGraph();
+
+                        for (Node v = graph.getFirstNode(); v != null; v = graph.getNextNode(v)) {
+                            if (GE.getSelected(v))
+                                GE.setLabel(v, label);
+                        }
+                        for (Edge e = graph.getFirstEdge(); e != null; e = graph.getNextEdge(e)) {
+                            if (GE.getSelected(e))
+                                GE.setLabel(e, label);
+                        }
+                    } catch (NotOwnerException ex) {
+                        Basic.caught(ex);
+                    }
+                    GE.repaint();
+                }
+                break;
+            default:
+                System.err.println("Not implemented: " + ev);
+                break;
+        }
     }
 }
 
@@ -448,55 +469,72 @@ class ColorActionListener implements ActionListener {
      * @param ev ActionEvent
      */
     public void actionPerformed(ActionEvent ev) {
-        if (ev.getActionCommand().equals("black")) {
-            GE.setColorSelected(Color.black, kind);
-            GE.repaint();
-        } else if (ev.getActionCommand().equals("blue")) {
-            GE.setColorSelected(Color.blue, kind);
-            GE.repaint();
-        } else if (ev.getActionCommand().equals("cyan")) {
-            GE.setColorSelected(Color.cyan, kind);
-            GE.repaint();
-        } else if (ev.getActionCommand().equals("darkGray")) {
-            GE.setColorSelected(Color.darkGray, kind);
-            GE.repaint();
-        } else if (ev.getActionCommand().equals("gray")) {
-            GE.setColorSelected(Color.gray, kind);
-            GE.repaint();
-        } else if (ev.getActionCommand().equals("green")) {
-            GE.setColorSelected(Color.green, kind);
-            GE.repaint();
-        } else if (ev.getActionCommand().equals("lightGray")) {
-            GE.setColorSelected(Color.lightGray, kind);
-            GE.repaint();
-        } else if (ev.getActionCommand().equals("magenta")) {
-            GE.setColorSelected(Color.magenta, kind);
-            GE.repaint();
-        } else if (ev.getActionCommand().equals("orange")) {
-            GE.setColorSelected(Color.orange, kind);
-            GE.repaint();
-        } else if (ev.getActionCommand().equals("pink")) {
-            GE.setColorSelected(Color.pink, kind);
-            GE.repaint();
-        } else if (ev.getActionCommand().equals("red")) {
-            GE.setColorSelected(Color.red, kind);
-            GE.repaint();
-        } else if (ev.getActionCommand().equals("white")) {
-            GE.setColorSelected(Color.white, kind);
-            GE.repaint();
-        } else if (ev.getActionCommand().equals("yellow")) {
-            GE.setColorSelected(Color.yellow, kind);
-            GE.repaint();
-        } else if (ev.getActionCommand().equals("none")) {
-            GE.setColorSelected(null, kind);
-            GE.repaint();
-        } else
-            System.err.println("Not implemented: " + ev);
+        switch (ev.getActionCommand()) {
+            case "black":
+                GE.setColorSelected(Color.black, kind);
+                GE.repaint();
+                break;
+            case "blue":
+                GE.setColorSelected(Color.blue, kind);
+                GE.repaint();
+                break;
+            case "cyan":
+                GE.setColorSelected(Color.cyan, kind);
+                GE.repaint();
+                break;
+            case "darkGray":
+                GE.setColorSelected(Color.darkGray, kind);
+                GE.repaint();
+                break;
+            case "gray":
+                GE.setColorSelected(Color.gray, kind);
+                GE.repaint();
+                break;
+            case "green":
+                GE.setColorSelected(Color.green, kind);
+                GE.repaint();
+                break;
+            case "lightGray":
+                GE.setColorSelected(Color.lightGray, kind);
+                GE.repaint();
+                break;
+            case "magenta":
+                GE.setColorSelected(Color.magenta, kind);
+                GE.repaint();
+                break;
+            case "orange":
+                GE.setColorSelected(Color.orange, kind);
+                GE.repaint();
+                break;
+            case "pink":
+                GE.setColorSelected(Color.pink, kind);
+                GE.repaint();
+                break;
+            case "red":
+                GE.setColorSelected(Color.red, kind);
+                GE.repaint();
+                break;
+            case "white":
+                GE.setColorSelected(Color.white, kind);
+                GE.repaint();
+                break;
+            case "yellow":
+                GE.setColorSelected(Color.yellow, kind);
+                GE.repaint();
+                break;
+            case "none":
+                GE.setColorSelected(null, kind);
+                GE.repaint();
+                break;
+            default:
+                System.err.println("Not implemented: " + ev);
+                break;
+        }
     }
 }
 
 class GraphEditorWindowListener implements WindowListener {
-    final GraphEditor GE;
+    private final GraphEditor GE;
 
     /**
      * the constructor of GraphEditorWindowListener

@@ -65,8 +65,7 @@ public class PluginClassLoader {
      */
     public static <C, D> List<C> getInstances(String className, Class<C> clazz1, Class<D> clazz2, String... packageNames) {
         final List<C> plugins = new LinkedList<>();
-        final LinkedList<String> packageNameQueue = new LinkedList<>();
-        packageNameQueue.addAll(Arrays.asList(packageNames));
+        final LinkedList<String> packageNameQueue = new LinkedList<>(Arrays.asList(packageNames));
         while (packageNameQueue.size() > 0) {
             try {
                 final String packageName = packageNameQueue.removeFirst();

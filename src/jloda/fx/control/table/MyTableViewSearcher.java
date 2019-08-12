@@ -50,8 +50,7 @@ public class MyTableViewSearcher implements IObjectSearcher<String> {
             row = 0;
             col++;
         }
-        boolean result = isCurrentSet();
-        return result;
+        return isCurrentSet();
     }
 
     @Override

@@ -23,6 +23,7 @@ import java.io.File;
 import java.io.IOException;
 import java.net.URL;
 import java.net.URLDecoder;
+import java.nio.charset.StandardCharsets;
 import java.util.Enumeration;
 import java.util.Set;
 import java.util.TreeSet;
@@ -62,7 +63,7 @@ public class ResourceUtils {
         Set<String> resources = new TreeSet<>();
         while (e.hasMoreElements()) {
             final URL url = ((URL) e.nextElement());
-            String urlString = URLDecoder.decode(url.getPath(), "UTF-8");
+            String urlString = URLDecoder.decode(url.getPath(), StandardCharsets.UTF_8);
             if (urlString.matches(".+!.+")) //the zip/jar - entry delimiter
             {
                 String[] split = urlString.split("!", 2);

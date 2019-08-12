@@ -452,13 +452,13 @@ public class NexusStreamParser extends NexusStreamTokenizer implements Closeable
     public String getTokensFileNamePunctuation(String first, String last) throws IOExceptionWithLineNumber {
         pushPunctuationCharacters(SEMICOLON_PUNCTUATION);
 
-        String result = "";
+        StringBuilder result = new StringBuilder();
         try {
             if (first != null)
                 matchIgnoreCase(first);
             nextToken();
             while (!toString().equals(last)) {
-                result += " " + toString();
+                result.append(" ").append(toString());
                 if (ttype == TT_EOF)
                     throw new IOExceptionWithLineNumber("'" + last + "' expected, got EOF", lineno());
                 nextToken();
@@ -468,9 +468,9 @@ public class NexusStreamParser extends NexusStreamTokenizer implements Closeable
         } finally {
             popPunctuationCharacters();
         }
-        if (result.equals(""))
+        if (result.toString().equals(""))
             return null;
-        return result;
+        return result.toString();
     }
 
     /**
@@ -532,11 +532,11 @@ public class NexusStreamParser extends NexusStreamTokenizer implements Closeable
      * and 'last'
      */
     public String getTokensStringLowerCase(String last) throws IOExceptionWithLineNumber {
-        String result = "";
+        StringBuilder result = new StringBuilder();
         try {
             nextToken();
             while (!toString().equalsIgnoreCase(last)) {
-                result += " " + toString().toLowerCase();
+                result.append(" ").append(toString().toLowerCase());
                 if (ttype == TT_EOF)
                     throw new IOExceptionWithLineNumber("'" + last + "' expected, got EOF", lineno());
                 nextToken();
@@ -544,9 +544,9 @@ public class NexusStreamParser extends NexusStreamTokenizer implements Closeable
         } catch (IOException ex) {
             throw new IOExceptionWithLineNumber(lineno(), ex);
         }
-        if (result.equals(""))
+        if (result.toString().equals(""))
             return null;
-        return result;
+        return result.toString();
     }
 
 
@@ -561,11 +561,11 @@ public class NexusStreamParser extends NexusStreamTokenizer implements Closeable
      * and 'last'
      */
     public String getTokensStringRespectCase(String last) throws IOExceptionWithLineNumber {
-        String result = "";
+        StringBuilder result = new StringBuilder();
         try {
             nextToken();
             while (!toString().equals(last)) {
-                result += " " + toString();
+                result.append(" ").append(toString());
                 if (ttype == TT_EOF)
                     throw new IOExceptionWithLineNumber("'" + last + "' expected, got EOF", lineno());
                 nextToken();
@@ -573,9 +573,9 @@ public class NexusStreamParser extends NexusStreamTokenizer implements Closeable
         } catch (IOException ex) {
             throw new IOExceptionWithLineNumber(lineno(), ex);
         }
-        if (result.equals(""))
+        if (result.toString().equals(""))
             return null;
-        return result.trim();
+        return result.toString().trim();
     }
 
     /**
@@ -684,7 +684,7 @@ public class NexusStreamParser extends NexusStreamTokenizer implements Closeable
         boolean found = false;
         // The following line seems to be a bug - have replaced it
         //String result = defaultValue;
-        String result = "";
+        StringBuilder result = new StringBuilder();
 
         NexusStreamParser s =
                 new NexusStreamParser(new StringReader(List2String(tokens)));
@@ -701,9 +701,9 @@ public class NexusStreamParser extends NexusStreamTokenizer implements Closeable
 
                         if (word.equalsIgnoreCase(rightDelimiter))
                             break;
-                        if (!result.equals(""))
-                            result += " ";
-                        result += word;
+                        if (!result.toString().equals(""))
+                            result.append(" ");
+                        result.append(word);
                     }
                 } else {
                     if (s.nextToken() != NexusStreamParser.TT_EOF)
@@ -713,9 +713,9 @@ public class NexusStreamParser extends NexusStreamTokenizer implements Closeable
         } catch (IOException ex) {
             throw new IOExceptionWithLineNumber(lineno(), ex);
         }
-        if (result.equals(""))
-            result = defaultValue;
-        return result;
+        if (result.toString().equals(""))
+            result = new StringBuilder(defaultValue);
+        return result.toString();
     }
 
     /**
@@ -789,7 +789,7 @@ public class NexusStreamParser extends NexusStreamTokenizer implements Closeable
                         throw new IOExceptionWithLineNumber(token + " '" + result + "': char expected", lineno());
                     result = str.charAt(0);
                     found = true;
-                    if (legalValues != null && legalValues.indexOf((int) result) == -1)
+                    if (legalValues != null && legalValues.indexOf(result) == -1)
                         throw new IOExceptionWithLineNumber(token + " '" + result + "': illegal value", lineno());
                 } else {
                     if (s.nextToken() != NexusStreamParser.TT_EOF)
@@ -1187,16 +1187,16 @@ public class NexusStreamParser extends NexusStreamTokenizer implements Closeable
      */
     public String convertToBlock(String firstSourceLabel, String lastSourceLabel, String blockName) throws Exception {
         pushPunctuationCharacters(SEMICOLON_PUNCTUATION);
-        String str = "begin " + blockName + ";";
+        StringBuilder str = new StringBuilder("begin " + blockName + ";");
         try {
             List<String> tokens = getTokensRespectCase(firstSourceLabel, lastSourceLabel);
-            for (String token : tokens) str += " " + token;
+            for (String token : tokens) str.append(" ").append(token);
 
-            str += ";end;";
+            str.append(";end;");
         } finally {
             popPunctuationCharacters();
         }
-        return str;
+        return str.toString();
     }
 
     /**

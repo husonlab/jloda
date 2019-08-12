@@ -24,7 +24,7 @@ package jloda.graph;
  * Daniel Huson, 11.2017
  */
 public class EdgeFloatArray extends GraphBase implements EdgeAssociation<Float> {
-    private float data[];
+    private float[] data;
     private boolean isClear = true;
 
     /**

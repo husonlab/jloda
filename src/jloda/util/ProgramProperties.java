@@ -531,7 +531,7 @@ public class ProgramProperties {
     public static ImageIcon getProgramIcon() {
         ImageIcon result = null;
         for (ImageIcon imageIcon : getProgramIcons()) {
-            if (imageIcon.getIconHeight() == 16 || result == null) // 16x16b preferred
+            if (result == null || imageIcon.getIconHeight() < 128 && imageIcon.getIconHeight() > result.getIconHeight()) // 64 preferred
                 result = imageIcon;
         }
         return result;

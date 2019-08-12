@@ -74,7 +74,7 @@ public class PhyloTreeUtils {
 		int pos = label.lastIndexOf("#"); // look for last instance of '#',
 											// followed by H or L
 		if (pos >= 0 && pos < label.length() - 1 && "HLhl".indexOf(label.charAt(pos + 1)) != -1)
-			return label.substring(pos + 1, label.length());
+            return label.substring(pos + 1);
 		else
 			return null;
 	}
@@ -119,9 +119,9 @@ public class PhyloTreeUtils {
 			if (hnmh != null) {
 				StringBuilder buf = new StringBuilder();
 				if (hnmh[0] > 0)
-					buf.append(label.substring(0, hnmh[0]));
+                    buf.append(label, 0, hnmh[0]);
 				if (hnmh[1] < label.length())
-					buf.append(label.substring(hnmh[1], label.length()));
+                    buf.append(label.substring(hnmh[1]));
 				return buf.toString();
 			}
 		}

@@ -191,12 +191,12 @@ public class EdgeLabelSearcher implements IObjectSearcher {
             if (newLabel == null || newLabel.length() == 0) {
                 viewer.setLabel(current, null);
                 if (viewer.getGraph() instanceof PhyloTree) {
-                    ((PhyloTree) viewer.getGraph()).setLabel(current, null);
+                    viewer.getGraph().setLabel(current, null);
                 }
             } else {
                 viewer.setLabel(current, newLabel);
                 if (viewer.getGraph() instanceof PhyloTree) {
-                    ((PhyloTree) viewer.getGraph()).setLabel(current, newLabel);
+                    viewer.getGraph().setLabel(current, newLabel);
                 }
             }
             fireLabelChangedListeners(current);

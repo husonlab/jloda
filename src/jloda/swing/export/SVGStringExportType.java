@@ -89,12 +89,10 @@ public class SVGStringExportType implements ExportGraphicType {
         }
         String extension = Basic.getFileSuffix(f.getName());
         if (extension != null) {
-            if (extension.equalsIgnoreCase("svg"))
-                return true;
+            return extension.equalsIgnoreCase("svg");
         } else {
             return false;
         }
-        return false;
     }
 
     public String getDescription() {

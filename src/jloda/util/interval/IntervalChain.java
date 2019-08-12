@@ -141,7 +141,7 @@ public class IntervalChain {
     /**
      * single-linked interval node
      */
-    class Interval {
+    static class Interval {
         private int a;
         private int b;
         private Interval next;

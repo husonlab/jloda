@@ -180,7 +180,7 @@ public class Basic {
     public static String matchPrefix(String string, String prefix) throws IOException {
         if (!string.startsWith(prefix))
             throw new IOException("Prefix <" + prefix + "> not matched in <" + string + ">");
-        return string.substring(prefix.length(), string.length()).trim();
+        return string.substring(prefix.length()).trim();
     }
 
     /**
@@ -194,9 +194,9 @@ public class Basic {
      */
     public static String matchPrefix(String string, String prefix, String altPrefix) throws IOException {
         if (string.startsWith(prefix))
-            return string.substring(prefix.length(), string.length()).trim();
+            return string.substring(prefix.length()).trim();
         else if (string.startsWith(altPrefix))
-            return string.substring(altPrefix.length(), string.length()).trim();
+            return string.substring(altPrefix.length()).trim();
         else
             throw new IOException("Prefix <" + prefix + "> or <" + altPrefix + "> not matched in <" + string + ">");
     }
@@ -484,7 +484,7 @@ public class Basic {
         StringBuilder buf = new StringBuilder();
 
         for (int p = 0; p < str.length(); p += lineLength) {
-            buf.append(str.substring(p, Math.min(str.length(), p + lineLength))).append("\n");
+            buf.append(str, p, Math.min(str.length(), p + lineLength)).append("\n");
         }
         return buf.toString();
     }
@@ -680,7 +680,7 @@ public class Basic {
                     buf.append(" ");
                 } else
                     first = false;
-                buf.append(token.substring(0, pos + lineBreakString.length()));
+                buf.append(token, 0, pos + lineBreakString.length());
                 lineLength = 0;
                 token = token.substring(pos + lineBreakString.length());
             }
@@ -2053,6 +2053,7 @@ public class Basic {
                     buf.append('C');
                     break;
                 case 'T':
+                case 'U':
                     buf.append('A');
                     break;
                 case 'a':
@@ -2065,11 +2066,6 @@ public class Basic {
                     buf.append('c');
                     break;
                 case 't':
-                    buf.append('a');
-                    break;
-                case 'U':
-                    buf.append('A');
-                    break;
                 case 'u':
                     buf.append('a');
                     break;
@@ -2221,12 +2217,12 @@ public class Basic {
         if (pos == text.length() - 1)
             pos = text.lastIndexOf("\r", pos - 1);
         if (pos != -1)
-            return text.substring(pos + 1, text.length());
+            return text.substring(pos + 1);
         pos = text.lastIndexOf("\n");
         if (pos == text.length() - 1)
             pos = text.lastIndexOf("\n", pos - 1);
         if (pos != -1)
-            return text.substring(pos + 1, text.length());
+            return text.substring(pos + 1);
         return text;
     }
 
@@ -2369,8 +2365,7 @@ public class Basic {
      */
     public static String spaces(int count) {
         StringBuilder buf = new StringBuilder();
-        for (int i = 0; i < count; i++)
-            buf.append(" ");
+        buf.append(" ".repeat(Math.max(0, count)));
         return buf.toString();
     }
 
@@ -2659,7 +2654,7 @@ public class Basic {
             if (string.charAt(i) == '\"') { // start of quoted item
                 int j = string.indexOf('\"', i + 1);
                 if (j == -1) {
-                    list.add(string.substring(i + 1, string.length()).trim());
+                    list.add(string.substring(i + 1).trim());
                     break;  // unfinished quote, really should throw an exception
                 } else {
                     list.add(string.substring(i + 1, j).trim());
@@ -2835,17 +2830,8 @@ public class Basic {
      * @throws java.io.IOException
      */
     public static void copyFile(File source, File dest) throws IOException {
-        FileChannel sourceChannel = null;
-        FileChannel destChannel = null;
-        try {
-            sourceChannel = new FileInputStream(source).getChannel();
-            destChannel = new FileOutputStream(dest).getChannel();
+        try (FileChannel sourceChannel = new FileInputStream(source).getChannel(); FileChannel destChannel = new FileOutputStream(dest).getChannel()) {
             destChannel.transferFrom(sourceChannel, 0, sourceChannel.size());
-        } finally {
-            if (sourceChannel != null)
-                sourceChannel.close();
-            if (destChannel != null)
-                destChannel.close();
         }
     }
 
@@ -2880,21 +2866,8 @@ public class Basic {
      * @throws java.io.IOException
      */
     public static void appendFile(File source, File dest) throws IOException {
-        FileChannel sourceChannel = null;
-        RandomAccessFile raf = null;
-        FileChannel destChannel = null;
-        try {
-            sourceChannel = new FileInputStream(source).getChannel();
-            raf = new RandomAccessFile(dest, "rw");
-            destChannel = raf.getChannel();
+        try (FileChannel sourceChannel = new FileInputStream(source).getChannel(); RandomAccessFile raf = new RandomAccessFile(dest, "rw"); FileChannel destChannel = raf.getChannel()) {
             destChannel.transferFrom(sourceChannel, raf.length(), sourceChannel.size());
-        } finally {
-            if (sourceChannel != null)
-                sourceChannel.close();
-            if (destChannel != null)
-                destChannel.close();
-            if (raf != null)
-                raf.close();
         }
     }
 
@@ -3399,7 +3372,7 @@ public class Basic {
     public static String toBinaryString(long value) {
         StringBuilder buf = new StringBuilder();
         for (int shift = 63; shift >= 0; shift--) {
-            buf.append((value & (1l << shift)) >>> shift);
+            buf.append((value & (1L << shift)) >>> shift);
         }
         return buf.toString();
     }

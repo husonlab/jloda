@@ -207,13 +207,11 @@ public class GraphView extends JPanel implements Printable, Scrollable, INodeEdg
             }
 
             public void deleteNode(Node v) {
-                if (selectedNodes.contains(v))
-                    selectedNodes.remove(v);
+                selectedNodes.remove(v);
             }
 
             public void deleteEdge(Edge e) {
-                if (selectedEdges.contains(e))
-                    selectedEdges.remove(e);
+                selectedEdges.remove(e);
             }
         });
 

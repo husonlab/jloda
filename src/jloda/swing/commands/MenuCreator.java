@@ -20,10 +20,10 @@
 package jloda.swing.commands;
 
 import jloda.swing.util.AppleSystemMenuItems;
-import jloda.swing.window.IMenuModifier;
-import jloda.swing.window.MenuMnemonics;
 import jloda.swing.util.ResourceManager;
 import jloda.swing.util.lang.Translator;
+import jloda.swing.window.IMenuModifier;
+import jloda.swing.window.MenuMnemonics;
 import jloda.util.ProgramProperties;
 
 import javax.swing.*;
@@ -71,7 +71,7 @@ public class MenuCreator {
          */
 
         menuBarLabel = MENUBAR_TAG + "." + menuBarLabel;
-        if (!descriptions.keySet().contains(menuBarLabel))
+        if (!descriptions.containsKey(menuBarLabel))
             throw new Exception("item not found: " + menuBarLabel);
 
         List<String> menus = getTokens(descriptions.get(menuBarLabel));
@@ -79,7 +79,7 @@ public class MenuCreator {
         for (String menuLabel : menus) {
             if (!menuLabel.startsWith("Menu."))
                 menuLabel = "Menu." + menuLabel;
-            if (descriptions.keySet().contains(menuLabel)) {
+            if (descriptions.containsKey(menuLabel)) {
                 final JMenu menu = buildMenu(menuLabel, descriptions, false);
                 addSubMenus(0, menu, descriptions);
                 MenuMnemonics.setMnemonics(menu);

@@ -367,7 +367,7 @@ public class Gif89Encoder {
             ((Gif89Frame) vFrames.elementAt(i)).encode(out, is_sequence, colorTable.getDepth(), colorTable.getTransparent());
 
         // write GIF TRAILER
-        out.write((int) ';');
+        out.write(';');
 
         out.flush();
     }
@@ -463,7 +463,7 @@ public class Gif89Encoder {
         // (i.e., interations beyond 1) rather than as an iteration count
         // (thus, to avoid repeating we have to omit the whole extension)
 
-        os.write((int) '!');           // GIF Extension Introducer
+        os.write('!');           // GIF Extension Introducer
         os.write(0xff);                // Application Extension Label
 
         os.write(11);                  // application ID block size
@@ -481,7 +481,7 @@ public class Gif89Encoder {
     //----------------------------------------------------------------------------
 
     private void writeCommentExtension(OutputStream os) throws IOException {
-        os.write((int) '!');     // GIF Extension Introducer
+        os.write('!');     // GIF Extension Introducer
         os.write(0xfe);          // Comment Extension Label
 
         int remainder = theComments.length() % 255;

@@ -45,7 +45,7 @@ public class NodeShapeIcon extends ImageIcon {
         nodeView.setHeight(size);
         final BufferedImage image = new BufferedImage(size, size, BufferedImage.TYPE_INT_ARGB);
         Graphics2D g = image.createGraphics();
-        drawer.setup(null, (Graphics2D) g);
+        drawer.setup(null, g);
         drawer.draw(nodeView);
         g.dispose();
         setImage(image);

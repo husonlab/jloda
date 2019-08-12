@@ -133,12 +133,7 @@ public class Interval<T> implements Comparable<Interval<T>> {
             return -1;
         else if (start > other.getStart())
             return 1;
-        else if (end < other.getEnd())
-            return -1;
-        else if (end > other.getEnd())
-            return 1;
-        else
-            return 0;
+        else return Integer.compare(end, other.getEnd());
     }
 
     /**

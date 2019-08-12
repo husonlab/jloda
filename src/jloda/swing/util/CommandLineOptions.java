@@ -144,25 +144,27 @@ public class CommandLineOptions {
     public String getOption(String label, String describe, String[] legalValues, String def)
             throws UsageException {
         options.add(grow20(label));
-        String str = grow20(label + " <String>") + " (default=\"" + def + "\", legal=";
+        StringBuilder str = new StringBuilder(grow20(label + " <String>") + " (default=\"" + def + "\", legal=");
         boolean first = true;
         for (String legalValue : legalValues) {
             if (first)
                 first = false;
             else
-                str += ",";
-            str += "\"" + legalValue + "\"";
+                str.append(",");
+            str.append("\"").append(legalValue).append("\"");
         }
-        str += ") " + describe;
+        str.append(") ").append(describe);
         if (describe.charAt(0) != '!')
-            usage.add(str);
+            usage.add(str.toString());
         else
             usage.add(null);
         String val = getStringOption(label, def, describe, false);
         boolean ok = false;
-        for (int i = 0; !ok && i < legalValues.length; i++)
-            if (legalValues[i].equalsIgnoreCase(val))
+        for (String legalValue : legalValues)
+            if (legalValue.equalsIgnoreCase(val)) {
                 ok = true;
+                break;
+            }
         if (!ok)
             throw new UsageException("Option " + label + ": illegal value: " + val);
 
@@ -377,7 +379,7 @@ public class CommandLineOptions {
     public boolean getOption(String label, String describe, boolean result, boolean def) {
         if (label.startsWith("+")) {
             if (def)
-                label = "-" + label.substring(1, label.length());
+                label = "-" + label.substring(1);
             else
                 throw new RuntimeException("Internal error: '+' switch must have default=true");
         }
@@ -389,8 +391,8 @@ public class CommandLineOptions {
             usage.add(null);
         for (int i = 0; i < args.length; i++) {
             String arg = args[i];
-            if (arg.length() > 1 && arg.charAt(0) == '+' && label.length() > 1 && arg.substring(1, arg.length()).equals(label.substring(1, label.length())))
-                args[i] = "-" + arg.substring(1, arg.length());
+            if (arg.length() > 1 && arg.charAt(0) == '+' && label.length() > 1 && arg.substring(1).equals(label.substring(1)))
+                args[i] = "-" + arg.substring(1);
             if (!seen[i] && args[i].equals(label)) {
                 seen[i] = true;
                 if (describe.charAt(0) != '!') {
@@ -605,26 +607,26 @@ public class CommandLineOptions {
             try {
                 boolean help = getOption("-h", "Show usage", true, false);
                 if (help) {
-                    String str = "\n" + description + "\n";
-                    str += "\nProgram usage:\n";
+                    StringBuilder str = new StringBuilder("\n" + description + "\n");
+                    str.append("\nProgram usage:\n");
                     for (String anUsage : usage)
                         if (anUsage != null)
-                            str += "\t" + anUsage + "\n";
-                    str += "\n";
+                            str.append("\t").append(anUsage).append("\n");
+                    str.append("\n");
                     System.out.print(str);
                     if (getExitOnHelp())
                         System.exit(0);
                 }
                 for (int i = 0; i < args.length; i++) {
                     if (!seen[i]) {
-                        String str = "\n" + description + "\n";
-                        str += "Illegal option: '" + args[i] + "'\n";
-                        str += "\nProgram usage:\n";
+                        StringBuilder str = new StringBuilder("\n" + description + "\n");
+                        str.append("Illegal option: '").append(args[i]).append("'\n");
+                        str.append("\nProgram usage:\n");
                         for (String anUsage : usage)
                             if (anUsage != null)
-                                str += "\t" + anUsage + "\n";
-                        str += "\n";
-                        throw new UsageException(str);
+                                str.append("\t").append(anUsage).append("\n");
+                        str.append("\n");
+                        throw new UsageException(str.toString());
                     }
                 }
             } catch (UsageException ex) {
@@ -728,9 +730,11 @@ public class CommandLineOptions {
      * @return label of length at least 20
      */
     private String grow20(String label) {
-        while (label.length() < 20) {
-            label += " ";
+        StringBuilder labelBuilder = new StringBuilder(label);
+        while (labelBuilder.length() < 20) {
+            labelBuilder.append(" ");
         }
+        label = labelBuilder.toString();
         return label;
     }
 

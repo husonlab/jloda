@@ -145,12 +145,10 @@ public class PDFExportType extends SVGExportType implements ExportGraphicType {
         }
         String extension = Basic.getFileSuffix(f.getName());
         if (extension != null) {
-            if (extension.equalsIgnoreCase("pdf"))
-                return true;
+            return extension.equalsIgnoreCase("pdf");
         } else {
             return false;
         }
-        return false;
     }
 
     public String getDescription() {

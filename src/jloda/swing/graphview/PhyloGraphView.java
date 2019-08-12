@@ -287,7 +287,7 @@ public class PhyloGraphView extends GraphView {
                 graph.getAllSeparators(splitId, one, null, new NodeSet(graph), separators);
                 if (updateNodePositions) {
                         // move all the nodes on one side of the split:
-                        Pair separator = (Pair) separators.get(0);
+                    Pair separator = separators.get(0);
                         Node v = (Node) separator.getFirst();
                         Edge e = (Edge) separator.getSecond();
                         Node w = graph.getOpposite(v, e);

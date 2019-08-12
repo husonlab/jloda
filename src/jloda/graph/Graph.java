@@ -896,11 +896,11 @@ public class Graph extends GraphBase {
      */
     public String toString() {
         StringBuilder buf = new StringBuilder("Graph:\n");
-        buf.append("Nodes: ").append(String.valueOf(getNumberOfNodes())).append("\n");
+        buf.append("Nodes: ").append(getNumberOfNodes()).append("\n");
 
         for (Node v = getFirstNode(); v != null; v = getNextNode(v))
             buf.append(v.toString()).append("\n");
-        buf.append("Edges: ").append(String.valueOf(getNumberOfEdges())).append("\n");
+        buf.append("Edges: ").append(getNumberOfEdges()).append("\n");
         for (Edge e = getFirstEdge(); e != null; e = getNextEdge(e))
             buf.append(e.toString()).append("\n");
 
@@ -1538,7 +1538,7 @@ public class Graph extends GraphBase {
     public void setSpecial(Edge e, boolean special) {
         if (special && !specialEdges.contains(e))
             specialEdges.add(e);
-        else if (!special && specialEdges.contains(e))
+        else if (!special)
             specialEdges.remove(e);
     }
 
@@ -1788,7 +1788,7 @@ public class Graph extends GraphBase {
         w.write("\tid " + graphId + "\n");
         if (label != null)
             w.write("\tlabel \"" + label + "\"\n");
-        boolean hasNodeLabels=(label2nodes != null && label2nodes.keySet().contains("label"));
+        boolean hasNodeLabels = (label2nodes != null && label2nodes.containsKey("label"));
         for (Node v = getFirstNode(); v != null; v = getNextNode(v)) {
             w.write("\tnode [\n");
             w.write("\t\tid " + v.getId() + "\n");
@@ -1806,7 +1806,7 @@ public class Graph extends GraphBase {
 
             w.write("\t]\n");
         }
-        boolean hasEdgeLabels=(label2edges != null && label2edges.keySet().contains("label"));
+        boolean hasEdgeLabels = (label2edges != null && label2edges.containsKey("label"));
 
         for (Edge e = getFirstEdge(); e != null; e = getNextEdge(e)) {
             w.write("\tedge [\n");
@@ -1876,9 +1876,9 @@ public class Graph extends GraphBase {
             int sourceId = np.getInt();
             np.matchIgnoreCase("target");
             int targetId = np.getInt();
-            if (!id2node.keySet().contains(sourceId))
+            if (!id2node.containsKey(sourceId))
                 throw new IOException("Undefined node id: " + sourceId);
-            if (!id2node.keySet().contains(targetId))
+            if (!id2node.containsKey(targetId))
                 throw new IOException("Undefined node id: " + targetId);
             Edge e = newEdge(id2node.get(sourceId), id2node.get(targetId));
             if (np.peekMatchIgnoreCase("label")) {

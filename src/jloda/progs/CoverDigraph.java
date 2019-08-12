@@ -133,10 +133,10 @@ public class CoverDigraph {
 
         for (int i = 0; i < genes.length; i++) {
             // prepare label
-            String label = "" + genes[i].label + ":";
+            StringBuilder label = new StringBuilder("" + genes[i].label + ":");
             for (int t = 1; t <= ntax; t++)
                 if (genes[i].taxa.get(t))
-                    label += " " + t;
+                    label.append(" ").append(t);
 
             // check whether gene has same profile as a previous one:
             boolean found = false;
@@ -155,7 +155,7 @@ public class CoverDigraph {
 
                 Node v = graph.newNode(genes[i].taxa);
 
-                graph.setLabel(v, label);
+                graph.setLabel(v, label.toString());
                 gene2node[i] = v;
                 for (int j = i - 1; j >= 0; j--) {
                     Node w = gene2node[j];

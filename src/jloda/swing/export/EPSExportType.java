@@ -141,12 +141,10 @@ public class EPSExportType extends FileFilter implements ExportGraphicType {
         }
         String extension = Basic.getFileSuffix(f.getName());
         if (extension != null) {
-            if (extension.equalsIgnoreCase(".eps"))
-                return true;
+            return extension.equalsIgnoreCase(".eps");
         } else {
             return false;
         }
-        return false;
     }
 
     public String getDescription() {

@@ -108,16 +108,11 @@ public class GraphPather {
 
         Arrays.sort(edges, new Comparator<Edge>() {
             public int compare(Edge edge1, Edge edge2) {
-                if ((Float) edge1.getInfo() < (Float) edge2.getInfo())
+                if ((Integer) edge1.getInfo() < (Integer) edge2.getInfo())
                     return -1;
-                else if ((Float) edge1.getInfo() > (Float) edge2.getInfo())
+                else if ((Integer) edge1.getInfo() > (Integer) edge2.getInfo())
                     return 1;
-                else if (edge1.getId() < edge2.getId())
-                    return -1;
-                else if (edge1.getId() > edge2.getId())
-                    return 1;
-                else
-                    return 0;
+                else return Integer.compare(edge1.getId(), edge2.getId());
             }
         });
         System.err.println("done (" + edges.length + ")");

@@ -673,7 +673,7 @@ public class SplittableTabPane extends Pane {
         return new AuxiliaryWindow(stage, tab);
     }
 
-    private class AuxiliaryWindow {
+    private static class AuxiliaryWindow {
         final private Stage stage;
         final private Tab tab;
 

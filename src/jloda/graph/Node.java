@@ -81,12 +81,12 @@ public class Node extends NodeEdge implements Comparable<Node> {
      * @return string representation
      */
     public String toString() {
-        StringBuilder buf = new StringBuilder("[" + String.valueOf(getId()) + "] [");
+        StringBuilder buf = new StringBuilder("[" + getId() + "] [");
         if (getInfo() != null)
             buf.append(getInfo().toString());
         buf.append("]:");
         for (Edge e = getFirstAdjacentEdge(); e != null; e = getNextAdjacentEdge(e))
-            buf.append(" ").append(String.valueOf(e.getId()));
+            buf.append(" ").append(e.getId());
         return buf.toString();
     }
 

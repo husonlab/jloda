@@ -16,13 +16,6 @@
  *  You should have received a copy of the GNU General Public License
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-
-/**
- * @version $Id: NodeSet.java,v 1.13 2007-07-10 13:21:52 huson Exp $
- *
- * @author Daniel Huson
- *
- */
 package jloda.graph;
 
 import jloda.util.Basic;
@@ -35,7 +28,7 @@ import java.util.*;
  * Daniel Huson, 2003
  */
 public class NodeSet extends GraphBase implements Set<Node> {
-    final BitSet bits;
+    private final BitSet bits;
 
     /**
      * Constructs a new empty NodeSet for Graph G.
@@ -117,10 +110,9 @@ public class NodeSet extends GraphBase implements Set<Node> {
      * @return all contained?
      */
     public boolean containsAll(final Collection<?> collection) {
-        Iterator it = collection.iterator();
 
-        while (it.hasNext()) {
-            if (!contains(it.next()))
+        for (Object o : collection) {
+            if (!contains(o))
                 return false;
         }
         return true;
@@ -170,9 +162,7 @@ public class NodeSet extends GraphBase implements Set<Node> {
         NodeSet was = (NodeSet) this.clone();
 
         clear();
-        Iterator it = collection.iterator();
-        while (it.hasNext()) {
-            Object v = it.next();
+        for (Object v : collection) {
             if (v instanceof Node && was.contains(v))
                 add((Node) v);
         }

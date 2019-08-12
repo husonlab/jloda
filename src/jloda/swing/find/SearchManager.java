@@ -262,7 +262,7 @@ public class SearchManager implements IDirectableViewer {
                 final String regexp = prepareRegularExpression(equateUnderscoreWithSpace ? searchText.replaceAll("_", " ") : searchText);
                 final Pattern pattern = Pattern.compile(regexp);
 
-                try {
+                try (progressListener) {
                     while (ok) {
                         if (isGlobalScope() || oSearcher.isCurrentSelected()) {
                             String label = oSearcher.getCurrentLabel();
@@ -285,8 +285,6 @@ public class SearchManager implements IDirectableViewer {
                     }
                 } catch (CanceledException e) {
                     System.err.println("Search canceled");
-                } finally {
-                    progressListener.close();
                 }
             } else if (searcher instanceof ITextSearcher) {
                 ITextSearcher tSearcher = (ITextSearcher) searcher;
@@ -439,7 +437,7 @@ public class SearchManager implements IDirectableViewer {
 
                 final String regexp = prepareRegularExpression(equateUnderscoreWithSpace ? searchText.replaceAll("_", " ") : searchText);
                 final Pattern pattern = Pattern.compile(regexp);
-                try {
+                try (progressListener) {
                     while (ok) {
                         if (isGlobalScope() || oSearcher.isCurrentSelected()) {
                             String label = oSearcher.getCurrentLabel();
@@ -458,8 +456,6 @@ public class SearchManager implements IDirectableViewer {
                     }
                 } catch (CanceledException e) {
                     System.err.println("Search canceled");
-                } finally {
-                    progressListener.close();
                 }
             } else if (searcher instanceof ITextSearcher) {
                 ITextSearcher tSearcher = (ITextSearcher) searcher;

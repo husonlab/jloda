@@ -78,7 +78,7 @@ public class PhyloTree extends PhyloSplitsGraph {
      */
     public void clear() {
         super.clear();
-        setRoot((Node) null);
+        setRoot(null);
     }
 
     /**
@@ -215,7 +215,7 @@ public class PhyloTree extends PhyloSplitsGraph {
                 for (Node v = tmpTree.getFirstNode(); v != null; v = v.getNext()) {
                     String key = tmpTree.getLabel(v);
                     if (key != null) {
-                        String value = (String) translate.get(key);
+                        String value = translate.get(key);
                         if (value != null)
                             tmpTree.setLabel(v, value);
                     }
@@ -348,7 +348,7 @@ public class PhyloTree extends PhyloSplitsGraph {
                     setWeight(v.getLastAdjacentEdge(), 0.5);
                 }
             } else {
-                setRoot((Node) null);
+                setRoot(null);
                 if (isUnlabeledDiVertex(v))
                     delDivertex(v);
             }
@@ -611,11 +611,7 @@ public class PhyloTree extends PhyloSplitsGraph {
                 String reticulateLabel = PhyloTreeUtils.findReticulateLabel(label);
                 if (reticulateLabel != null) {
                     setLabel(v, PhyloTreeUtils.removeReticulateNodeSuffix(label));
-                    List<Node> list = reticulateNumber2Nodes.get(reticulateLabel);
-                    if (list == null) {
-                        list = new LinkedList<>();
-                        reticulateNumber2Nodes.put(reticulateLabel, list);
-                    }
+                    List<Node> list = reticulateNumber2Nodes.computeIfAbsent(reticulateLabel, k -> new LinkedList<>());
                     list.add(v);
                 }
             }
@@ -1022,7 +1018,7 @@ public class PhyloTree extends PhyloSplitsGraph {
      */
     public void eraseRoot(EdgeArray<String> edgeLabels) {
         final Node oldRoot = getRoot();
-        setRoot((Node) null);
+        setRoot(null);
         if (oldRoot != null) {
             if (getOutDegree(oldRoot) == 2 && getLabel(oldRoot) == null) {
                 if (edgeLabels != null) {

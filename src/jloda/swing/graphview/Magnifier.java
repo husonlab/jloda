@@ -424,7 +424,7 @@ public class Magnifier {
     }
 
 
-    class ArrowButton {
+    static class ArrowButton {
         final Polygon polygon;
 
         ArrowButton(int x, int y, boolean up) {
@@ -444,7 +444,7 @@ public class Magnifier {
         }
     }
 
-    class ZoomButton {
+    static class ZoomButton {
         final boolean up;
         final Rectangle rect;
 

@@ -202,8 +202,8 @@ public class Transform {
         angle = np.findIgnoreCase(tokens, "angle:", (float) angle);
         sinAngle = Math.sin(angle);
         cosAngle = Math.cos(angle);
-        scaleX = (double) np.findIgnoreCase(tokens, "scaleX:", (float) scaleX);
-        scaleY = (double) np.findIgnoreCase(tokens, "scaleY:", (float) scaleY);
+        scaleX = np.findIgnoreCase(tokens, "scaleX:", (float) scaleX);
+        scaleY = np.findIgnoreCase(tokens, "scaleY:", (float) scaleY);
         flipH = (np.findIgnoreCase(tokens, "flipH:", flipH ? 1 : 0) != 0);
         flipV = (np.findIgnoreCase(tokens, "flipV:", flipV ? 1 : 0) != 0);
         leftMargin = (int) np.findIgnoreCase(tokens, "leftMargin:", leftMargin);
