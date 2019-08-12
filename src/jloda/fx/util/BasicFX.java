@@ -19,7 +19,14 @@
 
 package jloda.fx.util;
 
+import javafx.scene.Group;
+import javafx.scene.Node;
 import javafx.scene.control.TextArea;
+
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.LinkedList;
+import java.util.Queue;
 
 /**
  * basic stuff for FX
@@ -58,5 +65,24 @@ public class BasicFX {
             textArea.requestFocus();
             textArea.selectRange(start, end);
         }
+    }
+
+    /**
+     * get all children, including all Group nodes and their children
+     *
+     * @param children
+     * @return recursively get all children
+     */
+    public static Collection<? extends Node> getAllChildrenRecursively(Collection<Node> children) {
+        final ArrayList<Node> all = new ArrayList<>();
+        final Queue<Node> stack = new LinkedList<>(children);
+        while (stack.size() > 0) {
+            final Node node = stack.remove();
+            all.add(node);
+            if (node instanceof Group) {
+                stack.addAll(((Group) node).getChildren());
+            }
+        }
+        return all;
     }
 }
