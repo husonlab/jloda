@@ -34,6 +34,8 @@ public class UndoManager {
     private final ObservableList<UndoableRedoableCommand> undoStack = FXCollections.observableArrayList();
     private final ObservableList<UndoableRedoableCommand> redoStack = FXCollections.observableArrayList();
 
+    private final IntegerProperty undoStackSize = new SimpleIntegerProperty(0);
+
     private final StringProperty undoName = new SimpleStringProperty("Undo");
     private final StringProperty redoName = new SimpleStringProperty("Redo");
 
@@ -54,6 +56,8 @@ public class UndoManager {
         redoStack.addListener((InvalidationListener) (e) -> {
             redoName.set(redoStack.size() > 0 ? "Redo " + peek(redoStack).getName() : "Redo");
         });
+
+        undoStackSize.bind(Bindings.size(undoStack));
 
         undoable.bind(Bindings.isNotEmpty(undoStack));
         redoable.bind(Bindings.isNotEmpty(redoName));
@@ -214,6 +218,14 @@ public class UndoManager {
 
     private static <T> T peek(ObservableList<T> stack) {
         return stack.get(stack.size() - 1);
+    }
+
+    public int getUndoStackSize() {
+        return undoStackSize.get();
+    }
+
+    public ReadOnlyIntegerProperty undoStackSizeProperty() {
+        return undoStackSize;
     }
 
     /**
