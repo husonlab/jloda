@@ -2929,6 +2929,12 @@ public class Basic {
         return ins;
     }
 
+    public static InputStream getInputStreamPossiblyGZIP(InputStream ins, String fileName) throws IOException {
+        if (fileName.toLowerCase().endsWith(".gz")) {
+            return new GZIPInputStream(ins);
+        } else return ins;
+    }
+
     /**
      * gets a outputstream. If file ends on gz or zip opens appropriate zipping stream
      *
@@ -4309,6 +4315,21 @@ public class Basic {
                 buf.append((char) ch);
         }
         return buf.toString();
+    }
+
+    public static String[] toStrings(Object[] values) {
+        final String[] strings = new String[values.length];
+        for (int i = 0; i < values.length; i++) {
+            if (values[i] != null)
+                strings[i] = values[i].toString();
+        }
+        return strings;
+    }
+
+    public static void deleteFileIfExists(String fileName) {
+        final File file = new File(fileName);
+        if (file.exists())
+            file.delete();
     }
 }
 

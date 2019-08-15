@@ -37,9 +37,6 @@ public class UndoManager {
     private final StringProperty undoName = new SimpleStringProperty("Undo");
     private final StringProperty redoName = new SimpleStringProperty("Redo");
 
-    private final IntegerProperty undoStackSize = new SimpleIntegerProperty(0);
-    private final IntegerProperty redoStackSize = new SimpleIntegerProperty(0);
-
     private final BooleanProperty undoable = new SimpleBooleanProperty(false);
     private final BooleanProperty redoable = new SimpleBooleanProperty(false);
 
@@ -53,15 +50,13 @@ public class UndoManager {
     public UndoManager() {
         undoStack.addListener((InvalidationListener) (e) -> {
             undoName.set(undoStack.size() > 0 ? "Undo " + peek(undoStack).getName() : "Undo");
-            undoStackSize.set(undoStack.size());
         });
         redoStack.addListener((InvalidationListener) (e) -> {
             redoName.set(redoStack.size() > 0 ? "Redo " + peek(redoStack).getName() : "Redo");
-            redoStackSize.set(redoStack.size());
         });
 
-        undoable.bind(Bindings.isNotEmpty(undoStack).and(isPerformingUndoOrRedo.not()));
-        redoable.bind(Bindings.isNotEmpty(redoStack).and(isPerformingUndoOrRedo.not()));
+        undoable.bind(Bindings.isNotEmpty(undoStack));
+        redoable.bind(Bindings.isNotEmpty(redoName));
     }
 
     /**
@@ -70,7 +65,6 @@ public class UndoManager {
     public void clear() {
         undoStack.clear();
         redoStack.clear();
-
     }
 
     /**
@@ -125,14 +119,6 @@ public class UndoManager {
                 add(new UndoableApply(runnable));
             }
         }
-    }
-
-    public ReadOnlyIntegerProperty undoStackSizeProperty() {
-        return undoStackSize;
-    }
-
-    public ReadOnlyIntegerProperty redoStackSizeProperty() {
-        return redoStackSize;
     }
 
     /**

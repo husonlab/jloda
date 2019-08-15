@@ -50,6 +50,6 @@ public class ClosingLastDocument {
         alert.getButtonTypes().setAll(buttonTypeCancel, buttonTypeYes);
 
         final Optional<ButtonType> result = alert.showAndWait();
-        return !result.isPresent() || result.get() != buttonTypeCancel;
+        return result.isEmpty() || result.get() != buttonTypeCancel;
     }
 }

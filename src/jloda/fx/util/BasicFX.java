@@ -19,9 +19,15 @@
 
 package jloda.fx.util;
 
+import javafx.beans.InvalidationListener;
+import javafx.geometry.Dimension2D;
 import javafx.scene.Group;
 import javafx.scene.Node;
+import javafx.scene.control.TableView;
 import javafx.scene.control.TextArea;
+import javafx.scene.layout.Pane;
+import javafx.scene.text.Font;
+import javafx.scene.text.Text;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -85,4 +91,53 @@ public class BasicFX {
         }
         return all;
     }
+
+    /**
+     * get the best font size to fit the given width
+     *
+     * @param title
+     * @param font
+     * @param width
+     * @return best font size to fit
+     */
+    public static double fitFontSizeToWidthAndHeight(String title, Font font, double width, double height) {
+        for (double fontSize = 50; fontSize > 7; fontSize -= 0.5) {
+            final Dimension2D dimensions = getTextDimension(title, Font.font(font.getFamily(), fontSize));
+            if (dimensions.getWidth() < width && dimensions.getHeight() < height)
+                return fontSize;
+        }
+        return 10;
+    }
+
+    /**
+     * get the dimension of a text
+     *
+     * @param string
+     * @param font
+     * @return text dimension
+     */
+    public static Dimension2D getTextDimension(String string, Font font) {
+        Text text = new Text(string);
+        text.setFont(font == null ? Font.getDefault() : font);
+        return new Dimension2D(text.getBoundsInLocal().getWidth(), text.getBoundsInLocal().getHeight());
+    }
+
+    /**
+     * permanentally hide column headers
+     *
+     * @param tableView
+     */
+    public static void hideColumnHeaders(TableView tableView) {
+        final InvalidationListener tableResizeListener = (e) -> {
+            final Pane header = (Pane) tableView.lookup("TableHeaderRow");
+            header.setMinHeight(0);
+            header.setPrefHeight(0);
+            header.setMaxHeight(0);
+            header.setVisible(false);
+        };
+
+        tableView.widthProperty().addListener(tableResizeListener);
+        tableView.heightProperty().addListener(tableResizeListener);
+    }
+
 }

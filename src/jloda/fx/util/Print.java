@@ -57,7 +57,6 @@ public class Print {
 
                 final PageLayout pageLayout = (pageLayoutSelected != null ? pageLayoutSelected : job.getJobSettings().getPageLayout());
 
-
                 final Node node;
                 if (node0 instanceof TextArea) {
                     final TextArea textArea = (TextArea) node0;
@@ -89,7 +88,7 @@ public class Print {
                         ButtonType buttonTypeCancel = new ButtonType("Cancel", ButtonBar.ButtonData.CANCEL_CLOSE);
                         alert.getButtonTypes().setAll(buttonTypeYes, buttonTypeNo, buttonTypeCancel);
 
-                        Optional<ButtonType> result = alert.showAndWait();
+                        final Optional<ButtonType> result = alert.showAndWait();
                         if (result.isPresent()) {
                             if (result.get() == buttonTypeYes) {
                                 final double factor = Math.min(pageLayout.getPrintableWidth() / node.getBoundsInParent().getWidth(), pageLayout.getPrintableHeight() / node.getBoundsInParent().getHeight());

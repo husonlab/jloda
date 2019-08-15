@@ -39,7 +39,10 @@ import jloda.fx.util.ResourceManagerFX;
 import jloda.util.ProgramProperties;
 
 import java.text.SimpleDateFormat;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * Implements notifications in JavaFX,
@@ -186,7 +189,7 @@ public class NotificationManager {
         final String message = (message0.length() > maxLength + 3 ? (message0.substring(0, maxLength) + "...") : message0).replaceAll("\\s+", " ");
 
         if (isShowNotifications() && ProgramProperties.isUseGUI()) {
-            final Window window = getWindow(getWindow(owner));
+            final Window window = getWindow(owner);
             if (window != null) {
                 if (title == null || title.length() == 0) {
                     title = ProgramProperties.getProgramName();
@@ -372,18 +375,18 @@ public class NotificationManager {
     public static Window getWindow(Object owner) throws IllegalArgumentException {
         if (owner == null) {
             final List<Window> windows = Window.getWindows();
-            final Iterator it = windows.iterator();
 
-            Window window;
-            do {
-                if (!it.hasNext()) {
-                    return null;
+            for (Window window : windows) {
+                if (window.isFocused() && !(window instanceof PopupWindow)) {
+                    return window;
                 }
-
-                window = (Window) it.next();
-            } while (!window.isFocused() || window instanceof PopupWindow);
-
-            return window;
+            }
+            for (Window window : windows) {
+                if (!(window instanceof PopupWindow)) {
+                    return window;
+                }
+            }
+            return null;
         } else if (owner instanceof Window) {
             return (Window) owner;
         } else if (owner instanceof Node) {

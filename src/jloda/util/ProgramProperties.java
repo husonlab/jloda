@@ -328,7 +328,10 @@ public class ProgramProperties {
      *
      */
     public static void put(String key, String value) {
-        props.setProperty(key, value);
+        if (value != null)
+            props.setProperty(key, value);
+        else
+            props.remove(key);
     }
 
     /**

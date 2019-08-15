@@ -29,7 +29,7 @@ import java.util.concurrent.Executors;
  */
 public class ProgramExecutorService {
     private static ExecutorService instance;
-    private static int maxNumberOfTheadsForParallelAlgorithm = Integer.MAX_VALUE; // max number of threads to use by a parallel algorithm
+    private static int numberOfCoresToUse = 8; //  number of threads to use by a parallel algorithm
 
     /**
      * get the program wide executor service
@@ -43,17 +43,14 @@ public class ProgramExecutorService {
     }
 
     public static ExecutorService createServiceForParallelAlgorithm() {
-        return Executors.newFixedThreadPool(ProgramExecutorService.getMaxNumberOfThreadsForParallelAlgorithm());
+        return Executors.newFixedThreadPool(ProgramExecutorService.getNumberOfCoresToUse());
     }
 
-    public static void setMaxNumberOfTheadsForParallelAlgorithm(int maxNumberOfTheadsForParallelAlgorithm) {
-        if (maxNumberOfTheadsForParallelAlgorithm > 0)
-            ProgramExecutorService.maxNumberOfTheadsForParallelAlgorithm = maxNumberOfTheadsForParallelAlgorithm;
-        else
-            ProgramExecutorService.maxNumberOfTheadsForParallelAlgorithm = Integer.MAX_VALUE;
+    public static void setNumberOfCoresToUse(int maxNumberOfThreadsForParallelAlgorithm) {
+        ProgramExecutorService.numberOfCoresToUse = Math.max(1, maxNumberOfThreadsForParallelAlgorithm);
     }
 
-    public static int getMaxNumberOfThreadsForParallelAlgorithm() {
-        return maxNumberOfTheadsForParallelAlgorithm;
+    public static int getNumberOfCoresToUse() {
+        return numberOfCoresToUse;
     }
 }

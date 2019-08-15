@@ -21,6 +21,7 @@ package jloda.fx.util;
 
 
 import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import jloda.util.Basic;
 import jloda.util.Pair;
 
@@ -69,6 +70,13 @@ public class ResourceManagerFX {
         if (Basic.getDebugMode())
             System.err.println("ICON NOT FOUND: " + fileName);
         return null;
+    }
+
+    public static ImageView getIconAsImageView(String fileName, final double height) {
+        final ImageView imageView = new ImageView(getIcon(fileName));
+        imageView.setPreserveRatio(true);
+        imageView.setFitHeight(height);
+        return imageView;
     }
 
     public static ArrayList<Image> getIcons(String... fileNames) {
@@ -165,9 +173,15 @@ public class ResourceManagerFX {
                     System.err.println(e.getMessage());
                 return null;
             }
-        } else
-            return getFileResourceAsStream(clazz, filePackage, fileName);
-
+        } else {
+            try {
+                InputStream ins = getFileResourceAsStream(clazz, filePackage, fileName);
+                if (ins != null)
+                    return Basic.getInputStreamPossiblyGZIP(ins, fileName);
+            } catch (IOException e) {
+            }
+            return null;
+        }
     }
 
 

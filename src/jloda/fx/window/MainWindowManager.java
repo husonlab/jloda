@@ -146,7 +146,7 @@ public class MainWindowManager {
                     windowGeometry.setFromString(ProgramProperties.get("WindowGeometry", "50 50 800 800"));
                 }
                 final IMainWindow newWindow = getMainWindow(0).createNew();
-                newWindow.show(null, windowGeometry.getX(), windowGeometry.getY(), windowGeometry.getWidth(), windowGeometry.getHeight());
+                newWindow.show(new Stage(), windowGeometry.getX(), windowGeometry.getY(), windowGeometry.getWidth(), windowGeometry.getHeight());
                 addMainWindow(newWindow);
                 newWindow.getStage().focusedProperty().addListener((c, o, n) -> {
                     if (n)
