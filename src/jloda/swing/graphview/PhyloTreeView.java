@@ -34,7 +34,7 @@ import java.util.*;
 public class PhyloTreeView extends GraphView {
 
     /**
-     * Constructs a view of a phylogentic tree.
+     * Constructs a tree of a phylogentic tree.
      *
      * @param tree PhyloTree
      */
@@ -43,7 +43,7 @@ public class PhyloTreeView extends GraphView {
     }
 
     /**
-     * Constructs a view of a phylogentic tree.
+     * Constructs a tree of a phylogentic tree.
      *
      * @param tree        PhyloTree
      * @param doEmbedding compute an embedding of the tree?
@@ -53,7 +53,7 @@ public class PhyloTreeView extends GraphView {
     }
 
     /**
-     * Constructs a view of a phylogentic tree. Computes an embedding of the tree.
+     * Constructs a tree of a phylogentic tree. Computes an embedding of the tree.
      *
      * @param tree PhyloTree
      * @param w    int
@@ -65,7 +65,7 @@ public class PhyloTreeView extends GraphView {
     }
 
     /**
-     * Constructs a view of a phylogentic tree. Optinally computes an embedding of the tree.
+     * Constructs a tree of a phylogentic tree. Optinally computes an embedding of the tree.
      *
      * @param tree        PhyloTree
      * @param w           int
@@ -200,7 +200,7 @@ public class PhyloTreeView extends GraphView {
     }
 
     /**
-     * update view of nodes and edges
+     * update tree of nodes and edges
      */
     public void resetViews() {
         PhyloTree G = (PhyloTree) getGraph();

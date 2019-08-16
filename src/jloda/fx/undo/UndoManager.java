@@ -60,7 +60,7 @@ public class UndoManager {
         undoStackSize.bind(Bindings.size(undoStack));
 
         undoable.bind(Bindings.isNotEmpty(undoStack));
-        redoable.bind(Bindings.isNotEmpty(redoName));
+        redoable.bind(Bindings.isNotEmpty(redoStack));
     }
 
     /**
@@ -174,8 +174,16 @@ public class UndoManager {
         return undoable;
     }
 
+    public boolean isUndoable() {
+        return undoable.get();
+    }
+
     public ReadOnlyBooleanProperty redoableProperty() {
         return redoable;
+    }
+
+    public boolean isRedoable() {
+        return redoable.get();
     }
 
     /**

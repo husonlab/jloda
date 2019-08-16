@@ -86,7 +86,7 @@ final public class EdgeView extends ViewBase implements Cloneable { //, IEdgeVie
     public static final byte RDIRECTED = 4;
 
     /**
-     * Construct an edge view.
+     * Construct an edge tree.
      */
     public EdgeView() {
         labelLayout = CENTRAL;
@@ -103,7 +103,7 @@ final public class EdgeView extends ViewBase implements Cloneable { //, IEdgeVie
     }
 
     /**
-     * copies the given src edge view
+     * copies the given src edge tree
      *
      * @param src
      */
@@ -951,7 +951,7 @@ final public class EdgeView extends ViewBase implements Cloneable { //, IEdgeVie
 
 
     /**
-     * writes this edge view. Include internal points
+     * writes this edge tree. Include internal points
      *
      * @param w
      * @param previousEV if not null, only write those fields that differ from the values in previousNV
@@ -962,7 +962,7 @@ final public class EdgeView extends ViewBase implements Cloneable { //, IEdgeVie
     }
 
     /**
-     * gets a string representation of this node view, including internal points
+     * gets a string representation of this node tree, including internal points
      *
      * @return string representation
      */
@@ -971,7 +971,7 @@ final public class EdgeView extends ViewBase implements Cloneable { //, IEdgeVie
     }
 
     /**
-     * gets a string representation of this node view
+     * gets a string representation of this node tree
      *
      * @param withInternalPoints show internal points as well?
      * @return string representation
@@ -981,7 +981,7 @@ final public class EdgeView extends ViewBase implements Cloneable { //, IEdgeVie
     }
 
     /**
-     * gets a string representation of this edge view
+     * gets a string representation of this edge tree
      *
      * @param previousEV if not null, only write those fields that differ from the values in previousNV
      * @return string representation
@@ -1062,7 +1062,7 @@ final public class EdgeView extends ViewBase implements Cloneable { //, IEdgeVie
     }
 
     /**
-     * reads a edge view from a line
+     * reads a edge tree from a line
      *
      * @param tokens
      * @param prevEV this must be !=null, for example can be set to graphView.defaultEdgeView

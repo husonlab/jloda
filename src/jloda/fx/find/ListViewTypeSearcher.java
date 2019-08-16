@@ -28,13 +28,13 @@ import javafx.scene.input.KeyEvent;
 import jloda.util.Single;
 
 /**
- * adds text search capability to a list view
+ * adds text search capability to a list tree
  * Daniel Huson, 10.2018
  */
 public class ListViewTypeSearcher {
 
     /**
-     * setups a text-based searcher for a list view
+     * setups a text-based searcher for a list tree
      *
      * @param listView
      * @param <T>

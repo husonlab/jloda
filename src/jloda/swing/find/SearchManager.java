@@ -863,7 +863,7 @@ public class SearchManager implements IDirectableViewer {
     }
 
     /**
-     * ask view to destroy itself
+     * ask tree to destroy itself
      */
     public void destroyView() throws CanceledException {
         // because the searchmanager is directed by all documents, don't want it to close when one document is closed
@@ -871,7 +871,7 @@ public class SearchManager implements IDirectableViewer {
     }
 
     /**
-     * ask view to prevent user input
+     * ask tree to prevent user input
      */
     public void lockUserInput() {
         isLocked = true;
@@ -892,7 +892,7 @@ public class SearchManager implements IDirectableViewer {
     }
 
     /**
-     * ask view to allow user input
+     * ask tree to allow user input
      */
     public void unlockUserInput() {
         if (isLocked) {
@@ -903,7 +903,7 @@ public class SearchManager implements IDirectableViewer {
     }
 
     /**
-     * ask view to update itself. This is method is wrapped into a runnable object
+     * ask tree to update itself. This is method is wrapped into a runnable object
      * and put in the swing event queue to avoid concurrent modifications.
      *
      * @param what what should be updated? Possible values: Director.ALL or Director.TITLE
