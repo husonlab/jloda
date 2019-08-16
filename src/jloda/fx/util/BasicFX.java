@@ -26,6 +26,7 @@ import javafx.scene.Node;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextArea;
 import javafx.scene.layout.Pane;
+import javafx.scene.shape.*;
 import javafx.scene.text.Font;
 import javafx.scene.text.Text;
 
@@ -33,6 +34,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.LinkedList;
 import java.util.Queue;
+import java.util.function.Function;
 
 /**
  * basic stuff for FX
@@ -138,6 +140,64 @@ public class BasicFX {
 
         tableView.widthProperty().addListener(tableResizeListener);
         tableView.heightProperty().addListener(tableResizeListener);
+    }
+
+    public static void changeTranslateWidthHeight(Rectangle rectangle, Function<Double, Double> changeX, Function<Double, Double> changeY) {
+        rectangle.setTranslateX(changeX.apply(rectangle.getTranslateX()));
+        rectangle.setTranslateY(changeY.apply(rectangle.getTranslateY()));
+        rectangle.setWidth(changeX.apply(rectangle.getWidth()));
+        rectangle.setHeight(changeY.apply(rectangle.getHeight()));
+    }
+
+    public static void changeCenterRadii(Arc arc, Function<Double, Double> changeX, Function<Double, Double> changeY) {
+        arc.setCenterX(changeX.apply(arc.getCenterX()));
+        arc.setCenterY(changeY.apply(arc.getCenterY()));
+        arc.setRadiusX(changeX.apply(arc.getRadiusX()));
+        arc.setRadiusY(changeY.apply(arc.getRadiusY()));
+    }
+
+
+    public static void changeTranslate(Node node, Function<Double, Double> changeX, Function<Double, Double> changeY) {
+        node.setTranslateX(changeX.apply(node.getTranslateX()));
+        node.setTranslateY(changeY.apply(node.getTranslateY()));
+    }
+
+    /**
+     * change paths or arcs in group to reflect change of x and y coordinates (either scaling or translation)
+     *
+     * @param group
+     * @param changeX
+     * @param changeY
+     */
+    public static void changePathsOrArcsInGroup(Group group, Function<Double, Double> changeX, Function<Double, Double> changeY) {
+        for (Node node : group.getChildren()) {
+            if (node instanceof Path) {
+                final Path path = (Path) node;
+                final ArrayList<PathElement> elements = new ArrayList<>(path.getElements().size());
+                for (PathElement element : path.getElements()) {
+                    if (element instanceof MoveTo) {
+                        elements.add(new MoveTo(changeX.apply(((MoveTo) element).getX()), changeY.apply(((MoveTo) element).getY())));
+                    } else if (element instanceof LineTo) {
+                        elements.add(new LineTo(changeX.apply(((LineTo) element).getX()), changeY.apply(((LineTo) element).getY())));
+                    } else if (element instanceof ArcTo) {
+                        final ArcTo arcTo = (ArcTo) element;
+                        final ArcTo newArcTo = new ArcTo(changeX.apply(arcTo.getRadiusX()), changeY.apply(arcTo.getRadiusY()), 0, changeX.apply(arcTo.getX()), changeY.apply(arcTo.getY()), arcTo.isLargeArcFlag(), arcTo.isSweepFlag());
+                        elements.add(newArcTo);
+                    } else if (element instanceof QuadCurveTo) {
+                        elements.add(new QuadCurveTo(changeX.apply(((QuadCurveTo) element).getControlX()), changeY.apply(((QuadCurveTo) element).getControlY()), changeX.apply(((QuadCurveTo) element).getX()), changeY.apply(((QuadCurveTo) element).getY())));
+                    } else if (element instanceof CubicCurveTo) {
+                        elements.add(new CubicCurveTo(changeX.apply(((CubicCurveTo) element).getControlX1()), changeY.apply(((CubicCurveTo) element).getControlY1()), changeX.apply(((CubicCurveTo) element).getControlX2()), changeY.apply(((CubicCurveTo) element).getControlY2()), changeX.apply(((CubicCurveTo) element).getX()), changeY.apply(((CubicCurveTo) element).getY())));
+                    }
+                }
+                path.getElements().setAll(elements);
+            } else if (node instanceof Arc) {
+                final Arc arc = (Arc) node;
+                arc.setCenterX(changeX.apply(arc.getCenterX()));
+                arc.setCenterY(changeY.apply(arc.getCenterY()));
+                arc.setRadiusX(changeX.apply(arc.getRadiusX()));
+                arc.setRadiusY(changeY.apply(arc.getRadiusY()));
+            }
+        }
     }
 
 }
