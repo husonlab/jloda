@@ -48,7 +48,7 @@ public interface ISearcher {
     ReadOnlyBooleanProperty isSelectionFindable();
 
     /**
-     * something has been changed or selected, update tree
+     * something has been changed or selected, update view
      */
     void updateView();
 

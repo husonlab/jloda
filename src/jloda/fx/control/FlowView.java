@@ -47,7 +47,7 @@ import java.util.concurrent.Executors;
 import java.util.function.Function;
 
 /**
- * simple implementation of a flow tree
+ * simple implementation of a flow view
  * Uses virtualization
  * Also allows background production of nodes. This is useful if computing a node for an item takes time
  * Daniel Huson, 4.2019
@@ -265,7 +265,7 @@ public class FlowView<T> extends Pane implements Closeable {
     }
 
     /**
-     * close the flow tree. Shuts down the background thread, if used
+     * close the flow view. Shuts down the background thread, if used
      */
     public void close() {
         if (executorService != null)

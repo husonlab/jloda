@@ -274,7 +274,7 @@ public class JTableSearcher implements IObjectSearcher {
     }
 
     /**
-     * something has been changed or selected, update tree
+     * something has been changed or selected, update view
      */
     public void updateView() {
 

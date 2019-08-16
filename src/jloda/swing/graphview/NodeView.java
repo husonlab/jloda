@@ -69,7 +69,7 @@ final public class NodeView extends ViewBase implements Cloneable {
     public static Writer descriptionWriter = null;
 
     /**
-     * Construct a node tree.
+     * Construct a node view.
      */
     public NodeView() {
         labelLayout = LAYOUT;
@@ -86,7 +86,7 @@ final public class NodeView extends ViewBase implements Cloneable {
     }
 
     /**
-     * copies the values of the source node tree
+     * copies the values of the source node view
      *
      * @param src
      */
@@ -515,7 +515,7 @@ final public class NodeView extends ViewBase implements Cloneable {
 
                             // save current transform:
                             AffineTransform saveTransform = gc.getTransform();
-                        // a vertical phylogram tree
+                        // a vertical phylogram view
 
                             /*
                             AffineTransform localTransform =  gc.getTransform();
@@ -758,7 +758,7 @@ final public class NodeView extends ViewBase implements Cloneable {
     }
 
     /**
-     * writes this node tree
+     * writes this node view
      *
      * @param w
      */
@@ -768,7 +768,7 @@ final public class NodeView extends ViewBase implements Cloneable {
     }
 
     /**
-     * gets a string representation of this node tree, including coordinates
+     * gets a string representation of this node view, including coordinates
      *
      * @return string representation
      */
@@ -777,7 +777,7 @@ final public class NodeView extends ViewBase implements Cloneable {
     }
 
     /**
-     * gets a string representation of this node tree
+     * gets a string representation of this node view
      *
      * @param withCoordinates show coordinates as well?
      * @return string representation
@@ -788,7 +788,7 @@ final public class NodeView extends ViewBase implements Cloneable {
 
 
     /**
-     * writes this node tree
+     * writes this node view
      *
      * @param w
      * @param previousNV if not null, only write those fields that differ from the values in previousNV
@@ -799,7 +799,7 @@ final public class NodeView extends ViewBase implements Cloneable {
     }
 
     /**
-     * gets a string representation of this node tree
+     * gets a string representation of this node view
      *
      * @param previousNV if not null, only write those fields that differ from the values in previousNV
      * @return string representation
@@ -809,7 +809,7 @@ final public class NodeView extends ViewBase implements Cloneable {
     }
 
     /**
-     * gets a string representation of this node tree
+     * gets a string representation of this node view
      *
      * @param previousNV if not null, only write those fields that differ from the values in previousNV
      * @return string representation
@@ -888,7 +888,7 @@ final public class NodeView extends ViewBase implements Cloneable {
     }
 
     /**
-     * reads a node tree from a line
+     * reads a node view from a line
      *
      * @param tokens
      * @param prevNV this must be !=null, for example can be set to graphView.defaultNodeView

@@ -50,7 +50,7 @@ public interface ISearcher {
     boolean isSelectionFindable();
 
     /**
-     * something has been changed or selected, update tree
+     * something has been changed or selected, update view
      */
     void updateView();
 

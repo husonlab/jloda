@@ -35,7 +35,7 @@ import java.util.List;
 import java.util.*;
 
 /**
- * PhyloGraph tree
+ * PhyloGraph view
  * Daniel Huson, 2002
  */
 
@@ -44,7 +44,7 @@ public class PhyloGraphView extends GraphView {
     private boolean inEdgeClickSelection = false;
 
     /**
-     * Constructs a tree of a phylogenetic graph, setting
+     * Constructs a view of a phylogenetic graph, setting
      * window width and height to 400.
      *
      * @param phyloGraph the PhyloGraph
@@ -61,7 +61,7 @@ public class PhyloGraphView extends GraphView {
     }
 
     /**
-     * Constructs a tree of a phylogentic G.
+     * Constructs a view of a phylogentic G.
      *
      * @param phyloGraph the PhyloGraph
      * @param w          the width
@@ -128,7 +128,7 @@ public class PhyloGraphView extends GraphView {
     }
 
     /**
-     * Constructs a tree of a phylogentic tree.
+     * Constructs a view of a phylogentic tree.
      *
      * @param tree PhyloTree
      */
@@ -137,7 +137,7 @@ public class PhyloGraphView extends GraphView {
     }
 
     /**
-     * Constructs a tree of a phylogentic tree.
+     * Constructs a view of a phylogentic tree.
      *
      * @param tree PhyloTree
      */
@@ -187,7 +187,7 @@ public class PhyloGraphView extends GraphView {
     }
 
     /**
-     * update tree of nodes and edges
+     * update view of nodes and edges
      */
     public void resetViews() {
         PhyloSplitsGraph G = (PhyloSplitsGraph) getGraph();

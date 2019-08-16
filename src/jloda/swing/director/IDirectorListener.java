@@ -34,7 +34,7 @@ import jloda.util.CanceledException;
  */
 public interface IDirectorListener extends IUpdateableView {
     /**
-     * ask tree to update itself. This is method is wrapped into a runnable object
+     * ask view to update itself. This is method is wrapped into a runnable object
      * and put in the swing event queue to avoid concurrent modifications.
      *
      * @param what what should be updated? Possible values: Director.ALL or Director.TITLE
@@ -42,12 +42,12 @@ public interface IDirectorListener extends IUpdateableView {
     void updateView(String what);
 
     /**
-     * ask tree to prevent user input
+     * ask view to prevent user input
      */
     void lockUserInput();
 
     /**
-     * ask tree to allow user input
+     * ask view to allow user input
      */
     void unlockUserInput();
 
@@ -59,7 +59,7 @@ public interface IDirectorListener extends IUpdateableView {
     boolean isLocked();
 
     /**
-     * ask tree to destroy itself
+     * ask view to destroy itself
      */
     void destroyView() throws CanceledException;
 

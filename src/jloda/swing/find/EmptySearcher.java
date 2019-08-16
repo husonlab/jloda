@@ -59,7 +59,7 @@ public class EmptySearcher implements ISearcher {
     }
 
     /**
-     * something has been changed or selected, update tree
+     * something has been changed or selected, update view
      */
     @Override
     public void updateView() {
