@@ -242,7 +242,7 @@ public class UndoManager {
     class UndoableApply extends UndoableRedoableCommand {
         private final Runnable runnable;
 
-        public UndoableApply(Runnable runnable) {
+        UndoableApply(Runnable runnable) {
             super("Apply");
             this.runnable = runnable;
         }
