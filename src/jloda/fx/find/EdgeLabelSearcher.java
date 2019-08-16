@@ -218,7 +218,7 @@ public class EdgeLabelSearcher implements IObjectSearcher<Edge> {
     }
 
     /**
-     * something has been changed or selected, update view
+     * something has been changed or selected, update tree
      */
     public void updateView() {
     }

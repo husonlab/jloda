@@ -202,7 +202,7 @@ public class TableSearcher implements IObjectSearcher {
     }
 
     /**
-     * something has been changed or selected, update view
+     * something has been changed or selected, update tree
      */
     public void updateView() {
     }

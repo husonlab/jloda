@@ -218,7 +218,7 @@ public class NodeLabelSearcher implements IObjectSearcher<Node> {
     }
 
     /**
-     * something has been changed or selected, update view
+     * something has been changed or selected, update tree
      */
     public void updateView() {
     }

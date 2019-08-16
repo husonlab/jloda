@@ -20,7 +20,7 @@
 package jloda.swing.director;
 
 /**
- * an updatable view
+ * an updatable tree
  *
  * @author huson
  *         Date: 28-Mar-2004

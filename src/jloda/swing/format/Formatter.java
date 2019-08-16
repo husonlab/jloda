@@ -75,7 +75,7 @@ public class Formatter implements IDirectableViewer {
      * constructor
      *
      * @param dir               the director
-     * @param viewer            the graph view
+     * @param viewer            the graph tree
      * @param showRotateButtons show label rotate buttons?
      */
     public Formatter(final IDirector dir, final INodeEdgeFormatable viewer, boolean showRotateButtons) {
@@ -211,7 +211,7 @@ public class Formatter implements IDirectableViewer {
     }
 
     /**
-     * ask view to update itself. This is method is wrapped into a runnable object
+     * ask tree to update itself. This is method is wrapped into a runnable object
      * and put in the swing event queue to avoid concurrent modifications.
      *
      * @param what is to be updated
@@ -383,7 +383,7 @@ public class Formatter implements IDirectableViewer {
     }
 
     /**
-     * ask view to prevent user input
+     * ask tree to prevent user input
      */
 
     public void lockUserInput() {
@@ -395,7 +395,7 @@ public class Formatter implements IDirectableViewer {
     }
 
     /**
-     * ask view to allow user input
+     * ask tree to allow user input
      */
     public void unlockUserInput() {
         colorChooser.setEnabled(true);
@@ -404,7 +404,7 @@ public class Formatter implements IDirectableViewer {
     }
 
     /**
-     * ask view to destroy itself
+     * ask tree to destroy itself
      */
     public void destroyView() {
         dir.removeViewer(this);

@@ -35,7 +35,7 @@ public interface IGraphDrawer {
     String DESCRIPTION = "Graph Drawer";
 
     /**
-     * setup the graph view
+     * setup the graph tree
      *
      * @param graphView
      */

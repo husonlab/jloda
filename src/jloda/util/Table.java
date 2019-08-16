@@ -141,7 +141,7 @@ public class Table<R, C, V> {
 
     /**
      * Returns the hash code for this table. The hash code of a table is defined
-     * as the hash code of its cell view, as returned by {@link #cellSet}.
+     * as the hash code of its cell tree, as returned by {@link #cellSet}.
      */
     public int hashCode() {
         return dataMap.hashCode();

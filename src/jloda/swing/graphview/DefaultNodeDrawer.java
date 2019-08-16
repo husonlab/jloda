@@ -349,7 +349,7 @@ public class DefaultNodeDrawer implements INodeDrawer {
                         final Dimension labelSize = nv.getLabelSize();
                             // save current transform:
                             AffineTransform saveTransform = gc.getTransform();
-                        // a vertical phylogram view
+                        // a vertical phylogram tree
 
                             /*
                             AffineTransform localTransform =  gc.getTransform();
