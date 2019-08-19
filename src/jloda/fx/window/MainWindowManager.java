@@ -111,7 +111,7 @@ public class MainWindowManager {
             }
         }
         ProgramProperties.put("WindowGeometry", (new WindowGeometry(mainWindow.getStage())).toString());
-        mainWindow.getStage().close();
+        // mainWindow.getStage().close();
 
         mainWindow.close();
         mainWindows.remove(mainWindow);

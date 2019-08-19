@@ -29,6 +29,7 @@ import javafx.scene.layout.Pane;
 import javafx.scene.shape.*;
 import javafx.scene.text.Font;
 import javafx.scene.text.Text;
+import javafx.stage.Stage;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -200,4 +201,12 @@ public class BasicFX {
         }
     }
 
+    public static void centerAndShow(Stage parent, Stage child) {
+        child.setX(parent.getX() + 0.5 * parent.getWidth());
+        child.setY(parent.getY() + 0.5 * parent.getHeight());
+
+        child.show();
+        child.setX(parent.getX() + 0.5 * (parent.getWidth() - child.getWidth()));
+        child.setY(parent.getY() + 0.5 * (parent.getHeight() - child.getHeight()));
+    }
 }
