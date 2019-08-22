@@ -23,8 +23,10 @@ import javafx.beans.InvalidationListener;
 import javafx.geometry.Dimension2D;
 import javafx.scene.Group;
 import javafx.scene.Node;
+import javafx.scene.control.Slider;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextArea;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.Pane;
 import javafx.scene.shape.*;
 import javafx.scene.text.Font;
@@ -208,5 +210,16 @@ public class BasicFX {
         child.show();
         child.setX(parent.getX() + 0.5 * (parent.getWidth() - child.getWidth()));
         child.setY(parent.getY() + 0.5 * (parent.getHeight() - child.getHeight()));
+    }
+
+    /**
+     * ensures that clicking on the slider also generates  value changing events
+     *
+     * @param slider
+     */
+    public static void ensureClickGeneratesValueChangingEvents(Slider slider) {
+        slider.addEventFilter(MouseEvent.MOUSE_PRESSED, e -> slider.setValueChanging(true));
+        slider.addEventFilter(MouseEvent.MOUSE_RELEASED, e -> slider.setValueChanging(false));
+
     }
 }
