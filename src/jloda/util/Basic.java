@@ -349,6 +349,14 @@ public class Basic {
         return set;
     }
 
+    public static <T> ArrayList<T> asList(Iterable<T> iterable) {
+        final ArrayList<T> list = new ArrayList<>();
+        for (T t : iterable) {
+            list.add(t);
+        }
+        return list;
+    }
+
     /**
      * given an array, returns it randomized (Durstenfeld 1964)
      *
@@ -3360,13 +3368,13 @@ public class Basic {
      * @return next power of 2
      */
     public static int nextPowerOf2(int i) {
-        int k = 1;
+        long k = 1L;
         while (k < Integer.MAX_VALUE) {
             if (k >= i)
                 break;
             k <<= 1;
         }
-        return k;
+        return (int) k;
     }
 
     /**
@@ -4330,6 +4338,22 @@ public class Basic {
         final File file = new File(fileName);
         if (file.exists())
             file.delete();
+    }
+
+    public static Iterable<Integer> getIterable(int[] values) {
+        return () -> new Iterator<>() {
+            private int i = 0;
+
+            @Override
+            public boolean hasNext() {
+                return i < values.length;
+            }
+
+            @Override
+            public Integer next() {
+                return values[i++];
+            }
+        };
     }
 }
 
