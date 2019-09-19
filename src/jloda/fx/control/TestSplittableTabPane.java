@@ -44,6 +44,7 @@ public class TestSplittableTabPane extends Application {
     public void start(Stage primaryStage) {
         primaryStage.setTitle(ProgramProperties.getProgramName());
 
+
         final BorderPane borderPane = new BorderPane();
 
         final SplittableTabPane tabPane = new SplittableTabPane();

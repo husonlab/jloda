@@ -43,11 +43,15 @@ public class ProgramExecutorService {
     }
 
     public static ExecutorService createServiceForParallelAlgorithm() {
+        return createServiceForParallelAlgorithm(ProgramExecutorService.getNumberOfCoresToUse());
+    }
+
+    public static ExecutorService createServiceForParallelAlgorithm(int numberOfThreads) {
         return Executors.newFixedThreadPool(ProgramExecutorService.getNumberOfCoresToUse());
     }
 
-    public static void setNumberOfCoresToUse(int maxNumberOfThreadsForParallelAlgorithm) {
-        ProgramExecutorService.numberOfCoresToUse = Math.max(1, maxNumberOfThreadsForParallelAlgorithm);
+    public static void setNumberOfCoresToUse(int numberOfCoresToUse) {
+        ProgramExecutorService.numberOfCoresToUse = Math.max(1, numberOfCoresToUse);
     }
 
     public static int getNumberOfCoresToUse() {

@@ -2571,7 +2571,10 @@ public class Basic {
     public static boolean fileExistsAndIsNonEmpty(String fileName) {
         if (fileName == null)
             return false;
-        File file = new File(fileName);
+        else return fileExistsAndIsNonEmpty(new File(fileName));
+    }
+
+    public static boolean fileExistsAndIsNonEmpty(File file) {
         return file.exists() && file.length() > 0;
     }
 
@@ -3152,8 +3155,8 @@ public class Basic {
      * @param <T>
      * @return symmetric different
      */
-    public static <T> HashSet<T> intersection(final Collection<T> set1, final Collection<T> set2) {
-        final HashSet<T> result = new HashSet<>();
+    public static <T> Collection<T> intersection(final Collection<T> set1, final Collection<T> set2) {
+        final Collection<T> result = new HashSet<>();
         for (T element : set1) {
             if (set2.contains(element))
                 result.add(element);
@@ -3810,7 +3813,7 @@ public class Basic {
     }
 
     /**
-     * convert a string with spaces and/or underscores from camel case
+     * convert a string from camel case
      *
      * @param string
      * @return camel case
@@ -4354,6 +4357,22 @@ public class Basic {
                 return values[i++];
             }
         };
+    }
+
+    public static String[] replaceAll(String[] strings, String regEx, String replacement) {
+        final String[] result = new String[strings.length];
+        for (int i = 0; i < strings.length; i++) {
+            result[i] = strings[i].replaceAll(regEx, replacement);
+        }
+        return result;
+    }
+
+    public static boolean hasPositiveLengthValue(Map<?, String> map) {
+        for (String value : map.values()) {
+            if (value != null && value.length() > 0)
+                return true;
+        }
+        return false;
     }
 }
 

@@ -150,4 +150,7 @@ public class SetUtils {
         };
     }
 
+    public static <T> boolean intersect(Collection<T> a, Collection<T> b) {
+        return intersection(a, b).iterator().hasNext();
+    }
 }

@@ -146,8 +146,8 @@ public class MainWindowManager {
                     windowGeometry.setFromString(ProgramProperties.get("WindowGeometry", "50 50 800 800"));
                 }
                 final IMainWindow newWindow = getMainWindow(0).createNew();
-                newWindow.show(new Stage(), windowGeometry.getX(), windowGeometry.getY(), windowGeometry.getWidth(), windowGeometry.getHeight());
                 addMainWindow(newWindow);
+                newWindow.show(new Stage(), windowGeometry.getX(), windowGeometry.getY(), windowGeometry.getWidth(), windowGeometry.getHeight());
                 newWindow.getStage().focusedProperty().addListener((c, o, n) -> {
                     if (n)
                         setLastFocusedMainWindow(newWindow);
@@ -215,6 +215,4 @@ public class MainWindowManager {
     public IntegerBinding sizeProperty() {
         return Bindings.size(mainWindows);
     }
-
-
 }
