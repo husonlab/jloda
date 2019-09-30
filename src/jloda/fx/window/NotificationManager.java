@@ -20,6 +20,7 @@
 package jloda.fx.window;
 
 import javafx.animation.*;
+import javafx.application.Platform;
 import javafx.beans.property.DoubleProperty;
 import javafx.beans.property.SimpleDoubleProperty;
 import javafx.geometry.Insets;
@@ -305,8 +306,10 @@ public class NotificationManager {
 
                 addToShowingNotifications(notification, primaryScreenBounds.getMaxY());
 
-                notification.show(window);
-                createFadeTransition(notification, 0, 1, null).play();
+                Platform.runLater(() -> {
+                    notification.show(window);
+                    createFadeTransition(notification, 0, 1, null).play();
+                });
             }
         }
 
