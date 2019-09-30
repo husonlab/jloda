@@ -48,7 +48,7 @@ public class ScaleBar extends AnchorPane {
         pane.getChildren().add(numberAxis);
 
         AnchorPane.setLeftAnchor(pane, 5.0);
-        AnchorPane.setBottomAnchor(pane, 2.0);
+        AnchorPane.setTopAnchor(pane, 2.0);
         getChildren().add(pane);
 
         numberAxis.setSide(Side.TOP);
@@ -62,15 +62,17 @@ public class ScaleBar extends AnchorPane {
         pane.setOnMousePressed((e -> {
             mouseX = e.getScreenX();
             mouseY = e.getScreenY();
+            e.consume();
         }));
 
         pane.setOnMouseDragged((e -> {
             double deltaX = e.getScreenX() - mouseX;
             double deltaY = e.getScreenY() - mouseY;
             AnchorPane.setLeftAnchor(pane, AnchorPane.getLeftAnchor(pane) + deltaX);
-            AnchorPane.setBottomAnchor(pane, AnchorPane.getBottomAnchor(pane) - deltaY);
+            AnchorPane.setTopAnchor(pane, AnchorPane.getTopAnchor(pane) - deltaY);
             mouseX = e.getScreenX();
             mouseY = e.getScreenY();
+            e.consume();
         }));
     }
 
