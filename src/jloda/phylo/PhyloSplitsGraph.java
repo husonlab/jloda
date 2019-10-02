@@ -117,7 +117,10 @@ public class PhyloSplitsGraph extends PhyloGraph {
     public Integer[] getSplitIds() {
         final Set<Integer> ids = new TreeSet<>();
         for (Edge e : edges()) {
-            ids.add(splits.getValue(e));
+            if (splits.getValue(e) == null)
+                System.err.println("Split id is null!!!");
+            else
+                ids.add(splits.getValue(e));
         }
         return ids.toArray(new Integer[0]);
     }
@@ -151,9 +154,9 @@ public class PhyloSplitsGraph extends PhyloGraph {
      * @return a clone of the current tree
      */
     public Object clone() {
-        PhyloSplitsGraph tree = new PhyloSplitsGraph();
-        tree.copy(this);
-        return tree;
+        final PhyloSplitsGraph phyloSplitsGraph = new PhyloSplitsGraph();
+        phyloSplitsGraph.copy(this);
+        return phyloSplitsGraph;
     }
 
     /**

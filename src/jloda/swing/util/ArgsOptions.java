@@ -438,6 +438,9 @@ public class ArgsOptions {
     }
 
     private boolean getOption(String shortKey, String longKey, String description, boolean defaultValue, boolean mandatory) throws UsageException {
+        if (shortKey.equals("+g"))
+            shortKey = "-g"; // for backward compatibility
+
         boolean hide = false;
         if (shortKey.startsWith("!")) {
             hide = true;
