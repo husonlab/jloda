@@ -2017,7 +2017,10 @@ public class Basic {
      * @return new file name
      */
     public static String replaceFileSuffix(String fileName, String newSuffix) {
-        return replaceFileSuffix(new File(fileName), newSuffix).getPath();
+        if (fileName == null)
+            return null;
+        else
+            return replaceFileSuffix(new File(fileName), newSuffix).getPath();
     }
 
     /**
@@ -2028,10 +2031,14 @@ public class Basic {
      * @return new file
      */
     public static File replaceFileSuffix(File file, String newSuffix) {
-        String name = Basic.getFileBaseName(file.getName());
-        if (newSuffix != null && !name.endsWith(newSuffix))
-            name = name + newSuffix;
-        return new File(file.getParent(), name);
+        if (file == null)
+            return null;
+        else {
+            String name = Basic.getFileBaseName(file.getName());
+            if (newSuffix != null && !name.endsWith(newSuffix))
+                name = name + newSuffix;
+            return new File(file.getParent(), name);
+        }
     }
 
     public static String getFileNameWithoutZipOrGZipSuffix(String fileName) {

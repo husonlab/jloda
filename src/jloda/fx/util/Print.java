@@ -79,6 +79,8 @@ public class Print {
                     } else {
                         javafx.scene.control.Alert alert = new javafx.scene.control.Alert(javafx.scene.control.Alert.AlertType.CONFIRMATION);
                         alert.initOwner(owner);
+                        alert.setResizable(true);
+
                         alert.setTitle("Scale Before Printing - " + ProgramProperties.getProgramName());
                         alert.setHeaderText(String.format("Scene size (%.0f x %.0f) exceeds printable area (%.0f x %.0f)", node.getBoundsInParent().getWidth(),
                                 node.getBoundsInParent().getHeight(), pageLayout.getPrintableWidth(), pageLayout.getPrintableHeight()));

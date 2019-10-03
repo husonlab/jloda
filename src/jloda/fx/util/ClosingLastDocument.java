@@ -42,6 +42,8 @@ public class ClosingLastDocument {
     public static boolean apply(Stage stage) {
         final Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
         alert.initOwner(stage);
+        alert.setResizable(true);
+
         alert.setTitle("Confirm Quit - " + ProgramProperties.getProgramName());
         alert.setHeaderText("Closing the last open document");
         alert.setContentText("Do you really want to quit?");
