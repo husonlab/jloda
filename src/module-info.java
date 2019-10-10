@@ -6,7 +6,6 @@ module jloda {
     requires transitive java.desktop;
     requires transitive java.xml;
 
-    requires batik.all;
     requires xml.apis.ext;
     requires VectorGraphics2D;
 

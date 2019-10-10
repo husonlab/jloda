@@ -20,19 +20,15 @@
 package jloda.swing.export;
 
 
+import de.erichseifert.vectorgraphics2d.VectorGraphics2D;
+import de.erichseifert.vectorgraphics2d.svg.SVGProcessor;
+import de.erichseifert.vectorgraphics2d.util.PageSize;
 import jloda.util.Basic;
-import org.apache.batik.dom.GenericDOMImplementation;
-import org.apache.batik.svggen.SVGGraphics2D;
-import org.w3c.dom.DOMImplementation;
-import org.w3c.dom.Document;
 
 import javax.swing.*;
 import javax.swing.filechooser.FileFilter;
-import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.DocumentBuilderFactory;
 import java.awt.datatransfer.DataFlavor;
 import java.io.*;
-import java.nio.charset.StandardCharsets;
 
 /**
  * The export filetype for svg images.
@@ -97,13 +93,16 @@ public class SVGExportType extends FileFilter implements ExportGraphicType {
             panel = imagePanel;
         else
             panel = ExportManager.makePanelFromScrollPane(imagePanel, imageScrollPane);
-        final DOMImplementation dom = GenericDOMImplementation.getDOMImplementation();
-        final Document doc = dom.createDocument(null, "svg", null);
-        final SVGGraphics2D svgGenerator = new SVGGraphics2D(doc);
 
-        panel.paint(svgGenerator);
+        int width = panel.getWidth();
+        int height = panel.getHeight();
 
-        svgGenerator.stream(new OutputStreamWriter(out, StandardCharsets.UTF_8));
+        final VectorGraphics2D pdfGraphics = new VectorGraphics2D();
+        panel.paint(pdfGraphics);
+
+        final SVGProcessor processor = new SVGProcessor();
+        final de.erichseifert.vectorgraphics2d.Document document = processor.getDocument(pdfGraphics.getCommands(), new PageSize(width, height));
+        document.writeTo(out);
         out.flush();
     }
 
@@ -115,28 +114,11 @@ public class SVGExportType extends FileFilter implements ExportGraphicType {
      * @param imagePanel
      * @param imageScrollPane
      * @param showWholeImage
-     * @throws IOException
+     * @throws java.io.IOException
      */
     public void writeToFile(File file, final JPanel imagePanel, JScrollPane imageScrollPane, boolean showWholeImage) throws IOException {
-        final JPanel panel;
-        if (showWholeImage || imageScrollPane == null)
-            panel = imagePanel;
-        else
-            panel = ExportManager.makePanelFromScrollPane(imagePanel, imageScrollPane);
-
-        try {
-            final DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
-            final DocumentBuilder builder = factory.newDocumentBuilder();
-            final Document doc = builder.newDocument();
-
-            final SVGGraphics2D svgGenerator = new SVGGraphics2D(doc);
-            svgGenerator.setSVGCanvasSize(panel.getSize());
-            panel.paint(svgGenerator);
-            try (BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(file)))) {
-                svgGenerator.stream(bw);
-            }
-        } catch (Exception e) {
-            throw new IOException(e);
+        try (OutputStream fos = new FileOutputStream(file)) {
+            stream(imagePanel, imageScrollPane, showWholeImage, fos);
         }
     }
 
