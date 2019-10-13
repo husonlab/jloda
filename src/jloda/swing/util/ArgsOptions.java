@@ -386,12 +386,12 @@ public class ArgsOptions {
 
     public String[] getOption(String shortKey, String longKey, String description, String[] defaultValue) throws UsageException {
         List<String> result = getOption(shortKey, longKey, description, Arrays.asList(defaultValue), false);
-        return result.toArray(new String[result.size()]);
+        return result.toArray(new String[0]);
     }
 
     public String[] getOptionMandatory(String shortKey, String longKey, String description, String[] defaultValue) throws UsageException {
         List<String> result = getOption(shortKey, longKey, description, Arrays.asList(defaultValue), true);
-        return result.toArray(new String[result.size()]);
+        return result.toArray(new String[0]);
     }
 
     public Number getOption(String shortKey, String longKey, String description, Number defaultValue, boolean mandatory) throws UsageException {

@@ -51,7 +51,6 @@ public class GraphViewListener implements IGraphViewListener {
     private final GraphView viewer;
     private final Transform trans;
 
-    private final int inClick = 1;
     private final int inMove = 2;
     private final int inRubberband = 3;
     private final int inNewEdge = 4;
@@ -392,6 +391,7 @@ public class GraphViewListener implements IGraphViewListener {
                 return;
             }
         }
+        int inClick = 1;
         current = inClick;
 
         if (hitNodes.size() == 0 && hitEdges.size() == 0 && hitNodeLabels.size() == 0 && hitEdgeLabels.size() == 0) {

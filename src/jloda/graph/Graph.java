@@ -735,7 +735,7 @@ public class Graph extends GraphBase {
      * Better: use edges()
      */
     public Iterator<Edge> edgeIterator() {
-        return new IteratorAdapter<Edge>() {
+        return new IteratorAdapter<>() {
             private Edge e = getFirstEdge();
 
             protected Edge findNext() throws NoSuchElementException {
@@ -756,7 +756,7 @@ public class Graph extends GraphBase {
      * @return edge iterator
      */
     public Iterator<Edge> edgeIteratorIncludingHidden() {
-        return new IteratorAdapter<Edge>() {
+        return new IteratorAdapter<>() {
             private Edge e = firstEdge;
 
             protected Edge findNext() throws NoSuchElementException {
@@ -779,7 +779,7 @@ public class Graph extends GraphBase {
      * Better: use nodes()
      */
     public Iterator<Node> nodeIterator() {
-        return new IteratorAdapter<Node>() {
+        return new IteratorAdapter<>() {
             private Node v = getFirstNode();
 
             protected Node findNext() throws NoSuchElementException {
@@ -804,7 +804,7 @@ public class Graph extends GraphBase {
      * @return node iterator
      */
     public Iterator<Node> nodeIteratorIncludingHidden() {
-        return new IteratorAdapter<Node>() {
+        return new IteratorAdapter<>() {
             private Node v = firstNode;
 
             protected Node findNext() throws NoSuchElementException {
@@ -1049,7 +1049,7 @@ public class Graph extends GraphBase {
     protected void fireGraphRead(NodeSet nodes, EdgeSet edges) {
         checkOwner(nodes);
         checkOwner(edges);
-        GraphUpdateListener[] a = graphUpdateListeners.toArray(new GraphUpdateListener[graphUpdateListeners.size()]);
+        GraphUpdateListener[] a = graphUpdateListeners.toArray(new GraphUpdateListener[0]);
         for (GraphUpdateListener gul : a) {
             gul.graphWasRead(nodes, edges);
         }
@@ -1175,7 +1175,7 @@ public class Graph extends GraphBase {
      * @return node labels
      */
     public Iterable<String> nodeLabels() {
-        return () -> new Iterator<String>() {
+        return () -> new Iterator<>() {
             private Node v = getFirstNode();
 
             {
@@ -1209,7 +1209,7 @@ public class Graph extends GraphBase {
      * @return edge labels
      */
     public Iterable<String> edgeLabels() {
-        return () -> new Iterator<String>() {
+        return () -> new Iterator<>() {
             private Edge e = getFirstEdge();
 
             {
@@ -1638,7 +1638,7 @@ public class Graph extends GraphBase {
      * @return iterable over all edges
      */
     public Iterable<Edge> edges(Edge afterMe) {
-        return () -> new Iterator<Edge>() {
+        return () -> new Iterator<>() {
             Edge e = (afterMe == null ? getFirstEdge() : afterMe.getNext());
 
             @Override
@@ -1683,7 +1683,7 @@ public class Graph extends GraphBase {
      * @return iterable over all nodes
      */
     public Iterable<Node> nodes(Node afterMe) {
-        return () -> new Iterator<Node>() {
+        return () -> new Iterator<>() {
             Node v = (afterMe == null ? getFirstNode() : afterMe.getNext());
 
             @Override

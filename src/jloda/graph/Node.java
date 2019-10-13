@@ -519,7 +519,7 @@ public class Node extends NodeEdge implements Comparable<Node> {
     }
 
     public Iterable<Edge> outEdges() {
-        return () -> new Iterator<Edge>() {
+        return () -> new Iterator<>() {
             Edge e = getFirstOutEdge();
 
             @Override
@@ -537,7 +537,7 @@ public class Node extends NodeEdge implements Comparable<Node> {
     }
 
     public Iterable<Edge> inEdges() {
-        return () -> new Iterator<Edge>() {
+        return () -> new Iterator<>() {
             Edge e = getFirstInEdge();
 
             @Override
@@ -555,7 +555,7 @@ public class Node extends NodeEdge implements Comparable<Node> {
     }
 
     public Iterable<Edge> adjacentEdges() {
-        return () -> new Iterator<Edge>() {
+        return () -> new Iterator<>() {
             Edge e = getFirstAdjacentEdge();
 
             @Override
@@ -573,7 +573,7 @@ public class Node extends NodeEdge implements Comparable<Node> {
     }
 
     public Iterable<Node> adjacentNodes() {
-        return () -> new Iterator<Node>() {
+        return () -> new Iterator<>() {
             private Edge e = getFirstAdjacentEdge();
 
             @Override
@@ -591,7 +591,7 @@ public class Node extends NodeEdge implements Comparable<Node> {
     }
 
     public Iterable<Node> children() {
-        return () -> new Iterator<Node>() {
+        return () -> new Iterator<>() {
             private Edge e = getFirstOutEdge();
 
             @Override
@@ -609,7 +609,7 @@ public class Node extends NodeEdge implements Comparable<Node> {
     }
 
     public Iterable<Node> parents() {
-        return () -> new Iterator<Node>() {
+        return () -> new Iterator<>() {
             private Edge e = getFirstInEdge();
 
             @Override

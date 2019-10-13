@@ -62,7 +62,7 @@ public class TeXGenerator {
         w.write("The \\pmenu{" + menuName + "} menu contains the following items:\n\n");
         w.write("\\begin{itemize}\n");
 
-        String[] labels = menuDescription.toArray(new String[menuDescription.size()]);
+        String[] labels = menuDescription.toArray(new String[0]);
         for (int i = 1; i < labels.length; i++) {
             String name = labels[i];
 

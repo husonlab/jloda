@@ -43,7 +43,6 @@ public class MemoryUsage {
     private final LongProperty peakMemoryUsage;
 
     private final LongProperty availableMemory;
-    private final ScheduledExecutorService scheduler;
 
     private MemoryUsage() {
         memoryUsageString = new SimpleStringProperty();
@@ -51,7 +50,7 @@ public class MemoryUsage {
         peakMemoryUsage = new SimpleLongProperty(0);
         availableMemory = new SimpleLongProperty(Runtime.getRuntime().maxMemory() / 1000000);
 
-        scheduler = Executors.newScheduledThreadPool(1);
+        ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(1);
         scheduler.scheduleAtFixedRate(() -> {
             long usage = ((Runtime.getRuntime().totalMemory() - Runtime.getRuntime().freeMemory()) / 1000000);
             if (usage != currentMemoryUsage.get()) {

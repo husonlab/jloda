@@ -44,10 +44,6 @@ import static java.lang.Thread.MAX_PRIORITY;
  * Daniel Huson, 1.2018
  */
 public class ProgressPane extends StackPane {
-    private final Label label;
-    private final ProgressBar progressBar;
-    private final Button stopButton;
-    private final Tooltip tooltip;
     private boolean removed;
 
     /**
@@ -56,7 +52,7 @@ public class ProgressPane extends StackPane {
      * @param service
      */
     public ProgressPane(Service service) {
-        this(service.titleProperty(), service.messageProperty(), service.progressProperty(), service.runningProperty(), () -> service.cancel());
+        this(service.titleProperty(), service.messageProperty(), service.progressProperty(), service.runningProperty(), service::cancel);
     }
 
     /**
@@ -71,13 +67,13 @@ public class ProgressPane extends StackPane {
     public ProgressPane(ReadOnlyStringProperty titleProperty, ReadOnlyStringProperty messageProperty, ReadOnlyDoubleProperty progressProperty, ReadOnlyBooleanProperty isRunning, Runnable cancelRunnable) {
         setPadding(new Insets(0, 10, 0, 40));
         setVisible(false);
-        label = new Label();
+        Label label = new Label();
         label.textProperty().bind(titleProperty.concat(": ").concat(messageProperty));
         label.setFont(Font.font("System", 10));
-        progressBar = new ProgressBar();
+        ProgressBar progressBar = new ProgressBar();
         progressBar.progressProperty().bind(progressProperty);
         progressBar.setPrefHeight(label.getPrefHeight());
-        stopButton = new Button("Cancel");
+        Button stopButton = new Button("Cancel");
         stopButton.setFont(Font.font("System", 10));
         stopButton.setMaxHeight(label.getPrefHeight());
         stopButton.disableProperty().bind(isRunning.not());
@@ -86,7 +82,7 @@ public class ProgressPane extends StackPane {
         hBox.setAlignment(Pos.CENTER);
         hBox.setSpacing(5);
 
-        tooltip = new Tooltip();
+        Tooltip tooltip = new Tooltip();
         tooltip.textProperty().bind(titleProperty.concat(": ").concat(messageProperty));
         Tooltip.install(label, tooltip);
         Tooltip.install(progressBar, tooltip);

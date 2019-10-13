@@ -21,36 +21,6 @@
  * Copyright (C) 2002-2015 Robert Sedgewick and Kevin Wayne.
  */
 package jloda.util;
-/******************************************************************************
- * Compilation:  javac BoyerMoore.java
- * Execution:    java BoyerMoore pattern text
- * Dependencies: StdOut.java
- * <p>
- * Reads in two strings, the pattern and the input text, and
- * searches for the pattern in the input text using the
- * bad-character rule part of the Boyer-Moore algorithm.
- * (does not implement the strong good suffix rule)
- * <p>
- * % java BoyerMoore abracadabra abacadabrabracabracadabrabrabracad
- * text:    abacadabrabracabracadabrabrabracad
- * pattern:               abracadabra
- * <p>
- * % java BoyerMoore rab abacadabrabracabracadabrabrabracad
- * text:    abacadabrabracabracadabrabrabracad
- * pattern:         rab
- * <p>
- * % java BoyerMoore bcara abacadabrabracabracadabrabrabracad
- * text:    abacadabrabracabracadabrabrabracad
- * pattern:                                   bcara
- * <p>
- * % java BoyerMoore rabrabracad abacadabrabracabracadabrabrabracad
- * text:    abacadabrabracabracadabrabrabracad
- * pattern:                        rabrabracad
- * <p>
- * % java BoyerMoore abacad abacadabrabracabracadabrabrabracad
- * text:    abacadabrabracabracadabrabrabracad
- * pattern: abacad
- ******************************************************************************/
 
 import java.util.Iterator;
 
@@ -192,7 +162,7 @@ public class BoyerMoore {
      * @return iterator
      */
     public Iterator<Integer> iterator(final byte[] text) {
-        return new Iterator<Integer>() {
+        return new Iterator<>() {
             private int next;
 
             {

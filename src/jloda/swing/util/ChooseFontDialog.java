@@ -97,26 +97,10 @@ public class ChooseFontDialog {
         preview.setFont(defaultFont);
         preview.setBorder(BorderFactory.createBevelBorder(1));
 
-        fontNames.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent actionEvent) {
-                preview.setFont(getCurrentFont(fontNames, fontSizes, boldCBox, italicCBox));
-            }
-        });
-        fontSizes.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent actionEvent) {
-                preview.setFont(getCurrentFont(fontNames, fontSizes, boldCBox, italicCBox));
-            }
-        });
-        boldCBox.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent actionEvent) {
-                preview.setFont(getCurrentFont(fontNames, fontSizes, boldCBox, italicCBox));
-            }
-        });
-        italicCBox.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent actionEvent) {
-                preview.setFont(getCurrentFont(fontNames, fontSizes, boldCBox, italicCBox));
-            }
-        });
+        fontNames.addActionListener(actionEvent -> preview.setFont(getCurrentFont(fontNames, fontSizes, boldCBox, italicCBox)));
+        fontSizes.addActionListener(actionEvent -> preview.setFont(getCurrentFont(fontNames, fontSizes, boldCBox, italicCBox)));
+        boldCBox.addActionListener(actionEvent -> preview.setFont(getCurrentFont(fontNames, fontSizes, boldCBox, italicCBox)));
+        italicCBox.addActionListener(actionEvent -> preview.setFont(getCurrentFont(fontNames, fontSizes, boldCBox, italicCBox)));
         middlePanel.add(preview, BorderLayout.CENTER);
 
         // color choice in middle panel:

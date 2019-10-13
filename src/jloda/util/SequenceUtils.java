@@ -71,7 +71,6 @@ public class SequenceUtils {
                     case 'U':
                         switch (c3) {
                             case 'U':
-                                return 'F';
                             case 'C':
                                 return 'F';
                             case 'A':

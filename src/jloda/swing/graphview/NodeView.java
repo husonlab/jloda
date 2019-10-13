@@ -42,8 +42,6 @@ final public class NodeView extends ViewBase implements Cloneable {
     private int height = 2;
     private int width = 2;
 
-    private final int GAPSIZE = 2; // gap between edge of node and start of edge
-
     private Color borderColor = null;
     private NodeShape nodeShape = NodeShape.Oval;
     //private byte imageLayout = NORTH;
@@ -98,6 +96,8 @@ final public class NodeView extends ViewBase implements Cloneable {
         width = src.width;
         nodeShape = src.nodeShape;
         fixedSize = src.getFixedSize();
+        borderColor=src.getBorderColor();
+        image=src.image;
     }
 
     /**
@@ -163,6 +163,8 @@ final public class NodeView extends ViewBase implements Cloneable {
                 p.y = apt.y;
             }
         } else {
+            // gap between edge of node and start of edge
+            int GAPSIZE = 2;
             int radius = Math.max(radius1, radius2) + GAPSIZE;
             double dist = apt.distance(bpt);
             if (dist == 0)

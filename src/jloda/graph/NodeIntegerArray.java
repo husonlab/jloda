@@ -67,8 +67,6 @@ public class NodeIntegerArray extends GraphBase implements NodeAssociation<Integ
      * Clear all entries.
      */
     public void clear() {
-        for (int i = 0; i < data.length; i++)
-            data[i] = 0;
         isClear = true;
     }
 

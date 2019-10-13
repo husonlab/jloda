@@ -95,138 +95,134 @@ public class ProgressDialog implements ProgressListener {
      * @param subtaskName
      */
     private void setup(final String taskName, final String subtaskName, final long delayInMillisec) {
-        run(new Runnable() {
-            public void run() {
-                frameStatusBar = findStatusBar(owner);
+        run(() -> {
+            frameStatusBar = findStatusBar(owner);
 
-                userCancelled = false;
-                delayInMilliseconds = delayInMillisec;
+            userCancelled = false;
+            delayInMilliseconds = delayInMillisec;
 // the label:
-                taskLabel = new JLabel();
-                task = taskName;
-                subtask = subtaskName;
-                updateTaskLabel();
+            taskLabel = new JLabel();
+            task = taskName;
+            subtask = subtaskName;
+            updateTaskLabel();
 
 // the progress bar:
-                progressBar = new JProgressBar(0, 150);
-                progressBar.setValue(-1);
-                progressBar.setIndeterminate(true);
-                progressBar.setStringPainted(false);
-                if (ProgramProperties.isMacOS()) { //On the mac - make like the standard p bar
-                    Dimension d = progressBar.getPreferredSize();
-                    d.height = 10;
-                    progressBar.setPreferredSize(d);
-                    d = progressBar.getMaximumSize();
-                    d.height = 10;
-                    progressBar.setMaximumSize(d);
-                }
+            progressBar = new JProgressBar(0, 150);
+            progressBar.setValue(-1);
+            progressBar.setIndeterminate(true);
+            progressBar.setStringPainted(false);
+            if (ProgramProperties.isMacOS()) { //On the mac - make like the standard p bar
+                Dimension d = progressBar.getPreferredSize();
+                d.height = 10;
+                progressBar.setPreferredSize(d);
+                d = progressBar.getMaximumSize();
+                d.height = 10;
+                progressBar.setMaximumSize(d);
+            }
 
 // the cancel button:
-                cancelButton = new JButton();
-                resetCancelButtonText();
-                cancelButton.addActionListener(new ActionListener() {
-                    public void actionPerformed(ActionEvent e) {
-                        try {
-                            setUserCancelled(true);
-                            checkForCancel();
-                        } catch (CanceledException e1) {
-                        }
-                    }
-                });
-
-                if (!isCancelable())
-                    cancelButton.setEnabled(false);
-
-                if (frameStatusBar != null) { // window appears to have a status bar that can be used for the progress bar
-                    statusBarPanel = new JPanel();
-                    statusBarPanel.setLayout(new BorderLayout());
-
-                    progressBar.setPreferredSize(new Dimension(300, 10));
-                    statusBarPanel.add(progressBar, BorderLayout.CENTER);
-
-                    cancelButton.setPreferredSize(new Dimension(60, 14));
-                    cancelButton.setMinimumSize(new Dimension(60, 14));
-                    cancelButton.setFont(new Font("Dialog", Font.PLAIN, 12));
-                    cancelButton.setBorder(BorderFactory.createEtchedBorder());
-                    statusBarPanel.add(cancelButton, BorderLayout.EAST);
-                } else { // no status bar for a program bar, show a window
-                    final JFrame parent = (owner instanceof JFrame ? (JFrame) owner : null);
-                    dialog = new JDialog(parent, "Progress...");
-                    dialog.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
-
-                    if (!ProgramProperties.isMacOS()) { // none mac progress dialog:
-                        final GridBagLayout gridBag = new GridBagLayout();
-                        final JPanel pane = new JPanel(gridBag);
-                        pane.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
-
-                        GridBagConstraints c = new GridBagConstraints();
-
-                        c.anchor = GridBagConstraints.CENTER;
-                        c.fill = GridBagConstraints.HORIZONTAL;
-                        c.weightx = 3;
-                        c.weighty = 1;
-                        c.gridx = 1;
-                        c.gridy = 0;
-                        c.gridwidth = 3;
-                        c.gridheight = 1;
-                        pane.add(taskLabel, c);
-
-                        c.anchor = GridBagConstraints.CENTER;
-                        c.fill = GridBagConstraints.NONE;
-                        c.weightx = 1;
-                        c.weighty = 5;
-                        c.gridx = 1;
-                        c.gridy = 1;
-                        c.gridwidth = 3;
-                        c.gridheight = 1;
-                        pane.add(progressBar, c);
-
-                        c.anchor = GridBagConstraints.CENTER;
-                        c.weightx = 1;
-                        c.weighty = 1;
-                        c.gridx = 1;
-                        c.gridy = 2;
-                        c.gridwidth = 1;
-                        c.gridheight = 1;
-                        pane.add(cancelButton, c);
-
-                        dialog.getContentPane().add(pane);
-                        dialog.setSize(new Dimension(550, 120));
-                    } else {  // mac os progress dialog:
-                        final JPanel contentPane = new JPanel(new BorderLayout());
-                        contentPane.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
-//Progress Bar and cancel button.
-                        JPanel barpane = new JPanel();
-                        barpane.setLayout(new BoxLayout(barpane, BoxLayout.LINE_AXIS));
-                        barpane.add(progressBar);
-
-                        barpane.add(cancelButton);
-
-                        JPanel taskPanel = new JPanel();
-                        taskPanel.setLayout(new BoxLayout(taskPanel, BoxLayout.PAGE_AXIS));
-                        taskPanel.setAlignmentX(JPanel.LEFT_ALIGNMENT);
-                        taskPanel.add(taskLabel);
-                        taskPanel.add(Box.createHorizontalGlue());
-
-                        //Put everything into the content pane
-                        contentPane.add(barpane, BorderLayout.PAGE_START);
-                        contentPane.add(taskPanel, BorderLayout.LINE_START);
-                        dialog.setContentPane(contentPane);
-                        dialog.setSize(new Dimension(550, 120));
-                    }
-
-                    if (dialog.getParent() != null) {
-                        int x = dialog.getParent().getX();
-                        int y = dialog.getParent().getY();
-                        int dx = dialog.getParent().getWidth() - dialog.getWidth();
-                        int dy = dialog.getParent().getHeight() - dialog.getHeight();
-                        x += dx / 2;
-                        y += dy / 2;
-
-                        dialog.setLocation(x, y);
-                    }
-                    //dialog.setVisible(true);  //open once delay has passed
+            cancelButton = new JButton();
+            resetCancelButtonText();
+            cancelButton.addActionListener(e -> {
+                try {
+                    setUserCancelled(true);
+                    checkForCancel();
+                } catch (CanceledException e1) {
                 }
+            });
+
+            if (!isCancelable())
+                cancelButton.setEnabled(false);
+
+            if (frameStatusBar != null) { // window appears to have a status bar that can be used for the progress bar
+                statusBarPanel = new JPanel();
+                statusBarPanel.setLayout(new BorderLayout());
+
+                progressBar.setPreferredSize(new Dimension(300, 10));
+                statusBarPanel.add(progressBar, BorderLayout.CENTER);
+
+                cancelButton.setPreferredSize(new Dimension(60, 14));
+                cancelButton.setMinimumSize(new Dimension(60, 14));
+                cancelButton.setFont(new Font("Dialog", Font.PLAIN, 12));
+                cancelButton.setBorder(BorderFactory.createEtchedBorder());
+                statusBarPanel.add(cancelButton, BorderLayout.EAST);
+            } else { // no status bar for a program bar, show a window
+                final JFrame parent = (owner instanceof JFrame ? (JFrame) owner : null);
+                dialog = new JDialog(parent, "Progress...");
+                dialog.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
+
+                if (!ProgramProperties.isMacOS()) { // none mac progress dialog:
+                    final GridBagLayout gridBag = new GridBagLayout();
+                    final JPanel pane = new JPanel(gridBag);
+                    pane.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
+
+                    GridBagConstraints c = new GridBagConstraints();
+
+                    c.anchor = GridBagConstraints.CENTER;
+                    c.fill = GridBagConstraints.HORIZONTAL;
+                    c.weightx = 3;
+                    c.weighty = 1;
+                    c.gridx = 1;
+                    c.gridy = 0;
+                    c.gridwidth = 3;
+                    c.gridheight = 1;
+                    pane.add(taskLabel, c);
+
+                    c.anchor = GridBagConstraints.CENTER;
+                    c.fill = GridBagConstraints.NONE;
+                    c.weightx = 1;
+                    c.weighty = 5;
+                    c.gridx = 1;
+                    c.gridy = 1;
+                    c.gridwidth = 3;
+                    c.gridheight = 1;
+                    pane.add(progressBar, c);
+
+                    c.anchor = GridBagConstraints.CENTER;
+                    c.weightx = 1;
+                    c.weighty = 1;
+                    c.gridx = 1;
+                    c.gridy = 2;
+                    c.gridwidth = 1;
+                    c.gridheight = 1;
+                    pane.add(cancelButton, c);
+
+                    dialog.getContentPane().add(pane);
+                    dialog.setSize(new Dimension(550, 120));
+                } else {  // mac os progress dialog:
+                    final JPanel contentPane = new JPanel(new BorderLayout());
+                    contentPane.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
+//Progress Bar and cancel button.
+                    JPanel barpane = new JPanel();
+                    barpane.setLayout(new BoxLayout(barpane, BoxLayout.LINE_AXIS));
+                    barpane.add(progressBar);
+
+                    barpane.add(cancelButton);
+
+                    JPanel taskPanel = new JPanel();
+                    taskPanel.setLayout(new BoxLayout(taskPanel, BoxLayout.PAGE_AXIS));
+                    taskPanel.setAlignmentX(JPanel.LEFT_ALIGNMENT);
+                    taskPanel.add(taskLabel);
+                    taskPanel.add(Box.createHorizontalGlue());
+
+                    //Put everything into the content pane
+                    contentPane.add(barpane, BorderLayout.PAGE_START);
+                    contentPane.add(taskPanel, BorderLayout.LINE_START);
+                    dialog.setContentPane(contentPane);
+                    dialog.setSize(new Dimension(550, 120));
+                }
+
+                if (dialog.getParent() != null) {
+                    int x = dialog.getParent().getX();
+                    int y = dialog.getParent().getY();
+                    int dx = dialog.getParent().getWidth() - dialog.getWidth();
+                    int dy = dialog.getParent().getHeight() - dialog.getHeight();
+                    x += dx / 2;
+                    y += dy / 2;
+
+                    dialog.setLocation(x, y);
+                }
+                //dialog.setVisible(true);  //open once delay has passed
             }
         });
     }
@@ -268,11 +264,7 @@ public class ProgressDialog implements ProgressListener {
         checkTimeAndShow();
 
         if (progressBar != null && maxProgess != progressBar.getMaximum()) {
-            run(new Runnable() {
-                public void run() {
-                    progressBar.setMaximum((int) (shiftedDown ? steps >>> BITS : steps));
-                }
-            });
+            run(() -> progressBar.setMaximum((int) (shiftedDown ? steps >>> BITS : steps)));
         }
     }
 
@@ -287,15 +279,13 @@ public class ProgressDialog implements ProgressListener {
             checkForCancel();
 
             if (progressBar != null && currentProgress != progressBar.getValue()) {
-                SwingUtilities.invokeLater(new Runnable() {
-                    public void run() {
-                        if (currentProgress < 0) {
-                            progressBar.setIndeterminate(true);
-                            progressBar.setString(null);
-                        } else {
-                            progressBar.setIndeterminate(false);
-                            progressBar.setValue((int) (shiftedDown ? steps >>> BITS : steps));
-                        }
+                SwingUtilities.invokeLater(() -> {
+                    if (currentProgress < 0) {
+                        progressBar.setIndeterminate(true);
+                        progressBar.setString(null);
+                    } else {
+                        progressBar.setIndeterminate(false);
+                        progressBar.setValue((int) (shiftedDown ? steps >>> BITS : steps));
                     }
                 });
             }
@@ -324,11 +314,7 @@ public class ProgressDialog implements ProgressListener {
         checkForCancel();
 
         if (progressBar != null && currentProgress != progressBar.getValue()) {
-            run(new Runnable() {
-                public void run() {
-                    progressBar.setValue((int) (shiftedDown ? currentProgress >>> BITS : currentProgress));
-                }
-            });
+            run(() -> progressBar.setValue((int) (shiftedDown ? currentProgress >>> BITS : currentProgress)));
         }
     }
 
@@ -337,22 +323,20 @@ public class ProgressDialog implements ProgressListener {
      */
     public void close() {
         if (!closed) {
-            run(new Runnable() {
-                public void run() {
-                    if (!closed) {
-                        if (statusBarPanel != null) {
-                            frameStatusBar.setExternalPanel1(null, false);
-                            frameStatusBar.setComponent2(statusBarPanel, false);
-                            statusBarPanel = null;
-                        }
-                        if (dialog != null) {
-                            dialog.setVisible(false);
-                            dialog.dispose();
-                            dialog = null;
-                        }
-                        closed = true;
-                        visible = false;
+            run(() -> {
+                if (!closed) {
+                    if (statusBarPanel != null) {
+                        frameStatusBar.setExternalPanel1(null, false);
+                        frameStatusBar.setComponent2(statusBarPanel, false);
+                        statusBarPanel = null;
                     }
+                    if (dialog != null) {
+                        dialog.setVisible(false);
+                        dialog.dispose();
+                        dialog = null;
+                    }
+                    closed = true;
+                    visible = false;
                 }
             });
         }
@@ -382,11 +366,9 @@ public class ProgressDialog implements ProgressListener {
     public void setSubtask(final String subtaskName) {
         checkTimeAndShow();
 
-            run(new Runnable() {
-                public void run() {
-                    subtask = subtaskName;
-                    updateTaskLabel();
-                }
+            run(() -> {
+                subtask = subtaskName;
+                updateTaskLabel();
             });
     }
 
@@ -400,12 +382,10 @@ public class ProgressDialog implements ProgressListener {
      */
     public void setTasks(final String taskName, final String subtaskName) {
         checkTimeAndShow();
-            run(new Runnable() {
-                public void run() {
-                    task = taskName;
-                    subtask = subtaskName;
-                    updateTaskLabel();
-                }
+            run(() -> {
+                task = taskName;
+                subtask = subtaskName;
+                updateTaskLabel();
             });
     }
 
@@ -447,35 +427,33 @@ public class ProgressDialog implements ProgressListener {
      */
     public void show() {
         if (!visible) {
-            run(new Runnable() {
-                    public void run() {
-                        if (!visible) {
-                            try {
-                                if (owner != null && owner instanceof Window) {
-                                    // ((Window) owner).toFront(); // this causes weird effects
-                                }
-                                if (progressBar != null) {
-                                    updateTaskLabel();
-                                    progressBar.setMaximum((int) (shiftedDown ? maxProgess >>> BITS : maxProgess));
-                                    if (currentProgress < 0) {
-                                        progressBar.setIndeterminate(true);
-                                        progressBar.setString(null);
-                                    } else {
-                                        progressBar.setIndeterminate(false);
-                                        progressBar.setValue((int) (shiftedDown ? currentProgress >>> BITS : currentProgress));
-                                    }
-                                }
-                                if (statusBarPanel != null) {
-                                    frameStatusBar.setComponent2(statusBarPanel, !closed);
-                                } else if (dialog != null) {
-                                    dialog.setVisible(true);
-                                }
-                                visible = true;
-                            } catch (Exception ex) {
-                                Basic.caught(ex);
+            run(() -> {
+                if (!visible) {
+                    try {
+                        if (owner != null && owner instanceof Window) {
+                            // ((Window) owner).toFront(); // this causes weird effects
+                        }
+                        if (progressBar != null) {
+                            updateTaskLabel();
+                            progressBar.setMaximum((int) (shiftedDown ? maxProgess >>> BITS : maxProgess));
+                            if (currentProgress < 0) {
+                                progressBar.setIndeterminate(true);
+                                progressBar.setString(null);
+                            } else {
+                                progressBar.setIndeterminate(false);
+                                progressBar.setValue((int) (shiftedDown ? currentProgress >>> BITS : currentProgress));
                             }
                         }
+                        if (statusBarPanel != null) {
+                            frameStatusBar.setComponent2(statusBarPanel, !closed);
+                        } else if (dialog != null) {
+                            dialog.setVisible(true);
+                        }
+                        visible = true;
+                    } catch (Exception ex) {
+                        Basic.caught(ex);
                     }
+                }
             });
         }
     }

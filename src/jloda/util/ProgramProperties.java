@@ -33,6 +33,7 @@ import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.LinkedList;
+import java.util.Objects;
 
 /**
  * track program properties
@@ -362,15 +363,9 @@ public class ProgramProperties {
         else
             name = family;
         int style;
-        if (style0 == null)
-            style = def.getStyle();
-        else
-            style = style0;
+        style = Objects.requireNonNullElseGet(style0, def::getStyle);
         int size;
-        if (size0 == null)
-            size = def.getSize();
-        else
-            size = size0;
+        size = Objects.requireNonNullElseGet(size0, def::getSize);
 
         switch (style) {
             case Font.BOLD + Font.ITALIC:

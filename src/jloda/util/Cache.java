@@ -37,7 +37,7 @@ public class Cache<K, V> {
     public Cache(final int capacity) {
         LRUdata = new WeakHashMap<>();
 
-        MRUdata = new LinkedHashMap<K, V>(capacity + 1, 1.0f, true) {
+        MRUdata = new LinkedHashMap<>(capacity + 1, 1.0f, true) {
             protected boolean removeEldestEntry(Map.Entry<K, V> entry) {
                 if (entry != null && this.size() > capacity) {
                     LRUdata.put(entry.getKey(), entry.getValue());

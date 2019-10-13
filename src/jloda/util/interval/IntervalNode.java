@@ -153,8 +153,7 @@ public class IntervalNode<Type> {
 
         for (Entry<Interval<Type>, List<Interval<Type>>> entry : intervals.entrySet()) {
             if (entry.getKey().contains(pos))
-                for (Interval<Type> interval : entry.getValue())
-                    result.add(interval);
+                result.addAll(entry.getValue());
             else if (entry.getKey().getStart() > pos)
                 break;
         }
@@ -177,8 +176,7 @@ public class IntervalNode<Type> {
 
         for (Entry<Interval<Type>, List<Interval<Type>>> entry : intervals.entrySet()) {
             if (entry.getKey().intersects(target))
-                for (Interval<Type> interval : entry.getValue())
-                    result.add(interval);
+                result.addAll(entry.getValue());
             else if (entry.getKey().getStart() > target.getEnd())
                 break;
         }

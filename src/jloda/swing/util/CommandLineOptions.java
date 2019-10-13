@@ -489,7 +489,7 @@ public class CommandLineOptions {
         if (result == null)
             return null;
         else
-            return result.toArray(new String[result.size()]);
+            return result.toArray(new String[0]);
     }
 
 
@@ -555,7 +555,7 @@ public class CommandLineOptions {
         if (result == null)
             return null;
         else
-            return result.toArray(new String[result.size()]);
+            return result.toArray(new String[0]);
     }
 
 
@@ -892,7 +892,7 @@ public class CommandLineOptions {
                 } else if (missingOption == null && description.contains("(mandatory option)"))
                     missingOption = label;
             }
-            args = list.toArray(new String[list.size()]);
+            args = list.toArray(new String[0]);
             if (!ok)
                 throw new RuntimeException("Internal error: not setup for -arggui option");
             return missingOption;

@@ -105,8 +105,7 @@ public class QuasiMedianNetwork {
             for (int i = 0; i < weights.length; i++)
                 weights[i] = Double.parseDouble(st.nextToken());
         } else
-            for (int i = 0; i < weights.length; i++)
-                weights[i] = 1;
+            Arrays.fill(weights, 1);
 
         Set outputSequences;
 
@@ -153,16 +152,14 @@ public class QuasiMedianNetwork {
      * @return quasi median closure
      */
     public static Set<String> computeQuasiMedianClosure(Set<String> sequences, String refA, String refB) {
-        Set<String> oldSequences = new TreeSet<>();
-        Set<String> curSequences = new HashSet<>();
         Set<String> newSequences = new HashSet<>();
 
         System.err.println("Computing quasi-median closure:");
-        oldSequences.addAll(sequences);
-        curSequences.addAll(sequences);
+        Set<String> oldSequences = new TreeSet<>(sequences);
+        Set<String> curSequences = new HashSet<>(sequences);
 
         while (curSequences.size() > 0) {
-            String[] oldArray = oldSequences.toArray(new String[oldSequences.size()]);
+            String[] oldArray = oldSequences.toArray(new String[0]);
             newSequences.clear();
             for (String seqA : oldArray) {
                 for (String seqB : oldArray) {
@@ -202,7 +199,7 @@ public class QuasiMedianNetwork {
 
         System.err.println("Computing geodesically-pruned quasi-median closure:");
 
-        String[] input = (String[]) sequences.toArray(new String[sequences.size()]);
+        String[] input = (String[]) sequences.toArray(new String[0]);
 
         double[][] scores = computeScores(input, sequenceLength);
 
@@ -469,7 +466,7 @@ public class QuasiMedianNetwork {
                 stack.add(third);
             }
         }
-        return (String[]) median.toArray(new String[median.size()]);
+        return (String[]) median.toArray(new String[0]);
     }
 
     /**
@@ -520,7 +517,7 @@ public class QuasiMedianNetwork {
                 }
             }
         }
-        return (String[]) median.toArray(new String[median.size()]);
+        return (String[]) median.toArray(new String[0]);
     }
 
     /**
@@ -644,8 +641,7 @@ public class QuasiMedianNetwork {
      * @return sequences present in the median joining network
      */
     private static Set<String> computeMedianJoiningMainLoop(Set<String> input, double[] weights, int epsilon) {
-        Set<String> sequences = new HashSet<>();
-        sequences.addAll(input);
+        Set<String> sequences = new HashSet<>(input);
 
         boolean changed = true;
         while (changed) {
@@ -721,7 +717,7 @@ public class QuasiMedianNetwork {
      * @param feasibleLinks
      */
     private static void computeMinimumSpanningNetwork(Set sequences, double[] weights, int epsilon, PhyloSplitsGraph graph, EdgeSet feasibleLinks) {
-        String[] array = (String[]) sequences.toArray(new String[sequences.size()]);
+        String[] array = (String[]) sequences.toArray(new String[0]);
         // compute a distance matrix between all sequences:
         double[][] matrix = new double[array.length][array.length];
 

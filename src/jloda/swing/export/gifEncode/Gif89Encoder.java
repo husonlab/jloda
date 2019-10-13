@@ -171,7 +171,7 @@ public class Gif89Encoder {
      * @param ci_pixels Array of color-index pixels no less than width * height in length.
      * @throws IOException See the addFrame() methods.
      */
-    public Gif89Encoder(Color[] colors, int width, int height, byte ci_pixels[])
+    public Gif89Encoder(Color[] colors, int width, int height, byte[] ci_pixels)
             throws IOException {
         this(colors);
         addFrame(width, height, ci_pixels);
@@ -246,7 +246,7 @@ public class Gif89Encoder {
      *                     <i>per se</i>.  But I might add some pedantic check later, to justify the
      *                     generality :)
      */
-    public void addFrame(int width, int height, byte ci_pixels[])
+    public void addFrame(int width, int height, byte[] ci_pixels)
             throws IOException {
         addFrame(new IndexGif89Frame(width, height, ci_pixels));
     }

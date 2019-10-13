@@ -239,16 +239,14 @@ public class About {
      */
     public void hideAfter(final int millis) {
         final ExecutorService executor = Executors.newSingleThreadExecutor();
-        executor.execute(new Runnable() {
-            public void run() {
-                try {
-                    Thread.sleep(millis);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
-                hideSplash();
-                executor.shutdown();
+        executor.execute(() -> {
+            try {
+                Thread.sleep(millis);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
             }
+            hideSplash();
+            executor.shutdown();
         });
     }
 }

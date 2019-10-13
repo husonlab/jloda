@@ -85,7 +85,7 @@ public class DirectGif89Frame extends Gif89Frame {
      * @param argb_pixels Array containing at least width*height pixels in the format returned by
      *                    java.awt.Color.getRGB().
      */
-    public DirectGif89Frame(int width, int height, int argb_pixels[]) {
+    public DirectGif89Frame(int width, int height, int[] argb_pixels) {
         theWidth = width;
         theHeight = height;
         argbPixels = new int[theWidth * theHeight];

@@ -149,7 +149,7 @@ public class IntervalTree<T> implements Iterable<Interval<T>> {
      * @return the data associated with all intervals that intersect target
      */
     public ArrayList<T> get(int start, int end) {
-        return get(new Interval<T>(start, end, null));
+        return get(new Interval<>(start, end, null));
     }
 
     /**
@@ -189,7 +189,7 @@ public class IntervalTree<T> implements Iterable<Interval<T>> {
      * @return all intervals that intersect target
      */
     public ArrayList<Interval<T>> getIntervals(int start, int end) {
-        return getIntervals(new Interval<T>(start, end, null));
+        return getIntervals(new Interval<>(start, end, null));
     }
 
     /**
@@ -334,7 +334,7 @@ public class IntervalTree<T> implements Iterable<Interval<T>> {
     public List<Interval<T>> getAllIntervals(boolean sort) {
         if (sort)
             sortList();
-        return new AbstractList<Interval<T>>() { // wrap like this so interval list can't be changed
+        return new AbstractList<>() { // wrap like this so interval list can't be changed
             @Override
             public Interval<T> get(int index) {
                 return intervalList.get(index);
@@ -366,7 +366,7 @@ public class IntervalTree<T> implements Iterable<Interval<T>> {
         if (sort)
             sortList();
 
-        return new AbstractList<T>() {
+        return new AbstractList<>() {
             @Override
             public T get(int index) {
                 return intervalList.get(index).getData();
@@ -393,12 +393,7 @@ public class IntervalTree<T> implements Iterable<Interval<T>> {
      */
     private void sortList() {
         if (!sorted) {
-            intervalList.sort(new Comparator<Interval<T>>() {
-                @Override
-                public int compare(Interval<T> a, Interval<T> b) {
-                    return a.compareTo(b);
-                }
-            });
+            intervalList.sort((a, b) -> a.compareTo(b));
             sorted = true;
         }
     }
@@ -443,13 +438,8 @@ public class IntervalTree<T> implements Iterable<Interval<T>> {
      */
     public Interval<T>[] getIntervalsSortedByDecreasingIntersectionLength(final int a, final int b) {
         final List<Interval<T>> intervals = getIntervals(a, b);
-        final Interval<T>[] array = (Interval[]) intervals.toArray(new Interval[intervals.size()]);
-        Arrays.sort(array, new Comparator<Interval<T>>() {
-            @Override
-            public int compare(Interval<T> in1, Interval<T> in2) {
-                return Integer.compare(in2.intersectionLength(a, b), in1.intersectionLength(a, b));
-            }
-        });
+        final Interval<T>[] array = (Interval[]) intervals.toArray(new Interval[0]);
+        Arrays.sort(array, (in1, in2) -> Integer.compare(in2.intersectionLength(a, b), in1.intersectionLength(a, b)));
         return array;
     }
 }

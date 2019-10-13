@@ -188,11 +188,7 @@ public class GraphView extends JPanel implements Printable, Scrollable, INodeEdg
         scrollPane.setCorner(JScrollPane.LOWER_RIGHT_CORNER, zoomButton);
 
         trans = new Transform(this);
-        trans.addChangeListener(new ITransformChangeListener() {
-            public void hasChanged(Transform trans) {
-                recomputeMargins();
-            }
-        });
+        trans.addChangeListener(trans -> recomputeMargins());
 
         getScrollPane().addComponentListener(new ComponentAdapter() {
             public void componentResized(ComponentEvent event) {
@@ -2306,7 +2302,7 @@ public class GraphView extends JPanel implements Printable, Scrollable, INodeEdg
 
             double scale_x = paper_w / image_w;
             double scale_y = paper_h / image_h;
-            double scale = (scale_x <= scale_y) ? scale_x : scale_y;
+            double scale = Math.min(scale_x, scale_y);
 
             double shift_x = paper_x + (paper_w - scale * image_w) / 2.0;
             double shift_y = paper_y + (paper_h - scale * image_h) / 2.0;

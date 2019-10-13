@@ -92,7 +92,7 @@ public class PhyloSplitsGraphUtils {
                     Integer cId = graph.getSplit(enter);
                     crossedSplits.add(cId);
                     if (!splits.containsKey(cId))
-                        splits.put(cId, new ArrayList<Node>());
+                        splits.put(cId, new ArrayList<>());
                 }
                 seen.add(u);
 

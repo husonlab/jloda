@@ -441,17 +441,13 @@ public class SplittableTabPane extends Pane {
             menuItems.add(closeAll);
 
             tab.setClosable(true);
-            tab.setOnCloseRequest((e) -> {
-                close.getOnAction().handle(null);
-            });
+            tab.setOnCloseRequest((e) -> close.getOnAction().handle(null));
             menuItems.add(new SeparatorMenuItem());
         }
 
         if (isAllowUndock()) {
             final MenuItem redock = new MenuItem("Redock");
-            redock.setOnAction((e) -> {
-                moveTab(tab, null, getFocusedTabPane());
-            });
+            redock.setOnAction((e) -> moveTab(tab, null, getFocusedTabPane()));
             // we don't show the redock menu item because the undocked window doesn't have a tab
 
             final MenuItem undock = new MenuItem("Undock");
@@ -493,9 +489,7 @@ public class SplittableTabPane extends Pane {
         menuItems.add(new SeparatorMenuItem());
 
         final MenuItem changeSplitOrientation = new MenuItem("Change Split Orientation");
-        changeSplitOrientation.setOnAction((e) -> {
-            splitPane.setOrientation(splitPane.getOrientation() == Orientation.VERTICAL ? Orientation.HORIZONTAL : Orientation.VERTICAL);
-        });
+        changeSplitOrientation.setOnAction((e) -> splitPane.setOrientation(splitPane.getOrientation() == Orientation.VERTICAL ? Orientation.HORIZONTAL : Orientation.VERTICAL));
         menuItems.add(changeSplitOrientation);
 
         final ArrayList<MenuItem> existingItems;

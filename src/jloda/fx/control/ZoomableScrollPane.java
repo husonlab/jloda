@@ -110,6 +110,7 @@ public class ZoomableScrollPane extends ScrollPane {
             if (factorX != 1.0)
                 factorY = factorX;
             else
+                //noinspection SuspiciousNameCombination
                 factorX = factorY;
         }
 

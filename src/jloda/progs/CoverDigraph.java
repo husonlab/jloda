@@ -50,7 +50,6 @@ public class CoverDigraph {
     private int ntax;
     private GeneOccurrences[] genes;
     private PhyloSplitsGraph graph;
-    private String[] tax2name;
 
     /**
      * read the gene sets from a stream.
@@ -69,7 +68,7 @@ public class CoverDigraph {
         ntax = Array.getLength(data[0]) - 1;
         int ngenes = data[1][1].length();
 
-        tax2name = new String[ntax + 1];
+        String[] tax2name = new String[ntax + 1];
         genes = new GeneOccurrences[ngenes];
         for (int c = 0; c < genes.length; c++) {
 
@@ -231,7 +230,7 @@ public class CoverDigraph {
     /**
      * run the program
      */
-    public static void main(String args[]) throws Exception {
+    public static void main(String[] args) throws Exception {
         CommandLineOptions options = new CommandLineOptions(args);
         options.setDescription("CoverDigraph" +
                 "- compute cover digraph from gene content");

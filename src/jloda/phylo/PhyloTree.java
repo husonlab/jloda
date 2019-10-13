@@ -866,7 +866,7 @@ public class PhyloTree extends PhyloSplitsGraph {
             return null;
         else {
             label = getLabel(v).trim();
-            label = label.replaceAll("[ \\[\\]\\(\\),:;]+", "_");
+            label = label.replaceAll("[ \\[\\](),:;]+", "_");
             if (label.length() > 0)
                 return label;
             else
@@ -1227,7 +1227,7 @@ public class PhyloTree extends PhyloSplitsGraph {
             return null;
         else {
             label = getLabel(v).trim();
-            label = label.replaceAll("[ \\[\\]\\(\\),:]+", "_");
+            label = label.replaceAll("[ \\[\\](),:]+", "_");
             if (label.length() > 0)
                 return label;
             else
@@ -1304,7 +1304,7 @@ public class PhyloTree extends PhyloSplitsGraph {
      * @return leaves
      */
     public Iterable<Node> leaves() {
-        return () -> new Iterator<Node>() {
+        return () -> new Iterator<>() {
             private Node v = getFirstNode();
 
             {

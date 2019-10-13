@@ -182,9 +182,7 @@ public class MyTableView extends Pane {
             renameMenuItem.disableProperty().bind(Bindings.size(rowHeaderView.getSelectionModel().getSelectedItems()).isNotEqualTo(1));
 
             final MenuItem deleteRowMenuItem = new MenuItem("Delete Row(s)");
-            deleteRowMenuItem.setOnAction((e) -> {
-                deleteRows(new ArrayList<>(rowHeaderView.getSelectionModel().getSelectedItems()));
-            });
+            deleteRowMenuItem.setOnAction((e) -> deleteRows(new ArrayList<>(rowHeaderView.getSelectionModel().getSelectedItems())));
             deleteRowMenuItem.disableProperty().bind(Bindings.size(rowHeaderView.getSelectionModel().getSelectedItems()).isEqualTo(0));
 
             final ArrayList<MenuItem> originalMenuItems = new ArrayList<>(contextMenu.getItems());
@@ -221,9 +219,7 @@ public class MyTableView extends Pane {
         pane.setMinHeight(26);
         pane.setMaxHeight(26);
         pane.prefWidthProperty().bind(rowHeaderView.widthProperty());
-        pane.setOnMouseClicked((e) -> {
-            tableView.getSelectionModel().clearSelection();
-        });
+        pane.setOnMouseClicked((e) -> tableView.getSelectionModel().clearSelection());
         final VBox leftVBox = new VBox(pane, rowHeaderView);
 
         HBox.setHgrow(leftVBox, Priority.SOMETIMES);
@@ -279,9 +275,7 @@ public class MyTableView extends Pane {
 
             rowHeaderView.getSelectionModel().clearSelection();
             for (int index : BitSetUtils.members(selectedRows)) {
-                Platform.runLater(() -> {
-                    rowHeaderView.getSelectionModel().select(getRowName(index));
-                });
+                Platform.runLater(() -> rowHeaderView.getSelectionModel().select(getRowName(index)));
             }
 
         });
@@ -379,9 +373,7 @@ public class MyTableView extends Pane {
         selectMenuItem.setOnAction((e) -> selectCol(tableColumn, true));
 
         final MenuItem sortMenuItem = new MenuItem("Sort By Column");
-        sortMenuItem.setOnAction((e) -> {
-            sortByCol(tableColumn.getText(), tableColumn.getSortType() == TableColumn.SortType.DESCENDING ? TableColumn.SortType.ASCENDING : TableColumn.SortType.DESCENDING);
-        });
+        sortMenuItem.setOnAction((e) -> sortByCol(tableColumn.getText(), tableColumn.getSortType() == TableColumn.SortType.DESCENDING ? TableColumn.SortType.ASCENDING : TableColumn.SortType.DESCENDING));
 
         contextMenu.getItems().addAll(selectMenuItem, sortMenuItem, new SeparatorMenuItem());
 
@@ -414,9 +406,7 @@ public class MyTableView extends Pane {
         });
 
         final MenuItem deleteItem = new MenuItem(("Delete Column"));
-        deleteItem.setOnAction((e) -> {
-            deleteCol(tableColumn.getText());
-        });
+        deleteItem.setOnAction((e) -> deleteCol(tableColumn.getText()));
 
         final ArrayList<MenuItem> originalMenuItems = new ArrayList<>(contextMenu.getItems());
 

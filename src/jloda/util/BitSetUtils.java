@@ -76,7 +76,7 @@ public class BitSetUtils {
      * @return members
      */
     public static Iterable<Integer> members(BitSet set) {
-        return () -> new Iterator<Integer>() {
+        return () -> new Iterator<>() {
             private int i = set.nextSetBit(0);
 
             @Override

@@ -44,71 +44,65 @@ public class ListViewTypeSearcher {
         final Single<Integer> index = new Single<>(-1);
         final Single<String> searchString = new Single<>("");
 
-        listView.focusedProperty().addListener(new ChangeListener<Boolean>() {
-            @Override
-            public void changed(ObservableValue<? extends Boolean> c, Boolean o, Boolean n) {
-                if (n) {
-                    searchString.set("");
-                    index.set(-1);
-                }
+        listView.focusedProperty().addListener((c, o, n) -> {
+            if (n) {
+                searchString.set("");
+                index.set(-1);
             }
         });
 
-        listView.setOnKeyPressed(new EventHandler<KeyEvent>() {
-            @Override
-            public void handle(KeyEvent e) {
-                if (e.getCode() == KeyCode.ENTER) {
-                    if (listView.getItems().size() > 0 && searchString.get().length() > 0) {
+        listView.setOnKeyPressed(e -> {
+            if (e.getCode() == KeyCode.ENTER) {
+                if (listView.getItems().size() > 0 && searchString.get().length() > 0) {
+                    index.set(index.get() + 1);
+                    if (index.get() >= listView.getItems().size())
+                        index.set(0);
+
+                    // search for next
+                    while (index.get() < listView.getItems().size()) {
+                        if (listView.getItems().get(index.get()).toString().contains(searchString.get())) {
+                            listView.getSelectionModel().select(index.get());
+                            listView.scrollTo(index.get());
+                            break;
+                        }
                         index.set(index.get() + 1);
-                        if (index.get() >= listView.getItems().size())
-                            index.set(0);
-
-                        // search for next
-                        while (index.get() < listView.getItems().size()) {
-                            if (listView.getItems().get(index.get()).toString().contains(searchString.get())) {
-                                listView.getSelectionModel().select(index.get());
-                                listView.scrollTo(index.get());
-                                break;
-                            }
-                            index.set(index.get() + 1);
-                        }
-                    }
-
-                } else if (e.getCode() == KeyCode.BACK_SPACE) {
-                    searchString.set("");
-                    if (prevKeyCode.get() == KeyCode.BACK_SPACE)
-                        listView.getSelectionModel().clearSelection();
-                } else {
-                    if (prevKeyCode.get() == KeyCode.ENTER) {
-                        searchString.set("");
-                    }
-
-                    if (searchString.get().length() < 10000) {
-                        if (e.getCode() != KeyCode.ENTER)
-                            searchString.set(searchString.get() + e.getText());
-
-                        if (searchString.get().length() == 1) {
-                            listView.getSelectionModel().clearSelection();
-                            index.set(-1);
-                        }
-
-                        int prevIndex = index.get();
-                        index.set(prevIndex + 1);
-                        while (index.get() < listView.getItems().size()) {
-                            if (listView.getItems().get(index.get()).toString().contains(searchString.get())) {
-                                if (prevIndex >= 0 && prevIndex < index.get())
-                                    listView.getSelectionModel().clearSelection(prevIndex);
-                                listView.getSelectionModel().select(index.get());
-                                listView.scrollTo(index.get());
-                                break;
-                            }
-                            index.set(index.get() + 1);
-                        }
-
                     }
                 }
-                prevKeyCode.set(e.getCode());
+
+            } else if (e.getCode() == KeyCode.BACK_SPACE) {
+                searchString.set("");
+                if (prevKeyCode.get() == KeyCode.BACK_SPACE)
+                    listView.getSelectionModel().clearSelection();
+            } else {
+                if (prevKeyCode.get() == KeyCode.ENTER) {
+                    searchString.set("");
+                }
+
+                if (searchString.get().length() < 10000) {
+                    if (e.getCode() != KeyCode.ENTER)
+                        searchString.set(searchString.get() + e.getText());
+
+                    if (searchString.get().length() == 1) {
+                        listView.getSelectionModel().clearSelection();
+                        index.set(-1);
+                    }
+
+                    int prevIndex = index.get();
+                    index.set(prevIndex + 1);
+                    while (index.get() < listView.getItems().size()) {
+                        if (listView.getItems().get(index.get()).toString().contains(searchString.get())) {
+                            if (prevIndex >= 0 && prevIndex < index.get())
+                                listView.getSelectionModel().clearSelection(prevIndex);
+                            listView.getSelectionModel().select(index.get());
+                            listView.scrollTo(index.get());
+                            break;
+                        }
+                        index.set(index.get() + 1);
+                    }
+
+                }
             }
+            prevKeyCode.set(e.getCode());
         });
     }
 }

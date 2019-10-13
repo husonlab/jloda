@@ -56,7 +56,7 @@ public class MultiIterator<T> implements Iterable<T> {
      * @return iterator
      */
     public Iterator<T> iterator() {
-        return new Iterator<T>() {
+        return new Iterator<>() {
             private int which = 0;
 
             @Override

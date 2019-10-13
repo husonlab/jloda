@@ -38,12 +38,10 @@ public class PeakMemoryUsageMonitor {
      */
     private PeakMemoryUsageMonitor() {
         start = System.currentTimeMillis();
-        Executors.newScheduledThreadPool(1).scheduleAtFixedRate(new Runnable() {
-            public void run() {
-                long used = ((Runtime.getRuntime().totalMemory() - Runtime.getRuntime().freeMemory()) / 1000000);
-                if (used > peak)
-                    peak = used;
-            }
+        Executors.newScheduledThreadPool(1).scheduleAtFixedRate(() -> {
+            long used = ((Runtime.getRuntime().totalMemory() - Runtime.getRuntime().freeMemory()) / 1000000);
+            if (used > peak)
+                peak = used;
         }, 0, 5, SECONDS);
     }
 

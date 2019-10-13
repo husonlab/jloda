@@ -119,7 +119,7 @@ public class FlowView<T> extends Pane implements Closeable {
         });
         listView.setFocusTraversable(false);
 
-        listView.setCellFactory(v -> new ListCell<ArrayList<T>>() {
+        listView.setCellFactory(v -> new ListCell<>() {
             {
                 setStyle(String.format("-fx-padding: %.0fpx %.0fpx %.0fpx %.0fpx;", 0.5 * getVgap(), getHgap(), 0.5 * getVgap(), getHgap()));
             }
@@ -179,13 +179,9 @@ public class FlowView<T> extends Pane implements Closeable {
             size.set(items.size());
         });
 
-        blockSize.addListener((c, o, n) -> {
-            recomputeBlocks(items, true);
-        });
+        blockSize.addListener((c, o, n) -> recomputeBlocks(items, true));
 
-        precomputeSnapshots.addListener((c, o, n) -> {
-            precomputeSnapshots(n);
-        });
+        precomputeSnapshots.addListener((c, o, n) -> precomputeSnapshots(n));
 
         selectedItemListener = (c, o, n) -> {
             if (n != null && isScrollToSelection()) { // doesn't work very well

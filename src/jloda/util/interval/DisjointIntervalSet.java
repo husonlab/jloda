@@ -80,7 +80,7 @@ public class DisjointIntervalSet<T> {
      * @throws IllegalArgumentException, if interval overlaps  members of set
      */
     public void insert(int a, int b, T data) throws IllegalArgumentException {
-        insert(new Interval<T>(a, b, data));
+        insert(new Interval<>(a, b, data));
     }
 
     /**
@@ -89,26 +89,21 @@ public class DisjointIntervalSet<T> {
      * @return iterator
      */
     public Iterable<T> data() {
-        return new Iterable<T>() {
+        return () -> new Iterator<>() {
+            private final Iterator<Interval<T>> it = intervals().iterator();
+
             @Override
-            public Iterator<T> iterator() {
-                return new Iterator<T>() {
-                    private final Iterator<Interval<T>> it = intervals().iterator();
+            public boolean hasNext() {
+                return it.hasNext();
+            }
 
-                    @Override
-                    public boolean hasNext() {
-                        return it.hasNext();
-                    }
+            @Override
+            public T next() {
+                return it.next().getData();
+            }
 
-                    @Override
-                    public T next() {
-                        return it.next().getData();
-                    }
-
-                    @Override
-                    public void remove() {
-                    }
-                };
+            @Override
+            public void remove() {
             }
         };
     }
@@ -119,26 +114,21 @@ public class DisjointIntervalSet<T> {
      * @return iterator
      */
     public Iterable<Interval<T>> intervals() {
-        return new Iterable<Interval<T>>() {
+        return () -> new Iterator<>() {
+            private final Iterator<Integer> it = map.keySet().iterator();
+
             @Override
-            public Iterator<Interval<T>> iterator() {
-                return new Iterator<Interval<T>>() {
-                    private final Iterator<Integer> it = map.keySet().iterator();
+            public boolean hasNext() {
+                return it.hasNext();
+            }
 
-                    @Override
-                    public boolean hasNext() {
-                        return it.hasNext();
-                    }
+            @Override
+            public Interval<T> next() {
+                return map.get(it.next());
+            }
 
-                    @Override
-                    public Interval<T> next() {
-                        return map.get(it.next());
-                    }
-
-                    @Override
-                    public void remove() {
-                    }
-                };
+            @Override
+            public void remove() {
             }
         };
     }

@@ -60,18 +60,12 @@ public abstract class ToolTipHelper {
             future.cancel(true);
             future = null;
         }
-        future = executorService.submit(new Runnable() {
-            public void run() {
-                try {
-                    final String toolTipText = computeToolTip(newMousePosition);
-                    SwingUtilities.invokeAndWait(new Runnable() {
-                        public void run() {
-                            component.setToolTipText(toolTipText);
-                        }
-                    });
+        future = executorService.submit(() -> {
+            try {
+                final String toolTipText = computeToolTip(newMousePosition);
+                SwingUtilities.invokeAndWait(() -> component.setToolTipText(toolTipText));
 
-                } catch (Exception e) {
-                }
+            } catch (Exception e) {
             }
         });
     }

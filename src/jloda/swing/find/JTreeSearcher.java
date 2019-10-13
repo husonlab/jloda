@@ -255,11 +255,9 @@ public class JTreeSearcher implements IObjectSearcher {
         if (current != null) {
             final TreePath path = getPath(current);
             try {
-                SwingUtilities.invokeAndWait(new Runnable() {
-                    public void run() {
-                        jTree.expandPath(path);  // this just doesn't work....
-                        jTree.scrollPathToVisible(path);
-                    }
+                SwingUtilities.invokeAndWait(() -> {
+                    jTree.expandPath(path);  // this just doesn't work....
+                    jTree.scrollPathToVisible(path);
                 });
             } catch (Exception e) {
                 Basic.caught(e);

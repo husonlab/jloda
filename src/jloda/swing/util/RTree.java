@@ -259,7 +259,7 @@ public class RTree<T> {
     }
 
     public Iterator<Pair<Rectangle2D, T>> iterator() {
-        return new Iterator<Pair<Rectangle2D, T>>() {
+        return new Iterator<>() {
             RNode node = head;
 
             public boolean hasNext() {

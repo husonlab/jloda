@@ -24,7 +24,7 @@ package jloda.graph;
  * Daniel Huson, 1.2007
  */
 public class Num2NodeArray {
-    Node[] array = new Node[0];
+    Node[] array;
 
     /**
      * default constructor

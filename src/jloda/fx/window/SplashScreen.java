@@ -47,7 +47,6 @@ public class SplashScreen {
     public final Stage stage;
 
     private static String versionString;
-    private static String imageResourceName;
     private static SplashScreen instance;
 
     public static SplashScreen getInstance() {
@@ -88,25 +87,16 @@ public class SplashScreen {
             stackPane.getChildren().add(anchorPane);
         }
 
-        scene.setOnMouseClicked(new EventHandler<MouseEvent>() {
-            @Override
-            public void handle(MouseEvent e) {
-                stage.hide();
-            }
-        });
+        scene.setOnMouseClicked(e -> stage.hide());
 
-        stage.focusedProperty().addListener(new ChangeListener<Boolean>() {
-            @Override
-            public void changed(ObservableValue<? extends Boolean> c, Boolean o, Boolean n) {
-                if (!n)
-                    stage.hide();
-            }
+        stage.focusedProperty().addListener((c, o, n) -> {
+            if (!n)
+                stage.hide();
         });
     }
 
     public static void setImageResourceName(String name) {
-        imageResourceName = name;
-        final Image image = ResourceManagerFX.getImage(imageResourceName);
+        final Image image = ResourceManagerFX.getImage(name);
         instance = new SplashScreen(image);
     }
 

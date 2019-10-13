@@ -175,7 +175,7 @@ public class EdgeArray<T> extends GraphBase implements EdgeAssociation<T> {
      * @return iterator
      */
     public Iterable<T> values() {
-        return () -> new Iterator<T>() {
+        return () -> new Iterator<>() {
             private Edge e = getOwner().getFirstEdge();
 
             {

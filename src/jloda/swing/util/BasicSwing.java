@@ -204,12 +204,10 @@ public class BasicSwing {
                 return; // won't be able to sort these!
             array[i - firstItem] = menu.getItem(i);
         }
-        Arrays.sort(array, new Comparator<JMenuItem>() {
-            public int compare(JMenuItem o1, JMenuItem o2) {
-                String name1 = o1.getText();
-                String name2 = o2.getText();
-                return name1.compareTo(name2);
-            }
+        Arrays.sort(array, (o1, o2) -> {
+            String name1 = o1.getText();
+            String name2 = o2.getText();
+            return name1.compareTo(name2);
         });
 
         while (menu.getItemCount() > firstItem)

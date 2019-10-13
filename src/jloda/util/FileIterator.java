@@ -36,7 +36,7 @@ public class FileIterator implements ICloseableIterator<byte[]>, Iterator<byte[]
     private long linePosition = 0;
     private int lineLength = 0;
 
-    private byte firstByteOfNextLine = 0;
+    private byte firstByteOfNextLine;
 
     private long position = 0; // this is the position in the unzipped file
 

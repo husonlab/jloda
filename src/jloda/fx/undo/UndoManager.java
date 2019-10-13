@@ -50,12 +50,8 @@ public class UndoManager {
      * default constructor
      */
     public UndoManager() {
-        undoStack.addListener((InvalidationListener) (e) -> {
-            undoName.set(undoStack.size() > 0 ? "Undo " + peek(undoStack).getName() : "Undo");
-        });
-        redoStack.addListener((InvalidationListener) (e) -> {
-            redoName.set(redoStack.size() > 0 ? "Redo " + peek(redoStack).getName() : "Redo");
-        });
+        undoStack.addListener((InvalidationListener) (e) -> undoName.set(undoStack.size() > 0 ? "Undo " + peek(undoStack).getName() : "Undo"));
+        redoStack.addListener((InvalidationListener) (e) -> redoName.set(redoStack.size() > 0 ? "Redo " + peek(redoStack).getName() : "Redo"));
 
         undoStackSize.bind(Bindings.size(undoStack));
 

@@ -121,11 +121,9 @@ public class SaveImageDialog extends JDialog {
         panel3.add(new JButton(getApplyAction()), BorderLayout.EAST);
         getContentPane().add(panel3, BorderLayout.SOUTH);
 
-        formatComboBox.addItemListener(new ItemListener() {
-            public void itemStateChanged(ItemEvent e) {
-                Object item = e.getItem();
-                drawTextAsOutlinesCB.setEnabled(item instanceof EPSExportType);
-            }
+        formatComboBox.addItemListener(e -> {
+            Object item = e.getItem();
+            drawTextAsOutlinesCB.setEnabled(item instanceof EPSExportType);
         });
 
         String preSelectFormat = ProgramProperties.get(GRAPHICSFORMAT, (new EPSExportType()).getFileExtension());
@@ -192,11 +190,7 @@ public class SaveImageDialog extends JDialog {
     private void doSaveDialog(JFrame parent) {
         final ExportGraphicType graphicsType = (ExportGraphicType) formatComboBox.getSelectedItem();
 
-        FilenameFilter fileNameFilter = new FilenameFilter() {
-            public boolean accept(File dir, String name) {
-                return graphicsType.getFileFilter().accept(new File(dir, name));
-            }
-        };
+        FilenameFilter fileNameFilter = (dir, name) -> graphicsType.getFileFilter().accept(new File(dir, name));
 
         File file = ChooseFileDialog.chooseFileToSave(parent, new File(fileBaseName), graphicsType.getFileFilter(), fileNameFilter, null, "Save Image", graphicsType.getFileExtension());
 

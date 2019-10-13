@@ -178,7 +178,7 @@ public class NodeArray<T> extends GraphBase implements NodeAssociation<T> {
      * @return iterator
      */
     public Iterable<T> values() {
-        return () -> new Iterator<T>() {
+        return () -> new Iterator<>() {
             private Node v = getOwner().getFirstNode();
 
             {
@@ -216,7 +216,7 @@ public class NodeArray<T> extends GraphBase implements NodeAssociation<T> {
      * @return iterator
      */
     public Iterable<Node> keys() {
-        return () -> new Iterator<Node>() {
+        return () -> new Iterator<>() {
             private Node v = getOwner().getFirstNode();
 
             {

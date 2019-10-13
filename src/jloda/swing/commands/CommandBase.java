@@ -265,11 +265,7 @@ public abstract class CommandBase {
         actionPerformed(ev);
         if (getAutoRepeatInterval() > 0) {
             if (autoRepeatTimer == null) {
-                autoRepeatTimer = new Timer(getAutoRepeatInterval(), new ActionListener() {
-                    public void actionPerformed(ActionEvent evt) {
-                        CommandBase.this.actionPerformed(null);
-                    }
-                });
+                autoRepeatTimer = new Timer(getAutoRepeatInterval(), evt -> CommandBase.this.actionPerformed(null));
                 autoRepeatTimer.setRepeats(true);
                 JComponent component = (JComponent) ev.getSource();
                 component.addMouseListener(new MouseAdapter() {

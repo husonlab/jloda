@@ -41,15 +41,9 @@ public class ReorderListDialog extends JDialog implements DropTargetListener, Ac
     private static final long serialVersionUID = 5234260814801310243L;
     private final Vector originalList = new Vector();//save inputted objects in Vector
     private boolean beApplied = false;//label for action from button apply
-    private boolean beCancelled = false;//label for action form button cancel
 
     private final boolean showCopy; // show the copy button?
 
-    /*
-    *attributes for JDialog
-    */
-    private final JLabel originalLabel;
-    private final JLabel reorderedLabel;
     private final JList originalJlist;
     private final JList reorderedJlist;
     private final JButton copy;
@@ -58,7 +52,6 @@ public class ReorderListDialog extends JDialog implements DropTargetListener, Ac
     private final JButton rotateDown;
     private final JButton apply;
     private final JButton cancel;
-    private final JPanel panel;
 
     /*
       * implements for interface DrogTargetListener
@@ -164,7 +157,8 @@ public class ReorderListDialog extends JDialog implements DropTargetListener, Ac
             beApplied = true;
             dispose();
         } else if (e.getSource() == cancel) {
-            beCancelled = true;
+            //label for action form button cancel
+            boolean beCancelled = true;
             dispose();
         } else if (e.getSource() == copy) {
             DefaultListModel model = new DefaultListModel();
@@ -234,7 +228,10 @@ public class ReorderListDialog extends JDialog implements DropTargetListener, Ac
         /*
            * left list
            */
-        originalLabel = new JLabel("Original");
+        /*
+         *attributes for JDialog
+         */
+        JLabel originalLabel = new JLabel("Original");
         originalLabel.setHorizontalAlignment(SwingConstants.CENTER);
 
         originalJlist = new JList(originalList.toArray());
@@ -245,7 +242,7 @@ public class ReorderListDialog extends JDialog implements DropTargetListener, Ac
         /*
         * right list
         */
-        reorderedLabel = new JLabel("Reordered");
+        JLabel reorderedLabel = new JLabel("Reordered");
         reorderedLabel.setHorizontalAlignment(SwingConstants.CENTER);
 
         reorderedJlist = new JList();
@@ -311,7 +308,7 @@ public class ReorderListDialog extends JDialog implements DropTargetListener, Ac
         apply.setDisplayedMnemonicIndex(0);
         apply.addActionListener(this);
 
-        panel = new JPanel();
+        JPanel panel = new JPanel();
 
         /*
         * layout for the dialog
@@ -469,12 +466,10 @@ public class ReorderListDialog extends JDialog implements DropTargetListener, Ac
             superClasses.add(cls);
         }
 
-        SwingUtilities.invokeAndWait(new Runnable() {
-            public void run() {
-                ReorderListDialog test = new ReorderListDialog("ReorderListDialog", false);
-                List output = test.show(superClasses);
-                System.out.println(output);
-            }
+        SwingUtilities.invokeAndWait(() -> {
+            ReorderListDialog test = new ReorderListDialog("ReorderListDialog", false);
+            List output = test.show(superClasses);
+            System.out.println(output);
         });
         System.exit(0);
     }

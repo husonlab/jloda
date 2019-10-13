@@ -33,8 +33,8 @@ public class LabelOverlapAvoider {
 
     // the following code is used to ensure that labels do not overlap:
     private final ViewBase[] history;
-    private int historyA = 0;  // first filled pos
-    private int historyB = 0; //first empty pos
+    private int historyA;  // first filled pos
+    private int historyB; //first empty pos
     private final NodeSet visibleNodeLabels;
     private final EdgeSet visibleEdgeLabels;
     private boolean enabled = false;

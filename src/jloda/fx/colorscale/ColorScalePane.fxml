@@ -27,24 +27,20 @@
 <HBox alignment="CENTER" maxHeight="-Infinity" minHeight="-Infinity" prefHeight="20.0" spacing="5.0"
       xmlns="http://javafx.com/javafx/8.0.111" xmlns:fx="http://javafx.com/fxml/1"
       fx:controller="jloda.fx.colorscale.ColorScalePaneController">
-    <children>
-        <Label fx:id="getTitleLabel" text="Label" textFill="gray"/>
-        <Label fx:id="getLeftLabel" text="Label" textFill="gray"/>
-        <StackPane style="-fx-border-color: gray;">
-            <children>
-                <Canvas fx:id="canvas" height="18.0" width="100.0">
-                    <StackPane.margin>
-                        <Insets bottom="1.0" left="1.0" right="1.0" top="1.0"/>
-                    </StackPane.margin>
-                </Canvas>
-            </children>
-        </StackPane>
-        <Label fx:id="getRightLabel" text="Label" textFill="gray"/>
-    </children>
     <opaqueInsets>
         <Insets/>
     </opaqueInsets>
     <padding>
         <Insets left="5.0" right="5.0"/>
     </padding>
+    <Label fx:id="getTitleLabel" text="Label" textFill="gray"/>
+    <Label fx:id="getLeftLabel" text="Label" textFill="gray"/>
+    <StackPane style="-fx-border-color: gray;">
+        <Canvas fx:id="canvas" height="18.0" width="100.0">
+            <StackPane.margin>
+                <Insets bottom="1.0" left="1.0" right="1.0" top="1.0"/>
+            </StackPane.margin>
+        </Canvas>
+    </StackPane>
+    <Label fx:id="getRightLabel" text="Label" textFill="gray"/>
 </HBox>

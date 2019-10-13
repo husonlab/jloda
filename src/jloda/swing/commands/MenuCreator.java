@@ -116,7 +116,7 @@ public class MenuCreator {
         JMenu menu = new JMenu(Translator.get(menuName));
         if (addEmptyIcon)
             menu.setIcon(ResourceManager.getIcon("Empty16.gif"));
-        String[] labels = menuDescription.toArray(new String[menuDescription.size()]);
+        String[] labels = menuDescription.toArray(new String[0]);
         for (int i = 1; i < labels.length; i++) {
             String label = labels[i];
             if (i == labels.length - 2 && label.equals("|") && labels[i + 1].equals("Quit"))

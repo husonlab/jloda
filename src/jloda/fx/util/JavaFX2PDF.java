@@ -32,7 +32,6 @@ import java.io.IOException;
  * Daniel Huson, 2018
  */
 public class JavaFX2PDF {
-    private Printer pdfPrinter;
     private Node printImage;
     private Stage owner;
 
@@ -65,7 +64,7 @@ public class JavaFX2PDF {
     public void print() throws IOException, CanceledException {
         PrinterJob job = PrinterJob.createPrinterJob();
         boolean executePrint = true;
-        pdfPrinter = findPrinter();
+        Printer pdfPrinter = findPrinter();
 
         // Detect error occurring on MacOS
         if (job == null) {

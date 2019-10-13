@@ -300,7 +300,7 @@ public class Basic {
             input.add(it.next());
         final ArrayList<T> array = randomize(input, random);
 
-        return new Iterator<T>() {
+        return new Iterator<>() {
             private int i = 0;
 
             @Override
@@ -2182,10 +2182,7 @@ public class Basic {
         } catch (IOException e) {
             Basic.caught(e);
         }
-        if (result == null)
-            return "";
-        else
-            return result;
+        return Objects.requireNonNullElse(result, "");
     }
 
 
@@ -2379,9 +2376,7 @@ public class Basic {
      * @return spaces
      */
     public static String spaces(int count) {
-        StringBuilder buf = new StringBuilder();
-        buf.append(" ".repeat(Math.max(0, count)));
-        return buf.toString();
+        return " ".repeat(Math.max(0, count));
     }
 
     /**
@@ -2551,7 +2546,7 @@ public class Basic {
         while ((aLine = r.readLine()) != null) {
             lines.add(aLine);
         }
-        return lines.toArray(new String[lines.size()]);
+        return lines.toArray(new String[0]);
     }
 
     public static String capitalizeWords(String str) {
@@ -2693,7 +2688,7 @@ public class Basic {
                 i = j + 1;
             }
         }
-        return list.toArray(new String[list.size()]);
+        return list.toArray(new String[0]);
     }
 
     /**
@@ -2721,9 +2716,7 @@ public class Basic {
     public static int restrictToRange(int min, int max, int value) {
         if (value < min)
             return min;
-        if (value >= max)
-            return max;
-        return value;
+        return Math.min(value, max);
     }
 
     /**
@@ -2737,9 +2730,7 @@ public class Basic {
     public static double restrictToRange(double min, double max, double value) {
         if (value < min)
             return min;
-        if (value >= max)
-            return max;
-        return value;
+        return Math.min(value, max);
     }
 
 
@@ -3096,7 +3087,7 @@ public class Basic {
         }
         if (start != -1)
             parts.add(aLine.substring(start));
-        return parts.toArray(new String[parts.size()]);
+        return parts.toArray(new String[0]);
     }
 
     /**
@@ -3964,16 +3955,13 @@ public class Basic {
      * @return comparator
      */
     public static Comparator<Pair<String, String>> getComparatorDecreasingLengthOfSecond() {
-        return new Comparator<Pair<String, String>>() {
-            @Override
-            public int compare(Pair<String, String> pair1, Pair<String, String> pair2) { // sorting in decreasing order of length
-                if (pair1.getSecond().length() > pair2.getSecond().length())
-                    return -1;
-                else if (pair1.getSecond().length() < pair2.getSecond().length())
-                    return 1;
-                else
-                    return pair1.getFirst().compareTo(pair2.getFirst());
-            }
+        return (pair1, pair2) -> { // sorting in decreasing order of length
+            if (pair1.getSecond().length() > pair2.getSecond().length())
+                return -1;
+            else if (pair1.getSecond().length() < pair2.getSecond().length())
+                return 1;
+            else
+                return pair1.getFirst().compareTo(pair2.getFirst());
         };
     }
 

@@ -33,25 +33,23 @@ public class RunLater {
     public void apply(final long waitMilliSeconds, final Runnable runnable) {
 
         System.err.println("In:");
-        Runnable myRunnable = new Runnable() {
-            public void run() {
-                long startTime = System.currentTimeMillis();
-                long endTime = startTime + waitMilliSeconds;
+        Runnable myRunnable = () -> {
+            long startTime = System.currentTimeMillis();
+            long endTime = startTime + waitMilliSeconds;
 
-                while (System.currentTimeMillis() < endTime) {
-                    // Still within time threshold, wait a little longer
-                    try {
-                        Thread.sleep(100L);  // Sleep 100 milliseconds
-                        if (!Thread.currentThread().isAlive()) {
-                            break;
-                        }
-                    } catch (InterruptedException e) {
-                        // Someone woke us up during sleep, that's OK
+            while (System.currentTimeMillis() < endTime) {
+                // Still within time threshold, wait a little longer
+                try {
+                    Thread.sleep(100L);  // Sleep 100 milliseconds
+                    if (!Thread.currentThread().isAlive()) {
+                        break;
                     }
+                } catch (InterruptedException e) {
+                    // Someone woke us up during sleep, that's OK
                 }
-                System.err.println("Run:");
-                runnable.run();
             }
+            System.err.println("Run:");
+            runnable.run();
         };
         Thread worker = new Thread(myRunnable);
         worker.setDaemon(true);

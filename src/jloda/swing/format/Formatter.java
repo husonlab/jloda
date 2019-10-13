@@ -65,7 +65,6 @@ public class Formatter implements IDirectableViewer {
     private JComboBox<NodeShape> nodeShape;
     private JCheckBox boldFont, italicFont, labels, foregroundColor, backgroundColor, labelForegroundColor,
             labelBackgroundColor;
-    private JButton rotateLabelsLeft, rotateLabelsRight;
     private JColorChooser colorChooser;
 
     private final JScrollBar alphaValueSBar = new JScrollBar(JScrollBar.HORIZONTAL, 255, 1, 0, 256);
@@ -472,12 +471,10 @@ public class Formatter implements IDirectableViewer {
         colorPanel2.setLayout(new BoxLayout(colorPanel2, BoxLayout.X_AXIS));
         colorPanel2.add(new JLabel("Alpha:"));
         colorPanel2.add(alphaValueSBar);
-        alphaValueSBar.addAdjustmentListener(new AdjustmentListener() {
-            public void adjustmentValueChanged(AdjustmentEvent adjustmentEvent) {
-                if (!noAlphaBounce && !adjustmentEvent.getValueIsAdjusting()) {
-                    System.err.println("Changed");
-                    colorStateChanged();
-                }
+        alphaValueSBar.addAdjustmentListener(adjustmentEvent -> {
+            if (!noAlphaBounce && !adjustmentEvent.getValueIsAdjusting()) {
+                System.err.println("Changed");
+                colorStateChanged();
             }
         });
 
@@ -511,7 +508,9 @@ public class Formatter implements IDirectableViewer {
         // labels.setText("Show Labels");
         if (showRotateButtons) {
             labelPanel.add(new JLabel("   Rotate Node Labels: "));
+            JButton rotateLabelsLeft;
             labelPanel.add(rotateLabelsLeft = new JButton(actions.getRotateLabelsLeft()));
+            JButton rotateLabelsRight;
             labelPanel.add(rotateLabelsRight = new JButton(actions.getRotateLabelsRight()));
         }
         topPanel.add(labelPanel);
@@ -623,11 +622,7 @@ public class Formatter implements IDirectableViewer {
 
         chooser.setPreviewPanel(new JPanel());
 
-        chooser.getSelectionModel().addChangeListener(new ChangeListener() {
-            public void stateChanged(ChangeEvent ev) {
-                colorStateChanged();
-            }
-        });
+        chooser.getSelectionModel().addChangeListener(ev -> colorStateChanged());
         return chooser;
     }
 

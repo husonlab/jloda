@@ -113,12 +113,7 @@ public class SingleStringSearcher implements IObjectSearcher {
 
     @Override
     public void setCurrentSelected(final boolean select) {
-        Runnable runnable = new Runnable() {
-            @Override
-            public void run() {
-                selected.set(select);
-            }
-        };
+        Runnable runnable = () -> selected.set(select);
         if (Platform.isFxApplicationThread())
             runnable.run();
         else

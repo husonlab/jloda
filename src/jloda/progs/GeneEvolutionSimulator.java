@@ -45,12 +45,11 @@ import java.util.Random;
  */
 public class GeneEvolutionSimulator {
     private static final Random rand = new Random();
-    private static boolean verbose = false;
 
     /**
      * run the program
      */
-    public static void main(String args[]) throws Exception {
+    public static void main(String[] args) throws Exception {
         CommandLineOptions options = new CommandLineOptions(args);
         options.setDescription("GeneEvolutionSimulator" +
                 "- simulate birth and death of genes along a tree");
@@ -63,7 +62,7 @@ public class GeneEvolutionSimulator {
         long seed = options.getOption("-s", "Set seed from random number generator", -1);
         boolean phylipFormat = options.getOption("+p", "PhylipSequences format output", false, true);
         boolean display = options.getOption("-d", "Display tree", true, false);
-        verbose = options.getOption("-v", "Verbose mode", true, false);
+        boolean verbose = options.getOption("-v", "Verbose mode", true, false);
         String fileName = options.getMandatoryOption("-i", "Input tree file", "");
         options.done();
 

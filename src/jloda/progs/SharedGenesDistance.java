@@ -42,7 +42,7 @@ public class SharedGenesDistance {
     /**
      * run the program
      */
-    public static void main(String args[]) throws Exception {
+    public static void main(String[] args) throws Exception {
         CommandLineOptions options = new CommandLineOptions(args);
         options.setDescription("SharedGenesDistance" +
                 "- compute distances based on shared genes");

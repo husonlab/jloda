@@ -225,7 +225,7 @@ public class AMultipleSelectionModel<T> extends MultipleSelectionModel<T> {
     }
 
     public void selectItems(java.util.Collection<? extends T> collection) {
-        final Set<T> set = (collection instanceof Set ? (Set) collection : new HashSet<T>(collection));
+        final Set<T> set = (collection instanceof Set ? (Set) collection : new HashSet<>(collection));
         final BitSet toSelect = new BitSet();
         for (int i = 0; i < items.length; i++) {
             if (set.contains(items[i])) {
@@ -236,7 +236,7 @@ public class AMultipleSelectionModel<T> extends MultipleSelectionModel<T> {
     }
 
     public void clearSelection(java.util.Collection<? extends T> collection) {
-        final Set<T> set = (collection instanceof Set ? (Set) collection : new HashSet<T>(collection));
+        final Set<T> set = (collection instanceof Set ? (Set) collection : new HashSet<>(collection));
         final BitSet toClear = new BitSet();
         for (int i = 0; i < items.length; i++) {
             if (set.contains(items[i])) {

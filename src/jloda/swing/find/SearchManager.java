@@ -226,17 +226,11 @@ public class SearchManager implements IDirectableViewer {
         } else {
             findDialog.clearMessage();
             if (worker == null || !worker.isAlive()) {
-                worker = new Thread(new Runnable() {
-                    public void run() {
-                        notifyLockUserInput();
-                        final boolean found = doFindAndReplace(new ProgressDialog("Search", "Find and replace", searcher.getParent()));
-                        SwingUtilities.invokeLater(new Runnable() {
-                            public void run() {
-                                findDialog.setMessage(found ? "Replaced" : "No replacements");
-                            }
-                        });
-                        notifyUnlockUserInput();
-                    }
+                worker = new Thread(() -> {
+                    notifyLockUserInput();
+                    final boolean found = doFindAndReplace(new ProgressDialog("Search", "Find and replace", searcher.getParent()));
+                    SwingUtilities.invokeLater(() -> findDialog.setMessage(found ? "Replaced" : "No replacements"));
+                    notifyUnlockUserInput();
                 });
                 worker.setPriority(Thread.currentThread().getPriority() - 1);
                 worker.start();
@@ -320,18 +314,12 @@ public class SearchManager implements IDirectableViewer {
         } else {
             findDialog.clearMessage();
             if (worker == null || !worker.isAlive()) {
-                worker = new Thread(new Runnable() {
-                    public void run() {
-                        notifyLockUserInput();
-                        final boolean found = doFindFirst();
+                worker = new Thread(() -> {
+                    notifyLockUserInput();
+                    final boolean found = doFindFirst();
 
-                        SwingUtilities.invokeLater(new Runnable() {
-                            public void run() {
-                                findDialog.setMessage(found ? "Found" : "No matches");
-                            }
-                        });
-                        notifyUnlockUserInput();
-                    }
+                    SwingUtilities.invokeLater(() -> findDialog.setMessage(found ? "Found" : "No matches"));
+                    notifyUnlockUserInput();
                 });
                 worker.setPriority(Thread.currentThread().getPriority() - 1);
                 worker.start();
@@ -404,18 +392,12 @@ public class SearchManager implements IDirectableViewer {
         } else {
             findDialog.clearMessage();
             if (worker == null || !worker.isAlive()) {
-                worker = new Thread(new Runnable() {
-                    public void run() {
-                        notifyLockUserInput();
-                        final boolean found = doFindNext(new ProgressDialog("Search", "Find next", searcher.getParent()));
+                worker = new Thread(() -> {
+                    notifyLockUserInput();
+                    final boolean found = doFindNext(new ProgressDialog("Search", "Find next", searcher.getParent()));
 
-                        SwingUtilities.invokeLater(new Runnable() {
-                            public void run() {
-                                findDialog.setMessage(found ? "Found" : "No matches");
-                            }
-                        });
-                        notifyUnlockUserInput();
-                    }
+                    SwingUtilities.invokeLater(() -> findDialog.setMessage(found ? "Found" : "No matches"));
+                    notifyUnlockUserInput();
                 });
                 worker.setPriority(Thread.currentThread().getPriority() - 1);
                 worker.start();
@@ -486,22 +468,16 @@ public class SearchManager implements IDirectableViewer {
         } else {
             findDialog.clearMessage();
             if (worker == null || !worker.isAlive()) {
-                worker = new Thread(new Runnable() {
-                    public void run() {
-                        notifyLockUserInput();
-                        ProgressListener progressListener = new ProgressDialog("Search", "Find all", searcher.getParent());
-                        int found = doFindAll(progressListener);
-                        if (found == Integer.MIN_VALUE)
-                            found = 0;
-                        final int finalFound = Math.abs(found);
-                        progressListener.close();
-                        SwingUtilities.invokeLater(new Runnable() {
-                            public void run() {
-                                findDialog.setMessage("Found: " + finalFound);
-                            }
-                        });
-                        notifyUnlockUserInput();
-                    }
+                worker = new Thread(() -> {
+                    notifyLockUserInput();
+                    ProgressListener progressListener = new ProgressDialog("Search", "Find all", searcher.getParent());
+                    int found = doFindAll(progressListener);
+                    if (found == Integer.MIN_VALUE)
+                        found = 0;
+                    final int finalFound = Math.abs(found);
+                    progressListener.close();
+                    SwingUtilities.invokeLater(() -> findDialog.setMessage("Found: " + finalFound));
+                    notifyUnlockUserInput();
                 });
                 worker.setPriority(Thread.currentThread().getPriority() - 1);
                 worker.start();
@@ -600,44 +576,38 @@ public class SearchManager implements IDirectableViewer {
         } else {
             findDialog.clearMessage();
             if (worker == null || !worker.isAlive()) {
-                worker = new Thread(new Runnable() {
-                    public void run() {
-                        notifyLockUserInput();
-                        int count = 0;
+                worker = new Thread(() -> {
+                    notifyLockUserInput();
+                    int count = 0;
 
-                        try {
+                    try {
 
-                            if (file != null && file.exists()) {
-                                BufferedReader r = new BufferedReader(new FileReader(file));
+                        if (file != null && file.exists()) {
+                            BufferedReader r = new BufferedReader(new FileReader(file));
 
-                                ProgressListener progressListener = new ProgressDialog("Search", "Find all", searcher.getParent());
-                                String aLine;
-                                while ((aLine = r.readLine()) != null) {
-                                    aLine = aLine.trim();
-                                    if (aLine.length() > 0 && !aLine.startsWith("#")) {
-                                        System.err.println("find and select: " + aLine);
-                                        setSearchText(aLine);
-                                        int found = doFindAll(progressListener);
-                                        boolean canceled = (found < 0);
-                                        if (found != Integer.MIN_VALUE)
-                                            count += Math.abs(found);
-                                        if (canceled)
-                                            break;
-                                    }
+                            ProgressListener progressListener = new ProgressDialog("Search", "Find all", searcher.getParent());
+                            String aLine;
+                            while ((aLine = r.readLine()) != null) {
+                                aLine = aLine.trim();
+                                if (aLine.length() > 0 && !aLine.startsWith("#")) {
+                                    System.err.println("find and select: " + aLine);
+                                    setSearchText(aLine);
+                                    int found = doFindAll(progressListener);
+                                    boolean canceled = (found < 0);
+                                    if (found != Integer.MIN_VALUE)
+                                        count += Math.abs(found);
+                                    if (canceled)
+                                        break;
                                 }
-                                progressListener.close();
                             }
-                        } catch (Exception ex) {
-                            Basic.caught(ex);
+                            progressListener.close();
                         }
-                        final int finalCount = Math.abs(count);
-                        SwingUtilities.invokeLater(new Runnable() {
-                            public void run() {
-                                new Message(findDialog.getFrame(), "Matches: " + finalCount, 150, 100);
-                            }
-                        });
-                        notifyUnlockUserInput();
+                    } catch (Exception ex) {
+                        Basic.caught(ex);
                     }
+                    final int finalCount = Math.abs(count);
+                    SwingUtilities.invokeLater(() -> new Message(findDialog.getFrame(), "Matches: " + finalCount, 150, 100));
+                    notifyUnlockUserInput();
                 });
                 worker.setPriority(Thread.currentThread().getPriority() - 1);
                 worker.start();
@@ -655,17 +625,11 @@ public class SearchManager implements IDirectableViewer {
         } else {
             findDialog.clearMessage();
             if (worker == null || !worker.isAlive()) {
-                worker = new Thread(new Runnable() {
-                    public void run() {
-                        notifyLockUserInput();
-                        final int found = doReplaceAll();
-                        SwingUtilities.invokeLater(new Runnable() {
-                            public void run() {
-                                findDialog.setMessage("Replacements: " + found);
-                            }
-                        });
-                        notifyUnlockUserInput();
-                    }
+                worker = new Thread(() -> {
+                    notifyLockUserInput();
+                    final int found = doReplaceAll();
+                    SwingUtilities.invokeLater(() -> findDialog.setMessage("Replacements: " + found));
+                    notifyUnlockUserInput();
                 });
                 worker.setPriority(Thread.currentThread().getPriority() - 1);
                 worker.start();
@@ -952,7 +916,7 @@ public class SearchManager implements IDirectableViewer {
      * @param searchers
      * @param showReplace
      */
-    public void replaceSearchers(IDirector dir, ISearcher searchers[], boolean showReplace) {
+    public void replaceSearchers(IDirector dir, ISearcher[] searchers, boolean showReplace) {
         this.dir = dir;
         if (searchers != this.targets) {
             this.targets = searchers;
@@ -1141,11 +1105,9 @@ public class SearchManager implements IDirectableViewer {
      */
     private void notifyLockUserInput() {
         try {
-            SwingUtilities.invokeAndWait(new Runnable() {
-                public void run() {
-                    if (dir != null)
-                        dir.notifyLockInput();
-                }
+            SwingUtilities.invokeAndWait(() -> {
+                if (dir != null)
+                    dir.notifyLockInput();
             });
         } catch (Exception e) {
         }
@@ -1156,11 +1118,9 @@ public class SearchManager implements IDirectableViewer {
      */
     private void notifyUnlockUserInput() {
         try {
-            SwingUtilities.invokeAndWait(new Runnable() {
-                public void run() {
-                    if (dir != null)
-                        dir.notifyUnlockInput();
-                }
+            SwingUtilities.invokeAndWait(() -> {
+                if (dir != null)
+                    dir.notifyUnlockInput();
             });
         } catch (Exception e) {
         }

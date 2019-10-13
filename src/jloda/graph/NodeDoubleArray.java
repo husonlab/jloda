@@ -20,6 +20,8 @@
 package jloda.graph;
 
 
+import java.util.Arrays;
+
 /**
  * Node array
  * Daniel Huson, 2003
@@ -67,8 +69,7 @@ public class NodeDoubleArray extends GraphBase implements NodeAssociation<Double
      * Clear all entries.
      */
     public void clear() {
-        for (int i = 0; i < data.length; i++)
-            data[i] = 0;
+        Arrays.fill(data, 0);
         isClear = true;
     }
 

@@ -65,53 +65,51 @@ public class RecentFilesManager {
                 recentFiles.add(fileName);
         }
 
-        recentFiles.addListener((ListChangeListener<String>) (c) -> {
-            Platform.runLater(() -> {
+        recentFiles.addListener((ListChangeListener<String>) (c) -> Platform.runLater(() -> {
 
-                final Set<WeakReference<Menu>> deadRefs = new HashSet<>();
+            final Set<WeakReference<Menu>> deadRefs = new HashSet<>();
 
-                while (c.next()) {
-                    if (c.wasRemoved()) {
-                        for (WeakReference<Menu> ref : menuReferences) {
-                            final Menu menu = ref.get();
-                            if (menu != null) {
-                                final ArrayList<MenuItem> toDelete = new ArrayList<>();
-                                for (MenuItem menuItem : menu.getItems()) {
-                                    if (c.getRemoved().contains(menuItem.getText())) {
-                                        toDelete.add(menuItem);
+            while (c.next()) {
+                if (c.wasRemoved()) {
+                    for (WeakReference<Menu> ref : menuReferences) {
+                        final Menu menu = ref.get();
+                        if (menu != null) {
+                            final ArrayList<MenuItem> toDelete = new ArrayList<>();
+                            for (MenuItem menuItem : menu.getItems()) {
+                                if (c.getRemoved().contains(menuItem.getText())) {
+                                    toDelete.add(menuItem);
 
-                                    }
                                 }
-                                menu.getItems().removeAll(toDelete);
-                            } else
-                                deadRefs.add(ref);
-                        }
-                    }
-                    if (c.wasAdded()) {
-                        for (WeakReference<Menu> ref : menuReferences) {
-                            final Menu menu = ref.get();
-                            if (menu != null) {
-                                try {
-                                    for (String fileName : c.getAddedSubList()) {
-                                        final MenuItem openMenuItem = new MenuItem(fileName);
-                                        openMenuItem.setOnAction((e) -> fileOpener.get().accept(fileName));
-                                        openMenuItem.disableProperty().bind(disable);
-                                        menu.getItems().add(0, openMenuItem);
-                                    }
-                                } catch (Exception ex) {
-                                }
-                            } else
-                                deadRefs.add(ref);
-                        }
+                            }
+                            menu.getItems().removeAll(toDelete);
+                        } else
+                            deadRefs.add(ref);
                     }
                 }
-
-                if (deadRefs.size() > 0) {
-                    menuReferences.removeAll(deadRefs); // purge anything that has been garbage collected
+                if (c.wasAdded()) {
+                    for (WeakReference<Menu> ref : menuReferences) {
+                        final Menu menu = ref.get();
+                        if (menu != null) {
+                            try {
+                                for (String fileName : c.getAddedSubList()) {
+                                    final MenuItem openMenuItem = new MenuItem(fileName);
+                                    openMenuItem.setOnAction((e) -> fileOpener.get().accept(fileName));
+                                    openMenuItem.disableProperty().bind(disable);
+                                    menu.getItems().add(0, openMenuItem);
+                                }
+                            } catch (Exception ex) {
+                            }
+                        } else
+                            deadRefs.add(ref);
+                    }
                 }
-                ProgramProperties.put("RecentFiles", recentFiles.toArray(new String[0]));
-            });
-        });
+            }
+
+            if (deadRefs.size() > 0) {
+                menuReferences.removeAll(deadRefs); // purge anything that has been garbage collected
+            }
+            ProgramProperties.put("RecentFiles", recentFiles.toArray(new String[0]));
+        }));
     }
 
     /**
@@ -136,12 +134,7 @@ public class RecentFilesManager {
 
         for (String fileName : recentFiles) {
             final MenuItem openMenuItem = new MenuItem(fileName);
-            openMenuItem.setOnAction(new EventHandler<ActionEvent>() {
-                @Override
-                public void handle(ActionEvent e) {
-                    fileOpener.get().accept(fileName);
-                }
-            });
+            openMenuItem.setOnAction(e -> fileOpener.get().accept(fileName));
             openMenuItem.disableProperty().bind(disable);
             menu.getItems().add(openMenuItem);
         }

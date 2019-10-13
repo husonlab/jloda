@@ -51,7 +51,7 @@ public class ColorTable {
      */
     public ColorTable(String name, Collection<Color> colors) {
         this.name = name;
-        this.colors = colors.toArray(new Color[colors.size()]);
+        this.colors = colors.toArray(new Color[0]);
     }
 
     /**

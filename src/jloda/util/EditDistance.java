@@ -303,7 +303,7 @@ public class EditDistance {
         outs.println("dimensions ntax=" + lines.size() + ";");
         outs.println("format triangle=both;");
 
-        Pair[] data = lines.toArray(new Pair[lines.size()]);
+        Pair[] data = lines.toArray(new Pair[0]);
 
         outs.println("matrix");
         for (Pair pi : data) {

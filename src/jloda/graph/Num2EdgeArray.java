@@ -24,7 +24,7 @@ package jloda.graph;
  * Daniel Huson, 1.2007
  */
 public class Num2EdgeArray {
-    Edge[] array = new Edge[0];
+    Edge[] array;
 
     /**
      * default constructor

@@ -85,7 +85,7 @@ public class EPSGraphics extends Graphics2D {
     /**
      * the current clipping bounds
      */
-    private Shape clip = null;
+    private Shape clip;
     /**
      * the current transformation matrix
      */
@@ -155,6 +155,7 @@ public class EPSGraphics extends Graphics2D {
         this.background = g.background;
         this.tx = g.tx;
         this.drawTextAsOutlines = g.drawTextAsOutlines;
+        this.stroke=g.stroke;
 
     }
 
@@ -279,7 +280,7 @@ public class EPSGraphics extends Graphics2D {
 
     }
 
-    public void drawPolyline(int xPoints[], int yPoints[],
+    public void drawPolyline(int[] xPoints, int[] yPoints,
                              int nPoints) {
         if (0 < nPoints) {
             GeneralPath path = new GeneralPath();
@@ -291,7 +292,7 @@ public class EPSGraphics extends Graphics2D {
         }
     }
 
-    public void drawPolygon(int xPoints[], int yPoints[],
+    public void drawPolygon(int[] xPoints, int[] yPoints,
                             int nPoints) {
         if (nPoints > 1) {
             Polygon poly = new Polygon(xPoints, yPoints, nPoints);
@@ -299,7 +300,7 @@ public class EPSGraphics extends Graphics2D {
         }
     }
 
-    public void fillPolygon(int xPoints[], int yPoints[],
+    public void fillPolygon(int[] xPoints, int[] yPoints,
                             int nPoints) {
         if (0 < nPoints) {
             GeneralPath path = new GeneralPath();

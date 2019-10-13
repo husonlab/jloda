@@ -39,11 +39,11 @@ import java.util.*;
  *         Date: 01-Dec-2003
  */
 public class ProjectManager {
-    final static private List<IDirector> projects = Collections.synchronizedList(new LinkedList<IDirector>());
+    final static private List<IDirector> projects = Collections.synchronizedList(new LinkedList<>());
     final static private Map<IDirector, List<IDirectableViewer>> viewersList = new HashMap<>();
-    final static private List<Pair<IDirector, JMenu>> dirAndWindowMenuPairs = Collections.synchronizedList(new LinkedList<Pair<IDirector, JMenu>>());
+    final static private List<Pair<IDirector, JMenu>> dirAndWindowMenuPairs = Collections.synchronizedList(new LinkedList<>());
     final static private Map<JMenu, Integer> menu2baseSize = new HashMap<>();
-    final static private List<IProjectsChangedListener> projectsChangedListeners = Collections.synchronizedList(new LinkedList<IProjectsChangedListener>());
+    final static private List<IProjectsChangedListener> projectsChangedListeners = Collections.synchronizedList(new LinkedList<>());
     private static boolean exitOnEmpty = true;
     final static private HashSet<JMenu> windowMenusUnderControl = new HashSet<>();
 
@@ -98,7 +98,7 @@ public class ProjectManager {
 
                 projects.add(dir);
 
-                viewersList.put(dir, new LinkedList<IDirectableViewer>());
+                viewersList.put(dir, new LinkedList<>());
 
                 if (viewer != null) {
                     final JMenu menu = viewer.getWindowMenu();
@@ -314,10 +314,7 @@ public class ProjectManager {
 
     public static int getWindowMenuBaseSize(JMenu windowMenu) {
         Integer value = menu2baseSize.get(windowMenu);
-        if (value == null)
-            return 0;
-        else
-            return value;
+        return Objects.requireNonNullElse(value, 0);
     }
 
     /**

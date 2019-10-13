@@ -29,7 +29,6 @@ import java.awt.geom.Point2D;
  * Daniel Huson, 12.2006
  */
 public class ScrollPaneAdjuster {
-    private final JScrollPane scrollPane;
     private final JScrollBar scrollBarX;
     private final JScrollBar scrollBarY;
     private final Transform trans;
@@ -54,7 +53,6 @@ public class ScrollPaneAdjuster {
      * @param centerDC   center point in device coordinates
      */
     public ScrollPaneAdjuster(JScrollPane scrollPane, Transform trans, Point centerDC) {
-        this.scrollPane = scrollPane;
         this.trans = trans;
         scrollBarX = scrollPane.getHorizontalScrollBar();
         scrollBarY = scrollPane.getVerticalScrollBar();

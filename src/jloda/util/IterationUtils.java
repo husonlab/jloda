@@ -36,7 +36,7 @@ public class IterationUtils {
      * @return iterable over multiple iterables
      */
     public static <T> Iterable<T> join(final Iterable<T>... iterables) {
-        return () -> new Iterator<T>() {
+        return () -> new Iterator<>() {
             private int which = 0;
             private Iterator<T> iterator = null;
 

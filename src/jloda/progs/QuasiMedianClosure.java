@@ -39,7 +39,6 @@ public class QuasiMedianClosure {
         System.err.println("Please enter sequences, followed by a .");
 
         Set oldSequences = new TreeSet();
-        Set curSequences = new HashSet();
         Set newSequences = new HashSet();
         int sequenceLength = 0;
 
@@ -91,10 +90,10 @@ public class QuasiMedianClosure {
         }
 
 
-        curSequences.addAll(oldSequences);
+        Set curSequences = new HashSet(oldSequences);
 
         while (curSequences.size() > 0) {
-            String[] oldArray = (String[]) oldSequences.toArray(new String[oldSequences.size()]);
+            String[] oldArray = (String[]) oldSequences.toArray(new String[0]);
             newSequences.clear();
             for (String seqA : oldArray) {
                 for (String seqB : oldArray) {
@@ -219,6 +218,6 @@ public class QuasiMedianClosure {
         }
 
 
-        return (String[]) median.toArray(new String[median.size()]);
+        return (String[]) median.toArray(new String[0]);
     }
 }

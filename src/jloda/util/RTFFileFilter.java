@@ -85,7 +85,7 @@ public class RTFFileFilter implements FilenameFilter {
                         if (aLine.length() > 0)
                             lines.add(aLine);
                     }
-                    return lines.toArray(new String[lines.size()]);
+                    return lines.toArray(new String[0]);
                 }
             } catch (Exception e) {
             }

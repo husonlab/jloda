@@ -121,6 +121,7 @@ final public class EdgeView extends ViewBase implements Cloneable { //, IEdgeVie
             }
         }
         labelLayout = src.getLabelLayout();
+        labelReferencePoint=src.labelReferencePoint;
     }
 
     /**

@@ -355,14 +355,11 @@ public class PhyloTreeView extends GraphView {
                 String first = sortTreeAlphabeticallyRec(e.getTarget());
                 list.add(new Pair<>(first, e));
             }
-            list.sort(new Comparator<Pair<String, Edge>>() {
-                @Override
-                public int compare(Pair<String, Edge> a, Pair<String, Edge> b) {
-                    int compare = a.getFirst().compareTo(b.getFirst());
-                    if (compare != 0)
-                        return compare;
-                    else return Integer.compare(a.getSecond().getId(), b.getSecond().getId());
-                }
+            list.sort((a, b) -> {
+                int compare = a.getFirst().compareTo(b.getFirst());
+                if (compare != 0)
+                    return compare;
+                else return Integer.compare(a.getSecond().getId(), b.getSecond().getId());
             });
             final ArrayList<Edge> edges = new ArrayList<>(v.getDegree());
             for (Pair<String, Edge> pair : list) {

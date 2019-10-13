@@ -89,8 +89,8 @@ public abstract class FileFilterBase extends FileFilter implements FilenameFilte
             buf.append(".gz");
         }
         if (allowZipped) {
-            if (first)
-                first = false;
+            if (first) {
+            }
             else
                 buf.append(", ");
             buf.append(".zip");

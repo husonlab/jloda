@@ -100,18 +100,16 @@ public class Dijkstra {
      * @
      */
     static public SortedSet<Node> newFullQueue(final Graph graph, final NodeIntegerArray dist) {
-        SortedSet<Node> queue = new TreeSet<>(new Comparator<Node>() {
-            public int compare(Node v1, Node v2) {
-                int weight1 = dist.getValue(v1);
-                int weight2 = dist.getValue(v2);
-                //System.out.println("weight1 " + weight1 + " weight2 " + weight2);
-                //System.out.println("graph.getId(v1) " + graph.getId(v1) + " graph.getId(v2) " + graph.getId(v2));
-                if (weight1 < weight2)
-                    return -1;
-                else if (weight1 > weight2)
-                    return 1;
-                else return Integer.compare(graph.getId(v1), graph.getId(v2));
-            }
+        SortedSet<Node> queue = new TreeSet<>((v1, v2) -> {
+            int weight1 = dist.getValue(v1);
+            int weight2 = dist.getValue(v2);
+            //System.out.println("weight1 " + weight1 + " weight2 " + weight2);
+            //System.out.println("graph.getId(v1) " + graph.getId(v1) + " graph.getId(v2) " + graph.getId(v2));
+            if (weight1 < weight2)
+                return -1;
+            else if (weight1 > weight2)
+                return 1;
+            else return Integer.compare(graph.getId(v1), graph.getId(v2));
         });
         for (Node v = graph.getFirstNode(); v != null; v = graph.getNextNode(v))
             queue.add(v);

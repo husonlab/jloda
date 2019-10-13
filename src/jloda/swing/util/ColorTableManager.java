@@ -135,7 +135,7 @@ public class ColorTableManager {
      */
     public static String[] getNames() {
         init();
-        return name2ColorTable.keySet().toArray(new String[name2ColorTable.size()]);
+        return name2ColorTable.keySet().toArray(new String[0]);
     }
 
     /**
@@ -153,7 +153,7 @@ public class ColorTableManager {
             if (!list.contains(name))
                 list.add(name);
         }
-        return list.toArray(new String[list.size()]);
+        return list.toArray(new String[0]);
     }
 
     /**

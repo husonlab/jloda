@@ -36,7 +36,7 @@ public class SetUtils {
      * @return intersection
      */
     public static <T> Iterable<T> intersection(Collection<T> a, Collection<T> b) {
-        return () -> new Iterator<T>() {
+        return () -> new Iterator<>() {
             final Iterator<T> it = a.iterator();
             T v = null;
 
@@ -120,7 +120,7 @@ public class SetUtils {
      * @return symmetric difference
      */
     public static <T> Iterable<T> symmetricDifference(Collection<T> a, Collection<T> b) {
-        return () -> new Iterator<T>() {
+        return () -> new Iterator<>() {
             final Iterator<T> it = union(a, b).iterator();
             T v = null;
 

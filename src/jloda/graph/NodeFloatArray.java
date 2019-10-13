@@ -20,6 +20,8 @@
 package jloda.graph;
 
 
+import java.util.Arrays;
+
 /**
  * Node float array
  * Daniel Huson, 2003
@@ -67,8 +69,7 @@ public class NodeFloatArray extends GraphBase implements NodeAssociation<Float> 
      * Clear all entries.
      */
     public void clear() {
-        for (int i = 0; i < data.length; i++)
-            data[i] = 0;
+        Arrays.fill(data, 0);
         isClear = true;
     }
 

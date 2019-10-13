@@ -48,24 +48,20 @@ public class MemoryUsageManager {
         changeListeners = new LinkedList<>();
 
         ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(1);
-        scheduler.scheduleAtFixedRate(new Runnable() {
-            public void run() {
-                try {
-                    SwingUtilities.invokeAndWait(new Runnable() {
-                        public void run() {
-                            ChangeEvent changeEvent = new ChangeEvent(Basic.getMemoryUsageString());
-                            synchronized (changeListeners) {
-                                for (WeakReference<ChangeListener> weak : changeListeners) {
-                                    ChangeListener listener = weak.get();
-                                    if (listener != null)
-                                        listener.stateChanged(changeEvent);
-                                }
-                            }
+        scheduler.scheduleAtFixedRate(() -> {
+            try {
+                SwingUtilities.invokeAndWait(() -> {
+                    ChangeEvent changeEvent = new ChangeEvent(Basic.getMemoryUsageString());
+                    synchronized (changeListeners) {
+                        for (WeakReference<ChangeListener> weak : changeListeners) {
+                            ChangeListener listener = weak.get();
+                            if (listener != null)
+                                listener.stateChanged(changeEvent);
                         }
-                    });
-                } catch (InterruptedException | InvocationTargetException e) {
-                    Basic.caught(e);
-                }
+                    }
+                });
+            } catch (InterruptedException | InvocationTargetException e) {
+                Basic.caught(e);
             }
         }, 0, 5, SECONDS);
     }

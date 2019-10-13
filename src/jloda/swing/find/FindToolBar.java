@@ -48,7 +48,7 @@ public class FindToolBar extends JPanel implements IFindDialog {
     private final JToolBar findToolBar;
     private final JToolBar replaceToolBar;
 
-    private boolean showReplaceBar = false;
+    private boolean showReplaceBar;
 
     final static private Color LIGHT_RED = new Color(255, 200, 200);
     final static private Color LIGHT_GREEN = new Color(200, 255, 200);
@@ -141,15 +141,13 @@ public class FindToolBar extends JPanel implements IFindDialog {
         BasicSwing.changeFontSize(findCBox, 10);
         findToolBar.add(findCBox);
 
-        findCBox.getEditor().addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent arg0) {
-                String word = findCBox.getEditor().getItem().toString().trim();
-                if (word.length() > 0) {
-                    findCBox.setSelectedItem(word);
-                    findCBox.getCurrentText(true);
-                    searchManager.setSearchText(word);
-                    searchManager.applyFindFirst();
-                }
+        findCBox.getEditor().addActionListener(arg0 -> {
+            String word = findCBox.getEditor().getItem().toString().trim();
+            if (word.length() > 0) {
+                findCBox.setSelectedItem(word);
+                findCBox.getCurrentText(true);
+                searchManager.setSearchText(word);
+                searchManager.applyFindFirst();
             }
         });
 
@@ -227,14 +225,12 @@ public class FindToolBar extends JPanel implements IFindDialog {
         BasicSwing.changeFontSize(replaceCBox, 10);
         replaceToolBar.add(replaceCBox);
 
-        replaceCBox.getEditor().addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent arg0) {
-                String word = replaceCBox.getEditor().getItem().toString().trim();
-                if (word.length() > 0) {
-                    searchManager.setReplaceText(word);
-                    replaceCBox.setSelectedItem(word);
-                    replaceCBox.getCurrentText(true);
-                }
+        replaceCBox.getEditor().addActionListener(arg0 -> {
+            String word = replaceCBox.getEditor().getItem().toString().trim();
+            if (word.length() > 0) {
+                searchManager.setReplaceText(word);
+                replaceCBox.setSelectedItem(word);
+                replaceCBox.getCurrentText(true);
             }
         });
 
@@ -307,14 +303,12 @@ public class FindToolBar extends JPanel implements IFindDialog {
                 parent2active.put(searcher.getParent(), searcher);
         }
 
-        targetCBox.addItemListener(new ItemListener() {
-            public void itemStateChanged(ItemEvent event) {
-                if (event.getStateChange() == ItemEvent.SELECTED) {
-                    ISearcher searcher = ((SearcherItem) event.getItem()).getSearcher();
-                    searchManager.setSearcher(searcher);
-                    if (searcher.getParent() != null)
-                        parent2active.put(searcher.getParent(), searcher);
-                }
+        targetCBox.addItemListener(event -> {
+            if (event.getStateChange() == ItemEvent.SELECTED) {
+                ISearcher searcher = ((SearcherItem) event.getItem()).getSearcher();
+                searchManager.setSearcher(searcher);
+                if (searcher.getParent() != null)
+                    parent2active.put(searcher.getParent(), searcher);
             }
         });
     }

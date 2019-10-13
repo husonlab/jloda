@@ -227,7 +227,7 @@ public class NodeSet extends GraphBase implements Set<Node> {
      * @return an enumeration of the elements in the set
      */
     public Iterator<Node> iterator() {
-        return new IteratorAdapter<Node>() {
+        return new IteratorAdapter<>() {
             private Node v = getFirstElement();
 
             protected Node findNext() throws NoSuchElementException {
@@ -341,7 +341,7 @@ public class NodeSet extends GraphBase implements Set<Node> {
      */
     public Object clone() {
         NodeSet result = new NodeSet(getOwner());
-        for (Node v : this) result.add(v);
+        result.addAll(this);
         return result;
     }
 

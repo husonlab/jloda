@@ -67,8 +67,6 @@ public class EdgeIntegerArray extends GraphBase implements EdgeAssociation<Integ
      * Clear all entries.
      */
     public void clear() {
-        for (int i = 0; i < data.length; i++)
-            data[i] = 0;
         isClear = true;
     }
 

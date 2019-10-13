@@ -41,8 +41,6 @@ public class ScaleBar2 extends Pane {
     private double mouseY = 0;
 
     private final Line line;
-    private final Line begin;
-    private final Line end;
     private final Label label;
     private final ObjectProperty<Color> color = new SimpleObjectProperty<>(Color.GRAY);
 
@@ -57,12 +55,12 @@ public class ScaleBar2 extends Pane {
 
         line = new Line(0, 6, 0, 6);
         line.setStroke(getColor());
-        begin = new Line(line.getStartX(), 4, line.getStartX(), 8);
+        Line begin = new Line(line.getStartX(), 4, line.getStartX(), 8);
         begin.startXProperty().bind(line.startXProperty());
         begin.endXProperty().bind(line.startXProperty());
         begin.setStroke(getColor());
 
-        end = new Line(line.getEndX(), 4, line.getEndX(), 8);
+        Line end = new Line(line.getEndX(), 4, line.getEndX(), 8);
         end.startXProperty().bind(line.endXProperty());
         end.endXProperty().bind(line.endXProperty());
         end.setStroke(getColor());

@@ -132,35 +132,33 @@ public class PluginClassLoader {
 
         Object[] array = plugins.toArray();
 
-        Arrays.sort(array, new Comparator<Object>() {
-            public int compare(Object o1, Object o2) {
-                // First compare the interface... if equal, compare the name
+        Arrays.sort(array, (o1, o2) -> {
+            // First compare the interface... if equal, compare the name
 
-                Class[] int1 = o1.getClass().getInterfaces();
-                Class[] int2 = o2.getClass().getInterfaces();
+            Class[] int1 = o1.getClass().getInterfaces();
+            Class[] int2 = o2.getClass().getInterfaces();
 
-                if (int1.length == 0 || int2.length == 0) {
-                    if (int1.length == 0 && int2.length > 0)
-                        return 1;
-                    else if (int1.length > 0)
-                        return -1;
-                    else
-                        return o1.getClass().getName().compareTo(o2.getClass().getName());
-                }
-                String name1;
-                String name2;
-                if (int1[0] == int2[0]) {
-                    // Compare the names of the classes if the same interface
-                    name1 = o1.getClass().getName();
-                    name2 = o2.getClass().getName();
-                } else {
-                    // Compare the names of the interfaces if not the same
-                    name1 = int1[0].getName(); // Only look at the first it implements
-                    name2 = int2[0].getName();
-                }
-                return name1.compareTo(name2);
-
+            if (int1.length == 0 || int2.length == 0) {
+                if (int1.length == 0 && int2.length > 0)
+                    return 1;
+                else if (int1.length > 0)
+                    return -1;
+                else
+                    return o1.getClass().getName().compareTo(o2.getClass().getName());
             }
+            String name1;
+            String name2;
+            if (int1[0] == int2[0]) {
+                // Compare the names of the classes if the same interface
+                name1 = o1.getClass().getName();
+                name2 = o2.getClass().getName();
+            } else {
+                // Compare the names of the interfaces if not the same
+                name1 = int1[0].getName(); // Only look at the first it implements
+                name2 = int2[0].getName();
+            }
+            return name1.compareTo(name2);
+
         });
         return Arrays.asList(array);
     }

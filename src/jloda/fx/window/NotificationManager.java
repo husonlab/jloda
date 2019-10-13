@@ -357,9 +357,7 @@ public class NotificationManager {
 
     private static Animation createChangeYAnimation(Popup notification, double oldValue, double newValue) {
         final DoubleProperty y = new SimpleDoubleProperty();
-        y.addListener((c, o, n) -> {
-            notification.setY(n.doubleValue());
-        });
+        y.addListener((c, o, n) -> notification.setY(n.doubleValue()));
         final KeyFrame beginKeyFrame = new KeyFrame(Duration.ZERO, new KeyValue(y, oldValue));
         final KeyFrame endKeyFrame = new KeyFrame(Duration.millis(200), new KeyValue(y, newValue));
         return new Timeline(beginKeyFrame, endKeyFrame);
