@@ -169,39 +169,6 @@ public class Basic {
     }
 
     /**
-     * Matches prefix of string and return remainder of string.
-     * Prefix need not match string, i.e. only length of prefix is used
-     *
-     * @param string
-     * @param prefix
-     * @return remainder of string after prefix, trimmed
-     * @exeception IOException if given prefix doesn't match prefix of string
-     */
-    public static String matchPrefix(String string, String prefix) throws IOException {
-        if (!string.startsWith(prefix))
-            throw new IOException("Prefix <" + prefix + "> not matched in <" + string + ">");
-        return string.substring(prefix.length()).trim();
-    }
-
-    /**
-     * Matches prefix of string and return remainder of string.
-     * Prefix need not match string, i.e. only length of prefix is used
-     *
-     * @param string
-     * @param prefix
-     * @return remainder of string after prefix, trimmed
-     * @exeception IOException if given prefix doesn't match prefix of string
-     */
-    public static String matchPrefix(String string, String prefix, String altPrefix) throws IOException {
-        if (string.startsWith(prefix))
-            return string.substring(prefix.length()).trim();
-        else if (string.startsWith(altPrefix))
-            return string.substring(altPrefix.length()).trim();
-        else
-            throw new IOException("Prefix <" + prefix + "> or <" + altPrefix + "> not matched in <" + string + ">");
-    }
-
-    /**
      * replaces all white spaces in the given string str  by the given character c.
      * Represents consecutive spaces by one c
      *
@@ -482,22 +449,6 @@ public class Basic {
     }
 
     /**
-     * returns a wrapped around string
-     *
-     * @param str
-     * @param lineLength
-     * @return wrapped around string
-     */
-    public static String wraparound(String str, int lineLength) {
-        StringBuilder buf = new StringBuilder();
-
-        for (int p = 0; p < str.length(); p += lineLength) {
-            buf.append(str, p, Math.min(str.length(), p + lineLength)).append("\n");
-        }
-        return buf.toString();
-    }
-
-    /**
      * returns a collection in a space-separated string
      *
      * @param collection
@@ -549,18 +500,6 @@ public class Basic {
         return result;
     }
 
-    /**
-     * sort a list using the given comparator
-     *
-     * @param list
-     * @param comparator
-     */
-    public static <T> void sortSubsetAsContainingSet(List<T> list, Comparator<T> comparator) {
-        T[] array = (T[]) list.toArray();
-        Arrays.sort(array, comparator);
-        list.clear();
-        list.addAll(Arrays.asList(array));
-    }
 
     /**
      * converts int[] to list of Integers
@@ -581,13 +520,7 @@ public class Basic {
      * @return short name
      */
     public static String getShortName(Class clazz) {
-        if (clazz == null)
-            return null;
-        final int pos = clazz.getName().lastIndexOf('.');
-        if (pos == -1)
-            return clazz.getName();
-        else
-            return clazz.getName().substring(pos + 1);
+        return clazz.getSimpleName();
     }
 
     /**
@@ -1036,19 +969,19 @@ public class Basic {
      * @param separator
      * @return string representation
      */
-    public static String toString(Collection collection, String separator) {
+    public static <T> String toString(Collection<T> collection, String separator) {
         if (collection == null)
             return "";
         final StringBuilder buf = new StringBuilder();
 
         boolean first = true;
-        for (Object aCollection : collection) {
-            if (aCollection != null) {
+        for (T object : collection) {
+            if (object != null) {
                 if (first)
                     first = false;
                 else if (separator != null)
                     buf.append(separator);
-                buf.append(aCollection);
+                buf.append(object);
             }
         }
         return buf.toString();
@@ -1142,7 +1075,7 @@ public class Basic {
      * @param separator
      * @return string representation
      */
-    public static String toString(Iterable iterable, String separator) {
+    public static <T> String toString(Iterable<T> iterable, String separator) {
         return toString(iterable.iterator(), separator);
     }
 
@@ -1153,7 +1086,7 @@ public class Basic {
      * @param separator
      * @return string representation
      */
-    public static String toString(Iterator iterator, String separator) {
+    public static <T> String toString(Iterator<T> iterator, String separator) {
         if (iterator == null)
             return "";
         final StringBuilder buf = new StringBuilder();
@@ -1161,8 +1094,7 @@ public class Basic {
         while (iterator.hasNext()) {
             if (buf.length() > 0)
                 buf.append(separator);
-            Object next = iterator.next();
-            String str = next.toString();
+            T next = iterator.next();
             buf.append(next);
         }
         return buf.toString();
@@ -1317,22 +1249,6 @@ public class Basic {
     }
 
     /**
-     * remove all characters except for letters and digits
-     *
-     * @param str
-     * @return string of letters and digits
-     */
-    public static String removeAllButLettersDigits(String str) {
-        StringBuilder buf = new StringBuilder();
-        for (int i = 0; i < str.length(); i++) {
-            char ch = str.charAt(i);
-            if (Character.isLetterOrDigit(ch))
-                buf.append(ch);
-        }
-        return buf.toString();
-    }
-
-    /**
      * converts a list of objects to a string
      *
      * @param result
@@ -1377,29 +1293,6 @@ public class Basic {
         if (list.size() > 0) {
             result.addAll(list);
             result.add(result.remove(0));
-        }
-        return result;
-    }
-
-    /**
-     * reduce the number of elements in a list to n
-     *
-     * @param list
-     * @param n
-     * @return sublist with n elements
-     */
-    public static <T> List reduceList(List<T> list, int n) {
-        List<T> result = new LinkedList<>();
-        int mod = list.size() / n;
-        int i = 0;
-        int count = 0;
-        for (T t : list) {
-            if (++i == mod) {
-                result.add(t);
-                i = 0;
-                if (++count == n)
-                    break;
-            }
         }
         return result;
     }
@@ -1584,20 +1477,6 @@ public class Basic {
                 result.add(obj);
         }
         return result;
-    }
-
-    /**
-     * concatenates two collections and a returns a list
-     *
-     * @param listA
-     * @param listB
-     * @return concatenated list
-     */
-    public static <T> List<T> getConcatenation(Collection<T> listA, Collection<T> listB) {
-        List<T> all = new LinkedList<>();
-        all.addAll(listA);
-        all.addAll(listB);
-        return all;
     }
 
     /**
@@ -1949,66 +1828,6 @@ public class Basic {
         return 0;
     }
 
-    static public boolean deleteDirectory(File path) {
-        if (path.exists()) {
-            if (path.listFiles() != null) {
-                for (File file : path.listFiles()) {
-                    if (file.isDirectory()) {
-                        if (!deleteDirectory(file))
-                            return false;
-                    } else {
-                        if (!file.delete())
-                            return false;
-                    }
-                }
-            }
-        }
-        return path.delete();
-    }
-
-    /**
-     * gets the length of the longest common prefix of the two strings
-     *
-     * @param a
-     * @param b
-     * @return length of lcp
-     */
-    static public int getLongestCommonPrefixLength(String a, String b) {
-        int top = Math.min(a.length(), b.length());
-        for (int i = 0; i < top; i++)
-            if (a.charAt(i) != b.charAt(i))
-                return i;
-        return top;
-    }
-
-    /**
-     * gets the total count
-     *
-     * @param counts
-     * @return total
-     */
-    public static int getTotal(int[] counts) {
-        int total = 0;
-        for (int count : counts) {
-            total += count;
-        }
-        return total;
-    }
-
-    /**
-     * gets the total count
-     *
-     * @param counts
-     * @return total
-     */
-    public static long getTotal(long[] counts) {
-        long total = 0;
-        for (long count : counts) {
-            total += count;
-        }
-        return total;
-    }
-
     /**
      * replace the suffix of a file
      *
@@ -2090,22 +1909,6 @@ public class Basic {
         return buf.toString();
     }
 
-    /**
-     * get format string that has enough leading zeros to display this number
-     *
-     * @param number
-     * @return format string
-     */
-    public static String getIntegerFormatLeadingZeros(int number) {
-        if (number < 10)
-            return "%d";
-        else if (number < 100)
-            return "%02d";
-        else if (number < 1000)
-            return "%03d";
-        else
-            return "%04d";
-    }
 
     final private static long kilo = 1024;
     final private static long mega = 1024 * kilo;
@@ -2185,36 +1988,6 @@ public class Basic {
         return Objects.requireNonNullElse(result, "");
     }
 
-
-    /**
-     * returns the first block of a text up to an empty line. Consecutive lines are separated by single spaces
-     *
-     * @param text
-     * @return first block
-     */
-    public static String getFirstParagraphAsALine(String text) {
-        if (text == null)
-            return "";
-        StringBuilder buf = new StringBuilder();
-        BufferedReader r = new BufferedReader(new StringReader(text));
-        String aLine;
-        try {
-            boolean first = true;
-            while ((aLine = r.readLine()) != null) {
-                aLine = aLine.trim();
-                if (first)
-                    first = false;
-                else {
-                    if (aLine.length() == 0)
-                        break;  // found empty line, break;
-                    buf.append(" ");
-                }
-                buf.append(aLine);
-            }
-        } catch (IOException e) {
-        }
-        return buf.toString();
-    }
 
     /**
      * get the last line in a text
@@ -2619,39 +2392,6 @@ public class Basic {
     }
 
     /**
-     * skip all characters upto first digit or '-'
-     *
-     * @param token
-     * @return first number   or null
-     */
-    public static String skipToNumber(String token) {
-        int pos = 0;
-        while (pos < token.length()) {
-            if (Character.isDigit(token.charAt(pos)) || token.charAt(pos) == '-')
-                return token.substring(pos);
-            pos++;
-        }
-        return null;
-    }
-
-    /**
-     * gets next long
-     *
-     * @param rand
-     * @param max
-     * @return long
-     */
-    public static long nextLong(Random rand, long max) {
-        if (max <= 0)
-            return 0;
-        else if (max < Integer.MAX_VALUE)
-            return rand.nextInt((int) max);
-        else {
-            return (long) (rand.nextDouble() * max);
-        }
-    }
-
-    /**
      * split a string by the given separator, but honoring quotes around items
      *
      * @param string
@@ -2881,27 +2621,6 @@ public class Basic {
     }
 
     /**
-     * copy a file and uncompress if necessary
-     *
-     * @param source
-     * @param dest
-     * @throws java.io.IOException
-     */
-    public static void copyFileUncompressed(File source, File dest) throws IOException {
-        if (Basic.isZIPorGZIPFile(source.getPath())) {
-            try (InputStream ins = Basic.getInputStreamPossiblyZIPorGZIP(source.getPath()); OutputStream outs = new BufferedOutputStream(new FileOutputStream(dest), 8192)) {
-                byte[] buffer = new byte[8192];
-                int len = ins.read(buffer);
-                while (len != -1) {
-                    outs.write(buffer, 0, len);
-                    len = ins.read(buffer);
-                }
-            }
-        } else
-            copyFile(source, dest);
-    }
-
-    /**
      * open reader
      *
      * @param fileName
@@ -3124,26 +2843,6 @@ public class Basic {
         return result;
     }
 
-    /**
-     * computes the symmetric different of two hash sets
-     *
-     * @param set1
-     * @param set2
-     * @param <T>
-     * @return symmetric different
-     */
-    public static <T> HashSet<T> symmetricDifference(final Set<T> set1, final Set<T> set2) {
-        final HashSet<T> result = new HashSet<>();
-        for (T element : set1) {
-            if (!set2.contains(element))
-                result.add(element);
-        }
-        for (T element : set2) {
-            if (!set1.contains(element))
-                result.add(element);
-        }
-        return result;
-    }
 
     /**
      * computes the intersection different of two hash sets
@@ -3225,33 +2924,6 @@ public class Basic {
         return true;
     }
 
-    /**
-     * copy an int array to an integer array
-     *
-     * @param array
-     * @return integer array copy
-     */
-    public static Integer[] copyAsIntegerArray(int[] array) {
-        Integer[] result = new Integer[array.length];
-        for (int i = 0; i < array.length; i++)
-            result[i] = array[i];
-        return result;
-    }
-
-    /**
-     * copy an Integer array to an int array
-     *
-     * @param array
-     * @return int array copy
-     */
-    public static int[] copyAsIntArray(Collection<Integer> array) {
-        int[] result = new int[array.size()];
-        int i = 0;
-        for (Integer value : array) {
-            result[i++] = value;
-        }
-        return result;
-    }
 
     /**
      * Finds the value of the given enumeration by name, case-insensitive.
@@ -3264,56 +2936,6 @@ public class Basic {
             }
         }
         return null;
-    }
-
-    /**
-     * returns file with .gz ending if only that exists
-     *
-     * @param file
-     * @return file or file.gz
-     */
-    public static File gzippedIfNecessary(File file) {
-        if (file.exists() || !(new File(file.getPath() + ".gz")).exists())
-            return file;
-        else
-            return new File(file.getPath() + ".gz");
-    }
-
-    /**
-     * determines whether the given string contains the given subword, ignoring case. Uses stupid slow algorithm
-     *
-     * @param string
-     * @param subWord
-     * @return true, if contained
-     */
-    public static boolean containsIgnoringCase(String string, int[] subWord) {
-        int pos = 0;
-        while (pos + subWord.length < string.length()) {
-            int i = 0;
-            for (; i < subWord.length; i++) {
-                if (Character.toLowerCase(string.charAt(pos + i)) != Character.toLowerCase(subWord[i])) {
-                    break;
-                }
-            }
-            if (i == subWord.length)
-                return true;
-            pos++;
-        }
-        return false;
-    }
-
-    /**
-     * gets the file type (based on suffix)
-     *
-     * @param name
-     * @return file type or "Unknown"
-     */
-    public static String getFileType(String name) {
-        int pos = name.lastIndexOf(".");
-        if (pos != 1 && pos < name.length() - 1) {
-            return name.substring(pos + 1).toUpperCase();
-        } else
-            return "Unknown";
     }
 
     /**
@@ -3363,22 +2985,6 @@ public class Basic {
     }
 
     /**
-     * return the lowest power of 2 that is greater or equal to the given number
-     *
-     * @param i
-     * @return next power of 2
-     */
-    public static int nextPowerOf2(int i) {
-        long k = 1L;
-        while (k < Integer.MAX_VALUE) {
-            if (k >= i)
-                break;
-            k <<= 1;
-        }
-        return (int) k;
-    }
-
-    /**
      * gets value as binary string, always showing all 64 positions
      *
      * @param value
@@ -3392,19 +2998,6 @@ public class Basic {
         return buf.toString();
     }
 
-    /**
-     * gets value as binary string, always showing all 64 positions
-     *
-     * @param value
-     * @return binary string
-     */
-    public static String toBinaryString(int value) {
-        StringBuilder buf = new StringBuilder();
-        for (int shift = 31; shift >= 0; shift--) {
-            buf.append((value & (1 << shift)) >>> shift);
-        }
-        return buf.toString();
-    }
 
     /**
      * Returns the path of one File relative to another.
@@ -3438,25 +3031,6 @@ public class Basic {
             result.delete(result.length() - File.separator.length(), result.length());
         }
         return new File(result.toString());
-    }
-
-    /**
-     * returns all trimmed lines in a file, excluding empty lines or lines that start with #
-     *
-     * @param fileName
-     * @return lines
-     * @throws java.io.IOException
-     */
-    public static List<String> getAllLines(String fileName) throws IOException {
-        final List<String> list = new ArrayList<>();
-        FileInputIterator it = new FileInputIterator(fileName);
-        while (it.hasNext()) {
-            String aLine = it.next().trim();
-            if (aLine.length() > 0 && !aLine.startsWith("#"))
-                list.add(aLine);
-        }
-        it.close();
-        return list;
     }
 
     /**
@@ -4194,24 +3768,6 @@ public class Basic {
     }
 
     /**
-     * capitalizes leading character.
-     *
-     * @param string
-     * @param allOtherLowerCase
-     * @return capitalized string
-     */
-    public static String capitalize(String string, boolean allOtherLowerCase) {
-        switch (string.length()) {
-            case 0:
-                return string;
-            case 1:
-                return string.toUpperCase();
-            default:
-                return Character.toUpperCase(string.charAt(0)) + (allOtherLowerCase ? string.substring(1).toLowerCase() : string.substring(1));
-        }
-    }
-
-    /**
      * get all files listed below the given root directory
      *
      * @param rootDirectory
@@ -4250,7 +3806,7 @@ public class Basic {
         return result;
     }
 
-    public static String toString(Pair pair, String separator) {
+    public static <S, T> String toString(Pair<S, T> pair, String separator) {
         return pair.getFirst().toString() + separator + pair.getSecond().toString();
     }
 
@@ -4298,29 +3854,6 @@ public class Basic {
                 result[i] = strings[i].trim();
         }
         return result;
-    }
-
-    /**
-     * ensure tha there is a space before and after each occurrence of z
-     *
-     * @param string
-     * @param z
-     * @return string with spaces around z added
-     */
-    public static String ensureSpaceAround(String string, char z) {
-        final StringBuilder buf = new StringBuilder();
-        for (int pos = 0; pos < string.length(); pos++) {
-            final int ch = string.charAt(pos);
-            if (ch == z) {
-                if (pos == 0 || !Character.isSpaceChar(string.charAt(pos - 1)))
-                    buf.append(' ');
-                buf.append((char) ch);
-                if (pos == string.length() - 1 || !Character.isSpaceChar(string.charAt(pos + 1)))
-                    buf.append(' ');
-            } else
-                buf.append((char) ch);
-        }
-        return buf.toString();
     }
 
     public static String[] toStrings(Object[] values) {

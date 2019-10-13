@@ -56,7 +56,7 @@ public class ArgsOptions {
      * @param description program description
      */
     public ArgsOptions(String[] args, Class clazz, String description) throws CanceledException {
-        this(args, clazz, (ProgramProperties.getProgramName() != null && ProgramProperties.getProgramName().length() > 0 ? ProgramProperties.getProgramName() : (clazz != null ? Basic.getShortName(clazz) : "Unknown")), description);
+        this(args, clazz, (ProgramProperties.getProgramName() != null && ProgramProperties.getProgramName().length() > 0 ? ProgramProperties.getProgramName() : (clazz != null ? clazz.getSimpleName() : "Unknown")), description);
     }
 
     /**
@@ -67,7 +67,7 @@ public class ArgsOptions {
      * @param description program description
      */
     public ArgsOptions(String[] args, Object main, String description) throws CanceledException {
-        this(args, main, (ProgramProperties.getProgramName() != null && ProgramProperties.getProgramName().length() > 0 ? ProgramProperties.getProgramName() : (main != null ? Basic.getShortName(main.getClass()) : "Unknown")), description);
+        this(args, main, (ProgramProperties.getProgramName() != null && ProgramProperties.getProgramName().length() > 0 ? ProgramProperties.getProgramName() : (main != null ? main.getClass().getSimpleName() : "Unknown")), description);
     }
 
     /**
