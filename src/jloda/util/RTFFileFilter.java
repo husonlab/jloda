@@ -53,9 +53,9 @@ public class RTFFileFilter implements FilenameFilter {
      */
     @Override
     public boolean accept(File dir, String name) {
-        FileInputIterator it;
+        FileLineIterator it;
         try {
-            it = new FileInputIterator(new File(dir, name));
+            it = new FileLineIterator(new File(dir, name));
             try {
                 if (it.next().startsWith("{\\rtf"))
                     return true;
@@ -77,7 +77,7 @@ public class RTFFileFilter implements FilenameFilter {
         if (getInstance().accept(file.getParentFile(), file.getName())) {
             try {
                 List<String> lines = new LinkedList<>();
-                try (FileInputIterator it = new FileInputIterator(file)) {
+                try (FileLineIterator it = new FileLineIterator(file)) {
                     while (it.hasNext()) {
                         String aLine = it.next().replaceAll("\\{\\*?\\\\[^{}]+}|[{}]|\\\\\\n?[A-Za-z]+\\n?(?:-?\\d+)?[ ]?", "").replaceAll("\\\\", "").trim();
                         if (aLine.contains("Email:") && aLine.contains("mailto:"))

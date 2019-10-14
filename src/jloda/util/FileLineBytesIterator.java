@@ -1,5 +1,5 @@
 /*
- * FileIterator.java Copyright (C) 2019. Daniel H. Huson
+ * FileLineBytesIterator.java Copyright (C) 2019. Daniel H. Huson
  *
  *  (Some files contain contributions from other authors, who are then mentioned separately.)
  *
@@ -28,7 +28,7 @@ import java.util.Iterator;
  * File iterator
  * Daniel Huson, 2014
  */
-public class FileIterator implements ICloseableIterator<byte[]>, Iterator<byte[]> {
+public class FileLineBytesIterator implements ICloseableIterator<byte[]> {
     private byte[] bytes = new byte[1000];
 
     private final InputStreamReader reader;
@@ -48,7 +48,7 @@ public class FileIterator implements ICloseableIterator<byte[]>, Iterator<byte[]
      * @param fileName
      * @throws IOException
      */
-    public FileIterator(String fileName) throws IOException {
+    public FileLineBytesIterator(String fileName) throws IOException {
         reader = new InputStreamReader(Basic.getInputStreamPossiblyZIPorGZIP(fileName));
         if (Basic.isZIPorGZIPFile(fileName))
             maxProgress = 20 * ((new File(fileName))).length();

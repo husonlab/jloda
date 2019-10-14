@@ -1,5 +1,5 @@
 /*
- * FileInputIterator.java Copyright (C) 2019. Daniel H. Huson
+ * FileLineIterator.java Copyright (C) 2019. Daniel H. Huson
  *
  *  (Some files contain contributions from other authors, who are then mentioned separately.)
  *
@@ -25,7 +25,7 @@ import java.io.*;
  * iterates over all lines in a file. File can also be a .gz file.
  * Daniel Huson, 3.2012
  */
-public class FileInputIterator implements IFileIterator {
+public class FileLineIterator implements  ICloseableIterator<String> {
     public static final String PREFIX_TO_INDICATE_TO_PARSE_FILENAME_STRING = "!!!";
     private final BufferedReader reader;
     private String nextLine = null;
@@ -51,7 +51,7 @@ public class FileInputIterator implements IFileIterator {
      * @param fileName
      * @throws java.io.FileNotFoundException
      */
-    public FileInputIterator(String fileName) throws IOException {
+    public FileLineIterator(String fileName) throws IOException {
         this(fileName, false);
     }
 
@@ -61,7 +61,7 @@ public class FileInputIterator implements IFileIterator {
      * @param file
      * @throws java.io.FileNotFoundException
      */
-    public FileInputIterator(File file, boolean reportProgress) throws IOException {
+    public FileLineIterator(File file, boolean reportProgress) throws IOException {
         this(file.getPath(), reportProgress);
     }
 
@@ -71,7 +71,7 @@ public class FileInputIterator implements IFileIterator {
      * @param file
      * @throws java.io.FileNotFoundException
      */
-    public FileInputIterator(File file) throws IOException {
+    public FileLineIterator(File file) throws IOException {
         this(file, false);
     }
 
@@ -81,7 +81,7 @@ public class FileInputIterator implements IFileIterator {
      * @param fileName
      * @throws java.io.FileNotFoundException
      */
-    public FileInputIterator(String fileName, boolean reportProgress) throws IOException {
+    public FileLineIterator(String fileName, boolean reportProgress) throws IOException {
         this.fileName = fileName;
 
         if (fileName.startsWith(PREFIX_TO_INDICATE_TO_PARSE_FILENAME_STRING)) {
@@ -111,7 +111,7 @@ public class FileInputIterator implements IFileIterator {
      * @param r
      * @throws java.io.FileNotFoundException
      */
-    public FileInputIterator(Reader r, String fileName) throws IOException {
+    public FileLineIterator(Reader r, String fileName) throws IOException {
         this(r, fileName, false);
     }
 
@@ -121,7 +121,7 @@ public class FileInputIterator implements IFileIterator {
      * @param r
      * @throws java.io.FileNotFoundException
      */
-    public FileInputIterator(Reader r, String fileName, boolean reportProgress) throws IOException {
+    public FileLineIterator(Reader r, String fileName, boolean reportProgress) throws IOException {
         this.fileName = fileName;
 
         if (fileName.startsWith(PREFIX_TO_INDICATE_TO_PARSE_FILENAME_STRING)) {
@@ -288,7 +288,7 @@ public class FileInputIterator implements IFileIterator {
 
     public void pushBack(String aLine) throws IOException {
         if (pushedBackLine != null)
-            throw new IOException("FileInputIterator: pushBack buffer overflow");
+            throw new IOException("FileLineIterator: pushBack buffer overflow");
         pushedBackLine = aLine;
     }
 }
