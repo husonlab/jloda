@@ -19,26 +19,60 @@
 
 package jloda.util;
 
+import java.util.Map;
+import java.util.Objects;
+
 /**
  * an entry
  *
- * @param <S>
- * @param <T>
+ * @param <K>
+ * @param <V>
  */
-public class Entry<S, T> {
-    private final S key;
-    private final T value;
+public class Entry<K, V> {
+    private final K key;
+    private V value;
 
-    public Entry(S key, T value) {
+    public Entry(K key, V value) {
         this.key = key;
         this.value = value;
     }
 
-    public S getKey() {
+    @SuppressWarnings("unchecked")
+    public Object clone() {
+        return new Entry<>(key, value);
+    }
+
+    public K getKey() {
         return key;
     }
 
-    public T getValue() {
+    public V getValue() {
         return value;
+    }
+
+    public V setValue(V value) {
+        if (value == null)
+            throw new NullPointerException();
+
+        V oldValue = this.value;
+        this.value = value;
+        return oldValue;
+    }
+
+    public boolean equals(Object o) {
+        if (!(o instanceof Map.Entry))
+            return false;
+        Map.Entry<?, ?> e = (Map.Entry<?, ?>) o;
+
+        return (key == null ? e.getKey() == null : key.equals(e.getKey())) &&
+                (value == null ? e.getValue() == null : value.equals(e.getValue()));
+    }
+
+    public int hashCode() {
+        return Objects.hashCode(key) ^ Objects.hashCode(value);
+    }
+
+    public String toString() {
+        return key.toString() + "=" + value.toString();
     }
 }
