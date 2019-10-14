@@ -114,7 +114,7 @@ public class PluginClassLoader {
      * @return
      * @throws ClassNotFoundException
      */
-    public static Class classForName(Class clazz, String name) throws ClassNotFoundException {
+    public static <T> Class classForName(Class<T> clazz, String name) throws ClassNotFoundException {
         return clazz.getClassLoader().loadClass(name);
     }
 }

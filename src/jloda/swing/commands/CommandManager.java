@@ -21,9 +21,9 @@ package jloda.swing.commands;
 
 import jloda.swing.director.IDirectableViewer;
 import jloda.swing.director.IDirector;
-import jloda.swing.util.PluginClassLoader;
 import jloda.util.Basic;
 import jloda.util.CanceledException;
+import jloda.util.PluginClassLoader;
 import jloda.util.parse.NexusStreamParser;
 
 import javax.swing.*;
@@ -116,7 +116,7 @@ public class CommandManager {
     public void addCommands(Object viewer, String[] commandsPaths) {
         final List<ICommand> commands = new LinkedList<>();
         for (String commandsPath : commandsPaths) {
-            for (Object obj : PluginClassLoader.getInstances(commandsPath, ICommand.class)) {
+            for (Object obj : PluginClassLoader.getInstances(ICommand.class,commandsPath)) {
                 if (obj instanceof ICommand)
                     commands.add((ICommand) obj);
             }
