@@ -161,13 +161,13 @@ public class ArgsOptions {
         result.append(replaceFirstColon("\t-v, --verbose: Echo commandline options and be verbose. Default value: false.\n"));
         result.append(replaceFirstColon("\t-h, --help: Show program usage and quit.\n"));
         if (authors != null)
-            result.append("AUTHOR(s)\n\t").append(authors).append(".\n");
+            result.append("AUTHOR(s)\n\t").append(authors.trim()).append(".\n");
 
         if (version != null)
-            result.append("VERSION\n\t").append(version).append(".\n");
+            result.append("VERSION\n\t").append(version.trim()).append(".\n");
 
         if (license != null)
-            result.append("LICENSE\n\t").append(license).append(".\n");
+            result.append("LICENSE\n\t").append(license.trim().replaceAll("\\n", "\n\t")).append(".\n");
 
         return result.toString();
     }
