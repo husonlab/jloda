@@ -51,7 +51,7 @@ public class ProgramExecutorService {
     }
 
     public static void setNumberOfCoresToUse(int numberOfCoresToUse) {
-        ProgramExecutorService.numberOfCoresToUse = Math.max(1, numberOfCoresToUse);
+        ProgramExecutorService.numberOfCoresToUse = (numberOfCoresToUse > 0 ? numberOfCoresToUse : Runtime.getRuntime().availableProcessors());
     }
 
     public static int getNumberOfCoresToUse() {

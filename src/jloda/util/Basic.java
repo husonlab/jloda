@@ -500,6 +500,15 @@ public class Basic {
         return result;
     }
 
+    /**
+     * gets the current date
+     *
+     * @param pattern, e.g. yyyy-MM-dd hh:mm:ss
+     * @return date string
+     */
+    public static String getDateString(String pattern) {
+        return (new SimpleDateFormat(pattern)).format(System.currentTimeMillis());
+    }
 
     /**
      * converts int[] to list of Integers

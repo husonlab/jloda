@@ -197,4 +197,10 @@ public class BitSetUtils {
         result.andNot(setA);
         return result;
     }
+
+    public static BitSet copy(BitSet bitSet) {
+        final BitSet copy = new BitSet();
+        copy.or(bitSet);
+        return copy;
+    }
 }
