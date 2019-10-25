@@ -90,7 +90,7 @@ public class MyTableView extends Pane {
 
     public MyTableView() {
         rowHeaderView = new ListView<>();
-        rowHeaderView.setPrefWidth(100);
+        rowHeaderView.setPrefWidth(200);
         rowHeaderView.setSelectionModel(new AMultipleSelectionModel<>());
         rowHeaderView.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
         rowHeaderView.setFocusTraversable(false);

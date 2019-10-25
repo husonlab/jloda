@@ -172,6 +172,7 @@ public class NotificationsInSwing {
         final String message = (message0.length() > maxLength + 3 ? (message0.substring(0, maxLength) + "...") : message0);
 
         if (isShowNotifications() && ProgramProperties.isUseGUI()) {
+            final Window activeWindow= getActiveWindow();
             if (title == null || title.length() == 0) {
                 title = ProgramProperties.getProgramName();
             }
@@ -258,6 +259,8 @@ public class NotificationsInSwing {
                 }
             });
             frame.setVisible(true);
+            if(activeWindow!=null)
+                SwingUtilities.invokeLater(activeWindow::toFront);
         }
 
         if (!isShowNotifications() || isEchoToConsole()) {
@@ -338,5 +341,15 @@ public class NotificationsInSwing {
 
     public static void setTitle(String title) {
         NotificationsInSwing.title = title;
+    }
+
+    public static Window getActiveWindow() {
+        Window windows[] = Window.getWindows();
+        for (Window w:windows) {
+            if (w.isActive()) {
+                return w;
+            }
+        }
+        return null;
     }
 }
