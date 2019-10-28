@@ -40,6 +40,8 @@ public class StatusBar extends JPanel {
     private final JSplitPane splitPane1;
     private final JSplitPane splitPane2;
 
+    private final ChangeListener changeListener;
+
     /**
      * Constructor for the status bar of the window
      */
@@ -88,16 +90,17 @@ public class StatusBar extends JPanel {
 
         this.add(splitPane2, BorderLayout.CENTER);
 
-        ChangeListener changeListener;
         if (showMemoryUsage) {
-            setText3("------------");
-            text3Panel.add(text3);
-            this.add(Box.createHorizontalStrut(10), BorderLayout.EAST);
-
-            changeListener = changeEvent -> setText3(changeEvent.getSource().toString());
-            MemoryUsageManager.addChangeListener(changeListener);
-        } else {
+            changeListener=changeEvent -> setText3(changeEvent.getSource().toString());
+            SwingUtilities.invokeLater(() -> {
+                setText3("------------");
+                text3Panel.add(text3);
+                this.add(Box.createHorizontalStrut(10), BorderLayout.EAST);
+                MemoryUsageManager.addChangeListener(changeListener);
+            });
         }
+        else
+            changeListener=null;
     }
 
     /**
