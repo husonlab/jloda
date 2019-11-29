@@ -21,6 +21,7 @@ package jloda.swing.window;
 
 import jloda.fx.util.ProgramExecutorService;
 import jloda.swing.util.ResourceManager;
+import jloda.util.Basic;
 import jloda.util.ProgramProperties;
 
 import javax.swing.*;
@@ -183,7 +184,12 @@ public class NotificationsInSwing {
 
             final JFrame frame = new JFrame();
             frame.setUndecorated(true);
-            frame.setOpacity(0.8f);
+            try {
+                frame.setOpacity(0.8f);
+            }
+            catch(UnsupportedOperationException ex) {
+                Basic.caught(ex);
+            }
             frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
             frame.setBackground(new Color(0f, 0f, 0f, 1f / 3f));
             frame.setAlwaysOnTop(true);

@@ -48,6 +48,8 @@ public class ProgramProperties {
     static private javafx.scene.text.Font defaultFontFX = javafx.scene.text.Font.font("Arial", 12);
     private static final ArrayList<ImageIcon> programIcons = new ArrayList<>();
 
+    static private Font defaultFont=new Font("Arial",Font.PLAIN,12);
+
     public static Color SELECTION_COLOR = new Color(252, 208, 102);
     public static Color SELECTION_COLOR_DARKER = new Color(210, 190, 95);
     public static Color SELECTION_COLOR_ADDITIONAL_TEXT = new Color(93, 155, 206);
@@ -356,7 +358,7 @@ public class ProgramProperties {
      * put a property
      */
     public static void put(String key, String family, Integer style0, Integer size0) {
-        Font def = get(key, (Font) null);
+        Font def = get(key, defaultFont);
         String name;
         if (family == null)
             name = def.getFamily();
