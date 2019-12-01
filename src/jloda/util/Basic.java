@@ -3874,6 +3874,15 @@ public class Basic {
         return strings;
     }
 
+    public static String[] toStrings(Collection<?> values) {
+        final String[] strings = new String[values.size()];
+        int count = 0;
+        for (Object value : values) {
+            strings[count++] = (value == null ? null : values.toString());
+        }
+        return strings;
+    }
+
     public static void deleteFileIfExists(String fileName) {
         final File file = new File(fileName);
         if (file.exists())

@@ -363,36 +363,41 @@ public class ArgsOptions {
     }
 
     public String getOption(String shortKey, String longKey, String description, java.util.Collection<?> legalValues, String defaultValue) throws UsageException {
-        List<String> strings = new LinkedList<>();
-        for (Object v : legalValues)
-            strings.add(v.toString());
-        return getOption(shortKey, longKey, description, strings, defaultValue, false);
+        return getOption(shortKey, longKey, description, Arrays.asList(Basic.toStrings(legalValues)), defaultValue, false);
     }
 
     public String getOptionMandatory(String shortKey, String longKey, String description, Collection<?> legalValues, String defaultValue) throws UsageException {
-        List<String> strings = new LinkedList<>();
-        for (Object v : legalValues)
-            strings.add(v.toString());
-        return getOption(shortKey, longKey, description, strings, defaultValue, true);
+        return getOption(shortKey, longKey, description, Arrays.asList(Basic.toStrings(legalValues)), defaultValue, true);
     }
 
     public List<String> getOption(String shortKey, String longKey, String description, List<String> defaultValue) throws UsageException {
-        return getOption(shortKey, longKey, description, defaultValue, false);
+        return getOption(shortKey, longKey, description, null, defaultValue, false);
     }
 
     public List<String> getOptionMandatory(String shortKey, String longKey, String description, List<String> defaultValue) throws UsageException {
-        return getOption(shortKey, longKey, description, defaultValue, true);
+        return getOption(shortKey, longKey, description, null, defaultValue, true);
     }
 
     public String[] getOption(String shortKey, String longKey, String description, String[] defaultValue) throws UsageException {
-        List<String> result = getOption(shortKey, longKey, description, Arrays.asList(defaultValue), false);
+        List<String> result = getOption(shortKey, longKey, description, null, Arrays.asList(defaultValue), false);
         return result.toArray(new String[0]);
     }
 
     public String[] getOptionMandatory(String shortKey, String longKey, String description, String[] defaultValue) throws UsageException {
-        List<String> result = getOption(shortKey, longKey, description, Arrays.asList(defaultValue), true);
+        List<String> result = getOption(shortKey, longKey, description, null, Arrays.asList(defaultValue), true);
         return result.toArray(new String[0]);
     }
+
+    public String[] getOption(String shortKey, String longKey, String description, String[] legalValues, String[] defaultValue) throws UsageException {
+        List<String> result = getOption(shortKey, longKey, description, Arrays.asList(legalValues), Arrays.asList(defaultValue), false);
+        return result.toArray(new String[0]);
+    }
+
+    public String[] getOptionMandatory(String shortKey, String longKey, String description, String[] legalValues, String[] defaultValue) throws UsageException {
+        List<String> result = getOption(shortKey, longKey, description, Arrays.asList(legalValues), Arrays.asList(defaultValue), true);
+        return result.toArray(new String[0]);
+    }
+
 
     public Number getOption(String shortKey, String longKey, String description, Number defaultValue, boolean mandatory) throws UsageException {
         if (!shortKey.startsWith("-"))
@@ -554,7 +559,8 @@ public class ArgsOptions {
         return result;
     }
 
-    private List<String> getOption(String shortKey, String longKey, String description, List<String> defaultValue, boolean mandatory) throws UsageException {
+
+    private List<String> getOption(String shortKey, String longKey, String description, Collection<String> legalValues, List<String> defaultValue, boolean mandatory) throws UsageException {
         boolean hide = false;
         if (shortKey.startsWith("!")) {
             hide = true;
@@ -577,8 +583,7 @@ public class ArgsOptions {
         String defaultValueString = (defaultValue.size() == 0 ? "" : "Default value(s): " + Basic.toString(defaultValue, " ") + ".");
 
         if (!hide)
-            usage.add("\t" + shortKey + ", " + longKey + " [string(s)]: " + description + ". " + (mandatory ? "Mandatory option." : defaultValueString));
-
+            usage.add("\t" + shortKey + ", " + longKey + " [string(s)]: " + description + ". " + (mandatory ? "Mandatory option" : defaultValueString) + (legalValues != null ? " legal values: " + Basic.toString(legalValues, ", ") : "."));
         List<String> result = new LinkedList<>();
         boolean inArguments = false; // once in arguments, will continue until argument starts with -
 
@@ -598,6 +603,9 @@ public class ArgsOptions {
                         break;
                     }
                     it.remove();
+                    if (legalValues != null && !legalValues.contains(value))
+                        throw new UsageException("Illegal value for option " + longKey + ": " + value + ", legal values: " + Basic.toString(legalValues, ", "));
+
                     result.add(value);
                 }
                 if (done)
@@ -614,7 +622,6 @@ public class ArgsOptions {
             System.err.println("\t" + longKey + ": " + Basic.toString(result, " "));
         return result;
     }
-
     /**
      * return number from value as object same as defaultValue
      *

@@ -21,7 +21,6 @@ package jloda.swing.window;
 
 import jloda.fx.util.ProgramExecutorService;
 import jloda.swing.util.ResourceManager;
-import jloda.util.Basic;
 import jloda.util.ProgramProperties;
 
 import javax.swing.*;
@@ -37,8 +36,6 @@ import java.util.Map;
  * Daniel Huson, 8.2019
  */
 public class NotificationsInSwing {
-
-
     public enum Mode {warning, information, confirmation, error}
 
     private final static ArrayList<JFrame> activeNotificationSlots = new ArrayList<>();
@@ -53,6 +50,8 @@ public class NotificationsInSwing {
     private static String title;
 
     private static boolean showNotifications = ProgramProperties.get("ShowNotifications", true);
+
+    private static boolean first = true;
 
     /**
      * show an information notification
@@ -183,15 +182,21 @@ public class NotificationsInSwing {
             }
 
             final JFrame frame = new JFrame();
-            frame.setUndecorated(true);
             try {
+                frame.setUndecorated(true);
                 frame.setOpacity(0.8f);
-            }
-            catch(UnsupportedOperationException ex) {
-                Basic.caught(ex);
+                frame.setBackground(new Color(0f, 0f, 0f, 1f / 3f));
+            } catch (Exception ex) {
+                frame.setOpacity(1f);
+                frame.setBackground(new Color(0f, 0f, 0f));
+                if (first) {
+                    showNotifications = false;
+                    ProgramProperties.put("ShowNotifications", false);
+                    first = false;
+                    return;
+                }
             }
             frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-            frame.setBackground(new Color(0f, 0f, 0f, 1f / 3f));
             frame.setAlwaysOnTop(true);
             final JPanel mainPanel = new JPanel();
             final JLabel label = new JLabel("  " + message + "  ");

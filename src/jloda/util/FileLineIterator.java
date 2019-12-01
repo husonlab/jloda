@@ -93,7 +93,7 @@ public class FileLineIterator implements  ICloseableIterator<String> {
             if (Basic.isZIPorGZIPFile(file.getPath())) {
                 reader = new BufferedReader(new InputStreamReader(Basic.getInputStreamPossiblyZIPorGZIP(file.getPath())));
                 endOfLineBytes = Basic.determineEndOfLinesBytes(new File(fileName));
-                maxProgress = 5 * file.length(); // assuming compression factor of 5-to-1
+                maxProgress = 10 * file.length(); // assuming compression factor of 10-to-1
             } else {
                 reader = new BufferedReader(new FileReader(file), bufferSize);
                 endOfLineBytes = 1;
