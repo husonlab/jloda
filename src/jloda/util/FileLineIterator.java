@@ -88,6 +88,10 @@ public class FileLineIterator implements  ICloseableIterator<String> {
             reader = new BufferedReader(new StringReader(fileName.substring(3)));
             endOfLineBytes = 1;
             maxProgress = fileName.length() - PREFIX_TO_INDICATE_TO_PARSE_FILENAME_STRING.length();
+        } else if (fileName.equals("stdin")) {
+            reader = new BufferedReader(new InputStreamReader(System.in));
+            maxProgress = -1;
+            endOfLineBytes = 1;
         } else {
             final File file = new File(fileName);
             if (Basic.isZIPorGZIPFile(file.getPath())) {
