@@ -20,15 +20,11 @@
 package jloda.fx.window;
 
 import javafx.application.Platform;
-import javafx.beans.value.ChangeListener;
-import javafx.beans.value.ObservableValue;
-import javafx.event.EventHandler;
 import javafx.geometry.Rectangle2D;
 import javafx.scene.Scene;
 import javafx.scene.control.Label;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
-import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.StackPane;
 import javafx.stage.Screen;
@@ -44,9 +40,10 @@ import java.time.Duration;
  * Daniel Huson, 3.2019
  */
 public class SplashScreen {
-    public final Stage stage;
+    private final Stage stage;
 
     private static String versionString;
+    private static Image image;
     private static SplashScreen instance;
 
     public static SplashScreen getInstance() {
@@ -96,8 +93,7 @@ public class SplashScreen {
     }
 
     public static void setImageResourceName(String name) {
-        final Image image = ResourceManagerFX.getImage(name);
-        instance = new SplashScreen(image);
+        image = ResourceManagerFX.getImage(name);
     }
 
     public static String getVersionString() {
@@ -108,19 +104,22 @@ public class SplashScreen {
         SplashScreen.versionString = versionString;
     }
 
-    public void showSplash(Duration duration) {
+    public static void showSplash(Duration duration) {
+        if (instance == null)
+            instance = new SplashScreen(image);
+
         Platform.runLater(() -> {
             // center:
             final Rectangle2D screenBounds = Screen.getPrimary().getVisualBounds();
-            stage.setX((screenBounds.getWidth() - stage.getWidth()) / 2);
-            stage.setY((screenBounds.getHeight() - stage.getHeight()) / 2);
-            stage.show();
+            instance.stage.setX((screenBounds.getWidth() - instance.stage.getWidth()) / 2);
+            instance.stage.setY((screenBounds.getHeight() - instance.stage.getHeight()) / 2);
+            instance.stage.show();
             ProgramExecutorService.getInstance().submit(() -> {
                 try {
                     Thread.sleep(duration.toMillis());
-                } catch (InterruptedException e) {
+                } catch (InterruptedException ignored) {
                 } finally {
-                    Platform.runLater(stage::hide);
+                    Platform.runLater(instance.stage::hide);
                 }
             });
         });

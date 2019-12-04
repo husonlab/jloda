@@ -3947,6 +3947,17 @@ public class Basic {
 
         return array[0];
     }
+
+    public static long getNumberOfLinesInFile(String inputFile) throws IOException {
+        try (FileLineIterator it = new FileLineIterator(inputFile)) {
+            long count = 0;
+            while (it.hasNext()) {
+                it.next();
+                count++;
+            }
+            return count;
+        }
+    }
 }
 
 /**

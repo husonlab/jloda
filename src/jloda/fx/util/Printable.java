@@ -26,5 +26,5 @@ import javafx.scene.Node;
  * Daniel Huson, 4.2019
  */
 public interface Printable {
-    Node getPrintable();
+     Node getPrintable();
 }
