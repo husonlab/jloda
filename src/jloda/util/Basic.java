@@ -772,6 +772,21 @@ public class Basic {
     }
 
     /**
+     * gets the max value of an array
+     *
+     * @param list
+     * @return max
+     */
+    public static int max(Collection<Integer> list) {
+        int m = Integer.MIN_VALUE;
+        for (Integer x : list) {
+            if (x!=null && x > m)
+                m = x;
+        }
+        return m;
+    }
+
+    /**
      * returns an array of integers as a separated string
      *
      * @param array
