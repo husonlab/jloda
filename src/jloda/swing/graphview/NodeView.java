@@ -454,12 +454,14 @@ final public class NodeView extends ViewBase implements Cloneable {
                 gc.setFont(defaultFont);
             gc.setColor(ProgramProperties.SELECTION_COLOR);
             Shape shape = getLabelShape(trans);
-            gc.fill(shape);
-            gc.setColor(ProgramProperties.SELECTION_COLOR_DARKER);
-            final Stroke oldStroke = gc.getStroke();
-            gc.setStroke(NORMAL_STROKE);
-            gc.draw(shape);
-            gc.setStroke(oldStroke);
+            if (shape != null) {
+                gc.fill(shape);
+                gc.setColor(ProgramProperties.SELECTION_COLOR_DARKER);
+                final Stroke oldStroke = gc.getStroke();
+                gc.setStroke(NORMAL_STROKE);
+                gc.draw(shape);
+                gc.setStroke(oldStroke);
+            }
         }
     }
 
@@ -472,7 +474,6 @@ final public class NodeView extends ViewBase implements Cloneable {
     public void drawLabel(Graphics2D gc, Transform trans, Font defaultFont) {
         drawLabel(gc, trans, defaultFont, false);
     }
-
 
     /**
      * Draws the node's label and the image, if set
@@ -488,7 +489,7 @@ final public class NodeView extends ViewBase implements Cloneable {
             //labelShape = null;
             //gc.setColor(Color.WHITE);
             //gc.fill(getLabelRect(trans));
-            if (labelBackgroundColor != null && labelVisible && enabled) {
+            if (labelBackgroundColor != null && enabled) {
                 gc.setColor(labelBackgroundColor);
                 gc.fill(getLabelShape(trans));
             }
@@ -559,8 +560,7 @@ final public class NodeView extends ViewBase implements Cloneable {
             }
             try {
                 descriptionWriter.write(String.format("%s; x=%d y=%d w=%d h=%d\n", getLabel(), bounds.x, bounds.y, bounds.width, bounds.height));
-            } catch (IOException e) {
-                // silently ignore
+            } catch (IOException ignored) {
             }
         }
     }
