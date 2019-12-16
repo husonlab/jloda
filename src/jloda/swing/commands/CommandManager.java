@@ -81,7 +81,7 @@ public class CommandManager {
      * construct a parser and load all commands found for the given paths
      * @param viewer  usually an IDirectableViewer, but sometimes a JDialog
      */
-    public CommandManager(IDirector dir, Object viewer, String[] commandsPaths) {
+    public CommandManager(IDirector dir, Object viewer, String... commandsPaths) {
         this(dir, viewer, commandsPaths, false);
     }
 

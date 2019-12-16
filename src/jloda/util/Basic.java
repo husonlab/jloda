@@ -31,6 +31,7 @@ import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 import java.util.zip.*;
 
 /**
@@ -1455,13 +1456,32 @@ public class Basic {
      */
     public static ArrayList<String> getLinesFromFile(String file) throws IOException {
         final ArrayList<String> result = new ArrayList<>();
-        try (BufferedReader r = new BufferedReader(new FileReader(file))) {
-            String aLine;
-            while ((aLine = r.readLine()) != null) {
-                result.add(aLine);
+        try(FileLineIterator it=new FileLineIterator(file)){
+            while(it.hasNext()) {
+                result.add(it.next());
             }
         }
         return result;
+    }
+
+    /**
+     * write lines to file
+     * @param lines
+     * @param file
+     * @param showProgress
+     * @throws IOException
+     * @throws CanceledException
+     */
+    public static void writeLinesToFile(Collection<String> lines, String file, boolean showProgress) throws IOException, CanceledException {
+        try(ProgressListener progress=(showProgress?new ProgressPercentage("Writing "+file+":",lines.size()):new ProgressSilent())) {
+            try (BufferedWriter w = new BufferedWriter(new OutputStreamWriter(Basic.getOutputStreamPossiblyZIPorGZIP(file)))) {
+                for (String line : lines) {
+                    w.write(line);
+                    w.write("\n");
+                    progress.incrementProgress();
+                }
+            }
+        }
     }
 
     /**
@@ -3972,6 +3992,10 @@ public class Basic {
             }
             return count;
         }
+    }
+
+    public static String[] remove(String[] names, String remove) {
+        return Arrays.stream(names).filter((x) -> !x.equals(remove)).toArray(String[]::new);
     }
 }
 

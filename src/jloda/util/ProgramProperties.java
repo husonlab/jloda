@@ -200,7 +200,7 @@ public class ProgramProperties {
         if (value == null)
             return def;
         else
-            return Boolean.valueOf(value);
+            return Boolean.parseBoolean(value);
     }
 
 
@@ -252,7 +252,7 @@ public class ProgramProperties {
      * @return list of string pairs
      */
     public static String[] get(String name, String[] def) {
-        String value = (String) props.get(name);
+        final String value = (String) props.get(name);
         if (value == null)
             return def;
         else {
