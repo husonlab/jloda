@@ -55,6 +55,8 @@ public class ArgsOptions {
 
     private static MessageWindow messageWindow = null;
 
+    private boolean optionFound =false;
+
     /**
      * constructor
      *
@@ -418,7 +420,7 @@ public class ArgsOptions {
 
         Number result = defaultValue;
 
-        boolean found = false;
+        optionFound = false;
         Iterator<String> it = arguments.iterator();
         while (it.hasNext()) {
             String arg = it.next();
@@ -429,11 +431,11 @@ public class ArgsOptions {
                 }
                 result = getNumber(defaultValue, it.next());
                 it.remove();
-                found = true;
+                optionFound = true;
                 break;
             }
         }
-        if (!found) {
+        if (!optionFound) {
             if (mandatory && !doHelp)
                 throw new UsageException("Mandatory option '" + longKey + "' not specified");
         }
@@ -470,7 +472,7 @@ public class ArgsOptions {
             usage.add("\t" + shortKey + ", " + longKey + ": " + description + ". " + (mandatory ? "Mandatory option." : "Default value: " + defaultValue + "."));
 
         boolean result = false;
-        boolean found = false;
+        optionFound = false;
         Iterator<String> it = arguments.iterator();
         while (it.hasNext()) {
             String arg = it.next();
@@ -478,22 +480,22 @@ public class ArgsOptions {
                 it.remove();
                 if (!it.hasNext()) {
                     result = !defaultValue;
-                    found = true;
+                    optionFound = true;
                     break;
                 }
                 String value = it.next();
                 if (value.length() > 0 && (value.startsWith("-") || value.startsWith("+"))) {
                     result = !defaultValue;
-                    found = true;
+                    optionFound = true;
                     break;
                 }
                 it.remove();
                 result = Boolean.parseBoolean(value);
-                found = true;
+                optionFound = true;
                 break;
             }
         }
-        if (!found) {
+        if (!optionFound) {
             if (mandatory && !doHelp)
                 throw new UsageException("Mandatory option '" + longKey + "' not specified");
             else
@@ -532,7 +534,7 @@ public class ArgsOptions {
 
         String result = defaultValue;
 
-        boolean found = false;
+        optionFound = false;
         final Iterator<String> it = arguments.iterator();
         while (it.hasNext()) {
             String arg = it.next();
@@ -543,14 +545,14 @@ public class ArgsOptions {
                 }
                 result = it.next();
                 it.remove();
-                found = true;
+                optionFound = true;
                 if (legalValues != null && !legalValues.contains(result))
                     throw new UsageException("Illegal value for option " + longKey + ": " + result + ", legal values: " + Basic.toString(legalValues, ", "));
 
                 break;
             }
         }
-        if (!found) {
+        if (!optionFound) {
             if (mandatory && !doHelp)
                 throw new UsageException("Mandatory option '" + longKey + "' not specified" + (legalValues != null ? ", legal values: " + Basic.toString(legalValues, ", ") : "."));
         }
@@ -587,12 +589,14 @@ public class ArgsOptions {
         List<String> result = new LinkedList<>();
         boolean inArguments = false; // once in arguments, will continue until argument starts with -
 
+        optionFound =false;
         Iterator<String> it = arguments.iterator();
         while (it.hasNext()) {
             String arg = it.next();
             if (arg.equals(shortKey) || arg.equals(longKey)) {
                 it.remove();
                 inArguments = true;
+                optionFound =true;
             }
             if (inArguments) {
                 boolean done = false;
@@ -694,6 +698,10 @@ public class ArgsOptions {
      */
     public static boolean hasMessageWindow() {
         return messageWindow != null && messageWindow.isVisible();
+    }
+
+    public boolean optionWasExplicitlySet() {
+        return optionFound;
     }
 
 }

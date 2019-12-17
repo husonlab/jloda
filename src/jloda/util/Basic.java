@@ -3490,7 +3490,6 @@ public class Basic {
         start += first.length();
         while (start < text.length() && Character.isWhitespace(text.charAt(start)))
             start++;
-        int finish = start;
         return text.substring(start);
     }
 
