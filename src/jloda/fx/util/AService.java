@@ -20,7 +20,6 @@
 package jloda.fx.util;
 
 import javafx.concurrent.Service;
-import javafx.concurrent.Task;
 import javafx.scene.layout.Pane;
 import jloda.fx.control.ProgressPane;
 import jloda.fx.window.NotificationManager;
@@ -37,6 +36,8 @@ import java.util.concurrent.Callable;
 public class AService<T> extends Service<T> {
     private TaskWithProgressListener<T> task;
     private Callable<T> callable;
+    private Pane progressParentPane;
+    private final ProgressPane progressPane;
 
     public AService() {
         this(null, null);
@@ -54,22 +55,27 @@ public class AService<T> extends Service<T> {
         super();
         setExecutor(ProgramExecutorService.getInstance());
         setCallable(callable);
+        setProgressParentPane(progressParentPane);
 
-        if (progressParentPane != null) {
-            final ProgressPane progressPane = new ProgressPane(this);
-            this.runningProperty().addListener((c, o, n) -> {
-                if (n)
-                    progressParentPane.getChildren().add(progressPane);
-                else
-                    progressParentPane.getChildren().remove(progressPane);
-            });
-        }
+        progressPane = new ProgressPane(this);
+        progressPane.setVisible(true);
+
+        this.runningProperty().addListener((c, o, n) -> {
+            if (getProgressParentPane() != null) {
+                if (n) {
+                    if (!getProgressParentPane().getChildren().contains(progressPane))
+                        getProgressParentPane().getChildren().add(progressPane);
+                } else {
+                    getProgressParentPane().getChildren().remove(progressPane);
+                }
+            }
+        });
 
         setOnFailed(e -> NotificationManager.showError("Computation failed: " + AService.this.getException().getMessage()));
     }
 
     @Override
-    protected Task<T> createTask() {
+    protected TaskWithProgressListener<T> createTask() {
         task = new TaskWithProgressListener<>() {
             @Override
             public T call() throws Exception {
@@ -89,5 +95,17 @@ public class AService<T> extends Service<T> {
 
     public Callable<T> getCallable() {
         return callable;
+    }
+
+    public Pane getProgressParentPane() {
+        return progressParentPane;
+    }
+
+    public void setProgressParentPane(Pane progressParentPane) {
+        if (this.progressParentPane != null)
+            this.progressParentPane.getChildren().remove(progressPane);
+        this.progressParentPane = progressParentPane;
+        //   if(progressParentPane!=null)
+        //       progressParentPane.getChildren().add(progressPane);
     }
 }

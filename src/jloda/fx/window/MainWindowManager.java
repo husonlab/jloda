@@ -103,6 +103,7 @@ public class MainWindowManager {
                     if (!mainWindow.isEmpty()) {
                         mainWindow.getStage().close();
                         final IMainWindow newWindow = mainWindow.createNew();
+                        MainWindowManager.getInstance().addMainWindow(newWindow);
                         final WindowGeometry windowGeometry = new WindowGeometry(mainWindow.getStage());
                         newWindow.show(null, windowGeometry.getX(), windowGeometry.getY(), windowGeometry.getWidth(), windowGeometry.getHeight());
                     }

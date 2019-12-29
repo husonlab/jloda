@@ -31,7 +31,6 @@ import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-import java.util.stream.Collectors;
 import java.util.zip.*;
 
 /**
@@ -2708,22 +2707,28 @@ public class Basic {
     }
 
     /**
-     * gets a outputstream. If file ends on gz or zip opens appropriate zipping stream
+     * gets an output stream. If file ends on gz or zip opens appropriate zipping stream. If file equals stdout or stderr, writes to standard out or err
      *
      * @param fileName
      * @return input stream
      * @throws IOException
      */
     public static OutputStream getOutputStreamPossiblyZIPorGZIP(String fileName) throws IOException {
-        OutputStream outs = new FileOutputStream(fileName);
-        if (fileName.toLowerCase().endsWith(".gz")) {
-            outs = new GZIPOutputStream(outs);
-        } else if (fileName.toLowerCase().endsWith(".zip")) {
-            final ZipOutputStream out = new ZipOutputStream(outs);
-            ZipEntry e = new ZipEntry(Basic.replaceFileSuffix(fileName, ""));
-            out.putNextEntry(e);
+        if (fileName.equals("stdout"))
+            return System.out;
+        else if (fileName.equals("stderr"))
+            return System.err;
+        else {
+            OutputStream outs = new FileOutputStream(fileName);
+            if (fileName.toLowerCase().endsWith(".gz")) {
+                outs = new GZIPOutputStream(outs);
+            } else if (fileName.toLowerCase().endsWith(".zip")) {
+                final ZipOutputStream out = new ZipOutputStream(outs);
+                ZipEntry e = new ZipEntry(Basic.replaceFileSuffix(fileName, ""));
+                out.putNextEntry(e);
+            }
+            return outs;
         }
-        return outs;
     }
 
     /**

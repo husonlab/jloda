@@ -166,8 +166,7 @@ public class ProgressPercentage implements ProgressListener {
      * @param subtaskName
      */
     public void setTasks(String taskName, String subtaskName) {
-        // if (taskName != null)
-        //    System.err.println(taskName + (subtaskName != null ? (": " + subtaskName) : ""));
+        setSubtask(taskName + " " + subtaskName);
     }
 
     /**
