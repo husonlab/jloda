@@ -78,7 +78,7 @@ public class SearchManager {
         replaceText.addListener(c -> message.set(""));
 
         searcherProperty().addListener((c, o, n) -> {
-            if (n instanceof ITextSearcher)
+            if (n instanceof ITextSearcher || n instanceof TableViewSearcher)
                 service.setExecutor(Platform::runLater); // must run text searchers in JavaFX application thread
             else if (n instanceof IObjectSearcher) // run other searchers in external thread
                 service.setExecutor(ProgramExecutorService.getInstance());

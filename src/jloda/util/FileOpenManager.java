@@ -21,6 +21,8 @@ package jloda.util;
 
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
+import javafx.beans.property.SimpleStringProperty;
+import javafx.beans.property.StringProperty;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.stage.FileChooser;
@@ -38,11 +40,12 @@ import java.util.function.Consumer;
 public class FileOpenManager {
     private static final ObjectProperty<Consumer<String>> fileOpener = new SimpleObjectProperty<>();
     private static final ObjectProperty<Collection<FileChooser.ExtensionFilter>> extensions = new SimpleObjectProperty<>();
+    private static final StringProperty propertiesKeyword = new SimpleStringProperty("OpenFileDir");
 
     public static EventHandler<ActionEvent> createOpenFileEventHandler(Stage stage) {
         return event ->
         {
-            File previousDir = new File(ProgramProperties.get("OpenFileDir", ""));
+            File previousDir = new File(ProgramProperties.get(getPropertiesKeyword(), ""));
 
             final FileChooser fileChooser = new FileChooser();
             if (previousDir.isDirectory())
@@ -57,7 +60,7 @@ public class FileOpenManager {
             final File selectedFile = fileChooser.showOpenDialog(stage);
 
             if (selectedFile != null && getFileOpener() != null) {
-                ProgramProperties.put("OpenFileDir", selectedFile.getParent());
+                ProgramProperties.put(getPropertiesKeyword(), selectedFile.getParent());
                 getFileOpener().accept(selectedFile.getPath());
                 RecentFilesManager.getInstance().insertRecentFile(selectedFile.getPath());
             }
@@ -86,5 +89,17 @@ public class FileOpenManager {
 
     public static void setExtensions(Collection<FileChooser.ExtensionFilter> extensions) {
         FileOpenManager.extensions.set(extensions);
+    }
+
+    public static String getPropertiesKeyword() {
+        return propertiesKeyword.get();
+    }
+
+    public static StringProperty propertiesKeywordProperty() {
+        return propertiesKeyword;
+    }
+
+    public static void setPropertiesKeyword(String propertiesKeyword) {
+        FileOpenManager.propertiesKeyword.set(propertiesKeyword);
     }
 }

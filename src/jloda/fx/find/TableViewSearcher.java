@@ -49,12 +49,15 @@ public class TableViewSearcher<S> implements IObjectSearcher<String> {
 
     @Override
     public boolean gotoNext() {
-        if (col < getColCount() - 1) {
-            col++;
-        } else {
+        if (tableView.getSelectionModel().isCellSelectionEnabled()) {
+            if (col < getColCount() - 1) {
+                col++;
+            } else {
+                row++;
+                col = 0;
+            }
+        } else
             row++;
-            col = 0;
-        }
         return isCurrentSet();
     }
 
@@ -67,12 +70,15 @@ public class TableViewSearcher<S> implements IObjectSearcher<String> {
 
     @Override
     public boolean gotoPrevious() {
-        if (col > 0) {
-            col--;
-        } else {
-            col = getColCount() - 1;
+        if (tableView.getSelectionModel().isCellSelectionEnabled()) {
+            if (col > 0) {
+                col--;
+            } else {
+                col = getColCount() - 1;
+                row--;
+            }
+        } else
             row--;
-        }
         return isCurrentSet();
     }
 
@@ -83,20 +89,33 @@ public class TableViewSearcher<S> implements IObjectSearcher<String> {
 
     @Override
     public boolean isCurrentSelected() {
-        return isCurrentSet() && tableView.getSelectionModel().isSelected(row, tableView.getColumns().get(col));
+        if (tableView.getSelectionModel().isCellSelectionEnabled()) {
+            return isCurrentSet() && tableView.getSelectionModel().isSelected(row, tableView.getColumns().get(col));
+        } else
+            return isCurrentSet() && tableView.getSelectionModel().isSelected(row);
     }
 
     @Override
     public void setCurrentSelected(boolean select) {
-        if (select)
-            tableView.getSelectionModel().select(row, tableView.getColumns().get(col));
-        else
-            tableView.getSelectionModel().clearSelection(row, tableView.getColumns().get(col));
+        if (tableView.getSelectionModel().isCellSelectionEnabled()) {
+            if (select)
+                tableView.getSelectionModel().select(row, tableView.getColumns().get(col));
+            else
+                tableView.getSelectionModel().clearSelection(row, tableView.getColumns().get(col));
+        } else {
+            if (select)
+                tableView.getSelectionModel().select(row);
+            else
+                tableView.getSelectionModel().clearSelection(row);
+        }
     }
 
     @Override
     public String getCurrentLabel() {
-        return (String) tableView.getColumns().get(col).getCellObservableValue(tableView.getItems().get(row)).getValue();
+        if (tableView.getSelectionModel().isCellSelectionEnabled())
+            return tableView.getColumns().get(col).getCellObservableValue(tableView.getItems().get(row)).getValue().toString();
+        else
+            return tableView.getItems().get(row).toString();
     }
 
     @Override
@@ -105,7 +124,10 @@ public class TableViewSearcher<S> implements IObjectSearcher<String> {
 
     @Override
     public int numberOfObjects() {
-        return getRowCount() * getColCount();
+        if (tableView.getSelectionModel().isCellSelectionEnabled())
+            return getRowCount() * getColCount();
+        else
+            return getRowCount();
     }
 
     @Override
