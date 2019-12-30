@@ -2270,6 +2270,19 @@ public class Basic {
     }
 
     /**
+     * swallow a leading @, if present
+     *
+     * @param word
+     * @return string with leading > removed
+     */
+    public static String swallowLeadingAtSign(String word) {
+        if (word.startsWith("@"))
+            return word.substring(1).trim();
+        else
+            return word;
+    }
+
+    /**
      * get the sum of values
      *
      * @param values
