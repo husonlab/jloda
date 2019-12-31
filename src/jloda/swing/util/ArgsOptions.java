@@ -20,10 +20,7 @@
 package jloda.swing.util;
 
 import jloda.swing.message.MessageWindow;
-import jloda.util.Basic;
-import jloda.util.CanceledException;
-import jloda.util.ProgramProperties;
-import jloda.util.UsageException;
+import jloda.util.*;
 
 import javax.swing.*;
 import java.awt.*;
@@ -51,11 +48,13 @@ public class ArgsOptions {
 
     private boolean alreadyHasOtherComment = false;
 
+    private boolean commandMandatory = false;
+
     private boolean doHelp = false;
 
     private static MessageWindow messageWindow = null;
 
-    private boolean optionFound =false;
+    private boolean optionFound = false;
 
     /**
      * constructor
@@ -90,7 +89,7 @@ public class ArgsOptions {
         usage = new LinkedList<>();
 
         try {
-            doHelp = getOption("-h", "--help", "Show help", false, false);
+            doHelp = (args.length > 0 && args[0].equalsIgnoreCase("help")) || getOption("-h", "--help", "Show help", false, false);
             setVerbose(getOption("-v", "--verbose", "verbose", false) && !doHelp);
         } catch (UsageException e) {
         }
@@ -111,7 +110,7 @@ public class ArgsOptions {
     public String getUsage() {
         StringBuilder result = new StringBuilder();
         result.append("SYNOPSIS\n");
-        result.append("\t").append(programName).append(" [options]\n");
+        result.append("\t").append(programName).append(commandMandatory ? " command" : "").append(" [options]\n");
         result.append("DESCRIPTION\n");
         result.append("\t").append(getDescription()).append("\n");
 
@@ -257,7 +256,30 @@ public class ArgsOptions {
      * @throws UsageException
      */
     public String getCommand(String... legalValues) throws UsageException {
-        usage.add("\tcommand {" + Basic.toString(legalValues, "|") + "}");
+        final Command[] pairs = new Command[legalValues.length];
+        for (int i = 0; i < legalValues.length; i++)
+            pairs[i] = new Command(legalValues[i], null);
+        return getCommand(pairs);
+    }
+
+    /**
+     * gets a command (first value in arguments)
+     *
+     * @param pairs
+     * @return command
+     * @throws UsageException
+     */
+    public String getCommand(Command... pairs) throws UsageException {
+        final String[] legalValues = new String[pairs.length];
+        for (int i = 0; i < pairs.length; i++) {
+            legalValues[i] = pairs[i].get1();
+        }
+        usage.add(" Command " + Basic.toString(legalValues, " | "));
+
+        for (final Pair<String, String> pair : pairs) {
+            if (pair.get2() != null)
+                usage.add("\t" + pair.get1() + ": " + pair.get2());
+        }
 
         final String command;
         if (!isDoHelp()) {
@@ -561,7 +583,6 @@ public class ArgsOptions {
         return result;
     }
 
-
     private List<String> getOption(String shortKey, String longKey, String description, Collection<String> legalValues, List<String> defaultValue, boolean mandatory) throws UsageException {
         boolean hide = false;
         if (shortKey.startsWith("!")) {
@@ -704,4 +725,17 @@ public class ArgsOptions {
         return optionFound;
     }
 
+    public boolean isCommandMandatory() {
+        return commandMandatory;
+    }
+
+    public void setCommandMandatory(boolean commandMandatory) {
+        this.commandMandatory = commandMandatory;
+    }
+
+    public static class Command extends Pair<String, String> {
+        public Command(String name, String description) {
+            super(name, description);
+        }
+    }
 }
