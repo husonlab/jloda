@@ -4014,6 +4014,19 @@ public class Basic {
     public static String[] remove(String[] names, String remove) {
         return Arrays.stream(names).filter((x) -> !x.equals(remove)).toArray(String[]::new);
     }
+
+    public static String getDurationString(long start, long end) {
+        long diff = Math.abs(end - start);
+
+        if (diff >= 216000000)
+            return String.format("%.1f", diff / 216000000.0) + "h";
+        else if (diff > 3600000)
+            return diff / 3600000 + "m";
+        else if (diff > 60000)
+            return diff / 60000 + "s";
+        else
+            return String.format("%.1f", diff / 1000.0) + "s";
+    }
 }
 
 /**
