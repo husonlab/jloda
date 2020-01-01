@@ -4018,12 +4018,10 @@ public class Basic {
     public static String getDurationString(long start, long end) {
         long diff = Math.abs(end - start);
 
-        if (diff >= 216000000)
-            return String.format("%.1f", diff / 216000000.0) + "h";
-        else if (diff > 3600000)
-            return diff / 3600000 + "m";
+        if (diff > 3600000)
+            return String.format("%.1f", diff / 3600000.0) + "m";
         else if (diff > 60000)
-            return diff / 60000 + "s";
+            return String.format("%.1f", diff / 60000.0) + "m";
         else
             return String.format("%.1f", diff / 1000.0) + "s";
     }
