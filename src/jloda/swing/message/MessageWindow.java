@@ -419,7 +419,6 @@ public class MessageWindow {
 
     /**
      * gets the instance of the message window, if it already exists.
-     * WIll return nul, if  not yet set
      *
      * @return message window or null
      */
