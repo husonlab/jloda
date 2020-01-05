@@ -19,6 +19,8 @@
 
 package jloda.fx.util;
 
+import jloda.util.ProgramProperties;
+
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
@@ -29,7 +31,7 @@ import java.util.concurrent.Executors;
  */
 public class ProgramExecutorService {
     private static ExecutorService instance;
-    private static int numberOfCoresToUse = 8; //  number of threads to use by a parallel algorithm
+    private static int numberOfCoresToUse = ProgramProperties.get("NumberOfCores", 8); //  number of threads to use by a parallel algorithm
 
     /**
      * get the program wide executor service
@@ -52,6 +54,7 @@ public class ProgramExecutorService {
 
     public static void setNumberOfCoresToUse(int numberOfCoresToUse) {
         ProgramExecutorService.numberOfCoresToUse = (numberOfCoresToUse > 0 ? numberOfCoresToUse : Runtime.getRuntime().availableProcessors());
+        ProgramProperties.put("NumberOfCores", ProgramExecutorService.numberOfCoresToUse);
     }
 
     public static int getNumberOfCoresToUse() {
