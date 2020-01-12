@@ -1196,5 +1196,4 @@ public class MyTableView extends Pane {
             }
         }
     }
-
 }

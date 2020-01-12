@@ -2406,7 +2406,7 @@ public class Basic {
     }
 
     public static boolean fileExistsAndIsNonEmpty(File file) {
-        return file.exists() && file.length() > 0;
+        return file.exists() && !file.isDirectory() && file.length() > 0;
     }
 
     public static void checkFileReadableNonEmpty(String fileName) throws IOException {

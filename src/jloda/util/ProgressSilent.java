@@ -124,4 +124,13 @@ public class ProgressSilent implements ProgressListener {
     public void setDebug(boolean debug) {
     }
 
+    @Override
+    public void setPause(boolean pause) {
+
+    }
+
+    @Override
+    public boolean getPause() {
+        return false;
+    }
 }

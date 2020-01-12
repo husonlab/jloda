@@ -99,4 +99,18 @@ public interface ProgressListener extends AutoCloseable {
      * @param debug
      */
     void setDebug(boolean debug);
+
+    /**
+     * calculation has been paused
+     *
+     * @param pause
+     */
+    void setPause(boolean pause);
+
+    /**
+     * has calculation been paused?
+     *
+     * @return
+     */
+    boolean getPause();
 }

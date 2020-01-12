@@ -27,8 +27,6 @@ import jloda.util.ProgressListener;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.util.Arrays;
 import java.util.Stack;
 
@@ -539,5 +537,15 @@ public class ProgressDialog implements ProgressListener {
 
     public void setCloseOnCancel(boolean closeOnCancel) {
         this.closeOnCancel = closeOnCancel;
+    }
+
+    @Override
+    public void setPause(boolean pause) {
+
+    }
+
+    @Override
+    public boolean getPause() {
+        return false;
     }
 }

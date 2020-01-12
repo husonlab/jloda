@@ -23,6 +23,7 @@ package jloda.fx.window;
 import javafx.beans.InvalidationListener;
 import javafx.scene.control.Menu;
 import javafx.scene.control.MenuItem;
+import javafx.scene.control.SeparatorMenuItem;
 import javafx.scene.input.KeyCharacterCombination;
 import javafx.scene.input.KeyCombination;
 import javafx.stage.Stage;
@@ -48,6 +49,8 @@ public class SetupWindowMenu {
                         final MenuItem menuItem = new MenuItem(title.replaceAll("- " + ProgramProperties.getProgramName(), ""));
                         menuItem.setOnAction((e) -> mainWindow.getStage().toFront());
                         menuItem.setAccelerator(new KeyCharacterCombination("" + (++count), KeyCombination.SHORTCUT_DOWN));
+                        if (count > 0)
+                            windowMenu.getItems().add(new SeparatorMenuItem());
                         windowMenu.getItems().add(menuItem);
                     }
                 }
@@ -56,7 +59,10 @@ public class SetupWindowMenu {
                         final String title = auxStage.getTitle();
                         if (title != null) {
                             final MenuItem menuItem = new MenuItem(title.replaceAll("- " + ProgramProperties.getProgramName(), ""));
-                            menuItem.setOnAction((e) -> auxStage.toFront());
+                            menuItem.setOnAction(e -> {
+                                auxStage.show();
+                                auxStage.toFront();
+                            });
                             windowMenu.getItems().add(menuItem);
                         }
                     }

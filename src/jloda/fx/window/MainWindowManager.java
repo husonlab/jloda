@@ -42,6 +42,8 @@ import java.util.Map;
  * Daniel Huson, 1.2018
  */
 public class MainWindowManager {
+    private static int windowsCreated = 0;
+
     private final ObservableList<IMainWindow> mainWindows;
     private final Map<IMainWindow, ArrayList<Stage>> mainWindows2AdditionalWindows;
     private IMainWindow lastFocusedMainWindow;
@@ -101,11 +103,13 @@ public class MainWindowManager {
             if (MainWindowManager.getInstance().size() == 1) {
                 if (!ClosingLastDocument.apply(mainWindow.getStage())) {
                     if (!mainWindow.isEmpty()) {
+                        createAndShowWindow(false);
+
                         mainWindow.getStage().close();
-                        final IMainWindow newWindow = mainWindow.createNew();
-                        MainWindowManager.getInstance().addMainWindow(newWindow);
-                        final WindowGeometry windowGeometry = new WindowGeometry(mainWindow.getStage());
-                        newWindow.show(null, windowGeometry.getX(), windowGeometry.getY(), windowGeometry.getWidth(), windowGeometry.getHeight());
+                        MainWindowManager.getInstance().closeAndRemoveAuxiliaryWindows(mainWindow);
+                        mainWindows.remove(mainWindow);
+                        fireChanged();
+
                     }
                     return false;
                 }
@@ -147,12 +151,15 @@ public class MainWindowManager {
                     windowGeometry.setFromString(ProgramProperties.get("WindowGeometry", "50 50 800 800"));
                 }
                 final IMainWindow newWindow = getMainWindow(0).createNew();
-                addMainWindow(newWindow);
-                newWindow.show(new Stage(), windowGeometry.getX(), windowGeometry.getY(), windowGeometry.getWidth(), windowGeometry.getHeight());
-                newWindow.getStage().focusedProperty().addListener((c, o, n) -> {
+                final Stage stage = new Stage();
+                stage.setTitle("Untitled - " + ProgramProperties.getProgramName() + " [" + (++windowsCreated) + "]");
+                stage.focusedProperty().addListener((c, o, n) -> {
                     if (n)
                         setLastFocusedMainWindow(newWindow);
                 });
+
+                addMainWindow(newWindow);
+                newWindow.show(stage, windowGeometry.getX(), windowGeometry.getY(), windowGeometry.getWidth(), windowGeometry.getHeight());
                 return newWindow;
             } catch (IOException ex) {
                 throw new RuntimeException(ex);

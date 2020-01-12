@@ -127,6 +127,16 @@ abstract public class TaskWithProgressListener<T> extends Task<T> implements Cal
                 public void setDebug(boolean debug) {
                     TaskWithProgressListener.this.debug = debug;
                 }
+
+                @Override
+                public void setPause(boolean pause) {
+                    System.err.println("pause: " + pause);
+                }
+
+                @Override
+                public boolean getPause() {
+                    return false;
+                }
             };
         return progressListener;
     }

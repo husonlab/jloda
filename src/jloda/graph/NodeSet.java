@@ -42,6 +42,16 @@ public class NodeSet extends GraphBase implements Set<Node> {
     }
 
     /**
+     * copy constructor
+     *
+     * @param other
+     */
+    public NodeSet(NodeSet other) {
+        this(other.getOwner());
+        this.bits.or(other.bits);
+    }
+
+    /**
      * Is node v member?
      *
      * @param v Node
