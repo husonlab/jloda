@@ -6,6 +6,8 @@ import javafx.beans.property.ReadOnlyIntegerProperty;
 import javafx.beans.property.SimpleIntegerProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.collections.ObservableSet;
+import javafx.collections.SetChangeListener;
 
 /**
  * simple item-based selection  model
@@ -14,10 +16,17 @@ import javafx.collections.ObservableList;
  */
 public class ItemSelectionModel<T> {
     private final ObservableList<T> selectedItems = FXCollections.observableArrayList();
+    private final ObservableSet<T> selectedItemSet = FXCollections.observableSet();
     private final IntegerProperty size = new SimpleIntegerProperty(0);
 
     public ItemSelectionModel() {
-        size.bind(Bindings.size(selectedItems));
+        size.bind(Bindings.size(selectedItemSet));
+        selectedItemSet.addListener((SetChangeListener<T>) c -> {
+            if (c.wasRemoved())
+                selectedItems.remove(c.getElementRemoved());
+            else if (c.wasAdded())
+                selectedItems.add(c.getElementAdded());
+        });
     }
 
     public ObservableList<T> getSelectedItems() {
@@ -30,23 +39,23 @@ public class ItemSelectionModel<T> {
     }
 
     public void select(T item) {
-        selectedItems.add(item);
+        selectedItemSet.add(item);
     }
 
     public void clearSelection(T item) {
-        selectedItems.remove(item);
+        selectedItemSet.remove(item);
     }
 
     public void clearSelection() {
-        selectedItems.clear();
+        selectedItemSet.clear();
     }
 
     public boolean isSelected(T item) {
-        return selectedItems.contains(item);
+        return selectedItemSet.contains(item);
     }
 
     public boolean isEmpty() {
-        return selectedItems.isEmpty();
+        return selectedItemSet.isEmpty();
     }
 
     public int size() {

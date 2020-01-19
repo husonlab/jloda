@@ -93,9 +93,17 @@ public class BitSetUtils {
         };
     }
 
-    public static BitSet asBitSet(Iterable<Integer> integers) {
+    public static BitSet asBitSet(Iterable<Integer> bits) {
         final BitSet bitSet = new BitSet();
-        for (Integer i : integers) {
+        for (Integer i : bits) {
+            bitSet.set(i);
+        }
+        return bitSet;
+    }
+
+    public static BitSet asBitSet(int... bits) {
+        final BitSet bitSet = new BitSet();
+        for (Integer i : bits) {
             bitSet.set(i);
         }
         return bitSet;
@@ -151,6 +159,10 @@ public class BitSetUtils {
         for (Integer t : members(bits))
             array[t] = t;
         return array;
+    }
+
+    public static int min(BitSet bits) {
+        return bits.nextSetBit(0);
     }
 
     /**

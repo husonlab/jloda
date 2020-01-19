@@ -103,11 +103,21 @@ public class NodeSet extends GraphBase implements Set<Node> {
      * @return true, if some element is new
      */
     public boolean addAll(final Collection<? extends Node> collection) {
-        Iterator it = collection.iterator();
+        return addAll((Iterable<? extends Node>) collection);
+    }
+
+    /**
+     * adds all nodes in the given collection
+     *
+     * @param collection
+     * @return true, if some element is new
+     */
+    public boolean addAll(final Iterable<? extends Node> collection) {
+        final Iterator<? extends Node> it = collection.iterator();
 
         boolean result = false;
         while (it.hasNext()) {
-            if (add((Node) it.next()))
+            if (add(it.next()))
                 result = true;
         }
         return result;

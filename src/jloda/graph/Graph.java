@@ -63,6 +63,7 @@ public class Graph extends GraphBase {
     private boolean ignoreGraphHasChanged = false; // set this when we are deleting a whole graph
 
     private final List<GraphUpdateListener> graphUpdateListeners = new LinkedList<>();  //List of listeners that are fired when the graph changes.
+
     final EdgeSet specialEdges;
 
     private final List<WeakReference<NodeSet>> nodeSets = new LinkedList<>();

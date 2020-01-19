@@ -28,10 +28,8 @@ import java.io.*;
 import java.util.*;
 
 /**
- * @author Daniel Huson
- * @version $Id: PhyloTree.java,v 1.87 2010-05-01 09:37:58 huson Exp $
- * <p>
  * Phylogenetic tree
+ * Daniel Huson, 2003
  */
 public class PhyloTree extends PhyloSplitsGraph {
     public static final boolean ALLOW_WRITE_RETICULATE = true;
@@ -163,14 +161,13 @@ public class PhyloTree extends PhyloSplitsGraph {
      * @return a string representation of the tree in bracket notation
      */
     public String toBracketString() {
-        final StringWriter sw = new StringWriter();
-        try {
-            write(sw, true);
+        try (StringWriter w = new StringWriter()) {
+            write(w, true);
+            return w.toString();
         } catch (Exception ex) {
             Basic.caught(ex);
             return "();";
         }
-        return sw.toString();
     }
 
     /**
@@ -179,14 +176,13 @@ public class PhyloTree extends PhyloSplitsGraph {
      * @return a string representation of the tree in bracket notation
      */
     public String toBracketString(boolean showWeights) {
-        final StringWriter sw = new StringWriter();
-        try {
+        try (StringWriter sw = new StringWriter()) {
             write(sw, showWeights);
+            return sw.toString();
         } catch (Exception ex) {
             Basic.caught(ex);
             return "();";
         }
-        return sw.toString();
     }
 
     /**
@@ -204,8 +200,7 @@ public class PhyloTree extends PhyloSplitsGraph {
      * @return a string representation of the tree in bracket notation
      */
     public String toString(Map<String, String> translate) {
-        final StringWriter sw = new StringWriter();
-        try {
+        try (StringWriter sw = new StringWriter()) {
             if (translate == null || translate.size() == 0) {
                 this.write(sw, true);
 
@@ -222,11 +217,11 @@ public class PhyloTree extends PhyloSplitsGraph {
                 }
                 tmpTree.write(sw, true);
             }
+            return sw.toString();
         } catch (Exception ex) {
             Basic.caught(ex);
             return "()";
         }
-        return sw.toString();
     }
 
     /**
@@ -360,19 +355,8 @@ public class PhyloTree extends PhyloSplitsGraph {
         // System.err.println("Multi-labeled nodes detected: " + getInputHasMultiLabels());
     }
 
-    /**
-     * is v an unlabeled node of degree 2?
-     *
-     * @param v
-     * @return true, if v is an unlabeled node of degree 2
-     */
-    private boolean isUnlabeledDiVertex(Node v) {
-        return v.getDegree() == 2 && (getLabel(v) == null || getLabel(v).length() == 0);
-    }
-
     private static final String punctuationCharacters = "),;:";
     private static final String startOfNumber = "-.0123456789";
-
 
     /**
      * recursively do the work
@@ -562,6 +546,16 @@ public class PhyloTree extends PhyloSplitsGraph {
     }
 
     /**
+     * is v an unlabeled node of degree 2?
+     *
+     * @param v
+     * @return true, if v is an unlabeled node of degree 2
+     */
+    private boolean isUnlabeledDiVertex(Node v) {
+        return v.getDegree() == 2 && (getLabel(v) == null || getLabel(v).length() == 0);
+    }
+
+    /**
      * deletes divertex
      *
      * @param v Node
@@ -592,79 +586,6 @@ public class PhyloTree extends PhyloSplitsGraph {
             root = null;
         deleteNode(v);
         return g;
-    }
-
-    /**
-     * post processes a tree that really describes a reticulate network
-     *
-     * @return number of reticulate nodes
-     */
-    public int postProcessReticulate() {
-        int count = 0;
-
-        // determine all the groups of reticulate ndoes
-        Map<String, List<Node>> reticulateNumber2Nodes = new HashMap<>(); // maps each reticulate-node prefix to the set of all nodes that have it
-
-        for (Node v = getFirstNode(); v != null; v = v.getNext()) {
-            String label = getLabel(v);
-            if (label != null && label.length() > 0) {
-                String reticulateLabel = PhyloTreeUtils.findReticulateLabel(label);
-                if (reticulateLabel != null) {
-                    setLabel(v, PhyloTreeUtils.removeReticulateNodeSuffix(label));
-                    List<Node> list = reticulateNumber2Nodes.computeIfAbsent(reticulateLabel, k -> new LinkedList<>());
-                    list.add(v);
-                }
-            }
-        }
-
-        // collapse all instances of a reticulate node into one node
-        for (String reticulateNumber : reticulateNumber2Nodes.keySet()) {
-            List<Node> list = reticulateNumber2Nodes.get(reticulateNumber);
-            if (list.size() > 0) {
-                count++;
-                Node u = newNode();  // all edges leading to a reticulate node will be redirected to this node
-                for (Node v : list) {
-                    if (getLabel(v) != null) {
-                        if (getLabel(u) == null)
-                            setLabel(u, getLabel(v));
-                        else if (!getLabel(u).equals(getLabel(v)))
-                            setLabel(u, getLabel(u) + "," + getLabel(v));
-                    }
-
-                    for (Edge e = v.getFirstAdjacentEdge(); e != null; e = v.getNextAdjacentEdge(e)) {
-                        Node w = v.getOpposite(e);
-                        Edge f;
-                        if (w == e.getSource()) {
-                            f = newEdge(w, u);
-                            setSpecial(f, true);
-                        } else {
-                            f = newEdge(u, w);
-                        }
-                        setSplit(f, getSplit(e));
-                        setWeight(f, getWeight(e));
-                        setLabel(f, getLabel(e));
-                    }
-                    deleteNode(v);
-                }
-                boolean hasReticulateAcceptorEdge = false;
-                for (Edge e = u.getFirstInEdge(); e != null; e = u.getNextInEdge(e)) {
-                    if (getWeight(e) > 0)
-                        if (!hasReticulateAcceptorEdge)
-                            hasReticulateAcceptorEdge = true;
-                        else {
-                            setWeight(e, 0);
-                            System.err.println("Warning: node has more than one reticulate-acceptor edge, will only use first");
-                        }
-                }
-                if (hasReticulateAcceptorEdge) {
-                    for (Edge e = u.getFirstInEdge(); e != null; e = u.getNextInEdge(e)) {
-                        if (getWeight(e) == 0)
-                            setWeight(e, -1);
-                    }
-                }
-            }
-        }
-        return count;
     }
 
     /**
@@ -739,30 +660,15 @@ public class PhyloTree extends PhyloSplitsGraph {
      * @param nodeLabel
      * @throws IOException
      */
-    private void writeRec(Writer outs, Node v, Edge e, boolean writeEdgeWeights, boolean writeEdgeLabels, Map<Integer, Integer> nodeId2Number, Map<Integer, Integer> edgeId2Number, String nodeLabel)
-            throws IOException {
+    private void writeRec(Writer outs, Node v, Edge e, boolean writeEdgeWeights, boolean writeEdgeLabels, Map<Integer, Integer> nodeId2Number, Map<Integer, Integer> edgeId2Number, String nodeLabel) throws IOException {
         if (nodeId2Number != null)
             nodeId2Number.put(v.getId(), ++nodeNumber);
-        // todo: need to change all code so that trees are always directed away from the root.
-        // todo: must do this in splitstree first!
 
-        int outDegree = 0;
-        if (e == null)
-            outDegree = getDegree(v);
-        else if (isSpecial(e)) {
-            for (Edge f = v.getFirstAdjacentEdge(); f != null; f = v.getNextAdjacentEdge(f))
-                if (!isSpecial(f))
-                    outDegree++;
-        } else
-            outDegree = getDegree(v) - 1;
-        if ((outDegree > 0 || e == null) && (!isHideCollapsedSubTreeOnWrite() || getLabel(v) == null || !getLabel(v).endsWith(PhyloTree.COLLAPSED_NODE_SUFFIX))) {
-            outs.write("(");
-            boolean first = true;
-            for (Edge f = v.getFirstAdjacentEdge(); f != null; f = v.getNextAdjacentEdge(f)) {
-                if (f != e) {
-                    if (node2reticulateNumber.get(v) > 0 && isSpecial(f))
-                        continue; // don't climb back up a special edge
-
+        if (!isHideCollapsedSubTreeOnWrite() || getLabel(v) == null || !getLabel(v).endsWith(PhyloTree.COLLAPSED_NODE_SUFFIX)) {
+            if (v.getOutDegree() > 0) {
+                outs.write("(");
+                boolean first = true;
+                for (Edge f : v.outEdges()) {
                     if (edgeId2Number != null)
                         edgeId2Number.put(f.getId(), ++edgeNumber);
 
@@ -771,14 +677,13 @@ public class PhyloTree extends PhyloSplitsGraph {
                     else
                         outs.write(",");
 
-                    Node w = v.getOpposite(f);
+                    final Node w = f.getTarget();
                     boolean inEdgeHasWeight = (getWeight(f) > 0);
-
 
                     if (isSpecial(f)) {
                         if (node2reticulateNumber.get(w) == 0) {
                             node2reticulateNumber.set(w, ++reticulateNodeNumber);
-                            String label;
+                            final String label;
                             if (getLabel(w) != null)
                                 label = getLabelForWriting(w) + PhyloTreeUtils.makeReticulateNodeLabel(inEdgeHasWeight, node2reticulateNumber.get(w));
                             else
@@ -791,6 +696,7 @@ public class PhyloTree extends PhyloSplitsGraph {
                                 label = getLabelForWriting(w) + PhyloTreeUtils.makeReticulateNodeLabel(inEdgeHasWeight, node2reticulateNumber.get(w));
                             else
                                 label = PhyloTreeUtils.makeReticulateNodeLabel(inEdgeHasWeight, node2reticulateNumber.get(w));
+
                             outs.write(label);
                             if (writeEdgeWeights) {
                                 if (getWeight(f) >= 0)
@@ -801,16 +707,14 @@ public class PhyloTree extends PhyloSplitsGraph {
                             }
                         }
                     } else
-                        writeRec(outs, w, f, writeEdgeWeights, writeEdgeLabels, nodeId2Number, edgeId2Number,
-                                getLabelForWriting(w));
+                        writeRec(outs, w, f, writeEdgeWeights, writeEdgeLabels, nodeId2Number, edgeId2Number, getLabelForWriting(w));
                 }
+                outs.write(")");
             }
-            outs.write(")");
+            if (nodeLabel != null && nodeLabel.length() > 0)
+                outs.write(nodeLabel);
         }
-        if (nodeLabel != null && nodeLabel.length() > 0)
-            outs.write(nodeLabel);
-        else if (outDegree == 0)
-            outs.write("?");
+
         if (writeEdgeWeights && e != null) {
             if (getWeight(e) >= 0)
                 outs.write(":" + (float) (getWeight(e)));
@@ -871,6 +775,78 @@ public class PhyloTree extends PhyloSplitsGraph {
                 return label;
             else
                 return "_";
+        }
+    }
+
+    /**
+     * post processes a tree that really describes a reticulate network
+     *
+     * @return number of reticulate nodes
+     */
+    public void postProcessReticulate() {
+        // determine all the groups of reticulate ndoes
+        Map<String, List<Node>> reticulateNumber2Nodes = new HashMap<>(); // maps each reticulate-node prefix to the set of all nodes that have it
+
+        for (Node v = getFirstNode(); v != null; v = v.getNext()) {
+            String label = getLabel(v);
+            if (label != null && label.length() > 0) {
+                String reticulateLabel = PhyloTreeUtils.findReticulateLabel(label);
+                if (reticulateLabel != null) {
+                    setLabel(v, PhyloTreeUtils.removeReticulateNodeSuffix(label));
+                    List<Node> list = reticulateNumber2Nodes.computeIfAbsent(reticulateLabel, k -> new LinkedList<>());
+                    list.add(v);
+                }
+            }
+        }
+
+        // collapse all instances of a reticulate node into one node
+        for (String reticulateNumber : reticulateNumber2Nodes.keySet()) {
+            final List<Node> list = reticulateNumber2Nodes.get(reticulateNumber);
+            if (list.size() > 0) {
+                Node u = null;
+                for (Node v : list) {
+                    if (u == null) {
+                        u = v;
+                    } else {
+                        if (getLabel(v) != null) {
+                            if (getLabel(u) == null)
+                                setLabel(u, getLabel(v));
+                            else if (!getLabel(u).equals(getLabel(v)))
+                                setLabel(u, getLabel(u) + "," + getLabel(v));
+                        }
+
+                        for (Edge e : v.adjacentEdges()) {
+                            final Edge f;
+                            if (e.getSource() == v) { /// transfer child of v to u
+                                f = newEdge(u, e.getTarget());
+                            } else { // transfer parent of v to u
+                                f = newEdge(e.getSource(), u);
+                            }
+                            setSplit(f, getSplit(e));
+                            setWeight(f, getWeight(e));
+                            setLabel(f, getLabel(e));
+                        }
+                        deleteNode(v);
+                    }
+                }
+                boolean hasReticulateAcceptorEdge = false;
+                for (Edge e : u.inEdges()) {
+                    setSpecial(e, true);
+                    if (getWeight(e) > 0)
+                        if (!hasReticulateAcceptorEdge)
+                            hasReticulateAcceptorEdge = true;
+                        else {
+                            setWeight(e, 0);
+                            System.err.println("Warning: node has more than one reticulate-acceptor edge, will only use first");
+                        }
+                }
+                if (hasReticulateAcceptorEdge) {
+                    for (Edge e : u.inEdges()) {
+                        if (getWeight(e) == 0)
+                            setWeight(e, -1);
+                    }
+                }
+            }
         }
     }
 
