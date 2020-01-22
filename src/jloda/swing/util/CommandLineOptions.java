@@ -15,7 +15,6 @@
  *
  *  You should have received a copy of the GNU General Public License
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
- *
  */
 
 /**@version $Id: CommandLineOptions.java,v 1.22 2007-07-15 11:02:36 huson Exp $
