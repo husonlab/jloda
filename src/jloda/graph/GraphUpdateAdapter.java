@@ -1,5 +1,5 @@
 /*
- * GraphUpdateAdapter.java Copyright (C) 2019. Daniel H. Huson
+ * GraphUpdateAdapter.java Copyright (C) 2020. Daniel H. Huson
  *
  *  (Some files contain contributions from other authors, who are then mentioned separately.)
  *
@@ -15,6 +15,7 @@
  *
  *  You should have received a copy of the GNU General Public License
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ *
  */
 
 /**
@@ -32,24 +33,28 @@ public class GraphUpdateAdapter implements GraphUpdateListener {
     /** A node has been created
      *@param v the new node
      */
+    @Override
     public void newNode(Node v) {
     }
 
     /** A node is about to be deleted
      *@param v the node that will be deleted
      */
+    @Override
     public void deleteNode(Node v) {
     }
 
     /** An edge has been created
      *@param e the new edge
      */
+    @Override
     public void newEdge(Edge e) {
     }
 
     /** An edge is about to be deleted
      *@param e the edge that will be deleted
      */
+    @Override
     public void deleteEdge(Edge e) {
     }
 
@@ -57,13 +62,15 @@ public class GraphUpdateAdapter implements GraphUpdateListener {
      * This method is called after one of the above specific methods has be
      * called
      */
+    @Override
     public void graphHasChanged() {
     }
 
-    /** (Partial) graph was read from Reader
-     *@param nodes the new nodes
-     *@param edges the new edges
-     */
-    public void graphWasRead(NodeSet nodes, EdgeSet edges) {
+    @Override
+    public void nodeLabelChanged(Node v, String newLabel) {
+    }
+
+    @Override
+    public void edgeLabelChanged(Edge e, String newLabel) {
     }
 }

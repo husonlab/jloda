@@ -1,5 +1,5 @@
 /*
- * Graph.java Copyright (C) 2019. Daniel H. Huson
+ * Graph.java Copyright (C) 2020. Daniel H. Huson
  *
  *  (Some files contain contributions from other authors, who are then mentioned separately.)
  *
@@ -15,12 +15,6 @@
  *
  *  You should have received a copy of the GNU General Public License
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
- */
-
-/**
- * @version $Id: Graph.java,v 1.51 2008-10-10 08:42:37 huson Exp $
- *
- * @author Daniel Huson
  *
  */
 package jloda.graph;
@@ -102,11 +96,24 @@ public class Graph extends GraphBase {
      * Constructs a new node and set its info to obj.  This does not add the node to the graph
      * structure
      *
-     * @param obj the info object
+     * @param info the info object
      * @return Node a new node
      */
-    public Node newNode(Object obj) {
-        return new Node(this, obj);
+    public Node newNode(Object info) {
+        return new Node(this, info);
+    }
+
+    /**
+     * constructs a new node and reuses an old id
+     * @param info
+     * @param recycledId
+     * @return
+     */
+    public Node newNode (Object info,int recycledId) {
+       final Node v=new Node(this,info);
+       v.setId(recycledId);
+       idsNodes--; // count back down
+        return v;
     }
 
     /**
@@ -216,6 +223,21 @@ public class Graph extends GraphBase {
      */
     public Edge newEdge(Node v, Node w, Object obj) throws IllegalSelfEdgeException {
         return new Edge(this, v, w, obj);
+    }
+
+    /**
+     * Constructs a new edge between nodes v and w and sets its info to obj. This edge is not added to the graph.
+     *
+     * @param v   source node
+     * @param w   target node
+     * @param obj the info object
+     * @return a new edge between nodes v and w and sets its info to obj
+     */
+    public Edge newEdge(Node v, Node w, Object obj,int recycledId) throws IllegalSelfEdgeException {
+        final Edge e= new Edge(this, v, w, obj);
+        e.setId(recycledId);
+        idsEdges--;
+        return e;
     }
 
     /**
@@ -986,7 +1008,6 @@ public class Graph extends GraphBase {
     /* Fires the newNode event for all GraphUpdateListeners
     *@param v the node
     */
-
     protected void fireNewNode(Node v) {
         checkOwner(v);
 
@@ -1004,6 +1025,19 @@ public class Graph extends GraphBase {
 
         for (GraphUpdateListener gul : graphUpdateListeners) {
             gul.deleteNode(v);
+        }
+    }
+
+    /**
+     * fires the node label changed event
+     * @param v
+     * @param label
+     */
+    protected void fireNodeLabelChanged(Node v, String label) {
+        checkOwner(v);
+
+        for (GraphUpdateListener gul : graphUpdateListeners) {
+            gul.nodeLabelChanged(v,label);
         }
     }
 
@@ -1031,6 +1065,19 @@ public class Graph extends GraphBase {
         }
     }
 
+    /**
+     * fires the edge label changed event
+     * @param e
+     * @param label
+     */
+    protected void fireEdgeLabelChanged(Edge e, String label) {
+        checkOwner(e);
+
+        for (GraphUpdateListener gul : graphUpdateListeners) {
+            gul.edgeLabelChanged(e,label);
+        }
+    }
+
     /* Fires the graphHasChanged event for all GraphUpdateListeners
     */
 
@@ -1040,19 +1087,6 @@ public class Graph extends GraphBase {
             for (GraphUpdateListener gul : graphUpdateListeners) {
                 gul.graphHasChanged();
             }
-        }
-    }
-
-    /*
-     * Fires the graphWasRead event for all GraphUpdateListeners
-    */
-
-    protected void fireGraphRead(NodeSet nodes, EdgeSet edges) {
-        checkOwner(nodes);
-        checkOwner(edges);
-        GraphUpdateListener[] a = graphUpdateListeners.toArray(new GraphUpdateListener[0]);
-        for (GraphUpdateListener gul : a) {
-            gul.graphWasRead(nodes, edges);
         }
     }
 
@@ -1246,6 +1280,8 @@ public class Graph extends GraphBase {
      */
     public void setLabel(Edge e, String lab) {
         edgeLabels.put(e, lab);
+        fireEdgeLabelChanged(e,lab);
+        
     }
 
     /**
@@ -1262,10 +1298,11 @@ public class Graph extends GraphBase {
      * Sets the label of a node.
      *
      * @param v   Node
-     * @param str String
+     * @param label String
      */
-    public void setLabel(Node v, String str) {
-        nodeLabels.setValue(v, str);
+    public void setLabel(Node v, String label) {
+        nodeLabels.setValue(v, label);
+        fireNodeLabelChanged(v,label);
     }
 
     /**
@@ -1617,9 +1654,8 @@ public class Graph extends GraphBase {
      * @return node set of nodes
      */
     public NodeSet getNodesAsSet() {
-        NodeSet nodes = new NodeSet(this);
-        for (Node v : nodes())
-            nodes.add(v);
+        final NodeSet nodes = new NodeSet(this);
+        nodes.addAll(nodes());
         return nodes;
     }
 
@@ -1662,9 +1698,8 @@ public class Graph extends GraphBase {
      * @return edge set of edges
      */
     public EdgeSet getEdgesAsSet() {
-        EdgeSet edges = new EdgeSet(this);
-        for (Edge e : edges())
-            edges.add(e);
+        final EdgeSet edges = new EdgeSet(this);
+        edges.addAll(edges());
         return edges;
     }
 
@@ -1945,6 +1980,20 @@ public class Graph extends GraphBase {
                 set.add(getLabel(v));
 
         return set;
+    }
+
+    public Node searchNodeId(int id) {
+        for(Node v:nodes())
+            if(v.getId()==id)
+                return v;
+            return null;
+    }
+
+    public Edge searchEdgeId(int id) {
+        for(Edge e:edges())
+            if(e.getId()==id)
+                return e;
+        return null;
     }
 }
 

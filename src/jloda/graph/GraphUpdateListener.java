@@ -1,5 +1,5 @@
 /*
- * GraphUpdateListener.java Copyright (C) 2019. Daniel H. Huson
+ * GraphUpdateListener.java Copyright (C) 2020. Daniel H. Huson
  *
  *  (Some files contain contributions from other authors, who are then mentioned separately.)
  *
@@ -15,6 +15,7 @@
  *
  *  You should have received a copy of the GNU General Public License
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ *
  */
 
 /**
@@ -56,9 +57,18 @@ public interface GraphUpdateListener {
      */
     void graphHasChanged();
 
-    /** (Partial) graph was read from Reader
-     *@param nodes the new nodes
-     *@param edges the new edges
+    /**
+     * node label changed
+     * @param v
+     * @param newLabel
      */
-    void graphWasRead(NodeSet nodes, EdgeSet edges);
+    void nodeLabelChanged(Node v, String newLabel);
+
+    /**
+     * edge label changed
+     * @param e
+     * @param newLabel
+     */
+    void edgeLabelChanged(Edge e, String newLabel);
+
 }

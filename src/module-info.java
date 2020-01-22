@@ -13,6 +13,7 @@ module jloda {
     exports jloda.fx.control;
     exports jloda.fx.control.table;
     exports jloda.fx.find;
+    exports jloda.fx.graph;
     exports jloda.fx.shapes;
     exports jloda.fx.undo;
     exports jloda.fx.util;

@@ -1,5 +1,5 @@
 /*
- * EdgeSet.java Copyright (C) 2019. Daniel H. Huson
+ * EdgeSet.java Copyright (C) 2020. Daniel H. Huson
  *
  *  (Some files contain contributions from other authors, who are then mentioned separately.)
  *
@@ -15,6 +15,7 @@
  *
  *  You should have received a copy of the GNU General Public License
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ *
  */
 
 /**
@@ -92,13 +93,27 @@ public class EdgeSet extends GraphBase implements Set<Edge>, Iterable<Edge> {
      * @return true, if some element is new
      */
     public boolean addAll(Collection<? extends Edge> collection) {
+        return addAll((Iterable<? extends Edge>) collection);
+
+    }
+
+    /**
+     * adds all nodes in the given collection
+     *
+     * @param collection
+     * @return true, if some element is new
+     */
+    public boolean addAll(final Iterable<? extends Edge> collection) {
+        final Iterator<? extends Edge> it = collection.iterator();
+
         boolean result = false;
-        for (Edge edge : collection) {
-            if (add(edge))
+        while (it.hasNext()) {
+            if (add(it.next()))
                 result = true;
         }
         return result;
     }
+
 
 
     /**
