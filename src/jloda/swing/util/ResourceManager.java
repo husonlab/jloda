@@ -21,6 +21,7 @@ package jloda.swing.util;
 
 import jloda.util.Basic;
 import jloda.util.Pair;
+import jloda.util.ProgramProperties;
 
 import javax.imageio.ImageIO;
 import javax.swing.*;
@@ -142,9 +143,21 @@ public class ResourceManager {
         if (name == null)
             return null;
         for (Pair<Class, String> pair : classLoadersAndRoots) {
-            final InputStream stream = getFileAsStream(pair.getFirst(), pair.getSecond() + "/files", name);
-            if (stream != null)
-                return stream;
+            {
+                final InputStream stream = getFileAsStream(pair.getFirst(), pair.getSecond() + "/files", name);
+                if (stream != null)
+                    return stream;
+            }
+            {
+                final String filesDirectory=ProgramProperties.get("FilesDirectory","");
+                if(filesDirectory.length()>0 &&  new File(filesDirectory,name).canRead()) {
+                    try {
+                        return Basic.getInputStreamPossiblyZIPorGZIP(new File(filesDirectory,name).getAbsolutePath());
+                    } catch (IOException ignored) {
+                    }
+                }
+            }
+
         }
         return null;
     }
@@ -249,6 +262,18 @@ public class ResourceManager {
             final String resourceName = ("/" + packageName.replace('.', '/') + "/" + fileName).replace(" ", "\\ ");
             return clazz.getResourceAsStream(resourceName);
         } catch (Exception ex) {
+            final String filesDirectory=ProgramProperties.get("FilesDirectory","");
+            if(filesDirectory.length()>0) {
+                if(Basic.isDirectory(filesDirectory)){
+                    final File file=new File(filesDirectory,fileName);
+                    if(file.canRead()) {
+                        try {
+                            return Basic.getInputStreamPossiblyZIPorGZIP(file.getPath());
+                        } catch (IOException ignored) {
+                        }
+                    }
+                }
+            }
             Basic.caught(ex);
         }
         return null;
