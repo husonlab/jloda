@@ -23,6 +23,7 @@ import javafx.concurrent.Service;
 import javafx.scene.layout.Pane;
 import jloda.fx.control.ProgressPane;
 import jloda.fx.window.NotificationManager;
+import jloda.util.Basic;
 import jloda.util.ProgressListener;
 
 import java.util.concurrent.Callable;
@@ -71,7 +72,8 @@ public class AService<T> extends Service<T> {
             }
         });
 
-        setOnFailed(e -> NotificationManager.showError("Computation failed: " + AService.this.getException().getMessage()));
+        setOnFailed(e -> NotificationManager.showError("Computation failed: " + Basic.getShortName(AService.this.getException().getClass())
+                + (AService.this.getException().getMessage() != null ? ": " + AService.this.getException().getMessage() : "")));
     }
 
     @Override

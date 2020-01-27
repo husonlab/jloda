@@ -1,23 +1,4 @@
 /*
- * FruchtermanReingoldLayout.java Copyright (C) 2020. Daniel H. Huson
- *
- *  (Some files contain contributions from other authors, who are then mentioned separately.)
- *
- *  This program is free software: you can redistribute it and/or modify
- *  it under the terms of the GNU General Public License as published by
- *  the Free Software Foundation, either version 3 of the License, or
- *  (at your option) any later version.
- *
- *  This program is distributed in the hope that it will be useful,
- *  but WITHOUT ANY WARRANTY; without even the implied warranty of
- *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- *  GNU General Public License for more details.
- *
- *  You should have received a copy of the GNU General Public License
- *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
- */
-
-/*
  * FruchtermanReingoldLayout.java
  *  Copyright (C) 2019 Mathieu Jacomy
  * Original implementation in Gephi by Mathieu Jacomy
@@ -185,12 +166,13 @@ public class FruchtermanReingoldLayout {
      * @param result
      */
     public void apply(int numberOfIterations, NodeArray<APoint2D> result, ProgressListener progress) throws CanceledException {
+        progress.setMaximum(numberOfIterations);
+        progress.setProgress(0);
 
         for (int i = 0; i < numberOfIterations; i++) {
             speed = 100 * (1 - (double) i / numberOfIterations); // linear cooling
-            iterate();
-            if (progress != null)
-                progress.checkForCancel();
+            iterate(progress);
+            progress.incrementProgress();
         }
 
         for (int v = 0; v < nodes.length; v++) {
@@ -201,7 +183,7 @@ public class FruchtermanReingoldLayout {
     /**
      * run one iteration of the algorithm
      */
-    private void iterate() {
+    private void iterate(ProgressListener progress) throws CanceledException {
 
         float maxDisplace = (float) (Math.sqrt(AREA_MULTIPLICATOR * area) / 10f);
         float k = (float) Math.sqrt((AREA_MULTIPLICATOR * area) / (1f + nodes.length));
@@ -220,6 +202,7 @@ public class FruchtermanReingoldLayout {
                     }
                 }
             }
+            progress.checkForCancel();
         }
         // attraction
         for (int i = 0; i < edges[0].length; i++) {

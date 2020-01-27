@@ -126,7 +126,7 @@ public class NodeArray<T> extends GraphBase implements NodeAssociation<T> {
      *
      * @param n index to be included in array
      */
-    private void grow(int n) {
+    synchronized private void grow(int n) {
         int newSize = Math.max(1, 2 * data.length);
         while (newSize <= n)
             newSize *= 2;

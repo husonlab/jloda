@@ -32,10 +32,12 @@ import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.ProgressBar;
 import javafx.scene.control.Tooltip;
+import javafx.scene.image.ImageView;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.StackPane;
 import javafx.scene.text.Font;
+import jloda.fx.util.ResourceManagerFX;
 
 import static java.lang.Thread.MAX_PRIORITY;
 
@@ -65,22 +67,30 @@ public class ProgressPane extends StackPane {
      * @param cancelRunnable
      */
     public ProgressPane(ReadOnlyStringProperty titleProperty, ReadOnlyStringProperty messageProperty, ReadOnlyDoubleProperty progressProperty, ReadOnlyBooleanProperty isRunning, Runnable cancelRunnable) {
+        setPrefHeight(30);
+        setMinHeight(Pane.USE_PREF_SIZE);
+        setMaxHeight(Pane.USE_PREF_SIZE);
         setPadding(new Insets(0, 10, 0, 40));
         setVisible(false);
         Label label = new Label();
+        label.setPadding(new Insets(0, 5, 0, 0));
         label.textProperty().bind(titleProperty.concat(": ").concat(messageProperty));
         label.setFont(Font.font("System", 10));
         ProgressBar progressBar = new ProgressBar();
         progressBar.progressProperty().bind(progressProperty);
         progressBar.setPrefHeight(label.getPrefHeight());
-        Button stopButton = new Button("Cancel");
-        stopButton.setFont(Font.font("System", 10));
+        Button stopButton = new Button();
+        stopButton.setLayoutX(-10);
+        stopButton.setStyle("-fx-background-color: transparent;");
+        final ImageView imageView = ResourceManagerFX.getIconAsImageView("Stop.png", 16);
+        imageView.setOpacity(0.5);
+        stopButton.setGraphic(imageView);
+
         stopButton.setMaxHeight(label.getPrefHeight());
         stopButton.disableProperty().bind(isRunning.not());
         stopButton.setOnAction((e) -> cancelRunnable.run());
         final HBox hBox = new HBox(label, progressBar, stopButton);
         hBox.setAlignment(Pos.CENTER);
-        hBox.setSpacing(5);
 
         Tooltip tooltip = new Tooltip();
         tooltip.textProperty().bind(titleProperty.concat(": ").concat(messageProperty));
