@@ -4025,6 +4025,16 @@ public class Basic {
         else
             return String.format("%.1f", diff / 1000.0) + "s";
     }
+
+    public static  <T> int size(Iterable<T> values) {
+        int count=0;
+        final Iterator<T> it=values.iterator();
+        while(it.hasNext()) {
+            it.next();
+            count++;
+        }
+        return count;
+    }
 }
 
 /**

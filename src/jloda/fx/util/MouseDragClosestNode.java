@@ -19,14 +19,10 @@
 
 package jloda.fx.util;
 
+import javafx.geometry.Bounds;
 import javafx.geometry.Point2D;
 import javafx.scene.Node;
-import javafx.scene.Parent;
-import javafx.scene.layout.Pane;
-import javafx.stage.Stage;
 
-import javax.swing.*;
-import java.util.Objects;
 import java.util.function.BiConsumer;
 
 /**
@@ -41,22 +37,27 @@ public class MouseDragClosestNode {
     private double mouseY = 0;
     private Node target;
 
-    public static void setup (Node node, Node reference1,Node target1, Node reference2,Node target2, BiConsumer<Node,Point2D> totalTranslation) {
+    public static void setup(Node node, Node reference1, Node target1, Node reference2, Node target2, BiConsumer<Node, Point2D> totalTranslation) {
          new MouseDragClosestNode(node,reference1,target1,reference2,target2,totalTranslation);
         }
 
     /**
      * constructor
      */
-    private MouseDragClosestNode(Node node, Node reference1,Node target1, Node reference2,Node target2, BiConsumer<Node,Point2D> totalTranslation2) {
+    private MouseDragClosestNode(Node node, Node reference1, Node target1, Node reference2, Node target2, BiConsumer<Node, Point2D> totalTranslation2) {
 
         node.setOnMousePressed((e -> {
-            mouseDownX=mouseX = e.getSceneX();
-            mouseDownY=mouseY = e.getSceneY();
+            mouseDownX=mouseX = e.getScreenX();
+            mouseDownY=mouseY = e.getScreenY();
             e.consume();
 
-            final double distance1=reference1.localToScene(reference1.getTranslateX(),reference1.getTranslateY()).distance(mouseX,mouseY);
-            final double distance2=reference2.localToScene(reference2.getTranslateX(),reference2.getTranslateY()).distance(mouseX,mouseY);
+            final Bounds screenBounds1=reference1.localToScreen(reference1.getBoundsInLocal());
+
+            final double distance1=(new Point2D(screenBounds1.getCenterX(),screenBounds1.getCenterY())).distance(mouseX,mouseY);
+
+            final Bounds screenBounds2=reference2.localToScreen(reference2.getBoundsInLocal());
+
+            final double distance2=(new Point2D(screenBounds2.getCenterX(),screenBounds2.getCenterY())).distance(mouseX,mouseY);
 
             if(distance1<=distance2)
                 target=target1;
@@ -65,13 +66,13 @@ public class MouseDragClosestNode {
         }));
 
         node.setOnMouseDragged(e -> {
-            target.setTranslateX(target.getTranslateX()+(e.getSceneX() - mouseX));
-            target.setTranslateY(target.getTranslateY()+(e.getSceneY() - mouseY));
-            mouseX = e.getSceneX();
-            mouseY = e.getSceneY();
+            target.setTranslateX(target.getTranslateX()+(e.getScreenX() - mouseX));
+            target.setTranslateY(target.getTranslateY()+(e.getScreenY() - mouseY));
+            mouseX = e.getScreenX();
+            mouseY = e.getScreenY();
             e.consume();
         });
 
-        node.setOnMouseReleased(e-> totalTranslation2.accept(target,new Point2D(e.getSceneX()-mouseDownX,e.getSceneY()-mouseDownY)));
+        node.setOnMouseReleased(e-> totalTranslation2.accept(target,new Point2D(e.getScreenX()-mouseDownX,e.getScreenY()-mouseDownY)));
     }
 }

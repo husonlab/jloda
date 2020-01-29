@@ -23,6 +23,7 @@ import javafx.beans.InvalidationListener;
 import javafx.geometry.Dimension2D;
 import javafx.scene.Group;
 import javafx.scene.Node;
+import javafx.scene.control.MenuItem;
 import javafx.scene.control.Slider;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextArea;
@@ -221,5 +222,16 @@ public class BasicFX {
         slider.addEventFilter(MouseEvent.MOUSE_PRESSED, e -> slider.setValueChanging(true));
         slider.addEventFilter(MouseEvent.MOUSE_RELEASED, e -> slider.setValueChanging(false));
 
+    }
+
+    /**
+     * adds full screen support
+     *
+     * @param stage
+     */
+    public static void setupFullScreenMenuSupport(Stage stage, MenuItem menuItem) {
+        stage.fullScreenProperty().addListener((c, o, n) -> menuItem.setText(n ? "Exit Full Screen" : "Enter Full Screen"));
+        menuItem.setOnAction((e) -> stage.setFullScreen(!stage.isFullScreen()));
+        menuItem.setDisable(false);
     }
 }

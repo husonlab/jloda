@@ -69,6 +69,13 @@ public class ItemSelectionModel<T> {
         selectedItemSet.clear();
     }
 
+    public void toggleSelection (T item) {
+        if(selectedItemSet.contains(item))
+            clearSelection(item);
+        else
+            select(item);
+    }
+
     public boolean isSelected(T item) {
         return selectedItemSet.contains(item);
     }

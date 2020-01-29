@@ -20,9 +20,8 @@
 package jloda.fx.graph;
 
 import javafx.application.Platform;
-import javafx.beans.property.ReadOnlyListWrapper;
-import javafx.beans.property.SimpleStringProperty;
-import javafx.beans.property.StringProperty;
+import javafx.beans.binding.Bindings;
+import javafx.beans.property.*;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import jloda.graph.*;
@@ -35,10 +34,13 @@ public class GraphFX<G extends Graph> {
     private G graph;
     private final ObservableList<Node> nodeList = FXCollections.observableArrayList();
     private final ReadOnlyListWrapper<Node> readOnlyNodeList = new ReadOnlyListWrapper<>(nodeList);
+
     private final ObservableList<Edge> edgeList = FXCollections.observableArrayList();
     private final ReadOnlyListWrapper<Edge> readOnlyEdgeList = new ReadOnlyListWrapper<>(edgeList);
     private GraphUpdateListener graphUpdateListener;
-    
+
+     private final BooleanProperty empty=new SimpleBooleanProperty(true);
+
     private NodeArray<StringProperty> node2LabelProperty;
     private EdgeArray<StringProperty> edge2LabelProperty;
 
@@ -103,6 +105,9 @@ public class GraphFX<G extends Graph> {
         }
         else
             node2LabelProperty =null;
+
+        empty.bind(Bindings.isEmpty(nodeList));
+
         this.graph = graph;
     }
 
@@ -129,6 +134,14 @@ public class GraphFX<G extends Graph> {
             edge2LabelProperty.put(e, stringProperty);
         }
         return stringProperty;
+    }
+
+    public boolean isEmpty() {
+        return empty.get();
+    }
+
+    public ReadOnlyBooleanProperty emptyProperty() {
+        return empty;
     }
 }
 
