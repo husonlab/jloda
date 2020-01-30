@@ -26,6 +26,7 @@ import jloda.util.ProgramProperties;
 
 import java.io.*;
 import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * Phylogenetic tree
@@ -1314,44 +1315,55 @@ public class PhyloTree extends PhyloSplitsGraph {
      * @return true, if anything contracted
      */
     public boolean contractShortEdges(double minLength) {
-        boolean hasContractedOne = false;
+        return contractEdges(edgeStream().filter(e -> getWeight(e) < minLength).collect(Collectors.toSet()));
+    }
 
-        while (true) {
-            boolean contracted = false;
+    /**
+     * returns a new tree in which all edges of length < min length have been contracted
+     *
+     * @return true, if anything contracted
+     */
+    public boolean contractEdges(Set<Edge> edgesToContrat) {
+        boolean hasContractedOne = edgesToContrat.size() > 0;
 
-            for (Edge e : edges()) {
-                if (getWeight(e) < minLength) {
-                    contracted = true;
-                    final Node v = e.getSource();
-                    final Node w = e.getTarget();
-                    for (Edge f : v.adjacentEdges()) {
-                        if (f != e) {
-                            final Node u = f.getOpposite(v);
-                            final Edge z;
-                            if (u == f.getSource())
-                                z = newEdge(u, w);
-                            else
-                                z = newEdge(w, u);
-                            setWeight(z, getWeight(f));
-                            setConfidence(z, getConfidence(f));
-                            setLabel(z, getLabel(z));
+        while (edgesToContrat.size() > 0) {
+            final Edge e = edgesToContrat.iterator().next();
+            edgesToContrat.remove(e);
+
+            final Node v = e.getSource();
+            final Node w = e.getTarget();
+
+            for (Edge f : v.adjacentEdges()) { // will remove e from edgesToContract here
+                if (f != e) {
+                    final Node u = f.getOpposite(v);
+                    final boolean needsContracting = edgesToContrat.contains(f);
+                    if (needsContracting)
+                        edgesToContrat.remove(f);
+
+                    if (u != w) {
+                        final Edge z;
+                        if (u == f.getSource())
+                            z = newEdge(u, w);
+                        else
+                            z = newEdge(w, u);
+                        setWeight(z, getWeight(f));
+                        setConfidence(z, getConfidence(f));
+                        setLabel(z, getLabel(z));
+                        if (needsContracting) {
+                            edgesToContrat.add(z);
                         }
                     }
-                    for (Integer taxon : getTaxa(v))
-                        addTaxon(w, taxon);
-
-                    if (getRoot() == v)
-                        setRoot(w);
-
-                    deleteNode(v);
-                    break;
                 }
             }
-            if (contracted)
-                hasContractedOne = true;
-            else
-                break;
+            for (Integer taxon : getTaxa(v))
+                addTaxon(w, taxon);
+
+            if (getRoot() == v)
+                setRoot(w);
+
+            deleteNode(v);
         }
+
         return hasContractedOne;
     }
 

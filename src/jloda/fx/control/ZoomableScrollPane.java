@@ -20,7 +20,9 @@
 package jloda.fx.control;
 
 import javafx.beans.property.BooleanProperty;
+import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleBooleanProperty;
+import javafx.beans.property.SimpleObjectProperty;
 import javafx.geometry.BoundingBox;
 import javafx.geometry.Bounds;
 import javafx.geometry.Point2D;
@@ -50,6 +52,8 @@ public class ZoomableScrollPane extends ScrollPane {
     private double zoomFactorX = 1;
     private double zoomFactorY = 1;
 
+    private final ObjectProperty<Runnable> updateScaleMethod;
+
 
     /**
      * constructor
@@ -61,6 +65,11 @@ public class ZoomableScrollPane extends ScrollPane {
         this.content = content;
         this.zoomNode = new Group(content);
         setContent(outerNode(zoomNode));
+
+        updateScaleMethod = new SimpleObjectProperty<>(() -> {
+            content.setScaleX(zoomX);
+            content.setScaleY(zoomY);
+        });
     }
 
     public double getZoomFactorX() {
@@ -101,8 +110,19 @@ public class ZoomableScrollPane extends ScrollPane {
     }
 
     public void updateScale() {
-        content.setScaleX(zoomX);
-        content.setScaleY(zoomY);
+        updateScaleMethod.get().run();
+    }
+
+    public Runnable getUpdateScaleMethod() {
+        return updateScaleMethod.get();
+    }
+
+    public ObjectProperty<Runnable> updateScaleMethodProperty() {
+        return updateScaleMethod;
+    }
+
+    public void setUpdateScaleMethod(Runnable updateScaleMethod) {
+        this.updateScaleMethod.set(updateScaleMethod);
     }
 
     private void doZoom(double factorX, double factorY, Point2D mousePoint) {

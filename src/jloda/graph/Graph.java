@@ -27,6 +27,8 @@ import java.io.Reader;
 import java.io.Writer;
 import java.lang.ref.WeakReference;
 import java.util.*;
+import java.util.stream.Stream;
+import java.util.stream.StreamSupport;
 
 /**
  * A graph
@@ -1691,6 +1693,14 @@ public class Graph extends GraphBase {
         };
     }
 
+    public Stream<Edge> edgeStream() {
+        return edgeStream(null);
+    }
+
+    public Stream<Edge> edgeStream(Edge afterMe) {
+        return StreamSupport.stream(edges(afterMe).spliterator(), false);
+    }
+
     /**
      * gets all edges as a new set
      *
@@ -1733,6 +1743,24 @@ public class Graph extends GraphBase {
                 return result;
             }
         };
+    }
+
+    /**
+     * gets a node stream
+     *
+     * @return
+     */
+    public Stream<Node> nodeStream() {
+        return nodeStream(null);
+    }
+
+    /**
+     * gets a node stream
+     *
+     * @return
+     */
+    public Stream<Node> nodeStream(Node afterMe) {
+        return StreamSupport.stream(nodes(afterMe).spliterator(), false);
     }
 
     /**

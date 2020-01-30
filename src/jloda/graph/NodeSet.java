@@ -97,6 +97,18 @@ public class NodeSet extends GraphBase implements Set<Node> {
     }
 
     /**
+     * set all nodes
+     *
+     * @param collection
+     * @return true, if some element added
+     */
+    public boolean setAll(final Iterable<? extends Node> collection) {
+        clear();
+        return addAll(collection);
+    }
+
+
+    /**
      * adds all nodes in the given collection
      *
      * @param collection
