@@ -37,7 +37,7 @@ public class ExtendedFXMLLoader<C> {
 
     /**
      * load the FXML from the fxml file associated with a class
-     * For example, if the path for clazz is splitstree5.gui.TaxaFilterView or splitstree5.gui.TaxaFilterViewController, parses the file splitstree5.gui.TaxaFilterView.fxml
+     * For example, if the path for clazz is phyloedit.gui.TaxaFilterView or phyloedit.gui.TaxaFilterViewController, parses the file phyloedit.gui.TaxaFilterView.fxml
      *
      * @param clazz
      * @throws IOException
