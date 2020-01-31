@@ -20,6 +20,7 @@
 package jloda.fx.window;
 
 import javafx.application.Platform;
+import javafx.geometry.Point2D;
 import javafx.geometry.Rectangle2D;
 import javafx.scene.Scene;
 import javafx.scene.control.Label;
@@ -45,6 +46,8 @@ public class SplashScreen {
     private static String versionString;
     private static Image image;
     private static SplashScreen instance;
+
+    private static Point2D labelAnchor = new Point2D(20, 20);
 
     public static SplashScreen getInstance() {
         if (instance == null)
@@ -79,8 +82,8 @@ public class SplashScreen {
             AnchorPane anchorPane = new AnchorPane();
             final Label label = new Label(getVersionString());
             anchorPane.getChildren().add(label);
-            AnchorPane.setTopAnchor(label, 20.0);
-            AnchorPane.setLeftAnchor(label, 20.0);
+            AnchorPane.setTopAnchor(label, labelAnchor.getY());
+            AnchorPane.setLeftAnchor(label, labelAnchor.getX());
             stackPane.getChildren().add(anchorPane);
         }
 
@@ -123,5 +126,13 @@ public class SplashScreen {
                 }
             });
         });
+    }
+
+    public static Point2D getLabelAnchor() {
+        return labelAnchor;
+    }
+
+    public static void setLabelAnchor(Point2D labelAnchor) {
+        SplashScreen.labelAnchor = labelAnchor;
     }
 }
