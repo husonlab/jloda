@@ -30,7 +30,7 @@ public class RectangleShape extends Polygon implements ISized {
     private double height;
 
     public RectangleShape(double width, double height) {
-        super(width, height);
+        setSize(width, height);
     }
 
     public void setSize(double width, double height) {

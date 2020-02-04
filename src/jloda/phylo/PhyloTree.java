@@ -1389,6 +1389,16 @@ public class PhyloTree extends PhyloSplitsGraph {
     public void setInternalNodeLabelsAreEdgeLabels(boolean internalNodeLabelsAreEdgeLabels) {
         this.internalNodeLabelsAreEdgeLabels = internalNodeLabelsAreEdgeLabels;
     }
+
+    /**
+     * reticulation edge of positive length
+     *
+     * @param e
+     * @return true if transfer edge
+     */
+    public boolean isTransferEdge(Edge e) {
+        return isSpecial(e) && getWeight(e) == -1;
+    }
 }
 
 // EOF

@@ -19,14 +19,14 @@
 
 package jloda.fx.shapes;
 
-import javafx.scene.shape.Circle;
-import javafx.scene.shape.Ellipse;
-import javafx.scene.shape.Rectangle;
+import javafx.scene.Node;
 import javafx.scene.shape.Shape;
+import javafx.scene.shape.Shape3D;
+import javafx.scene.shape.Sphere;
 import jloda.util.Basic;
 
 public enum NodeShape {
-    Square, Circle, TriangleUp, TriangleDown, Diamond, Hexagon, Rectangle, Oval, Other;
+    Square, Circle, TriangleUp, TriangleDown, Diamond, Hexagon, Rectangle, Oval, None;
 
     /**
      * determines the node shape of a shape
@@ -35,7 +35,7 @@ public enum NodeShape {
      * @return node shape
      */
     public static NodeShape valueOf(Shape shape) {
-        if (shape instanceof Circle)
+        if (shape instanceof CircleShape)
             return Circle;
         else if (shape instanceof SquareShape)
             return Square;
@@ -47,12 +47,22 @@ public enum NodeShape {
             return TriangleUp;
         else if (shape instanceof TriangleDownShape)
             return TriangleDown;
-        else if (shape instanceof Rectangle)
+        else if (shape instanceof RectangleShape)
             return Rectangle;
-        else if (shape instanceof Ellipse)
+        else if (shape instanceof OvalShape)
             return Oval;
         else
-            return Other;
+            return None;
+    }
+
+    /**
+     * gets the short code for this shape, which consists only of the capital letters appearing in the name
+     *
+     * @param shape
+     * @return
+     */
+    public static String getCode(Shape shape) {
+        return valueOf(shape).toString().replaceAll("[a-z]", "");
     }
 
     /**
@@ -106,13 +116,12 @@ public enum NodeShape {
             case Square:
                 return new SquareShape(width);
             case Rectangle:
-                return new Rectangle(width, height);
+                return new RectangleShape(width, height);
             default:
             case Circle:
-                if (width == height)
-                    return new Circle(0.5 * width);
+                return new CircleShape(width);
             case Oval:
-                return new Ellipse(0.5 * width, 0.5 * height);
+                return new OvalShape(width, height);
             case TriangleUp:
                 return new TriangleUpShape(width, height);
             case TriangleDown:
@@ -122,5 +131,15 @@ public enum NodeShape {
             case Hexagon:
                 return new HexagonShape(width, height);
         }
+    }
+
+    // todo: implement different shapes here
+    public static Shape3D create3D(Node shape, int width) {
+        ((Sphere) shape).setRadius(0.5 * width);
+        return (Sphere) shape;
+    }
+
+    public static int[] getSize(Shape shape) {
+        return new int[]{(int) Math.round(shape.getBoundsInLocal().getWidth()), (int) Math.round(shape.getBoundsInLocal().getHeight())};
     }
 }

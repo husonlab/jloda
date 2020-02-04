@@ -2989,15 +2989,42 @@ public class Basic {
 
     /**
      * Finds the value of the given enumeration by name, case-insensitive.
+     *
      * @return enumeration value or null
      */
     public static <T extends Enum<T>> T valueOfIgnoreCase(Class<T> enumeration, String name) {
-        for (T enumValue : enumeration.getEnumConstants()) {
-            if (enumValue.name().equalsIgnoreCase(name)) {
-                return enumValue;
-            }
+        return Arrays.stream(enumeration.getEnumConstants()).filter(v -> v.name().equalsIgnoreCase(name)).findFirst().orElse(null);
+    }
+
+    /**
+     * Finds the value of the given enumeration by finding the first for which name appears as a subsequence (but not neccessarily substring)
+     *
+     * @return enumeration value or null
+     */
+    public static <T extends Enum<T>> T valueOfMatchingSubsequence(Class<T> enumeration, String name) {
+
+        return Arrays.stream(enumeration.getEnumConstants()).filter(v -> subsequenceOf(v.name(), name)).findFirst().orElse(null);
+    }
+
+    /**
+     * determines whether longString contains shortString as a sub-sequence.
+     * That is all, letters of the shortString appear in order in the longString, but not necessarily consecutively
+     *
+     * @param longString
+     * @param shortString
+     * @return
+     */
+    private static boolean subsequenceOf(String longString, String shortString) {
+        int where = -1;
+        for (int i = 0; i < shortString.length(); i++) {
+            if (where == -1)
+                where = longString.indexOf(shortString.charAt(i));
+            else
+                where = longString.indexOf(shortString.charAt(i), where + 1);
+            if (where == -1)
+                return false;
         }
-        return null;
+        return true;
     }
 
     /**

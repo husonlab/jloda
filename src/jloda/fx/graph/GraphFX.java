@@ -39,7 +39,7 @@ public class GraphFX<G extends Graph> {
     private final ReadOnlyListWrapper<Edge> readOnlyEdgeList = new ReadOnlyListWrapper<>(edgeList);
     private GraphUpdateListener graphUpdateListener;
 
-     private final BooleanProperty empty=new SimpleBooleanProperty(true);
+    private final BooleanProperty empty = new SimpleBooleanProperty(true);
 
     private NodeArray<StringProperty> node2LabelProperty;
     private EdgeArray<StringProperty> edge2LabelProperty;
@@ -56,55 +56,79 @@ public class GraphFX<G extends Graph> {
     }
 
     public void setGraph(G graph) {
-        if(this.graph!=null && graphUpdateListener!=null) {
+        if (this.graph != null && graphUpdateListener != null) {
             this.graph.removeGraphUpdateListener(graphUpdateListener);
         }
 
-        if(graph!=null) {
+        if (graph != null) {
             graphUpdateListener = new GraphUpdateAdapter() {
                 @Override
                 public void newNode(Node v) {
-                    Platform.runLater(()->nodeList.add(v));
+                    Platform.runLater(() -> {
+                        try {
+                            nodeList.add(v);
+                        } catch (NotOwnerException ignored) {
+                        }
+                    });
                 }
 
                 @Override
                 public void deleteNode(Node v) {
-                    Platform.runLater(()->nodeList.remove(v));
-            }
+                    Platform.runLater(() -> {
+                        try {
+                            nodeList.remove(v);
+                        } catch (NotOwnerException ignored) {
+                        }
+                    });
+                }
 
                 @Override
                 public void newEdge(Edge e) {
-                    Platform.runLater(()->edgeList.add(e));
+                    Platform.runLater(() -> {
+                        try {
+                            edgeList.add(e);
+                        } catch (NotOwnerException ignored) {
+                        }
+                    });
                 }
 
                 @Override
                 public void deleteEdge(Edge e) {
-                    Platform.runLater(()->edgeList.remove(e));
+                    Platform.runLater(() -> {
+                        try {
+                            edgeList.remove(e);
+                        } catch (NotOwnerException ignored) {
+                        }
+                    });
                 }
-                
+
                 @Override
                 public void nodeLabelChanged(Node v, String newLabel) {
-                    StringProperty stringProperty= node2LabelProperty.get(v);
-                    if(stringProperty!=null) {
-                        Platform.runLater(()->stringProperty.set(newLabel));
+                    try {
+                        StringProperty stringProperty = node2LabelProperty.get(v);
+                        if (stringProperty != null) {
+                            Platform.runLater(() -> stringProperty.set(newLabel));
+                        }
+                    } catch (NotOwnerException ignored) {
                     }
                 }
 
                 @Override
                 public void edgeLabelChanged(Edge e, String newLabel) {
-                    StringProperty stringProperty = edge2LabelProperty.get(e);
-                    if (stringProperty != null) {
-                        Platform.runLater(() -> stringProperty.set(newLabel));
-
+                    try {
+                        StringProperty stringProperty = edge2LabelProperty.get(e);
+                        if (stringProperty != null) {
+                            Platform.runLater(() -> stringProperty.set(newLabel));
+                        }
+                    } catch (NotOwnerException ignored) {
                     }
                 }
             };
             graph.addGraphUpdateListener(graphUpdateListener);
-            node2LabelProperty=new NodeArray<>(graph);
-            edge2LabelProperty =new EdgeArray<>(graph);
-        }
-        else
-            node2LabelProperty =null;
+            node2LabelProperty = new NodeArray<>(graph);
+            edge2LabelProperty = new EdgeArray<>(graph);
+        } else
+            node2LabelProperty = null;
 
         empty.bind(Bindings.isEmpty(nodeList));
 
@@ -118,19 +142,20 @@ public class GraphFX<G extends Graph> {
     public ObservableList<Edge> getEdgeList() {
         return readOnlyEdgeList;
     }
-    
+
     public StringProperty nodeLabelProperty(Node v) {
-        StringProperty stringProperty= node2LabelProperty.get(v);
-        if(stringProperty==null) {
-            stringProperty=new SimpleStringProperty(graph.getLabel(v));
+        StringProperty stringProperty = node2LabelProperty.get(v);
+        if (stringProperty == null) {
+            stringProperty = new SimpleStringProperty(graph.getLabel(v));
             node2LabelProperty.put(v, stringProperty);
         }
         return stringProperty;
     }
+
     public StringProperty edgeLabelProperty(Edge e) {
-        StringProperty stringProperty= edge2LabelProperty.get(e);
-        if(stringProperty==null) {
-            stringProperty=new SimpleStringProperty(graph.getLabel(e));
+        StringProperty stringProperty = edge2LabelProperty.get(e);
+        if (stringProperty == null) {
+            stringProperty = new SimpleStringProperty(graph.getLabel(e));
             edge2LabelProperty.put(e, stringProperty);
         }
         return stringProperty;
