@@ -5,13 +5,14 @@
  */
 package jloda.graph;
 
-import jloda.util.APoint2D;
-import jloda.util.Basic;
-import jloda.util.CanceledException;
-import jloda.util.ProgressListener;
+import jloda.fx.util.ProgramExecutorService;
+import jloda.util.*;
 
 import java.util.BitSet;
 import java.util.Stack;
+import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 /**
  * implements the Fruchterman-Reingold graph layout algorithm
@@ -37,6 +38,7 @@ public class FruchtermanReingoldLayout {
     private final float[][] forceDelta;
 
     private final BitSet fixed;
+
 
     /**
      * constructor. Do not change graph after calling the constructor
@@ -94,7 +96,7 @@ public class FruchtermanReingoldLayout {
         }
 
         if (graph.getNumberOfNodes() > 0) {
-            if(node2start != null) {
+            if (node2start != null) {
                 for (Object obj : graph.nodes()) {
                     final Node v = (Node) obj;
                     final int id = node2id.get(v);
@@ -141,7 +143,10 @@ public class FruchtermanReingoldLayout {
      */
     public NodeArray<APoint2D> apply(int numberOfIterations) {
         final NodeArray<APoint2D> result = new NodeArray<>(graph);
-        apply(numberOfIterations, result);
+        try {
+            apply(numberOfIterations, result, new ProgressSilent(), ProgramExecutorService.getNumberOfCoresToUse());
+        } catch (CanceledException ignored) { // can't happen
+        }
         return result;
     }
 
@@ -153,9 +158,8 @@ public class FruchtermanReingoldLayout {
      */
     public void apply(int numberOfIterations, NodeArray<APoint2D> result) {
         try {
-            apply(numberOfIterations, result, null);
-        } catch (CanceledException ex) {
-            Basic.caught(ex); // can't happen
+            apply(numberOfIterations, result, new ProgressSilent(), ProgramExecutorService.getNumberOfCoresToUse());
+        } catch (CanceledException ignored) { // can't happen
         }
     }
 
@@ -165,86 +169,213 @@ public class FruchtermanReingoldLayout {
      * @param numberOfIterations
      * @param result
      */
-    public void apply(int numberOfIterations, NodeArray<APoint2D> result, ProgressListener progress) throws CanceledException {
+    public void apply(int numberOfIterations, NodeArray<APoint2D> result, ProgressListener progress, int numberOfThreads) throws CanceledException {
         progress.setMaximum(numberOfIterations);
         progress.setProgress(0);
 
-        for (int i = 0; i < numberOfIterations; i++) {
-            speed = 100 * (1 - (double) i / numberOfIterations); // linear cooling
-            iterate(progress);
-            progress.incrementProgress();
-        }
+        final ExecutorService service = Executors.newFixedThreadPool(numberOfThreads);
 
-        for (int v = 0; v < nodes.length; v++) {
-            result.put(nodes[v], new APoint2D(coordinates[0][v], coordinates[1][v]));
+        try {
+            for (int i = 0; i < numberOfIterations; i++) {
+                speed = 100 * (1 - (double) i / numberOfIterations); // linear cooling
+                iterate(service, numberOfThreads, progress);
+                progress.incrementProgress();
+            }
+
+            {
+                final int threads = Math.min(numberOfThreads, nodes.length);
+                final CountDownLatch countDownLatch = new CountDownLatch(threads);
+
+                for (int t = 0; t < threads; t++) {
+                    final int thread = t;
+                    service.submit(() -> {
+                        try {
+                            for (int v = thread; v < nodes.length; v += threads) {
+                                result.setValue(nodes[v], new APoint2D(coordinates[0][v], coordinates[1][v]));
+                            }
+                        } finally {
+                            countDownLatch.countDown();
+                        }
+                    });
+                }
+                try {
+                    countDownLatch.await();
+                } catch (InterruptedException e) {
+                    Basic.caught(e);
+                }
+                progress.checkForCancel();
+            }
+        } finally {
+            service.shutdownNow();
         }
     }
 
     /**
      * run one iteration of the algorithm
      */
-    private void iterate(ProgressListener progress) throws CanceledException {
+    private void iterate(ExecutorService service, int numberOfThreads, ProgressListener progress) throws CanceledException {
 
         float maxDisplace = (float) (Math.sqrt(AREA_MULTIPLICATOR * area) / 10f);
         float k = (float) Math.sqrt((AREA_MULTIPLICATOR * area) / (1f + nodes.length));
 
         // repulsion
-        for (int v1 = 0; v1 < nodes.length; v1++) {
-            for (int v2 = 0; v2 < nodes.length; v2++) {
-                if (v1 != v2) {
-                    float xDist = coordinates[0][v1] - coordinates[0][v2];
-                    float yDist = coordinates[1][v1] - coordinates[1][v2];
-                    float dist = (float) Math.sqrt(xDist * xDist + yDist * yDist);
-                    if (dist > 0) {
-                        float repulsiveF = k * k / dist;
-                        forceDelta[0][v1] += xDist / dist * repulsiveF;
-                        forceDelta[1][v1] += yDist / dist * repulsiveF;
+        {
+            final int threads = Math.min(numberOfThreads, nodes.length);
+            final CountDownLatch countDownLatch = new CountDownLatch(threads);
+
+            for (int t = 0; t < threads; t++) {
+                final int thread = t;
+                service.submit(() -> {
+                    try {
+                        for (int v1 = thread; v1 < nodes.length; v1 += numberOfThreads) {
+                            for (int v2 = 0; v2 < nodes.length; v2++) {
+                                if (v1 != v2) {
+                                    float xDist = coordinates[0][v1] - coordinates[0][v2];
+                                    float yDist = coordinates[1][v1] - coordinates[1][v2];
+                                    float dist = (float) Math.sqrt(xDist * xDist + yDist * yDist);
+                                    if (dist > 0) {
+                                        float repulsiveF = k * k / dist;
+                                        forceDelta[0][v1] += xDist / dist * repulsiveF;
+                                        forceDelta[1][v1] += yDist / dist * repulsiveF;
+                                    }
+                                }
+                            }
+                            progress.checkForCancel();
+                        }
+                    } catch (CanceledException ignored) {
+                    } finally {
+                        countDownLatch.countDown();
                     }
-                }
+                });
+            }
+            try {
+                countDownLatch.await();
+            } catch (InterruptedException e) {
+                Basic.caught(e);
             }
             progress.checkForCancel();
         }
         // attraction
-        for (int i = 0; i < edges[0].length; i++) {
-            int v1 = edges[0][i];
-            int v2 = edges[1][i];
-            float xDist = coordinates[0][v1] - coordinates[0][v2];
-            float yDist = coordinates[1][v1] - coordinates[1][v2];
-            float dist = (float) Math.sqrt(xDist * xDist + yDist * yDist);
-            if (dist > 0) {
-                float attractiveF = dist * dist / k;
-                forceDelta[0][v1] -= xDist / dist * attractiveF;
-                forceDelta[1][v1] -= yDist / dist * attractiveF;
-                forceDelta[0][v2] += xDist / dist * attractiveF;
-                forceDelta[1][v2] += yDist / dist * attractiveF;
+        {
+            final int threads = Math.min(numberOfThreads, edges[0].length);
+            final CountDownLatch countDownLatch = new CountDownLatch(threads);
+
+            for (int t = 0; t < threads; t++) {
+                final int thread = t;
+                service.submit(() -> {
+                    try {
+                        for (int e = thread; e < edges[0].length; e += threads) {
+                            int v1 = edges[0][e];
+                            int v2 = edges[1][e];
+                            float xDist = coordinates[0][v1] - coordinates[0][v2];
+                            float yDist = coordinates[1][v1] - coordinates[1][v2];
+                            float dist = (float) Math.sqrt(xDist * xDist + yDist * yDist);
+                            if (dist > 0) {
+                                float attractiveF = dist * dist / k;
+                                forceDelta[0][v1] -= xDist / dist * attractiveF;
+                                forceDelta[1][v1] -= yDist / dist * attractiveF;
+                                forceDelta[0][v2] += xDist / dist * attractiveF;
+                                forceDelta[1][v2] += yDist / dist * attractiveF;
+                            }
+                        }
+                    } finally {
+                        countDownLatch.countDown();
+                    }
+                });
             }
+            try {
+                countDownLatch.await();
+            } catch (InterruptedException e) {
+                Basic.caught(e);
+            }
+            progress.checkForCancel();
         }
 
         // gravity
-        for (int v = 0; v < nodes.length; v++) {
-            float distSquared = (float) Math.sqrt(coordinates[0][v] * coordinates[0][v] + coordinates[1][v] * coordinates[1][v]);
-            float gravityF = 0.01f * k * (float) gravity * distSquared;
-            forceDelta[0][v] -= gravityF * coordinates[0][v] / distSquared;
-            forceDelta[1][v] -= gravityF * coordinates[1][v] / distSquared;
+        {
+            final int threads = Math.min(numberOfThreads, nodes.length);
+            final CountDownLatch countDownLatch = new CountDownLatch(threads);
+
+            for (int t = 0; t < threads; t++) {
+                final int thread = t;
+                service.submit(() -> {
+                    try {
+                        for (int v = thread; v < nodes.length; v += threads) {
+                            float distSquared = (float) Math.sqrt(coordinates[0][v] * coordinates[0][v] + coordinates[1][v] * coordinates[1][v]);
+                            float gravityF = 0.01f * k * (float) gravity * distSquared;
+                            forceDelta[0][v] -= gravityF * coordinates[0][v] / distSquared;
+                            forceDelta[1][v] -= gravityF * coordinates[1][v] / distSquared;
+                        }
+                    } finally {
+                        countDownLatch.countDown();
+                    }
+                });
+            }
+            try {
+                countDownLatch.await();
+            } catch (InterruptedException e) {
+                Basic.caught(e);
+            }
+            progress.checkForCancel();
         }
 
         // speed
-        for (int v = 0; v < nodes.length; v++) {
-            forceDelta[0][v] *= speed / SPEED_DIVISOR;
-            forceDelta[1][v] *= speed / SPEED_DIVISOR;
+        {
+            final int threads = Math.min(numberOfThreads, nodes.length);
+            final CountDownLatch countDownLatch = new CountDownLatch(threads);
 
+            for (int t = 0; t < threads; t++) {
+                final int thread = t;
+                service.submit(() -> {
+                    try {
+                        for (int v = thread; v < nodes.length; v += threads) {
+                            forceDelta[0][v] *= speed / SPEED_DIVISOR;
+                            forceDelta[1][v] *= speed / SPEED_DIVISOR;
+                        }
+                    } finally {
+                        countDownLatch.countDown();
+                    }
+                });
+            }
+            try {
+                countDownLatch.await();
+            } catch (InterruptedException e) {
+                Basic.caught(e);
+            }
+            progress.checkForCancel();
         }
 
+
         // apply the forces:
-        for (int v = 0; v < nodes.length; v++) {
-            float xDist = forceDelta[0][v];
-            float yDist = forceDelta[1][v];
-            float dist = (float) Math.sqrt(xDist * xDist + yDist * yDist);
-            if (dist > 0 && !fixed.get(v)) {
-                float limitedDist = Math.min(maxDisplace * ((float) speed / SPEED_DIVISOR), dist);
-                coordinates[0][v] += xDist / dist * limitedDist;
-                coordinates[1][v] += yDist / dist * limitedDist;
+        {
+            final int threads = Math.min(numberOfThreads, nodes.length);
+            final CountDownLatch countDownLatch = new CountDownLatch(threads);
+
+            for (int t = 0; t < threads; t++) {
+                final int thread = t;
+                service.submit(() -> {
+                    try {
+                        for (int v = thread; v < nodes.length; v += threads) {
+                            float xDist = forceDelta[0][v];
+                            float yDist = forceDelta[1][v];
+                            float dist = (float) Math.sqrt(xDist * xDist + yDist * yDist);
+                            if (dist > 0 && !fixed.get(v)) {
+                                float limitedDist = Math.min(maxDisplace * ((float) speed / SPEED_DIVISOR), dist);
+                                coordinates[0][v] += xDist / dist * limitedDist;
+                                coordinates[1][v] += yDist / dist * limitedDist;
+                            }
+                        }
+                    } finally {
+                        countDownLatch.countDown();
+                    }
+                });
             }
+            try {
+                countDownLatch.await();
+            } catch (InterruptedException e) {
+                Basic.caught(e);
+            }
+            progress.checkForCancel();
         }
     }
 

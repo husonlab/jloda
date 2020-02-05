@@ -1490,15 +1490,29 @@ public class Basic {
      * @return lines
      */
     public static List<String> getLinesFromString(String string) {
+        return getLinesFromString(string, Integer.MAX_VALUE);
+    }
+
+    /**
+     * gets all individual non-empty lines from a string
+     *
+     * @param string
+     * @param maxCount
+     * @return lines
+     */
+    public static List<String> getLinesFromString(String string, int maxCount) {
         List<String> result = new LinkedList<>();
         try (BufferedReader r = new BufferedReader(new StringReader(string))) {
-        String aLine;
+            String aLine;
             while ((aLine = r.readLine()) != null) {
                 aLine = aLine.trim();
-                if (aLine.length() > 0)
+                if (aLine.length() > 0) {
                     result.add(aLine);
+                    if (result.size() >= maxCount)
+                        break;
+                }
             }
-        } catch (IOException e) {
+        } catch (IOException ignored) {
         }
         return result;
     }

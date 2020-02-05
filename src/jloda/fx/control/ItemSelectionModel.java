@@ -26,6 +26,8 @@ import javafx.collections.ObservableList;
 import javafx.collections.ObservableSet;
 import javafx.collections.SetChangeListener;
 
+import java.util.Collection;
+
 /**
  * simple item-based selection  model
  *
@@ -33,9 +35,11 @@ import javafx.collections.SetChangeListener;
  */
 public class ItemSelectionModel<T> {
     private final ObservableList<T> selectedItems = FXCollections.observableArrayList();
+    private final ReadOnlyListWrapper<T> readonlySelectedItems = new ReadOnlyListWrapper<>(selectedItems);
     private final ObservableSet<T> selectedItemSet = FXCollections.observableSet();
     private final IntegerProperty size = new SimpleIntegerProperty(0);
     private final BooleanProperty empty = new SimpleBooleanProperty(true);
+
 
     public ItemSelectionModel() {
         size.bind(Bindings.size(selectedItemSet));
@@ -50,7 +54,7 @@ public class ItemSelectionModel<T> {
     }
 
     public ObservableList<T> getSelectedItems() {
-        return selectedItems;
+        return readonlySelectedItems;
     }
 
     public void clearAndSelect(T item) {
@@ -62,19 +66,31 @@ public class ItemSelectionModel<T> {
         selectedItemSet.add(item);
     }
 
+    public void selectAll(Collection<T> items) {
+        selectedItemSet.addAll(items);
+    }
+
     public void clearSelection(T item) {
         selectedItemSet.remove(item);
+    }
+
+    public void clearSelectionAll(Collection<T> items) {
+        selectedItemSet.removeAll(items);
     }
 
     public void clearSelection() {
         selectedItemSet.clear();
     }
 
-    public void toggleSelection (T item) {
-        if(selectedItemSet.contains(item))
+    public void toggleSelection(T item) {
+        if (selectedItemSet.contains(item))
             clearSelection(item);
         else
             select(item);
+    }
+
+    public void toggleSelection(Collection<T> items) {
+        items.forEach(this::toggleSelection);
     }
 
     public boolean isSelected(T item) {
