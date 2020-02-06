@@ -20,6 +20,7 @@
 package jloda.graph;
 
 
+import java.util.Arrays;
 import java.util.Iterator;
 import java.util.NoSuchElementException;
 
@@ -64,8 +65,7 @@ public class EdgeArray<T> extends GraphBase implements EdgeAssociation<T> {
      */
     public EdgeArray(EdgeAssociation<T> src) {
         setOwner(src.getOwner());
-        for (Edge e = getOwner().getFirstEdge(); e != null; e = e.getNext())
-            put(e, src.getValue(e));
+        getOwner().edgeStream().forEach(e -> put(e, src.getValue(e)));
         isClear = src.isClear();
     }
 
@@ -77,10 +77,7 @@ public class EdgeArray<T> extends GraphBase implements EdgeAssociation<T> {
      */
     public T getValue(Edge e) {
         checkOwner(e);
-        if (e.getId() < data.length)
-            return data[e.getId()];
-        else
-            return null;
+        return (e.getId() < data.length ? data[e.getId()] : null);
     }
 
     public T get(Edge e) {
@@ -127,11 +124,7 @@ public class EdgeArray<T> extends GraphBase implements EdgeAssociation<T> {
             newSize *= 2;
         if (newSize > data.length) {
             T[] newData = (T[]) new Object[newSize];
-            for (Edge e = getOwner().getFirstEdge(); e != null; e = e.getNext()) {
-                int id = e.getId();
-                if (id < data.length)
-                    newData[id] = data[id];
-            }
+            System.arraycopy(data, 0, newData, 0, data.length);
             data = newData;
         }
     }
@@ -152,11 +145,7 @@ public class EdgeArray<T> extends GraphBase implements EdgeAssociation<T> {
      * Clear all entries.
      */
     public void clear() {
-        if (getOwner().getMaxEdgeId() < 0.5 * data.length)
-            data = (T[]) new Object[getOwner().getMaxEdgeId() + 1];
-        else
-            for (Edge e = getOwner().getFirstEdge(); e != null; e = e.getNext())
-                put(e, null);
+        Arrays.fill(data, null);
         isClear = true;
     }
 
@@ -180,7 +169,7 @@ public class EdgeArray<T> extends GraphBase implements EdgeAssociation<T> {
 
             {
                 while (e != null) {
-                    if (data[e.getId()] != null)
+                    if (e.getId() < data.length && data[e.getId()] != null)
                         break;
                     e = e.getNext();
                 }
@@ -196,10 +185,11 @@ public class EdgeArray<T> extends GraphBase implements EdgeAssociation<T> {
                 if (e == null)
                     throw new NoSuchElementException();
                 T result = data[e.getId()];
+
                 e = e.getNext();
                 {
                     while (e != null) {
-                        if (data[e.getId()] != null)
+                        if (e.getId() < data.length && data[e.getId()] != null)
                             break;
                         e = e.getNext();
                     }

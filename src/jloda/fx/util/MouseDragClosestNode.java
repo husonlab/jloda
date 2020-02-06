@@ -30,16 +30,18 @@ import java.util.function.BiConsumer;
  * Daniel Huson, 1.2020
  */
 public class MouseDragClosestNode {
-    private double mouseDownX=0;
-    private double mouseDownY=0;
+    private double mouseDownX = 0;
+    private double mouseDownY = 0;
 
     private double mouseX = 0;
     private double mouseY = 0;
+
+    private boolean moved;
     private Node target;
 
     public static void setup(Node node, Node reference1, Node target1, Node reference2, Node target2, BiConsumer<Node, Point2D> totalTranslation) {
-         new MouseDragClosestNode(node,reference1,target1,reference2,target2,totalTranslation);
-        }
+        new MouseDragClosestNode(node, reference1, target1, reference2, target2, totalTranslation);
+    }
 
     /**
      * constructor
@@ -48,7 +50,8 @@ public class MouseDragClosestNode {
 
         node.setOnMousePressed((e -> {
             mouseDownX=mouseX = e.getScreenX();
-            mouseDownY=mouseY = e.getScreenY();
+            mouseDownY = mouseY = e.getScreenY();
+            moved = false;
             e.consume();
 
             final Bounds screenBounds1=reference1.localToScreen(reference1.getBoundsInLocal());
@@ -66,13 +69,21 @@ public class MouseDragClosestNode {
         }));
 
         node.setOnMouseDragged(e -> {
-            target.setTranslateX(target.getTranslateX()+(e.getScreenX() - mouseX));
-            target.setTranslateY(target.getTranslateY()+(e.getScreenY() - mouseY));
+            target.setTranslateX(target.getTranslateX() + (e.getScreenX() - mouseX));
+            target.setTranslateY(target.getTranslateY() + (e.getScreenY() - mouseY));
             mouseX = e.getScreenX();
             mouseY = e.getScreenY();
+            moved = true;
             e.consume();
         });
 
-        node.setOnMouseReleased(e-> totalTranslation2.accept(target,new Point2D(e.getScreenX()-mouseDownX,e.getScreenY()-mouseDownY)));
+        node.setOnMouseReleased(e -> {
+            if (moved) {
+                final double dx = e.getScreenX() - mouseDownX;
+                final double dy = e.getScreenY() - mouseDownY;
+                if (dx != 0 && dy != 0)
+                    totalTranslation2.accept(target, new Point2D(dx, dy));
+            }
+        });
     }
 }

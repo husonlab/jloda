@@ -19,6 +19,7 @@
 
 package jloda.graph;
 
+import java.util.Arrays;
 import java.util.Iterator;
 import java.util.NoSuchElementException;
 
@@ -62,8 +63,7 @@ public class NodeArray<T> extends GraphBase implements NodeAssociation<T> {
      */
     public NodeArray(NodeAssociation<T> src) {
         this(src.getOwner());
-        for (Node v = getOwner().getFirstNode(); v != null; v = v.getNext())
-            setValue(v, src.getValue(v));
+        getOwner().nodeStream().forEach(v -> setValue(v, src.getValue(v)));
         isClear = src.isClear();
     }
 
@@ -71,11 +71,7 @@ public class NodeArray<T> extends GraphBase implements NodeAssociation<T> {
      * Clear all entries.
      */
     public void clear() {
-        if (getOwner().getMaxNodeId() < 0.5 * data.length)
-            data = (T[]) new Object[getOwner().getMaxNodeId() + 1];
-        else
-            for (Node v = getOwner().getFirstNode(); v != null; v = v.getNext())
-                setValue(v, null);
+        Arrays.fill(data, null);
         isClear = true;
     }
 
@@ -87,10 +83,7 @@ public class NodeArray<T> extends GraphBase implements NodeAssociation<T> {
      */
     public T getValue(Node v) {
         checkOwner(v);
-        if (v.getId() < data.length)
-            return data[v.getId()];
-        else
-            return null;
+        return (v.getId() < data.length ? data[v.getId()] : null);
     }
 
     public T get(Node v) {
@@ -132,9 +125,7 @@ public class NodeArray<T> extends GraphBase implements NodeAssociation<T> {
             newSize *= 2;
         if (newSize > data.length) {
             T[] newData = (T[]) new Object[newSize];
-            for (Node v = getOwner().getFirstNode(); v != null; v = v.getNext())
-                if (v.getId() < data.length)
-                    newData[v.getId()] = data[v.getId()];
+            System.arraycopy(data, 0, newData, 0, data.length);
             data = newData;
         }
     }
@@ -145,8 +136,7 @@ public class NodeArray<T> extends GraphBase implements NodeAssociation<T> {
      * @param obj Object
      */
     public void setAll(T obj) {
-        for (Node v = getOwner().getFirstNode(); v != null; v = v.getNext())
-            setValue(v, obj);
+        getOwner().nodeStream().forEach(v -> setValue(v, obj));
     }
 
     /**
@@ -164,11 +154,8 @@ public class NodeArray<T> extends GraphBase implements NodeAssociation<T> {
      * @return clone
      */
     public Object clone() {
-        Graph graph = getOwner();
-        NodeArray<T> result = new NodeArray<>(graph);
-        for (Node v = graph.getFirstNode(); v != null; v = v.getNext()) {
-            result.setValue(v, getValue(v));
-        }
+        final NodeArray<T> result = new NodeArray<>(getOwner());
+        getOwner().nodeStream().forEach(v -> result.setValue(v, getValue(v)));
         return result;
     }
 
@@ -183,7 +170,7 @@ public class NodeArray<T> extends GraphBase implements NodeAssociation<T> {
 
             {
                 while (v != null) {
-                    if (data[v.getId()] != null)
+                    if (v.getId() < data.length && data[v.getId()] != null)
                         break;
                     v = v.getNext();
                 }
@@ -199,9 +186,10 @@ public class NodeArray<T> extends GraphBase implements NodeAssociation<T> {
                 if (v == null)
                     throw new NoSuchElementException();
                 T result = data[v.getId()];
+
                 v = v.getNext();
                 while (v != null) {
-                    if (data[v.getId()] != null)
+                    if (v.getId() < data.length && data[v.getId()] != null)
                         break;
                     v = v.getNext();
                 }
@@ -221,7 +209,7 @@ public class NodeArray<T> extends GraphBase implements NodeAssociation<T> {
 
             {
                 while (v != null) {
-                    if (data[v.getId()] != null)
+                    if (v.getId() < data.length && data[v.getId()] != null)
                         break;
                     v = v.getNext();
                 }
@@ -239,7 +227,7 @@ public class NodeArray<T> extends GraphBase implements NodeAssociation<T> {
                 Node result = v;
                 v = v.getNext();
                 while (v != null) {
-                    if (data[v.getId()] != null)
+                    if (v.getId() < data.length && data[v.getId()] != null)
                         break;
                     v = v.getNext();
                 }
@@ -247,7 +235,6 @@ public class NodeArray<T> extends GraphBase implements NodeAssociation<T> {
             }
         };
     }
-
 }
 
 // EOF

@@ -49,8 +49,8 @@ public class SquareShape extends Polygon implements ISized {
     }
 
     public void setSize(double width, double height, Point2D location) {
-        this.width = width;
-        this.height = height;
+        this.width = Math.max(width, height);
+        this.height = Math.max(width, height);
         width *= 0.5;
         height *= 0.5;
         getPoints().setAll(-width, -height, width, -height, width, height, -width, height);

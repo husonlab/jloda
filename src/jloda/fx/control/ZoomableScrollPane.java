@@ -37,7 +37,7 @@ import javafx.scene.layout.StackPane;
  * Daniel Huson, 1.2018
  */
 public class ZoomableScrollPane extends ScrollPane {
-    public static final double ZOOM_FACTOR = 1.02; // 2%
+    public static final double ZOOM_FACTOR = 1.005; // .5%
 
     private final BooleanProperty lockAspectRatio = new SimpleBooleanProperty(false);
     private final BooleanProperty allowZoom = new SimpleBooleanProperty(true);
