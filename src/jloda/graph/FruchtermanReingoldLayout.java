@@ -18,7 +18,7 @@ import java.util.concurrent.Executors;
  * implements the Fruchterman-Reingold graph layout algorithm
  * <p/>
  * Original implementation in Gephi by Mathieu Jacomy
- * adapted by Daniel Huson, 5.2013
+ * adapted by Daniel Huson, 5.2013, 2020
  */
 public class FruchtermanReingoldLayout {
 
