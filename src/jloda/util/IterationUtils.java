@@ -27,28 +27,21 @@ import java.util.*;
  */
 public class IterationUtils {
 
-
     /**
      * join multiple iterables into one
      *
-     * @param iterables
+     * @param collections
      * @param <T>
      * @return iterable over multiple iterables
      */
-    public static <T> Iterable<T> join(final Iterable<T>... iterables) {
+    public static <T, L extends Collection<T>> Iterable<T> join(final Collection<L> collections) {
         return () -> new Iterator<>() {
-            private int which = 0;
             private Iterator<T> iterator = null;
+            private final Iterator<L> metaIterator = collections.iterator();
 
             {
-                while (which < iterables.length) {
-                    iterator = iterables[which].iterator();
-                    if (iterator.hasNext())
-                        break;
-                    which++;
-                }
-                if (which == iterables.length)
-                    iterator = null; // no non-empty iterator found
+                if (metaIterator.hasNext())
+                    iterator = metaIterator.next().iterator();
             }
 
             @Override
@@ -58,11 +51,13 @@ public class IterationUtils {
 
             @Override
             public T next() {
+                if (iterator == null)
+                    throw new NoSuchElementException();
+
                 final T next = iterator.next();
                 while (!iterator.hasNext()) {
-                    which++;
-                    if (which < iterables.length)
-                        iterator = iterables[which].iterator();
+                    if (metaIterator.hasNext())
+                        iterator = metaIterator.next().iterator();
                     else {
                         iterator = null;
                         break;
@@ -73,12 +68,12 @@ public class IterationUtils {
         };
     }
 
-    public static <T> List<T> asList(Iterable<T> iteratable) {
-        return asList(iteratable, new ArrayList<>());
+    public static <T> List<T> asList(Iterable<T> iterable) {
+        return asList(iterable, new ArrayList<>());
     }
 
-    public static <T> List<T> asList(Iterable<T> iteratable, List<T> list) {
-        for (T value : iteratable) {
+    public static <T> List<T> asList(Iterable<T> iterable, List<T> list) {
+        for (T value : iterable) {
             list.add(value);
         }
         return list;

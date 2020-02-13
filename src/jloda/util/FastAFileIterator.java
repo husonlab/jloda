@@ -102,7 +102,7 @@ public class FastAFileIterator implements IFastAIterator, Closeable {
      */
     public Pair<String, String> next() {
         currentHeaderPosition = nextHeaderPosition;
-        Pair<String, String> result = new Pair<>(nextHeader, nextSequence);
+        final Pair<String, String> result = new Pair<>(nextHeader, nextSequence);
         nextHeader = nextNextHeader;
         nextHeaderPosition = nextNextHeaderPosition;
         nextSequence = null;

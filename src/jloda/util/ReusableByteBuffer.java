@@ -124,4 +124,12 @@ public class ReusableByteBuffer {
         System.arraycopy(array, 0, result, 0, Math.min(newSize, array.length));
         return result;
     }
+
+    public byte[] getBytes() {
+        return bytes;
+    }
+
+    public int length() {
+        return pos;
+    }
 }
