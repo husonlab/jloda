@@ -1,7 +1,7 @@
 /*
  * FindToolBar.java Copyright (C) 2020. Daniel H. Huson
  *
- *  (Some files contain contributions from other authors, who are then mentioned separately.)
+ * (Some code written by other authors, as named in code.)
  *
  *  This program is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -15,6 +15,7 @@
  *
  *  You should have received a copy of the GNU General Public License
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ *
  */
 
 package jloda.swing.find;
@@ -29,7 +30,10 @@ import jloda.util.ProgramProperties;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ItemEvent;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;

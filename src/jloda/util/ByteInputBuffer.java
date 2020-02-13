@@ -1,7 +1,7 @@
 /*
  * ByteInputBuffer.java Copyright (C) 2020. Daniel H. Huson
  *
- *  (Some files contain contributions from other authors, who are then mentioned separately.)
+ * (Some code written by other authors, as named in code.)
  *
  *  This program is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by

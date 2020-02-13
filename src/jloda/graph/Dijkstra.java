@@ -1,7 +1,7 @@
 /*
  * Dijkstra.java Copyright (C) 2020. Daniel H. Huson
  *
- *  (Some files contain contributions from other authors, who are then mentioned separately.)
+ * (Some code written by other authors, as named in code.)
  *
  *  This program is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -15,13 +15,17 @@
  *
  *  You should have received a copy of the GNU General Public License
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ *
  */
 
 package jloda.graph;
 
 import jloda.util.Basic;
 
-import java.util.*;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.SortedSet;
+import java.util.TreeSet;
 
 /**
  * Dijkstras algorithm for single source shortest path, non-negative edge lengths
