@@ -31,8 +31,8 @@ public class Statistics {
     private final int count;
     private double sum;
     private double stdDev;
-    private double min = Double.MAX_VALUE;
-    private double max = Double.MIN_VALUE;
+    private double min = Integer.MAX_VALUE;
+    private double max = Integer.MIN_VALUE;
 
     /**
      * computes simple statistics for given collection of numbers

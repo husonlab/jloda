@@ -565,7 +565,7 @@ public class PhyloTree extends PhyloSplitsGraph {
      */
     public Edge delDivertex(Node v) {
         if (v.getDegree() != 2)
-            throw new RuntimeException("v not divertex, degree is: " + v.getDegree());
+            throw new RuntimeException("v not di-vertex, degree is: " + v.getDegree());
 
         Edge e = getFirstAdjacentEdge(v);
         Edge f = getLastAdjacentEdge(v);
@@ -582,7 +582,7 @@ public class PhyloTree extends PhyloSplitsGraph {
         } catch (IllegalSelfEdgeException e1) {
             Basic.caught(e1);
         }
-        if (edgeWeights.get(e) != Double.MIN_VALUE && edgeWeights.get(f) != Double.MIN_VALUE)
+        if (edgeWeights.get(e) != Double.NEGATIVE_INFINITY && edgeWeights.get(f) != Double.NEGATIVE_INFINITY)
             setWeight(g, getWeight(e) + getWeight(f));
         if (root == v)
             root = null;

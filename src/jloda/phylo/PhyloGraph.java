@@ -158,7 +158,7 @@ public class PhyloGraph extends Graph {
      * @param d double
      */
     public void setWeight(Edge e, double d) {
-        edgeWeights.put(e, d);
+       edgeWeights.put(e, d);
     }
 
     /**
