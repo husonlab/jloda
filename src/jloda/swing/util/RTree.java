@@ -360,7 +360,7 @@ public class RTree<T> {
         RNode chooseOverlappingInternalChild(RNode node) {
             if (numberOfChildren == 0)
                 return null;
-            double bestArea = Double.MAX_VALUE;
+            double bestArea = Double.POSITIVE_INFINITY;
             int bestI = -1;
             for (int i = 0; i < numberOfChildren; i++) {
                 if (children[i].numberOfChildren > 0) {

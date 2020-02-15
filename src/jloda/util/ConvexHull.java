@@ -56,7 +56,7 @@ public class ConvexHull {
         }
         int minPointIndex = -1;
         int maxPointIndex = -1;
-        double minX = Double.MAX_VALUE;
+        double minX = Double.POSITIVE_INFINITY;
         double maxX = Double.NEGATIVE_INFINITY;
         for (int i = 0; i < points.size(); i++) {
             final APoint2D apt = points.get(i);

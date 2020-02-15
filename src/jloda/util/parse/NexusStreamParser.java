@@ -1088,9 +1088,9 @@ public class NexusStreamParser extends NexusStreamTokenizer implements Closeable
         double result = getDouble();
 
         if (result < low || result > high) {
-            if (low > Double.NEGATIVE_INFINITY && high == Double.MAX_VALUE)
+            if (low > Double.NEGATIVE_INFINITY && high == Double.POSITIVE_INFINITY)
                 throw new IOExceptionWithLineNumber("value " + result + " smaller than minimum: " + low, lineno());
-            else if (low == Double.NEGATIVE_INFINITY && high < Double.MAX_VALUE)
+            else if (low == Double.NEGATIVE_INFINITY && high < Double.POSITIVE_INFINITY)
                 throw new IOExceptionWithLineNumber("value " + result + " larger than maximum: " + high, lineno());
             else
                 throw new IOExceptionWithLineNumber("value " + result + " out of range: " + low + " - " + high, lineno());

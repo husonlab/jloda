@@ -655,7 +655,7 @@ public class QuasiMedianNetwork {
                 changed = true;   // sequences have been changed, recompute graph
             } else {
                 // determine min connection cost:
-                double minConnectionCost = Double.MAX_VALUE;
+                double minConnectionCost = Double.POSITIVE_INFINITY;
 
                 for (Node u = graph.getFirstNode(); u != null; u = u.getNext()) {
                     String seqU = (String) u.getInfo();
@@ -746,7 +746,7 @@ public class QuasiMedianNetwork {
         }
         int numComponentsMSN = array.length;
 
-        double maxValue = Double.MAX_VALUE;
+        double maxValue = Double.POSITIVE_INFINITY;
 
         // consider each set of pairs of taxa for a given edge length, in ascending order of edge lengths
         for (Double value : value2pairs.keySet()) {
@@ -793,7 +793,7 @@ public class QuasiMedianNetwork {
                             componentsOfMSN[k] = componentsOfMSN[i];
                 }
             }
-            if (numComponentsMSN == 1 && maxValue == Double.MAX_VALUE)
+            if (numComponentsMSN == 1 && maxValue == Double.POSITIVE_INFINITY)
                 maxValue = threshold + epsilon; // once network is connected, add all edges upto threshold+epsilon
         }
     }

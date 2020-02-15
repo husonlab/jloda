@@ -2814,7 +2814,7 @@ public class GraphView extends JPanel implements Printable, Scrollable, INodeEdg
      * @return bounding box
      */
     public Rectangle2D getBBox() {
-        double xmin = Double.NEGATIVE_INFINITY, xmax = Double.NEGATIVE_INFINITY, ymin = Double.MAX_VALUE, ymax = Double.MAX_VALUE;
+        double xmin = Double.NEGATIVE_INFINITY, xmax = Double.NEGATIVE_INFINITY, ymin = Double.POSITIVE_INFINITY, ymax = Double.POSITIVE_INFINITY;
         boolean first = true;
         try {
             for (Node v = getGraph().getFirstNode(); v != null; v = getGraph().getNextNode(v)) {

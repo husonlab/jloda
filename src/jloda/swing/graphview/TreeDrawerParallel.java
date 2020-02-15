@@ -113,7 +113,7 @@ public class TreeDrawerParallel extends DefaultGraphDrawer implements IGraphDraw
         } else {
             Point2D first = null;
             Point2D last = null;
-            double minX = Double.MAX_VALUE;
+            double minX = Double.POSITIVE_INFINITY;
             for (Edge f = v.getFirstAdjacentEdge(); f != null; f = v.getNextAdjacentEdge(f)) {
                 if (f != e) {
                     Node w = f.getOpposite(v);
