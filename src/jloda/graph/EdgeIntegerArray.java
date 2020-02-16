@@ -21,12 +21,16 @@
 package jloda.graph;
 
 
+import jloda.util.Basic;
+
+import java.util.Arrays;
+
 /**
  * edge float array
  * Daniel Huson, 2003
  */
 public class EdgeIntegerArray extends GraphBase implements EdgeAssociation<Integer> {
-    private int[] data;
+    private Integer[] data;
     private boolean isClear = true;
 
     /**
@@ -36,7 +40,7 @@ public class EdgeIntegerArray extends GraphBase implements EdgeAssociation<Integ
      */
     public EdgeIntegerArray(Graph g) {
         setOwner(g);
-        data = new int[g.getMaxEdgeId() + 1];
+        data = new Integer[g.getMaxEdgeId() + 1];
         g.registerEdgeAssociation(this);
     }
 
@@ -44,12 +48,12 @@ public class EdgeIntegerArray extends GraphBase implements EdgeAssociation<Integ
      * Construct an edge array for the given graph and initialize all entries
      * to obj.
      *
-     * @param g   Graph
-     * @param obj Object
+     * @param g     Graph
+     * @param value Object
      */
-    public EdgeIntegerArray(Graph g, Integer obj) {
+    public EdgeIntegerArray(Graph g, Integer value) {
         this(g);
-        setAll(obj);
+        setAll(value);
     }
 
     /**
@@ -59,9 +63,7 @@ public class EdgeIntegerArray extends GraphBase implements EdgeAssociation<Integ
      */
     public EdgeIntegerArray(EdgeAssociation<Integer> src) {
         setOwner(src.getOwner());
-        for (Edge e = getOwner().getFirstEdge(); e != null; e = e.getNext())
-            put(e, src.getValue(e));
-        isClear = src.isClear();
+        src.getOwner().edges().forEach(e -> put(e, src.getValue(e)));
     }
 
     /**
@@ -69,6 +71,7 @@ public class EdgeIntegerArray extends GraphBase implements EdgeAssociation<Integ
      */
     public void clear() {
         isClear = true;
+        Arrays.fill(data, null);
     }
 
 
@@ -94,7 +97,7 @@ public class EdgeIntegerArray extends GraphBase implements EdgeAssociation<Integ
      */
     public int get(Edge e) {
         checkOwner(e);
-        if (e.getId() < data.length)
+        if (e.getId() < data.length && data[e.getId()] != null)
             return data[e.getId()];
         else
             return 0;
@@ -103,20 +106,19 @@ public class EdgeIntegerArray extends GraphBase implements EdgeAssociation<Integ
     /**
      * Set the entry for edge e to obj.
      *
-     * @param e   Edge
-     * @param obj Object
+     * @param e     Edge
+     * @param value Object
      */
-    public void setValue(Edge e, Integer obj) {
+    public void setValue(Edge e, Integer value) {
         checkOwner(e);
-        if (obj == null)
-            obj = 0;
-        else if (isClear)
+
+        if (value != null && isClear)
             isClear = false;
 
         if (e.getId() >= data.length) {
             grow(e.getId());
         }
-        data[e.getId()] = obj;
+        data[e.getId()] = value;
     }
 
     public void set(Edge e, int value) {
@@ -136,16 +138,17 @@ public class EdgeIntegerArray extends GraphBase implements EdgeAssociation<Integ
     }
 
     @Override
-    public void setAll(Integer obj) {
-        if (obj == null)
-            obj = 0;
-        for (Edge e = getOwner().getFirstEdge(); e != null; e = e.getNext()) {
-            if (e.getId() >= data.length) {
-                grow(e.getId());
+    public void setAll(Integer value) {
+        clear();
+        if (value != null && getOwner().getNumberOfEdges() > 0) {
+            isClear = false;
+            for (Edge e = getOwner().getFirstEdge(); e != null; e = e.getNext()) {
+                if (e.getId() >= data.length) {
+                    grow(e.getId());
+                }
+                data[e.getId()] = value;
             }
-            data[e.getId()] = obj;
         }
-        isClear = (obj == 0);
     }
 
     /**
@@ -155,15 +158,12 @@ public class EdgeIntegerArray extends GraphBase implements EdgeAssociation<Integ
      */
     private void grow(int n) {
         int newSize = Math.max(1, 2 * data.length);
-        while (newSize <= n)
+        while (newSize <= n && 2L * newSize < (long) Basic.MAX_ARRAY_SIZE) {
             newSize *= 2;
+        }
         if (newSize > data.length) {
-            int[] newData = new int[newSize];
-            for (Edge e = getOwner().getFirstEdge(); e != null; e = e.getNext()) {
-                int id = e.getId();
-                if (id < data.length)
-                    newData[id] = data[id];
-            }
+            Integer[] newData = new Integer[newSize];
+            System.arraycopy(data, 0, newData, 0, data.length);
             data = newData;
         }
     }
@@ -180,37 +180,37 @@ public class EdgeIntegerArray extends GraphBase implements EdgeAssociation<Integ
     /**
      * increase the count by one.
      *
-     * @param edge
+     * @param e
      */
-    public void increment(Edge edge) {
-        set(edge, get(edge) + 1);
+    public void increment(Edge e) {
+        set(e, get(e) + 1);
     }
 
     /**
      * increase the count by the given value
      *
-     * @param edge
+     * @param e
      */
-    public void increment(Edge edge, int value) {
-        set(edge, get(edge) + value);
+    public void increment(Edge e, int value) {
+        set(e, get(e) + value);
     }
 
     /**
      * decrease the count by one.
      *
-     * @param edge
+     * @param e
      */
-    public void decrement(Edge edge) {
-        set(edge, get(edge) - 1);
+    public void decrement(Edge e) {
+        set(e, get(e) - 1);
     }
 
     /**
      * decrease the count by the given value
      *
-     * @param edge
+     * @param e
      */
-    public void decrement(Edge edge, int value) {
-        set(edge, get(edge) - value);
+    public void decrement(Edge e, int value) {
+        set(e, get(e) - value);
     }
 }
 

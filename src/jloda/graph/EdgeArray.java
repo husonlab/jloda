@@ -21,6 +21,8 @@
 package jloda.graph;
 
 
+import jloda.util.Basic;
+
 import java.util.Arrays;
 import java.util.Iterator;
 import java.util.NoSuchElementException;
@@ -49,14 +51,12 @@ public class EdgeArray<T> extends GraphBase implements EdgeAssociation<T> {
      * Construct an edge array for the given graph and initialize all entries
      * to obj.
      *
-     * @param g   Graph
-     * @param obj Object
+     * @param g     Graph
+     * @param value Object
      */
-    public EdgeArray(Graph g, T obj) {
+    public EdgeArray(Graph g, T value) {
         this(g);
-        putAll(obj);
-        if (obj != null && isClear)
-            isClear = false;
+        putAll(value);
     }
 
     /**
@@ -66,8 +66,7 @@ public class EdgeArray<T> extends GraphBase implements EdgeAssociation<T> {
      */
     public EdgeArray(EdgeAssociation<T> src) {
         setOwner(src.getOwner());
-        getOwner().edgeStream().forEach(e -> put(e, src.getValue(e)));
-        isClear = src.isClear();
+        getOwner().edges().forEach(e -> put(e, src.getValue(e)));
     }
 
     /**
@@ -121,8 +120,9 @@ public class EdgeArray<T> extends GraphBase implements EdgeAssociation<T> {
      */
     private void grow(int n) {
         int newSize = Math.max(1, 2 * data.length);
-        while (newSize <= n)
+        while (newSize <= n && 2L * newSize < (long) Basic.MAX_ARRAY_SIZE) {
             newSize *= 2;
+        }
         if (newSize > data.length) {
             T[] newData = (T[]) new Object[newSize];
             System.arraycopy(data, 0, newData, 0, data.length);
@@ -133,13 +133,14 @@ public class EdgeArray<T> extends GraphBase implements EdgeAssociation<T> {
     /**
      * Set the entry for all edges.
      *
-     * @param obj Object
+     * @param value Object
      */
-    public void putAll(T obj) {
-        for (Edge e = getOwner().getFirstEdge(); e != null; e = e.getNext())
-            put(e, obj);
-        if (obj != null && isClear)
+    public void putAll(T value) {
+        clear();
+        if (value != null && getOwner().getNumberOfEdges() > 0) {
             isClear = false;
+            getOwner().edges().forEach(e -> put(e, value));
+        }
     }
 
     /**

@@ -21,6 +21,8 @@
 package jloda.graph;
 
 
+import jloda.util.Basic;
+
 import java.util.Arrays;
 
 /**
@@ -47,12 +49,12 @@ public class NodeDoubleArray extends GraphBase implements NodeAssociation<Double
      * Construct a node array for the given graph and initialize all entries
      * to obj.
      *
-     * @param g   Graph
-     * @param obj Object
+     * @param g     Graph
+     * @param value Object
      */
-    public NodeDoubleArray(Graph g, Double obj) {
+    public NodeDoubleArray(Graph g, Double value) {
         this(g);
-        setAll(obj);
+        setAll(value);
     }
 
     /**
@@ -62,8 +64,7 @@ public class NodeDoubleArray extends GraphBase implements NodeAssociation<Double
      */
     public NodeDoubleArray(NodeAssociation<Double> src) {
         this(src.getOwner());
-        for (Node v = getOwner().getFirstNode(); v != null; v = v.getNext())
-            setValue(v, src.getValue(v));
+        getOwner().nodeStream().forEach(e -> put(e, src.getValue(e)));
     }
 
     /**
@@ -97,7 +98,7 @@ public class NodeDoubleArray extends GraphBase implements NodeAssociation<Double
      */
     public double get(Node v) {
         checkOwner(v);
-        if (v.getId() < data.length)
+        if (v.getId() < data.length && data[v.getId()] != null)
             return data[v.getId()];
         else
             return 0.0;
@@ -139,15 +140,18 @@ public class NodeDoubleArray extends GraphBase implements NodeAssociation<Double
     /**
      * Set the entry for all nodes to obj.
      *
-     * @param obj Object
+     * @param d Object
      */
-    public void setAll(Double obj) {
-        isClear = (obj == null);
-        for (Node v = getOwner().getFirstNode(); v != null; v = v.getNext()) {
-            if (v.getId() >= data.length) {
-                grow(v.getId());
+    public void setAll(Double d) {
+        clear();
+        if (d != null && getOwner().getNumberOfNodes() > 0) {
+            isClear = false;
+            for (Node v = getOwner().getFirstNode(); v != null; v = v.getNext()) {
+                if (v.getId() >= data.length) {
+                    grow(v.getId());
+                }
+                data[v.getId()] = d;
             }
-            data[v.getId()] = obj;
         }
     }
 
@@ -158,8 +162,9 @@ public class NodeDoubleArray extends GraphBase implements NodeAssociation<Double
      */
     private void grow(int n) {
         int newSize = Math.max(1, 2 * data.length);
-        while (newSize <= n)
+        while (newSize <= n && 2L * newSize < (long) Basic.MAX_ARRAY_SIZE) {
             newSize *= 2;
+        }
         if (newSize > data.length) {
             Double[] newData = new Double[newSize];
             System.arraycopy(data, 0, newData, 0, data.length);

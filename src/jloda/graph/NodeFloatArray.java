@@ -21,6 +21,8 @@
 package jloda.graph;
 
 
+import jloda.util.Basic;
+
 import java.util.Arrays;
 
 /**
@@ -29,7 +31,7 @@ import java.util.Arrays;
  */
 
 public class NodeFloatArray extends GraphBase implements NodeAssociation<Float> {
-    private float[] data;
+    private Float[] data;
     private boolean isClear = true;
 
     /**
@@ -39,7 +41,7 @@ public class NodeFloatArray extends GraphBase implements NodeAssociation<Float> 
      */
     public NodeFloatArray(Graph g) {
         setOwner(g);
-        data = new float[g.getMaxNodeId() + 1];
+        data = new Float[g.getMaxNodeId() + 1];
         g.registerNodeAssociation(this);
     }
 
@@ -47,12 +49,12 @@ public class NodeFloatArray extends GraphBase implements NodeAssociation<Float> 
      * Construct a node array for the given graph and initialize all entries
      * to obj.
      *
-     * @param g   Graph
-     * @param obj Object
+     * @param g Graph
+     * @param f Object
      */
-    public NodeFloatArray(Graph g, Float obj) {
+    public NodeFloatArray(Graph g, Float f) {
         this(g);
-        setAll(obj);
+        setAll(f);
     }
 
     /**
@@ -61,9 +63,8 @@ public class NodeFloatArray extends GraphBase implements NodeAssociation<Float> 
      * @param src NodeArray
      */
     public NodeFloatArray(NodeAssociation<Float> src) {
-        this(src.getOwner());
-        for (Node v = getOwner().getFirstNode(); v != null; v = v.getNext())
-            setValue(v, src.getValue(v));
+        setOwner(src.getOwner());
+        src.getOwner().nodes().forEach(v -> put(v, src.getValue(v)));
     }
 
     /**
@@ -90,7 +91,7 @@ public class NodeFloatArray extends GraphBase implements NodeAssociation<Float> 
 
     public float get(Node v) {
         checkOwner(v);
-        if (v.getId() < data.length)
+        if (v.getId() < data.length && data[v.getId()] != null)
             return data[v.getId()];
         else
             return 0f;
@@ -100,20 +101,18 @@ public class NodeFloatArray extends GraphBase implements NodeAssociation<Float> 
      * Set the entry for node v to obj.
      *
      * @param v   Node
-     * @param obj Object
+     * @param value Object
      */
-    public void setValue(Node v, Float obj) {
+    public void setValue(Node v, Float value) {
         checkOwner(v);
 
-        if (obj == null)
-            obj = 0.0f;
-        else if (isClear)
+        if (value != null && isClear)
             isClear = false;
 
         if (v.getId() >= data.length) {
             grow(v.getId());
         }
-        data[v.getId()] = obj;
+        data[v.getId()] = value;
     }
 
     public void set(Node v, float value) {
@@ -128,8 +127,8 @@ public class NodeFloatArray extends GraphBase implements NodeAssociation<Float> 
     }
 
     @Override
-    public void put(Node v, Float obj) {
-        setValue(v, obj);
+    public void put(Node v, Float value) {
+        setValue(v, value);
     }
 
     /**
@@ -139,10 +138,11 @@ public class NodeFloatArray extends GraphBase implements NodeAssociation<Float> 
      */
     private void grow(int n) {
         int newSize = Math.max(1, 2 * data.length);
-        while (newSize <= n)
+        while (newSize <= n && 2L * newSize < (long) Basic.MAX_ARRAY_SIZE) {
             newSize *= 2;
+        }
         if (newSize > data.length) {
-            float[] newData = new float[newSize];
+            Float[] newData = new Float[newSize];
             for (Node v = getOwner().getFirstNode(); v != null; v = v.getNext())
                 if (v.getId() < data.length)
                     newData[v.getId()] = data[v.getId()];
@@ -153,18 +153,19 @@ public class NodeFloatArray extends GraphBase implements NodeAssociation<Float> 
     /**
      * Set the entry for all nodes to obj.
      *
-     * @param obj Object
+     * @param value Object
      */
-    public void setAll(Float obj) {
-        if (obj == null)
-            obj = 0.0f;
-        for (Node v = getOwner().getFirstNode(); v != null; v = v.getNext()) {
-            if (v.getId() >= data.length) {
-                grow(v.getId());
+    public void setAll(Float value) {
+        clear();
+        if (value != null && getOwner().getNumberOfNodes() > 0) {
+            isClear = false;
+            for (Node v = getOwner().getFirstNode(); v != null; v = v.getNext()) {
+                if (v.getId() >= data.length) {
+                    grow(v.getId());
+                }
+                data[v.getId()] = value;
             }
-            data[v.getId()] = obj;
         }
-        isClear = (obj == 0.0f);
     }
 
 
@@ -185,8 +186,9 @@ public class NodeFloatArray extends GraphBase implements NodeAssociation<Float> 
     public Object clone() {
         Graph graph = getOwner();
         NodeFloatArray result = new NodeFloatArray(graph);
-        result.data = new float[data.length];
+        result.data = new Float[data.length];
         System.arraycopy(data, 0, result.data, 0, data.length);
+        result.isClear = isClear();
         return result;
     }
 }

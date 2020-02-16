@@ -48,13 +48,12 @@ public class NodeArray<T> extends GraphBase implements NodeAssociation<T> {
      * Construct a node array for the given graph and initialize all entries
      * to obj.
      *
-     * @param g   Graph
-     * @param obj Object
+     * @param g     Graph
+     * @param value Object
      */
-    public NodeArray(Graph g, T obj) {
+    public NodeArray(Graph g, T value) {
         this(g);
-        setAll(obj);
-        isClear = false;
+        setAll(value);
     }
 
     /**
@@ -65,7 +64,6 @@ public class NodeArray<T> extends GraphBase implements NodeAssociation<T> {
     public NodeArray(NodeAssociation<T> src) {
         this(src.getOwner());
         getOwner().nodeStream().forEach(v -> setValue(v, src.getValue(v)));
-        isClear = src.isClear();
     }
 
     /**

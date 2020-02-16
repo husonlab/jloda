@@ -21,13 +21,17 @@
 package jloda.graph;
 
 
+import jloda.util.Basic;
+
+import java.util.Arrays;
+
 /**
  * Node integer array
  * Daniel Huson, 2003
  */
 
 public class NodeIntegerArray extends GraphBase implements NodeAssociation<Integer> {
-    private int[] data;
+    private Integer[] data;
     private boolean isClear = true;
 
     /**
@@ -37,7 +41,7 @@ public class NodeIntegerArray extends GraphBase implements NodeAssociation<Integ
      */
     public NodeIntegerArray(Graph g) {
         setOwner(g);
-        data = new int[g.getMaxNodeId() + 1];
+        data = new Integer[g.getMaxNodeId() + 1];
         g.registerNodeAssociation(this);
     }
 
@@ -45,12 +49,12 @@ public class NodeIntegerArray extends GraphBase implements NodeAssociation<Integ
      * Construct a node array for the given graph and initialize all entries
      * to obj.
      *
-     * @param g   Graph
-     * @param obj Object
+     * @param g     Graph
+     * @param value Object
      */
-    public NodeIntegerArray(Graph g, Integer obj) {
+    public NodeIntegerArray(Graph g, Integer value) {
         this(g);
-        setAll(obj);
+        setAll(value);
     }
 
     /**
@@ -59,9 +63,8 @@ public class NodeIntegerArray extends GraphBase implements NodeAssociation<Integ
      * @param src NodeArray
      */
     public NodeIntegerArray(NodeAssociation<Integer> src) {
-        this(src.getOwner());
-        for (Node v = getOwner().getFirstNode(); v != null; v = v.getNext())
-            setValue(v, src.getValue(v));
+        setOwner(src.getOwner());
+        src.getOwner().nodes().forEach(v -> put(v, src.getValue(v)));
     }
 
     /**
@@ -69,6 +72,7 @@ public class NodeIntegerArray extends GraphBase implements NodeAssociation<Integ
      */
     public void clear() {
         isClear = true;
+        Arrays.fill(data, null);
     }
 
     /**
@@ -93,7 +97,7 @@ public class NodeIntegerArray extends GraphBase implements NodeAssociation<Integ
      */
     public int get(Node v) {
         checkOwner(v);
-        if (v.getId() < data.length)
+        if (v.getId() < data.length && data[v.getId()] != null)
             return data[v.getId()];
         else
             return 0;
@@ -102,21 +106,19 @@ public class NodeIntegerArray extends GraphBase implements NodeAssociation<Integ
     /**
      * Set the entry for node v to obj.
      *
-     * @param v   Node
-     * @param obj Object
+     * @param v Node
+     * @param k Object
      */
-    public void setValue(Node v, Integer obj) {
+    public void setValue(Node v, Integer k) {
         checkOwner(v);
 
-        if (obj == null)
-            obj = 0;
-        else if (isClear)
+        if (k != null && isClear)
             isClear = false;
 
         if (v.getId() >= data.length) {
             grow(v.getId());
         }
-        data[v.getId()] = obj;
+        data[v.getId()] = k;
     }
 
     public void set(Node v, int value) {
@@ -132,8 +134,8 @@ public class NodeIntegerArray extends GraphBase implements NodeAssociation<Integ
     }
 
     @Override
-    public void put(Node v, Integer obj) {
-        setValue(v, obj);
+    public void put(Node v, Integer k) {
+        setValue(v, k);
     }
 
     /**
@@ -143,13 +145,12 @@ public class NodeIntegerArray extends GraphBase implements NodeAssociation<Integ
      */
     private void grow(int n) {
         int newSize = Math.max(1, 2 * data.length);
-        while (newSize <= n)
+        while (newSize <= n && 2L * newSize < (long) Basic.MAX_ARRAY_SIZE) {
             newSize *= 2;
+        }
         if (newSize > data.length) {
-            int[] newData = new int[newSize];
-            for (Node v = getOwner().getFirstNode(); v != null; v = v.getNext())
-                if (v.getId() < data.length)
-                    newData[v.getId()] = data[v.getId()];
+            Integer[] newData = new Integer[newSize];
+            System.arraycopy(data, 0, newData, 0, data.length);
             data = newData;
         }
     }
@@ -157,18 +158,19 @@ public class NodeIntegerArray extends GraphBase implements NodeAssociation<Integ
     /**
      * Set the entry for all nodes to obj.
      *
-     * @param obj Object
+     * @param k
      */
-    public void setAll(Integer obj) {
-        if (obj == null)
-            obj = 0;
-        for (Node v = getOwner().getFirstNode(); v != null; v = v.getNext()) {
-            if (v.getId() >= data.length) {
-                grow(v.getId());
+    public void setAll(Integer k) {
+        clear();
+        if (k != null && getOwner().getNumberOfNodes() > 0) {
+            isClear = false;
+            for (Node v = getOwner().getFirstNode(); v != null; v = v.getNext()) {
+                if (v.getId() >= data.length) {
+                    grow(v.getId());
+                }
+                data[v.getId()] = k;
             }
-            data[v.getId()] = obj;
         }
-        isClear = (obj == 0);
     }
 
 
@@ -189,8 +191,9 @@ public class NodeIntegerArray extends GraphBase implements NodeAssociation<Integ
     public Object clone() {
         Graph graph = getOwner();
         NodeIntegerArray result = new NodeIntegerArray(graph);
-        result.data = new int[data.length];
+        result.data = new Integer[data.length];
         System.arraycopy(data, 0, result.data, 0, data.length);
+        result.isClear = isClear();
         return result;
     }
 }

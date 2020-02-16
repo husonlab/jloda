@@ -20,6 +20,8 @@
 
 package jloda.graph;
 
+import jloda.util.Basic;
+
 import java.util.Arrays;
 
 /**
@@ -27,7 +29,7 @@ import java.util.Arrays;
  * Daniel Huson, 11.2017
  */
 public class EdgeFloatArray extends GraphBase implements EdgeAssociation<Float> {
-    private float[] data;
+    private Float[] data;
     private boolean isClear = true;
 
     /**
@@ -37,7 +39,7 @@ public class EdgeFloatArray extends GraphBase implements EdgeAssociation<Float> 
      */
     public EdgeFloatArray(Graph g) {
         setOwner(g);
-        data = new float[g.getMaxEdgeId() + 1];
+        data = new Float[g.getMaxEdgeId() + 1];
         g.registerEdgeAssociation(this);
     }
 
@@ -45,12 +47,12 @@ public class EdgeFloatArray extends GraphBase implements EdgeAssociation<Float> 
      * Construct an edge array for the given graph and initialize all entries
      * to obj.
      *
-     * @param g   Graph
-     * @param obj Object
+     * @param g     Graph
+     * @param value Object
      */
-    public EdgeFloatArray(Graph g, Float obj) {
+    public EdgeFloatArray(Graph g, Float value) {
         this(g);
-        setAll(obj);
+        setAll(value);
     }
 
     /**
@@ -60,16 +62,14 @@ public class EdgeFloatArray extends GraphBase implements EdgeAssociation<Float> 
      */
     public EdgeFloatArray(EdgeAssociation<Float> src) {
         setOwner(src.getOwner());
-        for (Edge e = getOwner().getFirstEdge(); e != null; e = e.getNext())
-            put(e, src.getValue(e));
-        isClear = src.isClear();
+        src.getOwner().edges().forEach(e -> put(e, src.getValue(e)));
     }
 
     /**
      * Clear all entries.
      */
     public void clear() {
-        Arrays.fill(data, 0);
+        Arrays.fill(data, null);
         isClear = true;
     }
 
@@ -95,7 +95,7 @@ public class EdgeFloatArray extends GraphBase implements EdgeAssociation<Float> 
      */
     public float get(Edge e) {
         checkOwner(e);
-        if (e.getId() < data.length)
+        if (e.getId() < data.length && data[e.getId()] != null)
             return data[e.getId()];
         else
             return 0f;
@@ -113,17 +113,15 @@ public class EdgeFloatArray extends GraphBase implements EdgeAssociation<Float> 
     }
 
     @Override
-    public void setValue(Edge e, Float obj) {
+    public void setValue(Edge e, Float f) {
         checkOwner(e);
-        if (obj == null)
-            obj = 0f;
-        else if (isClear)
+        if (f != null && isClear)
             isClear = false;
 
         if (e.getId() >= data.length) {
             grow(e.getId());
         }
-        data[e.getId()] = obj;
+        data[e.getId()] = f;
     }
 
     public void set(Edge e, float value) {
@@ -138,16 +136,12 @@ public class EdgeFloatArray extends GraphBase implements EdgeAssociation<Float> 
     }
 
     @Override
-    public void setAll(Float obj) {
-        if (obj == null)
-            obj = 0f;
-        for (Edge e = getOwner().getFirstEdge(); e != null; e = e.getNext()) {
-            if (e.getId() >= data.length) {
-                grow(e.getId());
-            }
-            data[e.getId()] = obj;
+    public void setAll(Float value) {
+        clear();
+        if (value != null && getOwner().getNumberOfEdges() > 0) {
+            isClear = false;
+            getOwner().edges().forEach(e -> put(e, value));
         }
-        isClear = (obj == 0f);
     }
 
     /**
@@ -157,10 +151,11 @@ public class EdgeFloatArray extends GraphBase implements EdgeAssociation<Float> 
      */
     private void grow(float n) {
         int newSize = Math.max(1, 2 * data.length);
-        while (newSize <= n)
+        while (newSize <= n && 2L * newSize < (long) Basic.MAX_ARRAY_SIZE) {
             newSize *= 2;
+        }
         if (newSize > data.length) {
-            float[] newData = new float[newSize];
+            Float[] newData = new Float[newSize];
             for (Edge e = getOwner().getFirstEdge(); e != null; e = e.getNext()) {
                 int id = e.getId();
                 if (id < data.length)

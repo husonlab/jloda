@@ -47,12 +47,12 @@ public class EdgeDoubleArray extends GraphBase implements EdgeAssociation<Double
      * Construct an edge array for the given graph and initialize all entries
      * to obj.
      *
-     * @param g         Graph
-     * @param initValue initial value
+     * @param g     Graph
+     * @param value initial value
      */
-    public EdgeDoubleArray(Graph g, Double initValue) {
+    public EdgeDoubleArray(Graph g, Double value) {
         this(g);
-        setAll(initValue);
+        setAll(value);
     }
 
     /**
@@ -62,9 +62,7 @@ public class EdgeDoubleArray extends GraphBase implements EdgeAssociation<Double
      */
     public EdgeDoubleArray(EdgeAssociation<Double> src) {
         setOwner(src.getOwner());
-        for (Edge e = getOwner().getFirstEdge(); e != null; e = e.getNext())
-            put(e, src.getValue(e));
-        isClear = src.isClear();
+        src.getOwner().edges().forEach(e -> put(e, src.getValue(e)));
     }
 
     /**
@@ -109,22 +107,22 @@ public class EdgeDoubleArray extends GraphBase implements EdgeAssociation<Double
      * Set the entry for edge e to obj.
      *
      * @param e Edge
-     * @param d Object
+     * @param value Object
      */
-    public void put(Edge e, Double d) {
-        setValue(e, d);
+    public void put(Edge e, Double value) {
+        setValue(e, value);
     }
 
     @Override
-    public void setValue(Edge e, Double d) {
+    public void setValue(Edge e, Double value) {
         checkOwner(e);
-        if (d != null && isClear)
+        if (value != null && isClear)
             isClear = false;
 
         if (e.getId() >= data.length) {
             grow(e.getId());
         }
-        data[e.getId()] = d;
+        data[e.getId()] = value;
     }
 
     public void set(Edge e, double value) {
@@ -140,13 +138,15 @@ public class EdgeDoubleArray extends GraphBase implements EdgeAssociation<Double
 
     @Override
     public void setAll(Double d) {
-        isClear = (d == null);
-
-        for (Edge e = getOwner().getFirstEdge(); e != null; e = e.getNext()) {
-            if (e.getId() >= data.length) {
-                grow(e.getId());
+        clear();
+        if (d != null && getOwner().getNumberOfEdges() > 0) {
+            isClear = false;
+            for (Edge e = getOwner().getFirstEdge(); e != null; e = e.getNext()) {
+                if (e.getId() >= data.length) {
+                    grow(e.getId());
+                }
+                data[e.getId()] = d;
             }
-            data[e.getId()] = d;
         }
     }
 
@@ -157,8 +157,9 @@ public class EdgeDoubleArray extends GraphBase implements EdgeAssociation<Double
      */
     private void grow(double n) {
         int newSize = Math.max(1, 2 * data.length);
-        while (newSize <= n && 2 * newSize < Basic.MAX_ARRAY_SIZE)
+        while (newSize <= n && 2L * newSize < (long) Basic.MAX_ARRAY_SIZE) {
             newSize *= 2;
+        }
         if (newSize > data.length) {
             Double[] newData = new Double[newSize];
             System.arraycopy(data, 0, newData, 0, data.length);
