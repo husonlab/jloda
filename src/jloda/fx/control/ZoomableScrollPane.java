@@ -59,15 +59,17 @@ public class ZoomableScrollPane extends ScrollPane {
     /**
      * constructor
      *
-     * @param content0
+     * @param content
      */
-    public ZoomableScrollPane(Node content0) {
+    public ZoomableScrollPane(Node content) {
         super();
-        this.content = content0;
-        this.zoomNode = new Group();
-        this.outerNode = createOuterNode();
+        this.content = content;
+        zoomNode = new Group();
+        if (content != null)
+            zoomNode.getChildren().add(content);
+        outerNode = createOuterNode();
         outerNode.getChildren().add(zoomNode);
-        setContent(content);
+        setContent(outerNode);
 
         updateScaleMethod = new SimpleObjectProperty<>(() -> {
             ZoomableScrollPane.this.content.setScaleX(zoomX);
@@ -84,6 +86,15 @@ public class ZoomableScrollPane extends ScrollPane {
                 setContent(outerNode); // scroll pane scrolls outer node
             }
         });
+    }
+
+    /**
+     * this returns the node that is zoomable. This method should be used in place of ScrollPane.getContent()
+     *
+     * @return zoomable content
+     */
+    public Node getContentNode() {
+        return content;
     }
 
     public double getZoomFactorX() {

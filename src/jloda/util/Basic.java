@@ -778,10 +778,10 @@ public class Basic {
      * @param list
      * @return max
      */
-    public static int max(Collection<Integer> list) {
+    public static int max(Iterable<Integer> list) {
         int m = Integer.MIN_VALUE;
         for (Integer x : list) {
-            if (x!=null && x > m)
+            if (x != null && x > m)
                 m = x;
         }
         return m;

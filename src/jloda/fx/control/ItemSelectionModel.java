@@ -78,7 +78,7 @@ public class ItemSelectionModel<T extends Comparable<?>> {
         selectedItemSet.remove(item);
     }
 
-    public void clearSelectionAll(Collection<T> items) {
+    public void clearSelectionAll(Collection<? extends T> items) {
         selectedItemSet.removeAll(items);
     }
 

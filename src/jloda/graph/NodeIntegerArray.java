@@ -24,6 +24,8 @@ package jloda.graph;
 import jloda.util.Basic;
 
 import java.util.Arrays;
+import java.util.Iterator;
+import java.util.NoSuchElementException;
 
 /**
  * Node integer array
@@ -195,6 +197,26 @@ public class NodeIntegerArray extends GraphBase implements NodeAssociation<Integ
         System.arraycopy(data, 0, result.data, 0, data.length);
         result.isClear = isClear();
         return result;
+    }
+
+    public Iterable<Integer> values() {
+        return () -> new Iterator<>() {
+            Node v = getOwner().getFirstNode();
+
+            @Override
+            public boolean hasNext() {
+                return v != null;
+            }
+
+            @Override
+            public Integer next() {
+                if (v == null)
+                    throw new NoSuchElementException();
+                Integer value = getValue(v);
+                v = v.getNext();
+                return value;
+            }
+        };
     }
 }
 

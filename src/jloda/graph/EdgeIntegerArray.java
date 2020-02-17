@@ -24,6 +24,8 @@ package jloda.graph;
 import jloda.util.Basic;
 
 import java.util.Arrays;
+import java.util.Iterator;
+import java.util.NoSuchElementException;
 
 /**
  * edge float array
@@ -211,6 +213,26 @@ public class EdgeIntegerArray extends GraphBase implements EdgeAssociation<Integ
      */
     public void decrement(Edge e, int value) {
         set(e, get(e) - value);
+    }
+
+    public Iterable<Integer> values() {
+        return () -> new Iterator<>() {
+            Edge e = getOwner().getFirstEdge();
+
+            @Override
+            public boolean hasNext() {
+                return e != null;
+            }
+
+            @Override
+            public Integer next() {
+                if (e == null)
+                    throw new NoSuchElementException();
+                Integer value = getValue(e);
+                e = e.getNext();
+                return value;
+            }
+        };
     }
 }
 
