@@ -28,34 +28,37 @@ import javafx.collections.ObservableSet;
 import javafx.collections.SetChangeListener;
 
 import java.util.Collection;
+import java.util.TreeSet;
 
 /**
  * simple item-based selection  model
  *
  * @param <T> Daniel Huson, 2015
  */
-public class ItemSelectionModel<T> {
+public class ItemSelectionModel<T extends Comparable<?>> {
+    private final ObservableSet<T> selectedItemSet = FXCollections.observableSet(new TreeSet<T>());
+
     private final ObservableList<T> selectedItems = FXCollections.observableArrayList();
-    private final ReadOnlyListWrapper<T> readonlySelectedItems = new ReadOnlyListWrapper<>(selectedItems);
-    private final ObservableSet<T> selectedItemSet = FXCollections.observableSet();
+    private final ObservableList<T> selectedItemsUnmodifiable = FXCollections.unmodifiableObservableList(selectedItems);
     private final IntegerProperty size = new SimpleIntegerProperty(0);
     private final BooleanProperty empty = new SimpleBooleanProperty(true);
-
 
     public ItemSelectionModel() {
         size.bind(Bindings.size(selectedItemSet));
         empty.bind(sizeProperty().isEqualTo(0));
 
         selectedItemSet.addListener((SetChangeListener<T>) c -> {
-            if (c.wasRemoved())
+            if (c.wasRemoved()) {
                 selectedItems.remove(c.getElementRemoved());
-            else if (c.wasAdded())
+            } else if (c.wasAdded()) {
                 selectedItems.add(c.getElementAdded());
+            }
         });
     }
 
-    public ObservableList<T> getSelectedItems() {
-        return readonlySelectedItems;
+
+    public ObservableList<T> getSelectedItemsUnmodifiable() {
+        return selectedItemsUnmodifiable;
     }
 
     public void clearAndSelect(T item) {

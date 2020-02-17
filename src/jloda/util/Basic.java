@@ -3279,35 +3279,33 @@ public class Basic {
      * @throws IOException
      */
     public static String getFirstLineFromFile(File file) {
-        try {
             try (BufferedReader ins = new BufferedReader(new InputStreamReader(getInputStreamPossiblyZIPorGZIP(file.getPath())))) {
                 return ins.readLine();
-            }
         } catch (IOException ex) {
             return null;
         }
     }
 
     /**
-     * gets the first line in a file. File may be zgipped or zipped
+     * gets the first line in a file. File may be gzipped or zipped
      *
      * @param file
+     * @param ignoreLinesThatStartWithThis lines to skip while scanning
+     * @param maxLines                     maximum number of lines to scan
      * @return first line or null
      * @throws IOException
      */
     public static String getFirstLineFromFile(File file, String ignoreLinesThatStartWithThis, int maxLines) {
-        try {
             int count = 0;
-            try (BufferedReader ins = new BufferedReader(new InputStreamReader(getInputStreamPossiblyZIPorGZIP(file.getPath())))) {
-                String aLine;
-                while ((aLine = ins.readLine()) != null) {
-                    if (!aLine.startsWith(ignoreLinesThatStartWithThis))
-                        return aLine;
-                    if (++count == maxLines)
-                        break;
-                }
+        try (BufferedReader ins = new BufferedReader(new InputStreamReader(getInputStreamPossiblyZIPorGZIP(file.getPath())))) {
+            String aLine;
+            while ((aLine = ins.readLine()) != null) {
+                if (!aLine.startsWith(ignoreLinesThatStartWithThis))
+                    return aLine;
+                if (++count == maxLines)
+                    break;
             }
-        } catch (IOException ex) {
+        } catch (IOException ignored) {
         }
         return null;
     }
@@ -3320,16 +3318,16 @@ public class Basic {
      * @throws IOException
      */
     public static String[] getFirstLinesFromFile(File file, int count) {
-        try {
-            String[] lines = new String[count];
-            try (BufferedReader ins = new BufferedReader(new InputStreamReader(getInputStreamPossiblyZIPorGZIP(file.getPath())))) {
-                for (int i = 0; i < count; i++) {
-                    lines[i] = ins.readLine();
-                    if (lines[i] == null)
-                        break;
-                }
+        try (FileLineIterator it = new FileLineIterator(file)) {
+            ArrayList<String> lines = new ArrayList<>(count);
+
+            while (it.hasNext()) {
+                if (lines.size() < count)
+                    lines.add(it.next());
+                else
+                    break;
             }
-            return lines;
+            return lines.toArray(new String[0]);
         } catch (IOException ex) {
             return null;
         }
@@ -3342,13 +3340,17 @@ public class Basic {
      * @return first bytes
      * @throws IOException
      */
-    public static byte[] getFirstBytesFromFile(File file, int count) {
-        try {
-            try (InputStream ins = getInputStreamPossiblyZIPorGZIP(file.getPath())) {
-                byte[] bytes = new byte[count];
-                ins.read(bytes, 0, count);
+    public static byte[] getFirstBytesFromFile(File file, int maxCount) {
+        try (InputStream ins = getInputStreamPossiblyZIPorGZIP(file.getPath())) {
+            byte[] buffer = new byte[maxCount];
+            final int count = ins.read(buffer, 0, maxCount);
+
+            if (count < maxCount) {
+                final byte[] bytes = new byte[count];
+                System.arraycopy(buffer, 0, bytes, 0, count);
                 return bytes;
-            }
+            } else
+                return buffer;
         } catch (IOException ex) {
             return null;
         }

@@ -38,15 +38,16 @@ import javafx.scene.layout.StackPane;
  * Daniel Huson, 1.2018
  */
 public class ZoomableScrollPane extends ScrollPane {
-    public static final double ZOOM_FACTOR = 1.005; // .5%
+    public static final double ZOOM_FACTOR = 1.01; // 1%
 
     private final BooleanProperty lockAspectRatio = new SimpleBooleanProperty(false);
     private final BooleanProperty allowZoom = new SimpleBooleanProperty(true);
 
     private final BooleanProperty requireShiftOrControlToZoom = new SimpleBooleanProperty(false);
 
-    private final Node content;
+    private Node content;
     private final Group zoomNode;
+    private final StackPane outerNode;
 
     private double zoomX = 1;
     private double zoomY = 1;
@@ -55,21 +56,33 @@ public class ZoomableScrollPane extends ScrollPane {
 
     private final ObjectProperty<Runnable> updateScaleMethod;
 
-
     /**
      * constructor
      *
-     * @param content
+     * @param content0
      */
-    public ZoomableScrollPane(Node content) {
+    public ZoomableScrollPane(Node content0) {
         super();
-        this.content = content;
-        this.zoomNode = new Group(content);
-        setContent(outerNode(zoomNode));
+        this.content = content0;
+        this.zoomNode = new Group();
+        this.outerNode = createOuterNode();
+        outerNode.getChildren().add(zoomNode);
+        setContent(content);
 
         updateScaleMethod = new SimpleObjectProperty<>(() -> {
-            content.setScaleX(zoomX);
-            content.setScaleY(zoomY);
+            ZoomableScrollPane.this.content.setScaleX(zoomX);
+            ZoomableScrollPane.this.content.setScaleY(zoomY);
+        });
+
+        // if setContent() is used to update content, then adjust accordingly:
+        contentProperty().addListener((c, o, n) -> {
+            if (n != outerNode) {
+                ZoomableScrollPane.this.content = n;
+                zoomNode.getChildren().clear();
+                if (n != null)
+                    zoomNode.getChildren().add(n);
+                setContent(outerNode); // scroll pane scrolls outer node
+            }
         });
     }
 
@@ -89,8 +102,8 @@ public class ZoomableScrollPane extends ScrollPane {
         return zoomY;
     }
 
-    private Node outerNode(Node node) {
-        final StackPane outerNode = new StackPane(node);
+    private StackPane createOuterNode() {
+        final StackPane outerNode = new StackPane();
         outerNode.setOnScroll(e -> {
             if (ZoomableScrollPane.this.isAllowZoom() && (!isRequireShiftOrControlToZoom() || e.isShiftDown() || e.isControlDown())) {
                 e.consume();
@@ -129,6 +142,7 @@ public class ZoomableScrollPane extends ScrollPane {
     private void doZoom(double factorX, double factorY, Point2D mousePoint) {
         if (lockAspectRatio.get()) {
             if (factorX != 1.0)
+                //noinspection SuspiciousNameCombination
                 factorY = factorX;
             else
                 //noinspection SuspiciousNameCombination
