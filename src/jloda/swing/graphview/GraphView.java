@@ -117,8 +117,8 @@ public class GraphView extends JPanel implements Printable, Scrollable, INodeEdg
 
     final static public double XMIN_SCALE = 0.00000001;
     final static public double YMIN_SCALE = 0.00000001;
-    final static public double XMAX_SCALE = 100;
-    final static public double YMAX_SCALE = 100;
+    final static public double XMAX_SCALE = 10000;
+    final static public double YMAX_SCALE = 10000;
 
     private IGraphDrawer graphDrawer;
 
