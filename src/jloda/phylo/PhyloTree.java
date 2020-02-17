@@ -24,6 +24,7 @@ import jloda.graph.*;
 import jloda.util.Basic;
 import jloda.util.Pair;
 import jloda.util.ProgramProperties;
+import jloda.util.Single;
 
 import java.io.*;
 import java.util.*;
@@ -1316,7 +1317,7 @@ public class PhyloTree extends PhyloSplitsGraph {
      * @return true, if anything contracted
      */
     public boolean contractShortEdges(double minLength) {
-        return contractEdges(edgeStream().filter(e -> getWeight(e) < minLength).collect(Collectors.toSet()));
+        return contractEdges(edgeStream().filter(e -> getWeight(e) < minLength).collect(Collectors.toSet()), null);
     }
 
     /**
@@ -1324,7 +1325,7 @@ public class PhyloTree extends PhyloSplitsGraph {
      *
      * @return true, if anything contracted
      */
-    public boolean contractEdges(Set<Edge> edgesToContrat) {
+    public boolean contractEdges(Set<Edge> edgesToContrat, Single<Boolean> selfEdgeEncountered) {
         boolean hasContractedOne = edgesToContrat.size() > 0;
 
         while (edgesToContrat.size() > 0) {
@@ -1353,7 +1354,8 @@ public class PhyloTree extends PhyloSplitsGraph {
                         if (needsContracting) {
                             edgesToContrat.add(z);
                         }
-                    }
+                    } else if (selfEdgeEncountered != null)
+                        selfEdgeEncountered.set(true);
                 }
             }
             for (Integer taxon : getTaxa(v))
