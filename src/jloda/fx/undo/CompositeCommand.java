@@ -20,54 +20,53 @@
 
 package jloda.fx.undo;
 
+import jloda.util.Basic;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Optional;
+
 /**
  * composite command
  * Daniel Huson, 1.2018
  */
 public class CompositeCommand extends UndoableRedoableCommand {
-    private final UndoableRedoableCommand[] commands;
+    private final ArrayList<UndoableRedoableCommand> commands = new ArrayList<>();
 
     public CompositeCommand(String name, UndoableRedoableCommand... commands) {
         super(name);
-        this.commands = commands;
+        add(commands);
+    }
+
+    public void add(UndoableRedoableCommand... commands) {
+        this.commands.addAll(Arrays.asList(commands));
     }
 
     @Override
     public void undo() {
-        if (true) {
-            for (int i = commands.length - 1; i >= 0; i--) { // undo in backward order
-                UndoableRedoableCommand command = commands[i];
-                command.undo();
-            }
-        } else {
-            for (UndoableRedoableCommand command : commands) {
-                command.undo();
-            }
-        }
+        Basic.reverse(commands).forEach(UndoableRedoableCommand::undo); // undo in backward order
     }
 
     @Override
     public void redo() {
-        for (UndoableRedoableCommand command : commands) {
-            command.redo();
-        }
+        commands.forEach(UndoableRedoableCommand::redo);
     }
 
     @Override
     public boolean isUndoable() {
-        for (UndoableRedoableCommand command : commands) {
-            if (!command.isUndoable())
-                return false;
-        }
-        return commands.length > 0;
+        final Optional<UndoableRedoableCommand> notUndoable = commands.stream().filter(c -> !c.isUndoable()).findAny();
+        if (notUndoable.isPresent())
+            return false;
+        else
+            return commands.size() > 0;
     }
 
     @Override
     public boolean isRedoable() {
-        for (UndoableRedoableCommand command : commands) {
-            if (!command.isRedoable())
-                return false;
-        }
-        return commands.length > 0;
+        final Optional<UndoableRedoableCommand> notRedoable = commands.stream().filter(c -> !c.isRedoable()).findAny();
+        if (notRedoable.isPresent())
+            return false;
+        else
+            return commands.size() > 0;
     }
 }

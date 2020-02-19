@@ -28,15 +28,15 @@ import javafx.collections.ObservableSet;
 import javafx.collections.SetChangeListener;
 
 import java.util.Collection;
-import java.util.TreeSet;
+import java.util.HashSet;
 
 /**
  * simple item-based selection  model
  *
  * @param <T> Daniel Huson, 2015
  */
-public class ItemSelectionModel<T extends Comparable<?>> {
-    private final ObservableSet<T> selectedItemSet = FXCollections.observableSet(new TreeSet<T>());
+public class ItemSelectionModel<T> {
+    private final ObservableSet<T> selectedItemSet = FXCollections.observableSet(new HashSet<>());
 
     private final ObservableList<T> selectedItems = FXCollections.observableArrayList();
     private final ObservableList<T> selectedItemsUnmodifiable = FXCollections.unmodifiableObservableList(selectedItems);
