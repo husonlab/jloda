@@ -38,7 +38,7 @@ import javafx.scene.layout.StackPane;
  * Daniel Huson, 1.2018
  */
 public class ZoomableScrollPane extends ScrollPane {
-    public static final double ZOOM_FACTOR = 1.01; // 1%
+    private double mouseScrollZoomFactor = 1.01; // 1%
 
     private final BooleanProperty lockAspectRatio = new SimpleBooleanProperty(false);
     private final BooleanProperty allowZoom = new SimpleBooleanProperty(true);
@@ -122,11 +122,11 @@ public class ZoomableScrollPane extends ScrollPane {
                 final double factorY;
 
                 if ((Math.abs(e.getDeltaX()) > Math.abs(e.getDeltaY()))) {
-                    factorX = (e.getDeltaX() > 0 ? ZOOM_FACTOR : 1 / ZOOM_FACTOR);
+                    factorX = (e.getDeltaX() > 0 ? mouseScrollZoomFactor : 1 / mouseScrollZoomFactor);
                     factorY = 1;
                 } else {
                     factorX = 1;
-                    factorY = (e.getDeltaY() > 0 ? ZOOM_FACTOR : 1 / ZOOM_FACTOR);
+                    factorY = (e.getDeltaY() > 0 ? mouseScrollZoomFactor : 1 / mouseScrollZoomFactor);
                 }
                 ZoomableScrollPane.this.doZoom(factorX, factorY, new Point2D(e.getX(), e.getY()));
             }
@@ -278,5 +278,13 @@ public class ZoomableScrollPane extends ScrollPane {
 
     public void setRequireShiftOrControlToZoom(boolean requireShiftOrControlToZoom) {
         this.requireShiftOrControlToZoom.set(requireShiftOrControlToZoom);
+    }
+
+    public double getMouseScrollZoomFactor() {
+        return mouseScrollZoomFactor;
+    }
+
+    public void setMouseScrollZoomFactor(double mouseScrollZoomFactor) {
+        this.mouseScrollZoomFactor = mouseScrollZoomFactor;
     }
 }
