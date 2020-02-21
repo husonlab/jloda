@@ -1532,7 +1532,7 @@ public class Graph extends GraphBase {
      * @param v
      * @param used
      */
-    public void visitConnectedComponent(Node v, NodeSet used) {
+    public void visitConnectedComponent(Node v, Set<Node> used) {
         used.add(v);
         for (Edge f = getFirstAdjacentEdge(v); f != null; f = v.getNextAdjacentEdge(f)) {
             Node w = f.getOpposite(v);
