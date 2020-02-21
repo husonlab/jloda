@@ -81,7 +81,9 @@ public class Edge extends NodeEdge implements Comparable<Edge> {
      * @param obj   the info object
      */
     Edge(final Graph graph, final Node v, final Edge e_v, final Node w, final Edge e_w, final int dir_v, final int dir_w, final Object obj) throws IllegalSelfEdgeException {
-        if (v == w)
+        if (v == null || w == null)
+            throw new IllegalArgumentException("null");
+        else if (v == w)
             throw new IllegalSelfEdgeException();
         graph.registerNewEdge(v, e_v, w, e_w, dir_v, dir_w, obj, this);
         getOwner().fireNewEdge(this);
