@@ -24,10 +24,7 @@ import javafx.beans.InvalidationListener;
 import javafx.geometry.Dimension2D;
 import javafx.scene.Group;
 import javafx.scene.Node;
-import javafx.scene.control.MenuItem;
-import javafx.scene.control.Slider;
-import javafx.scene.control.TableView;
-import javafx.scene.control.TextArea;
+import javafx.scene.control.*;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.Pane;
 import javafx.scene.shape.*;
@@ -234,5 +231,18 @@ public class BasicFX {
         stage.fullScreenProperty().addListener((c, o, n) -> menuItem.setText(n ? "Exit Full Screen" : "Enter Full Screen"));
         menuItem.setOnAction((e) -> stage.setFullScreen(!stage.isFullScreen()));
         menuItem.setDisable(false);
+    }
+
+    /**
+     * ensures that a text field only accepts integer entries
+     *
+     * @param textField
+     */
+    public static void ensureAcceptsIntegersOnly(TextField textField) {
+        textField.textProperty().addListener((c, o, n) -> {
+            if (!n.matches("\\d*")) {
+                textField.setText(n.replaceAll("[^\\d]", ""));
+            }
+        });
     }
 }

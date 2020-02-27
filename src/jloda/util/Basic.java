@@ -3776,16 +3776,20 @@ public class Basic {
      * @param suffix
      * @return file name
      */
-    public synchronized static File getUniqueFileName(String directory, String prefix, String suffix) throws IOException {
-        File file = new File(directory + File.separatorChar + prefix + (suffix.startsWith(".") ? suffix : "." + suffix));
+    public synchronized static File getUniqueFileName(String directory, String prefix, String suffix) {
+        try {
+            File file = new File(directory + File.separatorChar + prefix + (suffix.startsWith(".") ? suffix : "." + suffix));
 
-        int i = 1;
-        while (file.exists()) {
-            file = new File(directory + File.separatorChar + prefix + "-" + (++i) + (suffix.startsWith(".") ? suffix : "." + suffix));
-            if (i == 10000)
-                return Files.createTempFile(prefix, suffix).toFile(); // too many temporary files in home directory, use tmp dir
+            int i = 1;
+            while (file.exists()) {
+                file = new File(directory + File.separatorChar + prefix + "-" + (++i) + (suffix.startsWith(".") ? suffix : "." + suffix));
+                if (i == 10000)
+                    return Files.createTempFile(prefix, suffix).toFile(); // too many temporary files in home directory, use tmp dir
+            }
+            return file;
+        } catch (IOException ex) {
+            return null;
         }
-        return file;
     }
 
     public static boolean isArrayOfIntegers(String string) {

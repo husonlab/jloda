@@ -34,6 +34,7 @@ module jloda {
     exports jloda.util;
     exports jloda.util.interval;
     exports jloda.util.parse;
+    exports jloda.seq;
     exports jloda.thirdparty;
 
     opens jloda.fx.colorscale;

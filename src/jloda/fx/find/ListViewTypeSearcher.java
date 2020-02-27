@@ -25,7 +25,7 @@ import javafx.scene.input.KeyCode;
 import jloda.util.Single;
 
 /**
- * adds text search capability to a list tree
+ * adds text search capability to a list view
  * Daniel Huson, 10.2018
  */
 public class ListViewTypeSearcher {

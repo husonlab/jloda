@@ -21,6 +21,8 @@
 package jloda.util;
 
 import java.io.*;
+import java.util.stream.Stream;
+import java.util.stream.StreamSupport;
 
 /**
  * iterates over all lines in a file. File can also be a .gz file.
@@ -295,5 +297,13 @@ public class FileLineIterator implements  ICloseableIterator<String> {
         if (pushedBackLine != null)
             throw new IOException("FileLineIterator: pushBack buffer overflow");
         pushedBackLine = aLine;
+    }
+
+    public Iterable<String> lines() {
+        return () -> FileLineIterator.this;
+    }
+
+    public Stream<String> stream() {
+        return StreamSupport.stream(lines().spliterator(), false);
     }
 }
