@@ -4074,14 +4074,29 @@ public class Basic {
             return String.format("%.1f", diff / 1000.0) + "s";
     }
 
-    public static  <T> int size(Iterable<T> values) {
-        int count=0;
-        final Iterator<T> it=values.iterator();
-        while(it.hasNext()) {
-            it.next();
+    public static <T> int size(Iterable<T> values) {
+        int count = 0;
+        for (T value : values) {
             count++;
         }
         return count;
+    }
+
+    /**
+     * concatenate a list of byte[] into a single byte[]
+     *
+     * @param parts
+     * @return concatenation
+     */
+    public static byte[] concatenate(ArrayList<byte[]> parts) {
+        final int size = parts.stream().mapToInt(p -> p.length).sum();
+        final byte[] result = new byte[size];
+        int offset = 0;
+        for (byte[] part : parts) {
+            System.arraycopy(part, 0, result, offset, part.length);
+            offset += part.length;
+        }
+        return result;
     }
 }
 
