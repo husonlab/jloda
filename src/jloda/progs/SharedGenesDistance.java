@@ -105,7 +105,7 @@ public class SharedGenesDistance {
      */
     private static float[][] computeMLDistance(int ntax, BitSet[] genes) {
 
-        // dtermine average genome size:
+        // dtermine average importgenomes size:
         double m = 0;
         for (int i = 1; i <= ntax; i++) {
             m += genes[i].cardinality();
