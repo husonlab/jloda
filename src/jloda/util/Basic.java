@@ -20,6 +20,8 @@
 
 package jloda.util;
 
+import javafx.collections.ObservableList;
+
 import java.io.*;
 import java.net.URI;
 import java.net.URL;
@@ -4097,6 +4099,22 @@ public class Basic {
             offset += part.length;
         }
         return result;
+    }
+
+    /**
+     * find a element in the list for which clazz is assignable from
+     *
+     * @param list
+     * @param clazz
+     * @param <T>
+     * @return element or null
+     */
+    public static <T> T findByClass(ObservableList<T> list, Class clazz) {
+        for (T t : list) {
+            if (clazz.isAssignableFrom(t.getClass()))
+                return t;
+        }
+        return null;
     }
 }
 
