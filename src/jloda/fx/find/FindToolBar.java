@@ -277,6 +277,10 @@ public class FindToolBar extends VBox {
         this.showReplaceToolBar.set(showReplaceToolBar);
     }
 
+    public boolean isShowReplaceToolBar() {
+        return showReplaceToolBar.get();
+    }
+
     public boolean isCanFindAgain() {
         return canFindAgain.get();
     }
@@ -328,6 +332,10 @@ public class FindToolBar extends VBox {
             controller.getToolBar().getItems().add(controller.getToolBar().getItems().size() - 2, searcherButton);
             searchers.add(other);
         }
+    }
+
+    public FindToolBarController getController() {
+        return controller;
     }
 
     /**
