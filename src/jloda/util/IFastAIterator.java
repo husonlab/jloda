@@ -20,6 +20,8 @@
 
 package jloda.util;
 
+import java.util.stream.Stream;
+
 /**
  * header for fastA and fastQAsFastA iterators
  * Daniel Huson, 3.2014
@@ -38,4 +40,11 @@ public interface IFastAIterator extends ICloseableIterator<Pair<String, String>>
      * @return
      */
     long getNumberOfBytes();
+
+    /**
+     * get the stream
+     *
+     * @return stream
+     */
+    Stream<Pair<String, String>> stream();
 }

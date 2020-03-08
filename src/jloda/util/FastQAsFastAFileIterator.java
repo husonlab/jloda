@@ -24,9 +24,11 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.util.stream.Stream;
+import java.util.stream.StreamSupport;
 
 /**
- * an iterator over a multi-fastQ file   returning fastA records
+ * an iterator over a multi-fastQ file, returning fastA records
  * Daniel Huson, 10.2011
  */
 public class FastQAsFastAFileIterator implements IFastAIterator {
@@ -143,4 +145,13 @@ public class FastQAsFastAFileIterator implements IFastAIterator {
     public long getProgress() {
         return nextHeaderPosition;
     }
+
+    public Iterable<Pair<String, String>> records() {
+        return () -> FastQAsFastAFileIterator.this;
+    }
+
+    public Stream<Pair<String, String>> stream() {
+        return StreamSupport.stream(records().spliterator(), false);
+    }
+
 }

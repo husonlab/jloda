@@ -22,6 +22,8 @@ package jloda.util;
 
 import java.io.*;
 import java.util.LinkedList;
+import java.util.stream.Stream;
+import java.util.stream.StreamSupport;
 
 /**
  * an iterator over a multi-fastA file
@@ -214,6 +216,14 @@ public class FastAFileIterator implements IFastAIterator, Closeable {
         return numberOfSequencesRead;
     }
 
+    public Iterable<Pair<String, String>> records() {
+        return () -> FastAFileIterator.this;
+    }
+
+    public Stream<Pair<String, String>> stream() {
+        return StreamSupport.stream(records().spliterator(), false);
+    }
+
     /**
      * choose fastA or fastQ as fastA getLetterCodeIterator
      *
@@ -233,4 +243,5 @@ public class FastAFileIterator implements IFastAIterator, Closeable {
                 throw new IOException("File empty or not in FastA or FastQ format: " + inputFile);
         }
     }
+
 }
