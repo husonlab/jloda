@@ -22,8 +22,8 @@ package jloda.fx.find;
 
 import javafx.beans.binding.Bindings;
 import javafx.beans.property.*;
-import javafx.scene.control.MultipleSelectionModel;
 import javafx.scene.control.TableView;
+import jloda.fx.control.ItemSelectionModel;
 
 /**
  * searcher for my table view
@@ -137,7 +137,7 @@ public class TableViewSearcher<S> implements IObjectSearcher<String> {
     }
 
     @Override
-    public MultipleSelectionModel<String> getSelectionModel() {
+    public ItemSelectionModel<String> getSelectionModel() {
         return null;
     }
 

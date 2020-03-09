@@ -25,7 +25,7 @@ import javafx.beans.binding.Bindings;
 import javafx.beans.property.*;
 import javafx.scene.control.Labeled;
 import javafx.scene.control.ListView;
-import javafx.scene.control.MultipleSelectionModel;
+import jloda.fx.control.ItemSelectionModel;
 
 /**
  * searcher for list view
@@ -122,7 +122,7 @@ public class ListViewSearcher<S> implements IObjectSearcher<String> {
     }
 
     @Override
-    public MultipleSelectionModel<String> getSelectionModel() {
+    public ItemSelectionModel<String> getSelectionModel() {
         return null;
     }
 

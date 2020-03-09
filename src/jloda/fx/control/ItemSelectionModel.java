@@ -26,9 +26,11 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.collections.ObservableSet;
 import javafx.collections.SetChangeListener;
+import javafx.scene.control.SelectionMode;
 
 import java.util.Collection;
 import java.util.HashSet;
+import java.util.Set;
 
 /**
  * simple item-based selection  model
@@ -36,6 +38,7 @@ import java.util.HashSet;
  * @param <T> Daniel Huson, 2015
  */
 public class ItemSelectionModel<T> {
+    private final ObjectProperty<SelectionMode> selectionMode = new SimpleObjectProperty<>(SelectionMode.MULTIPLE);
     private final ObservableSet<T> selectedItemSet = FXCollections.observableSet(new HashSet<>());
 
     private final ObservableList<T> selectedItems = FXCollections.observableArrayList();
@@ -57,7 +60,7 @@ public class ItemSelectionModel<T> {
     }
 
 
-    public ObservableList<T> getSelectedItemsUnmodifiable() {
+    public ObservableList<T> getSelectedItems() {
         return selectedItemsUnmodifiable;
     }
 
@@ -70,7 +73,7 @@ public class ItemSelectionModel<T> {
         selectedItemSet.add(item);
     }
 
-    public void selectAll(Collection<T> items) {
+    public void selectItems(Collection<? extends T> items) {
         selectedItemSet.addAll(items);
     }
 
@@ -78,7 +81,7 @@ public class ItemSelectionModel<T> {
         selectedItemSet.remove(item);
     }
 
-    public void clearSelectionAll(Collection<? extends T> items) {
+    public void clearSelection(Collection<? extends T> items) {
         selectedItemSet.removeAll(items);
     }
 
@@ -115,5 +118,24 @@ public class ItemSelectionModel<T> {
 
     public ReadOnlyIntegerProperty sizeProperty() {
         return size;
+    }
+
+    public SelectionMode getSelectionMode() {
+        return selectionMode.get();
+    }
+
+    public ObjectProperty<SelectionMode> selectionModeProperty() {
+        return selectionMode;
+    }
+
+    public void setSelectionMode(SelectionMode selectionMode) {
+        this.selectionMode.set(selectionMode);
+    }
+
+    public void invertSelection(Collection<T> all) {
+        final Set<T> toSelect = new HashSet<>(all);
+        toSelect.removeAll(getSelectedItems());
+        clearSelection();
+        selectItems(toSelect);
     }
 }

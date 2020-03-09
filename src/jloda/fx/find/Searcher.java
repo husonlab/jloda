@@ -24,9 +24,8 @@ import javafx.application.Platform;
 import javafx.beans.binding.Bindings;
 import javafx.beans.property.*;
 import javafx.collections.ObservableList;
-import javafx.scene.control.MultipleSelectionModel;
 import javafx.scene.control.SelectionMode;
-import jloda.fx.control.AnotherMultipleSelectionModel;
+import jloda.fx.control.ItemSelectionModel;
 
 import java.util.BitSet;
 import java.util.function.BiConsumer;
@@ -40,7 +39,7 @@ import java.util.function.Function;
  */
 public class Searcher<T> implements IObjectSearcher<T> {
     private final ObservableList<T> items;
-    private final AnotherMultipleSelectionModel<T> selectionModel;
+    private final ItemSelectionModel<T> selectionModel;
     private final Function<T, String> textGetter;
     private final BiConsumer<T, String> textSetter;
     private final StringProperty name = new SimpleStringProperty("Searcher");
@@ -62,9 +61,9 @@ public class Searcher<T> implements IObjectSearcher<T> {
      * @param textGetter
      * @param textSetter
      */
-    public Searcher(AnotherMultipleSelectionModel<T> selectionModel, Function<T, String> textGetter, BiConsumer<T, String> textSetter) {
+    public Searcher(ObservableList<T> items, ItemSelectionModel<T> selectionModel, Function<T, String> textGetter, BiConsumer<T, String> textSetter) {
         this.selectionModel = selectionModel;
-        this.items = selectionModel.getItems();
+        this.items = items;
         this.textGetter = textGetter;
         this.textSetter = textSetter;
 
@@ -122,7 +121,7 @@ public class Searcher<T> implements IObjectSearcher<T> {
 
     @Override
     public boolean isCurrentSelected() {
-        return current != -1 && !toDeselect.get(current) && (toSelect.get(current) || selectionModel.isSelected(current));
+        return current != -1 && current < items.size() && !toDeselect.get(current) && (toSelect.get(current) || selectionModel.isSelected(items.get(current)));
     }
 
     @Override
@@ -160,7 +159,7 @@ public class Searcher<T> implements IObjectSearcher<T> {
     }
 
     @Override
-    public MultipleSelectionModel<T> getSelectionModel() {
+    public ItemSelectionModel<T> getSelectionModel() {
         return selectionModel;
     }
 
@@ -191,16 +190,16 @@ public class Searcher<T> implements IObjectSearcher<T> {
             selectionModel.clearSelection();
             doClearAll = false;
         } else {
-            for (int index = toDeselect.nextSetBit(0); index != -1; index = toDeselect.nextSetBit(index + 1)) {
-                if (selectionModel.isSelected(index))
-                    selectionModel.clearSelection(index);
+            for (int index = toDeselect.nextSetBit(0); index != -1 && index < items.size(); index = toDeselect.nextSetBit(index + 1)) {
+                if (selectionModel.isSelected(items.get(index)))
+                    selectionModel.clearSelection(items.get(index));
             }
         }
         toDeselect.clear();
 
-        for (int index = toSelect.nextSetBit(0); index != -1; index = toSelect.nextSetBit(index + 1)) {
-            if (!selectionModel.isSelected(index))
-                selectionModel.select(index);
+        for (int index = toSelect.nextSetBit(0); index != -1 && index < items.size(); index = toSelect.nextSetBit(index + 1)) {
+            if (!selectionModel.isSelected(items.get(index)))
+                selectionModel.select(items.get(index));
         }
         toSelect.clear();
     }

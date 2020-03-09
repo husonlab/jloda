@@ -156,7 +156,8 @@ public class AMultipleSelectionModel<T> extends MultipleSelectionModel<T> {
                         }
                         if (set.size() > 0) {
                             selectedIndicesBits.andNot(selection);
-                            selectedIndicesList.removeAll(set);
+                            for (Integer item : set)
+                                selectedIndicesList.remove(item);
                         }
                         break;
                     }

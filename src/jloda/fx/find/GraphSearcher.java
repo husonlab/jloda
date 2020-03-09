@@ -41,7 +41,6 @@ package jloda.fx.find;
 import javafx.application.Platform;
 import javafx.beans.property.*;
 import javafx.scene.control.Label;
-import javafx.scene.control.MultipleSelectionModel;
 import jloda.fx.control.ItemSelectionModel;
 import jloda.fx.control.ZoomableScrollPane;
 import jloda.graph.Graph;
@@ -151,7 +150,7 @@ public class GraphSearcher implements IObjectSearcher<Node> {
     }
 
     @Override
-    public MultipleSelectionModel<Node> getSelectionModel() {
+    public ItemSelectionModel<Node> getSelectionModel() {
         return null;
     }
 
@@ -187,7 +186,7 @@ public class GraphSearcher implements IObjectSearcher<Node> {
     public void selectAll(boolean select) {
         runInFXApplicationThread(() -> {
             if (select)
-                nodeSelection.selectAll(graph.getNodesAsSet());
+                nodeSelection.selectItems(graph.getNodesAsSet());
             else
                 nodeSelection.clearSelection();
         });

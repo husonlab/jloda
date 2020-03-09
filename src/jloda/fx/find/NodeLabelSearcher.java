@@ -23,8 +23,7 @@ package jloda.fx.find;
 import javafx.application.Platform;
 import javafx.beans.binding.Bindings;
 import javafx.beans.property.*;
-import javafx.scene.control.MultipleSelectionModel;
-import jloda.fx.control.AMultipleSelectionModel;
+import jloda.fx.control.ItemSelectionModel;
 import jloda.graph.Graph;
 import jloda.graph.Node;
 import jloda.phylo.PhyloSplitsGraph;
@@ -39,7 +38,7 @@ import java.util.Objects;
 public class NodeLabelSearcher implements IObjectSearcher<Node> {
     private final String name;
     private Graph graph;
-    private final AMultipleSelectionModel<Node> nodeSelectionModel;
+    private final ItemSelectionModel<Node> nodeSelectionModel;
     private Node current = null;
 
     private final ObjectProperty<Node> found = new SimpleObjectProperty<>();
@@ -55,7 +54,7 @@ public class NodeLabelSearcher implements IObjectSearcher<Node> {
      * @param
      * @param graph
      */
-    public NodeLabelSearcher(PhyloSplitsGraph graph, AMultipleSelectionModel<Node> nodeSelectionModel) {
+    public NodeLabelSearcher(PhyloSplitsGraph graph, ItemSelectionModel<Node> nodeSelectionModel) {
         this(SEARCHER_NAME, graph, nodeSelectionModel);
     }
 
@@ -65,7 +64,7 @@ public class NodeLabelSearcher implements IObjectSearcher<Node> {
      * @param
      * @param graph
      */
-    public NodeLabelSearcher(String name, Graph graph, AMultipleSelectionModel<Node> nodeSelectionModel) {
+    public NodeLabelSearcher(String name, Graph graph, ItemSelectionModel<Node> nodeSelectionModel) {
         this.graph = graph;
         this.name = name;
         this.nodeSelectionModel = nodeSelectionModel;
@@ -157,7 +156,7 @@ public class NodeLabelSearcher implements IObjectSearcher<Node> {
     public void selectAll(boolean select) {
         Platform.runLater(() -> {
             if (select)
-                nodeSelectionModel.selectAll();
+                nodeSelectionModel.selectItems(graph.getNodesAsSet());
             else
                 nodeSelectionModel.clearSelection();
         });
@@ -290,7 +289,7 @@ public class NodeLabelSearcher implements IObjectSearcher<Node> {
     }
 
     @Override
-    public MultipleSelectionModel<Node> getSelectionModel() {
+    public ItemSelectionModel<Node> getSelectionModel() {
         return nodeSelectionModel;
     }
 

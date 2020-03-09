@@ -243,7 +243,7 @@ public class JTreeSearcher implements IObjectSearcher {
      * something has been changed or selected, update tree
      */
     public void updateView() {
-        // selectAll(false);
+        // selectItems(false);
         toSelect.removeAll(toDeselect);
 
         TreePath[] paths = new TreePath[toSelect.size()];

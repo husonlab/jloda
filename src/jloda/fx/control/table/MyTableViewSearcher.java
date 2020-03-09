@@ -21,7 +21,7 @@
 package jloda.fx.control.table;
 
 import javafx.beans.property.*;
-import javafx.scene.control.MultipleSelectionModel;
+import jloda.fx.control.ItemSelectionModel;
 import jloda.fx.find.IObjectSearcher;
 
 public class MyTableViewSearcher implements IObjectSearcher<String> {
@@ -110,7 +110,7 @@ public class MyTableViewSearcher implements IObjectSearcher<String> {
     }
 
     @Override
-    public MultipleSelectionModel<String> getSelectionModel() {
+    public ItemSelectionModel<String> getSelectionModel() {
         return null;
     }
 

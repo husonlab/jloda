@@ -23,8 +23,7 @@ package jloda.fx.find;
 import javafx.application.Platform;
 import javafx.beans.binding.Bindings;
 import javafx.beans.property.*;
-import javafx.scene.control.MultipleSelectionModel;
-import jloda.fx.control.AMultipleSelectionModel;
+import jloda.fx.control.ItemSelectionModel;
 import jloda.graph.Edge;
 import jloda.graph.Graph;
 import jloda.phylo.PhyloSplitsGraph;
@@ -39,7 +38,7 @@ import java.util.Objects;
 public class EdgeLabelSearcher implements IObjectSearcher<Edge> {
     private final String name;
     private Graph graph;
-    private final AMultipleSelectionModel<Edge> edgeSelectionModel;
+    private final ItemSelectionModel<Edge> edgeSelectionModel;
     private Edge current = null;
 
     private final ObjectProperty<Edge> found = new SimpleObjectProperty<>();
@@ -55,7 +54,7 @@ public class EdgeLabelSearcher implements IObjectSearcher<Edge> {
      * @param
      * @param graph
      */
-    public EdgeLabelSearcher(PhyloSplitsGraph graph, AMultipleSelectionModel<Edge> edgeSelectionModel) {
+    public EdgeLabelSearcher(PhyloSplitsGraph graph, ItemSelectionModel<Edge> edgeSelectionModel) {
         this(SEARCHER_NAME, graph, edgeSelectionModel);
     }
 
@@ -65,7 +64,7 @@ public class EdgeLabelSearcher implements IObjectSearcher<Edge> {
      * @param
      * @param graph
      */
-    public EdgeLabelSearcher(String name, Graph graph, AMultipleSelectionModel<Edge> edgeSelectionModel) {
+    public EdgeLabelSearcher(String name, Graph graph, ItemSelectionModel<Edge> edgeSelectionModel) {
         this.graph = graph;
         this.name = name;
         this.edgeSelectionModel = edgeSelectionModel;
@@ -126,7 +125,7 @@ public class EdgeLabelSearcher implements IObjectSearcher<Edge> {
      * @return true, if selected
      */
     public boolean isCurrentSelected() {
-        return isCurrentSet() && edgeSelectionModel.getSelectedItems().contains(current);
+        return isCurrentSet() && edgeSelectionModel.isSelected(current);
     }
 
     /**
@@ -157,7 +156,7 @@ public class EdgeLabelSearcher implements IObjectSearcher<Edge> {
     public void selectAll(boolean select) {
         Platform.runLater(() -> {
             if (select)
-                edgeSelectionModel.selectAll();
+                edgeSelectionModel.selectItems(graph.getEdgesAsSet());
             else
                 edgeSelectionModel.clearSelection();
         });
@@ -286,7 +285,7 @@ public class EdgeLabelSearcher implements IObjectSearcher<Edge> {
      * @return number of objects or -1
      */
     public int numberOfSelectedObjects() {
-        return edgeSelectionModel.getSelectedItems().size();
+        return edgeSelectionModel.size();
     }
 
     public Edge getFound() {
@@ -298,7 +297,7 @@ public class EdgeLabelSearcher implements IObjectSearcher<Edge> {
     }
 
     @Override
-    public MultipleSelectionModel<Edge> getSelectionModel() {
+    public ItemSelectionModel<Edge> getSelectionModel() {
         return edgeSelectionModel;
     }
 
