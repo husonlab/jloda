@@ -182,6 +182,7 @@ public class TextAreaSearcher implements ITextSearcher {
      * something has been changed or selected, update tree
      */
     public void updateView() {
+
     }
 
     /**
