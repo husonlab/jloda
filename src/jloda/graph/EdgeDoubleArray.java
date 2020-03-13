@@ -96,7 +96,7 @@ public class EdgeDoubleArray extends GraphBase implements EdgeAssociation<Double
      */
     public double get(Edge e) {
         checkOwner(e);
-        if (e.getId() < data.length)
+        if (e.getId() < data.length && data[e.getId()] != null)
             return data[e.getId()];
         else
             return 0.0;

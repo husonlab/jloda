@@ -635,6 +635,14 @@ public class Node extends NodeEdge implements Comparable<Node> {
         for (Edge e : adjacentEdges())
             e.deleteEdge();
     }
+
+    public boolean isChild(Node y) {
+        for (Node c : children()) {
+            if (y == c)
+                return true;
+        }
+        return false;
+    }
 }
 
 // EOF
