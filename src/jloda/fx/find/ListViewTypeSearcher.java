@@ -49,7 +49,7 @@ public class ListViewTypeSearcher {
         });
 
         listView.setOnKeyPressed(e -> {
-            if (e.getCode() == KeyCode.ENTER) {
+            if (e.getCode().isLetterKey() || e.getCode().isDigitKey() || e.getCode().isWhitespaceKey()) {
                 if (listView.getItems().size() > 0 && searchString.get().length() > 0) {
                     index.set(index.get() + 1);
                     if (index.get() >= listView.getItems().size())
@@ -70,7 +70,7 @@ public class ListViewTypeSearcher {
                 searchString.set("");
                 if (prevKeyCode.get() == KeyCode.BACK_SPACE)
                     listView.getSelectionModel().clearSelection();
-            } else {
+            } else if (e.getCode() != KeyCode.SHIFT) {
                 if (prevKeyCode.get() == KeyCode.ENTER) {
                     searchString.set("");
                 }
