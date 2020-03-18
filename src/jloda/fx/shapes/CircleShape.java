@@ -42,11 +42,11 @@ public class CircleShape extends Circle implements ISized {
 
     @Override
     public double getWidth() {
-        return 2 * getRadius();
+        return 2.0 * getRadius();
     }
 
     @Override
     public double getHeight() {
-        return 2 * getRadius();
+        return 2.0 * getRadius();
     }
 }
