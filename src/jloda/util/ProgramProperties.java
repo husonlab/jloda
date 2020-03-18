@@ -59,6 +59,7 @@ public class ProgramProperties {
     static private String programVersion = "";
     static private String programTitle = "";
     static private String programLicence = "";
+    static private String programURL = "";
 
     static private String defaultFileName = null;
 
@@ -599,4 +600,11 @@ public class ProgramProperties {
         ProgramProperties.defaultFontFX = defaultFontFX;
     }
 
+    public static String getProgramURL() {
+        return programURL;
+    }
+
+    public static void setProgramURL(String programURL) {
+        ProgramProperties.programURL = programURL;
+    }
 }

@@ -480,6 +480,22 @@ public class SequenceUtils {
         return result;
     }
 
+    /**
+     * gets the reverse complement of a segment
+     *
+     * @param sequence
+     * @param offset   start of segment
+     * @param length   length of segment
+     * @return reverse complement of a segment
+     */
+    public static byte[] getReverseComplement(byte[] sequence, int offset, int length, byte[] result) {
+        if (result == null)
+            result = new byte[length];
+        for (int i = 0; i < length; i++) {
+            result[i] = getComplement(sequence[length + offset - 1 - i]);
+        }
+        return result;
+    }
 
     /**
      * translate a DNA sequence into protein
@@ -585,5 +601,18 @@ public class SequenceUtils {
             if (aSequence == '-')
                 count++;
         return count;
+    }
+
+    public static int compare(byte[] str1, int offset1, byte[] str2, int offset2, int length) {
+        length = Math.min(str1.length, length);
+        length = Math.min(str2.length, length);
+
+        for (int i = 0; i < length; i++) {
+            if (str1[offset1 + i] < str2[offset2 + i])
+                return -1;
+            else if (str1[offset1 + i] > str2[offset2 + i])
+                return 1;
+        }
+        return -Integer.compare(str1.length, str2.length);
     }
 }
