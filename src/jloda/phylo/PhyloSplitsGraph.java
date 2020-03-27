@@ -91,16 +91,16 @@ public class PhyloSplitsGraph extends PhyloGraph {
 
         for (Node v : src.nodes()) {
             final Node w = (oldNode2NewNode.getValue(v));
-            setLabel(w, src.nodeLabels.getValue(v));
+            setLabel(w, src.getLabel(v));
             node2taxa.setValue(w, src.node2taxa.getValue(v));
         }
         for (Edge e : src.edges()) {
             final Edge f = (oldEdge2NewEdge.getValue(e));
-            edgeWeights.put(f, src.edgeWeights.getValue(e));
-            setLabel(f, src.edgeLabels.getValue(e));
-            edgeConfidences.put(f, src.edgeConfidences.getValue(e));
-            edgeAngles.put(f, src.edgeAngles.getValue(e));
-            splits.put(f, src.splits.getValue(e));
+            setWeight(f, src.getWeight(e));
+            setLabel(f, src.getLabel(e));
+            setConfidence(f, src.getConfidence(e));
+            setAngle(f, src.getAngle(e));
+            setSplit(f, src.getSplit(e));
         }
         for (int i = 0; i < src.taxon2node.size(); i++) {
             Node v = src.getTaxon2Node(i + 1);
