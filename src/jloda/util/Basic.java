@@ -2705,13 +2705,18 @@ public class Basic {
     }
 
     /**
-     * gets a inputstream. If file ends on gz or zip opens appropriate unzipping stream
+     * gets an input stream. If file ends on gz or zip opens appropriate unzipping stream. Can also be stdin or stdin.gz
      *
      * @param fileName
      * @return input stream
      * @throws IOException
      */
     public static InputStream getInputStreamPossiblyZIPorGZIP(String fileName) throws IOException {
+        if(fileName.endsWith("stdin"))
+            return System.in;
+        else if(fileName.endsWith("stdin-gz"))
+            return new GZIPInputStream(System.in);
+
         final File file = new File(fileName);
         if (file.isDirectory())
             throw new IOException("Directory, not a file: " + file);
@@ -2730,7 +2735,19 @@ public class Basic {
         return ins;
     }
 
+    /**
+     * opens a file or gzipped file for reading. Can also be stdin
+     * @param ins
+     * @param fileName
+     * @return
+     * @throws IOException
+     */
     public static InputStream getInputStreamPossiblyGZIP(InputStream ins, String fileName) throws IOException {
+        if(fileName.endsWith("stdin"))
+            return System.in;
+        else if(fileName.endsWith("stdin-gz"))
+            return new GZIPInputStream(System.in);
+
         if (fileName.toLowerCase().endsWith(".gz")) {
             return new GZIPInputStream(ins);
         } else return ins;
@@ -2744,10 +2761,14 @@ public class Basic {
      * @throws IOException
      */
     public static OutputStream getOutputStreamPossiblyZIPorGZIP(String fileName) throws IOException {
-        if (fileName.equals("stdout"))
+        if (fileName.endsWith("stdout"))
             return System.out;
-        else if (fileName.equals("stderr"))
+        else if(fileName.endsWith("stdout-gz"))
+            return  new GZIPOutputStream(System.out);
+        else if (fileName.endsWith("stderr"))
             return System.err;
+        else if(fileName.endsWith("stderr-gz"))
+            return  new GZIPOutputStream(System.err);
         else {
             OutputStream outs = new FileOutputStream(fileName);
             if (fileName.toLowerCase().endsWith(".gz")) {
@@ -3980,7 +4001,7 @@ public class Basic {
         final String[] strings = new String[values.size()];
         int count = 0;
         for (Object value : values) {
-            strings[count++] = (value == null ? null : values.toString());
+            strings[count++] = (value == null ? null : value.toString());
         }
         return strings;
     }
