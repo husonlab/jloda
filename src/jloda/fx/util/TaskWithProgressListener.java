@@ -108,6 +108,7 @@ abstract public class TaskWithProgressListener<T> extends Task<T> implements Cal
 
                 @Override
                 public void incrementProgress() throws CanceledException {
+                    checkForCancel();
                     if (debug)
                         System.err.println("progress.incrementProgress()");
                     TaskWithProgressListener.this.updateProgress(++currentProgress, maxProgress);
