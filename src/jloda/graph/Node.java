@@ -25,6 +25,8 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
+import java.util.stream.Stream;
+import java.util.stream.StreamSupport;
 
 /**
  * Node class used by Graph class
@@ -537,6 +539,11 @@ public class Node extends NodeEdge implements Comparable<Node> {
         };
     }
 
+    public Stream<Edge> outEdgesStream(boolean parallel) {
+        return StreamSupport.stream(outEdges().spliterator(), parallel);
+    }
+
+
     public Iterable<Edge> inEdges() {
         return () -> new Iterator<>() {
             Edge e = getFirstInEdge();
@@ -555,6 +562,11 @@ public class Node extends NodeEdge implements Comparable<Node> {
         };
     }
 
+    public Stream<Edge> inEdgesStream(boolean parallel) {
+        return StreamSupport.stream(inEdges().spliterator(), parallel);
+    }
+
+
     public Iterable<Edge> adjacentEdges() {
         return () -> new Iterator<>() {
             Edge e = getFirstAdjacentEdge();
@@ -571,6 +583,10 @@ public class Node extends NodeEdge implements Comparable<Node> {
                 return result;
             }
         };
+    }
+
+    public Stream<Edge> adjacentEdgesStream(boolean parallel) {
+        return StreamSupport.stream(adjacentEdges().spliterator(), parallel);
     }
 
     public Iterable<Node> adjacentNodes() {
@@ -591,6 +607,11 @@ public class Node extends NodeEdge implements Comparable<Node> {
         };
     }
 
+    public Stream<Node> adjacentNodeStream(boolean parallel) {
+        return StreamSupport.stream(adjacentNodes().spliterator(), parallel);
+    }
+
+
     public Iterable<Node> children() {
         return () -> new Iterator<>() {
             private Edge e = getFirstOutEdge();
@@ -607,6 +628,10 @@ public class Node extends NodeEdge implements Comparable<Node> {
                 return result;
             }
         };
+    }
+
+    public Stream<Node> childrenStream(boolean parallel) {
+        return StreamSupport.stream(children().spliterator(), parallel);
     }
 
     public Iterable<Node> parents() {
@@ -626,6 +651,11 @@ public class Node extends NodeEdge implements Comparable<Node> {
             }
         };
     }
+
+    public Stream<Node> parentsStream(boolean parallel) {
+        return StreamSupport.stream(parents().spliterator(), parallel);
+    }
+
 
     public boolean isLeaf() {
         return outDegree == 0;
