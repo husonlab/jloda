@@ -76,7 +76,8 @@ public class ResourceManagerFX {
     public static ImageView getIconAsImageView(String fileName, final double height) {
         final ImageView imageView = new ImageView(getIcon(fileName));
         imageView.setPreserveRatio(true);
-        imageView.setFitHeight(height);
+        if (height > 0)
+            imageView.setFitHeight(height);
         return imageView;
     }
 
@@ -193,7 +194,12 @@ public class ResourceManagerFX {
      * @param fileName    the name of the icon file
      */
     public static Image getImageResource(Class clazz, String packageName, String fileName) {
-        final String resname = ("/" + packageName.replace('.', '/') + "/" + fileName).replaceAll(" ", "\\ ");
+        packageName = packageName.replace(".", "/");
+        if (!packageName.startsWith("/"))
+            packageName = "/" + packageName;
+        if (!packageName.endsWith("/"))
+            packageName += "/";
+        final String resname = (packageName + fileName).replaceAll(" ", "\\ ");
         try (InputStream is = clazz.getResourceAsStream(resname)) {
             byte[] buffer = new byte[0];
             byte[] tmpbuf = new byte[1024];
@@ -220,8 +226,13 @@ public class ResourceManagerFX {
      * @param fileName    the name of the file
      */
     public static File getFileResource(Class clazz, String packageName, String fileName) {
+        packageName = packageName.replace(".", "/");
+        if (!packageName.startsWith("/"))
+            packageName = "/" + packageName;
+        if (!packageName.endsWith("/"))
+            packageName += "/";
         try {
-            final String resourceName = ("/" + packageName.replace('.', '/') + "/" + fileName).replaceAll(" ", "\\ ");
+            final String resourceName = (packageName + fileName).replaceAll(" ", "\\ ");
             final URL url = clazz.getResource(resourceName);
             return new File(url.getFile());
         } catch (Exception exc) {
@@ -236,8 +247,13 @@ public class ResourceManagerFX {
      * @param fileName    the name of the file
      */
     public static URL getFileURL(Class clazz, String packageName, String fileName) {
+        packageName = packageName.replace(".", "/");
+        if (!packageName.startsWith("/"))
+            packageName = "/" + packageName;
+        if (!packageName.endsWith("/"))
+            packageName += "/";
         try {
-            final String resourceName = ("/" + packageName.replace('.', '/') + "/" + fileName).replaceAll(" ", "\\ ");
+            final String resourceName = (packageName + fileName).replaceAll(" ", "\\ ");
             return clazz.getResource(resourceName);
         } catch (Exception exc) {
             return null;
@@ -251,8 +267,13 @@ public class ResourceManagerFX {
      * @param fileName    the name of the file
      */
     public static InputStream getFileResourceAsStream(Class clazz, String packageName, String fileName) {
+        packageName = packageName.replace(".", "/");
+        if (!packageName.startsWith("/"))
+            packageName = "/" + packageName;
+        if (!packageName.endsWith("/"))
+            packageName += "/";
         try {
-            final String resourceName = ("/" + packageName.replace('.', '/') + "/" + fileName).replace(" ", "\\ ");
+            final String resourceName = (packageName + fileName).replace(" ", "\\ ");
             return clazz.getResourceAsStream(resourceName);
         } catch (Exception ex) {
             return null;

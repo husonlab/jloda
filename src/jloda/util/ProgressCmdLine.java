@@ -64,6 +64,11 @@ public class ProgressCmdLine implements ProgressListener {
         this.steps = steps;
     }
 
+    @Override
+    public void setProgressIgnoreCancel(long steps) {
+        this.steps = steps;
+    }
+
     /**
      * gets the current progress
      *
@@ -119,6 +124,11 @@ public class ProgressCmdLine implements ProgressListener {
     }
 
     public void incrementProgress() {
+    }
+
+
+    @Override
+    public void incrementProgressIgnoreCancel() {
 
     }
 

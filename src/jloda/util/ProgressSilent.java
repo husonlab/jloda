@@ -110,6 +110,15 @@ public class ProgressSilent implements ProgressListener {
     }
 
     public void incrementProgress() {
+    }
+
+    @Override
+    public void setProgressIgnoreCancel(long current) {
+
+    }
+
+    @Override
+    public void incrementProgressIgnoreCancel() {
 
     }
 

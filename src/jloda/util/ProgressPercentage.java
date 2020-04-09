@@ -108,6 +108,11 @@ public class ProgressPercentage implements ProgressListener {
      * @param steps
      */
     public void setProgress(final long steps) {
+        setProgressIgnoreCancel(steps);
+    }
+
+    @Override
+    public void setProgressIgnoreCancel(long steps) {
         if (steps > nextThreshold && !percentageReported[nextPercentageToReport]) {
             System.err.print((10 * nextPercentageToReport + "% "));
             percentageReported[nextPercentageToReport] = true;
@@ -118,6 +123,7 @@ public class ProgressPercentage implements ProgressListener {
         this.steps = steps;
         if (reportedCompleted)
             reportedCompleted = false;
+
     }
 
     /**
@@ -193,6 +199,11 @@ public class ProgressPercentage implements ProgressListener {
     }
 
     public void incrementProgress() {
+        incrementProgressIgnoreCancel();
+    }
+
+    @Override
+    public void incrementProgressIgnoreCancel() {
         setProgress(steps + 1);
     }
 

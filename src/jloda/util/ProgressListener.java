@@ -43,6 +43,14 @@ public interface ProgressListener extends AutoCloseable {
     void setProgress(long current) throws CanceledException;
 
     /**
+     * set progress, ignoring any cancel exception
+     *
+     * @param current step
+     */
+    void setProgressIgnoreCancel(long current);
+
+
+    /**
      * gets the current progress
      *
      * @return progress
@@ -81,6 +89,12 @@ public interface ProgressListener extends AutoCloseable {
      * increment progress
      */
     void incrementProgress() throws CanceledException;
+
+    /**
+     * increment progress, ignoring any cancel exception
+     */
+    void incrementProgressIgnoreCancel();
+
 
     /**
      * close the progress listener

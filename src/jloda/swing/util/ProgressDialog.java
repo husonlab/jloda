@@ -291,6 +291,25 @@ public class ProgressDialog implements ProgressListener {
         }
     }
 
+    @Override
+    public void setProgressIgnoreCancel(long steps) {
+        if (steps != currentProgress) {
+            currentProgress = steps;
+
+            if (progressBar != null && currentProgress != progressBar.getValue()) {
+                SwingUtilities.invokeLater(() -> {
+                    if (currentProgress < 0) {
+                        progressBar.setIndeterminate(true);
+                        progressBar.setString(null);
+                    } else {
+                        progressBar.setIndeterminate(false);
+                        progressBar.setValue((int) (shiftedDown ? steps >>> BITS : steps));
+                    }
+                });
+            }
+        }
+    }
+
     /**
      * gets the current progress
      *
@@ -311,6 +330,18 @@ public class ProgressDialog implements ProgressListener {
         else
             currentProgress++;
         checkForCancel();
+
+        if (progressBar != null && currentProgress != progressBar.getValue()) {
+            run(() -> progressBar.setValue((int) (shiftedDown ? currentProgress >>> BITS : currentProgress)));
+        }
+    }
+
+    @Override
+    public void incrementProgressIgnoreCancel() {
+        if (currentProgress == -1)
+            currentProgress = 1;
+        else
+            currentProgress++;
 
         if (progressBar != null && currentProgress != progressBar.getValue()) {
             run(() -> progressBar.setValue((int) (shiftedDown ? currentProgress >>> BITS : currentProgress)));
