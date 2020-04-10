@@ -40,6 +40,7 @@ module jloda {
     opens jloda.fx.colorscale;
     opens jloda.fx.control.table;
     opens jloda.fx.find;
+    opens jloda.resources.icons;
     opens jloda.resources.icons.sun;
     opens jloda.resources.icons.dialog;
     exports jloda;

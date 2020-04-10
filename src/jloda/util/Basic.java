@@ -3007,7 +3007,7 @@ public class Basic {
      *
      * @param a
      * @param b
-     * @return true, if equal values
+     * @return true, if equals values
      */
     public static boolean equal(byte[] a, byte[] b) {
         if (a == null)
@@ -3698,10 +3698,10 @@ public class Basic {
     }
 
     /**
-     * checks that no two of the given files are equal
+     * checks that no two of the given files are equals
      *
      * @param fileNames (can be null or "")
-     * @return true, if no two files are equal (using File.equals())
+     * @return true, if no two files are equals (using File.equals())
      */
     public static boolean checkAllFilesDifferent(String... fileNames) {
         final File[] files = new File[fileNames.length];
@@ -4136,6 +4136,10 @@ public class Basic {
                 return t;
         }
         return null;
+    }
+
+    public static boolean equals(double a, double b, double threshold) {
+        return Math.abs(a - b) <= threshold;
     }
 }
 

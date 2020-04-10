@@ -151,7 +151,7 @@ public class Pair<S, T> implements Comparable<Pair<S, T>>, Comparator<Pair<S, T>
      * @param p1 the first object to be compared.
      * @param p2 the second object to be compared.
      * @return a negative integer, zero, or a positive integer as the
-     *         first argument is less than, equal to, or greater than the
+     *         first argument is less than, equals to, or greater than the
      *         second.
      * @throws ClassCastException if the arguments' types prevent them from
      *                            being compared by this comparator.

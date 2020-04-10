@@ -1698,8 +1698,17 @@ public class Graph extends GraphBase {
         return edgeStream(null);
     }
 
+    public Stream<Edge> edgeParallelStream() {
+        return edgeParallelStream(null);
+    }
+
+
     public Stream<Edge> edgeStream(Edge afterMe) {
         return StreamSupport.stream(edges(afterMe).spliterator(), false);
+    }
+
+    public Stream<Edge> edgeParallelStream(Edge afterMe) {
+        return StreamSupport.stream(edges(afterMe).spliterator(), true);
     }
 
     /**
@@ -1760,9 +1769,28 @@ public class Graph extends GraphBase {
      *
      * @return
      */
+    public Stream<Node> nodeParallelStream() {
+        return nodeParallelStream(null);
+    }
+
+    /**
+     * gets a node stream
+     *
+     * @return
+     */
     public Stream<Node> nodeStream(Node afterMe) {
         return StreamSupport.stream(nodes(afterMe).spliterator(), false);
     }
+
+    /**
+     * gets a node stream
+     *
+     * @return
+     */
+    public Stream<Node> nodeParallelStream(Node afterMe) {
+        return StreamSupport.stream(nodes(afterMe).spliterator(), true);
+    }
+
 
     /**
      * get the unhidden subset

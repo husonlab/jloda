@@ -155,7 +155,7 @@ public class NodeSet extends GraphBase implements Set<Node> {
      * equals
      *
      * @param obj
-     * @return true, if equal
+     * @return true, if equals
      */
     public boolean equals(Object obj) {
         if (obj instanceof Collection) {

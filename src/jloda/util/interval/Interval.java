@@ -156,10 +156,10 @@ public class Interval<T> implements Comparable<Interval<T>> {
     }
 
     /**
-     * Returns true if start and end are equal
+     * Returns true if start and end are equals
      *
      * @param other
-     * @return true, if start and end are equal
+     * @return true, if start and end are equals
      */
     public boolean equals(Interval<T> other) {
         return start == other.getStart() && end == other.end;

@@ -204,7 +204,7 @@ public class PhyloSplitsGraphUtils {
                     angle = graph.getAngle(currentEdge);
                     dirs.put(currentSplit, angle);
                 } else {
-                    //This is a new edge, so we affect it an angle according to the equal angle algorithm
+                    //This is a new edge, so we affect it an angle according to the equals angle algorithm
                     final ArrayList<Node> split = splits.get(splitId);
                     int xp = 0;
                     int xq = 0;
@@ -251,7 +251,7 @@ public class PhyloSplitsGraphUtils {
         final Stack<Edge> edges = new Stack<>();
         /* collect already seen nodes */
         final ArrayList<Node> seen = new ArrayList<>();
-        /* collect already computed nodes to check equal locations */
+        /* collect already computed nodes to check equals locations */
         final HashMap<Node, APoint2D> locations = new HashMap<>();
         /* collect currently crossed split-ids */
         ArrayList<Integer> crossedSplits = new ArrayList<>();
@@ -285,9 +285,9 @@ public class PhyloSplitsGraphUtils {
                     currentPoint = translateByAngle(currentPoint, angle, w);
                 }
 
-                // set location, check equal locations
+                // set location, check equals locations
                 final APoint2D loc = new APoint2D(currentPoint.getX(), currentPoint.getY());
-                // equal locations: append labels
+                // equals locations: append labels
                 if (locations.containsValue(loc)) {
                     Node twinNode;
                     String tLabel = graph.getLabel(u);
