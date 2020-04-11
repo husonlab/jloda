@@ -543,7 +543,6 @@ public class Node extends NodeEdge implements Comparable<Node> {
         return StreamSupport.stream(outEdges().spliterator(), parallel);
     }
 
-
     public Iterable<Edge> inEdges() {
         return () -> new Iterator<>() {
             Edge e = getFirstInEdge();
@@ -611,7 +610,6 @@ public class Node extends NodeEdge implements Comparable<Node> {
         return StreamSupport.stream(adjacentNodes().spliterator(), parallel);
     }
 
-
     public Iterable<Node> children() {
         return () -> new Iterator<>() {
             private Edge e = getFirstOutEdge();
@@ -672,6 +670,19 @@ public class Node extends NodeEdge implements Comparable<Node> {
                 return true;
         }
         return false;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof Node)) return false;
+        final Node that = (Node) o;
+        return getOwner() == that.getOwner() && getId() == that.getId();
+    }
+
+    @Override
+    public int hashCode() {
+        return Integer.hashCode(getId());
     }
 }
 

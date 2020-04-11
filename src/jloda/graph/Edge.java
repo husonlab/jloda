@@ -409,6 +409,19 @@ public class Edge extends NodeEdge implements Comparable<Edge> {
     Edge getTNext() {
         return tNext;
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof Edge)) return false;
+        final Edge that = (Edge) o;
+        return getOwner() == that.getOwner() && getId() == that.getId();
+    }
+
+    @Override
+    public int hashCode() {
+        return Integer.hashCode(getId());
+    }
 }
 
 // EOF

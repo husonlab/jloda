@@ -18,13 +18,6 @@
  *
  */
 
-/**
- * @version $Id: GraphBase.java,v 1.6 2005-01-30 13:00:39 huson Exp $
- *
- * Base class for all graph related stuff.
- *
- * @author Daniel Huson
- */
 package jloda.graph;
 
 /**

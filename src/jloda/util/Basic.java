@@ -4141,6 +4141,25 @@ public class Basic {
     public static boolean equals(double a, double b, double threshold) {
         return Math.abs(a - b) <= threshold;
     }
+
+    /**
+     * computes the weighted sum of two arrays (not necessarily of the same length_
+     *
+     * @param p
+     * @param array1
+     * @param q
+     * @param array2
+     * @return weighted sum
+     */
+    public static double[] weightedSum(double p, double[] array1, double q, double[] array2) {
+        final int top = Math.max(array1.length, array2.length);
+
+        final double[] sum = new double[top];
+        for (int i = 0; i < top; i++) {
+            sum[i] = (i < array1.length ? p * array1[i] : 0) + (i < array2.length ? q * array2[i] : 0);
+        }
+        return sum;
+    }
 }
 
 /**

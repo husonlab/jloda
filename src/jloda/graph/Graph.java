@@ -2042,14 +2042,22 @@ public class Graph extends GraphBase {
         for(Node v:nodes())
             if(v.getId()==id)
                 return v;
-            return null;
+        return null;
     }
 
     public Edge searchEdgeId(int id) {
-        for(Edge e:edges())
-            if(e.getId()==id)
+        for (Edge e : edges())
+            if (e.getId() == id)
                 return e;
         return null;
+    }
+
+    public ArrayList<Node> nodesList() {
+        return Basic.asList(nodes());
+    }
+
+    public ArrayList<Edge> edgesList() {
+        return Basic.asList(edges());
     }
 }
 
