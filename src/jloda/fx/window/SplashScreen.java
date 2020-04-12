@@ -25,6 +25,7 @@ import javafx.geometry.Point2D;
 import javafx.geometry.Rectangle2D;
 import javafx.scene.Scene;
 import javafx.scene.control.Label;
+import javafx.scene.effect.DropShadow;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.AnchorPane;
@@ -71,9 +72,10 @@ public class SplashScreen {
             final ImageView imageView = new ImageView(image);
             imageView.setScaleX(0.5);
             imageView.setScaleY(0.5);
+            imageView.setEffect(new DropShadow());
             stackPane.getChildren().add(imageView);
-            stage.setWidth(imageView.getScaleX() * image.getWidth());
-            stage.setHeight(imageView.getScaleY() * image.getHeight());
+            stage.setWidth(imageView.getScaleX() * image.getWidth() + 2);
+            stage.setHeight(imageView.getScaleY() * image.getHeight() + 2);
         } else {
             stage.setWidth(500);
             stage.setHeight(50);

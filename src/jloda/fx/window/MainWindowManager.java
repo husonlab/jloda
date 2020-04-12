@@ -21,6 +21,7 @@
 package jloda.fx.window;
 
 import javafx.application.Platform;
+import javafx.beans.InvalidationListener;
 import javafx.beans.binding.Bindings;
 import javafx.beans.binding.IntegerBinding;
 import javafx.beans.property.LongProperty;
@@ -61,6 +62,14 @@ public class MainWindowManager {
     private MainWindowManager() {
         mainWindows = FXCollections.observableArrayList();
         mainWindows2AdditionalWindows = new HashMap<>();
+
+        mainWindows.addListener((InvalidationListener) c -> {
+            for (int i = 0; i < mainWindows.size(); i++) {
+                for (int j = i + 1; j < mainWindows.size(); j++)
+                    if (mainWindows.get(i) == mainWindows.get(j))
+                        System.err.println("Duplicate: " + mainWindows.get(i));
+            }
+        });
     }
 
     /**
@@ -100,7 +109,6 @@ public class MainWindowManager {
      * @return true, if closed
      */
     public boolean closeMainWindow(IMainWindow mainWindow) {
-        if (mainWindows.size() == 1) {
             if (MainWindowManager.getInstance().size() == 1) {
                 if (!ClosingLastDocument.apply(mainWindow.getStage())) {
                     if (!mainWindow.isEmpty()) {
@@ -115,7 +123,6 @@ public class MainWindowManager {
                     return false;
                 }
             }
-        }
         ProgramProperties.put("WindowGeometry", (new WindowGeometry(mainWindow.getStage())).toString());
         // mainWindow.getStage().close();
 
@@ -159,8 +166,10 @@ public class MainWindowManager {
                         setLastFocusedMainWindow(newWindow);
                 });
 
-                addMainWindow(newWindow);
                 newWindow.show(stage, windowGeometry.getX(), windowGeometry.getY(), windowGeometry.getWidth(), windowGeometry.getHeight());
+                if (!mainWindows.contains(newWindow))
+                    addMainWindow(newWindow);
+
                 return newWindow;
             } catch (IOException ex) {
                 throw new RuntimeException(ex);
