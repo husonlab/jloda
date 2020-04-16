@@ -44,6 +44,12 @@ public class FindToolBarController {
     private Button allButton;
 
     @FXML
+    private Button findFromFileButton;
+
+    @FXML
+    private Separator fromFileSeparator;
+
+    @FXML
     private CheckBox caseSensitiveCheckBox;
 
     @FXML
@@ -95,6 +101,14 @@ public class FindToolBarController {
 
     public Button getAllButton() {
         return allButton;
+    }
+
+    public Button getFindFromFileButton() {
+        return findFromFileButton;
+    }
+
+    public Separator getFromFileSeparator() {
+        return fromFileSeparator;
     }
 
     public CheckBox getCaseSensitiveCheckBox() {
