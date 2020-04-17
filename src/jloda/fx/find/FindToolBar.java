@@ -301,6 +301,7 @@ public class FindToolBar extends VBox {
 
     public void setShowFindToolBar(boolean showFindToolBar) {
         this.showFindToolBar.set(showFindToolBar);
+        requestFocus();
     }
 
     public boolean getShowReplaceToolBar() {
