@@ -67,6 +67,11 @@ public class ProgressSilent implements ProgressListener {
         return 0;
     }
 
+
+    @Override
+    public void reportTaskCompleted() {
+    }
+
     /**
      * closes the dialog.
      */

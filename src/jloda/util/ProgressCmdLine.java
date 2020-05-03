@@ -78,6 +78,10 @@ public class ProgressCmdLine implements ProgressListener {
         return steps;
     }
 
+    @Override
+    public void reportTaskCompleted() {
+    }
+
     /**
      * closes the dialog.
      */

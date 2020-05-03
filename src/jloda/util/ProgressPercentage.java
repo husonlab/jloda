@@ -55,6 +55,7 @@ public class ProgressPercentage implements ProgressListener {
         startTime = System.currentTimeMillis();
         percentageReported[10] = true; // sentinel
         setMaximum(maxSteps);
+        reportedCompleted = false;
     }
 
     /**
@@ -148,7 +149,7 @@ public class ProgressPercentage implements ProgressListener {
     public void reportTaskCompleted() {
         System.err.println("100% (" + getTimeString() + ")");
         startTime = System.currentTimeMillis();
-        reportedCompleted = false;
+        reportedCompleted = true;
     }
 
     /**

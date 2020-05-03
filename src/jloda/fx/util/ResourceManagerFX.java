@@ -201,18 +201,21 @@ public class ResourceManagerFX {
             packageName += "/";
         final String resname = (packageName + fileName).replaceAll(" ", "\\ ");
         try (InputStream is = clazz.getResourceAsStream(resname)) {
-            byte[] buffer = new byte[0];
-            byte[] tmpbuf = new byte[1024];
-            while (true) {
-                int len = is.read(tmpbuf);
-                if (len <= 0)
-                    break;
-                byte[] newbuf = new byte[buffer.length + len];
-                System.arraycopy(buffer, 0, newbuf, 0, buffer.length);
-                System.arraycopy(tmpbuf, 0, newbuf, buffer.length, len);
-                buffer = newbuf;
-            }
-            return new Image(new ByteArrayInputStream(buffer));
+            if (is != null) {
+                byte[] buffer = new byte[0];
+                byte[] tmpbuf = new byte[1024];
+                while (true) {
+                    int len = is.read(tmpbuf);
+                    if (len <= 0)
+                        break;
+                    byte[] newbuf = new byte[buffer.length + len];
+                    System.arraycopy(buffer, 0, newbuf, 0, buffer.length);
+                    System.arraycopy(tmpbuf, 0, newbuf, buffer.length, len);
+                    buffer = newbuf;
+                }
+                return new Image(new ByteArrayInputStream(buffer));
+            } else
+                return null;
         } catch (Exception exc) {
             return null;
         }

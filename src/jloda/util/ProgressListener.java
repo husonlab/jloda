@@ -109,6 +109,11 @@ public interface ProgressListener extends AutoCloseable {
     boolean isCancelable();
 
     /**
+     *
+     */
+    void reportTaskCompleted();
+
+    /**
      * set the debug mode
      *
      * @param debug

@@ -2274,7 +2274,7 @@ public class Basic {
     }
 
     /**
-     * swallow a leading >, if present
+     * swallow leading >, if present
      *
      * @param word
      * @return string with leading > removed
@@ -2294,6 +2294,19 @@ public class Basic {
      */
     public static String swallowLeadingAtSign(String word) {
         if (word.startsWith("@"))
+            return word.substring(1).trim();
+        else
+            return word;
+    }
+
+    /**
+     * swallow a leading >, if present
+     *
+     * @param word
+     * @return string with leading > removed
+     */
+    public static String swallowLeadingGreaterOrAtSign(String word) {
+        if (word.startsWith(">") || word.startsWith("@"))
             return word.substring(1).trim();
         else
             return word;
@@ -4012,6 +4025,23 @@ public class Basic {
             file.delete();
     }
 
+    public static boolean clearDirectory(String directory, boolean removeDirectory) {
+        return clearDirectory(new File(directory), removeDirectory);
+    }
+
+    public static boolean clearDirectory(File directory, boolean removeDirectory) {
+        File[] allContents = directory.listFiles();
+        if (allContents != null) {
+            for (File file : allContents) {
+                clearDirectory(file, true);
+            }
+        }
+        if (removeDirectory)
+            return directory.delete();
+        else
+            return true;
+    }
+
     public static Iterable<Integer> getIterable(int[] values) {
         return () -> new Iterator<>() {
             private int i = 0;
@@ -4071,14 +4101,12 @@ public class Basic {
         return array[0];
     }
 
-    public static long getNumberOfLinesInFile(String inputFile) throws IOException {
-        try (FileLineIterator it = new FileLineIterator(inputFile)) {
-            long count = 0;
-            while (it.hasNext()) {
-                it.next();
-                count++;
-            }
-            return count;
+    public static long getNumberOfLinesInFile(String inputFile) {
+        try (BufferedReader r = new BufferedReader(new InputStreamReader(Basic.getInputStreamPossiblyZIPorGZIP(inputFile)))) {
+            return r.lines().count();
+        } catch (IOException ex) {
+            Basic.caught(ex);
+            return 0;
         }
     }
 
@@ -4159,6 +4187,26 @@ public class Basic {
             sum[i] = (i < array1.length ? p * array1[i] : 0) + (i < array2.length ? q * array2[i] : 0);
         }
         return sum;
+    }
+
+    /**
+     * parse a string that might end on k, m or g, for kilo, mega or giga
+     *
+     * @param string
+     * @return size
+     */
+    public static long parseKiloMegaGiga(String string) {
+        string = string.toLowerCase();
+        int pos = string.lastIndexOf("k");
+        if (pos != -1)
+            return 1000L * Long.parseLong(string.substring(0, pos));
+        pos = string.lastIndexOf("m");
+        if (pos != -1)
+            return 1000000L * Long.parseLong(string.substring(0, pos));
+        pos = string.lastIndexOf("g");
+        if (pos != -1)
+            return 1000000000L * Long.parseLong(string.substring(0, pos));
+        return Long.parseLong(string);
     }
 }
 

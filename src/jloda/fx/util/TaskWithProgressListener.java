@@ -131,6 +131,12 @@ abstract public class TaskWithProgressListener<T> extends Task<T> implements Cal
                 }
 
                 @Override
+                public void reportTaskCompleted() {
+                    if (debug)
+                        System.err.println("progress.reportTaskCompleted()");
+                }
+
+                @Override
                 public void close() {
                     if (debug)
                         System.err.println("progress.close()");

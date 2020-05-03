@@ -348,6 +348,11 @@ public class ProgressDialog implements ProgressListener {
         }
     }
 
+    @Override
+    public void reportTaskCompleted() {
+
+    }
+
     /**
      * closes the dialog.
      */
