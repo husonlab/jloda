@@ -46,6 +46,11 @@ public class Single<S> implements Comparable<Single<S>>, Comparator<Single<S>> {
         this.value = s;
     }
 
+    public void setIfCurrentValueIsNull(S s) {
+        if (value == null)
+            value = s;
+    }
+
     public String toString() {
         return value.toString();
     }

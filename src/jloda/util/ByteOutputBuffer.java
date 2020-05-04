@@ -35,6 +35,7 @@ public class ByteOutputBuffer {
         this(100);
     }
 
+
     /**
      * clear
      */

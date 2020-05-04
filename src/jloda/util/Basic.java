@@ -2449,6 +2449,23 @@ public class Basic {
             throw new IOException("File not readable: " + fileName);
     }
 
+    public static void checkFileWritable(String fileName, boolean allowOverwrite) throws IOException {
+        final File file = new File(fileName);
+        if (file.exists()) {
+            if (!allowOverwrite)
+                throw new IOException("File exists: " + fileName);
+            else if (!file.delete())
+                throw new IOException("Failed to delete existing file: " + fileName);
+        }
+        try (Writer w = new FileWriter(file)) {
+            w.write("");
+        } catch (IOException ex) {
+            throw new IOException("Can't create file: " + fileName);
+        } finally {
+            file.delete();
+        }
+    }
+
     public static boolean isDate(String s) {
         long time;
         try {
