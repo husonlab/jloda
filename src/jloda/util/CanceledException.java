@@ -20,13 +20,15 @@
 
 package jloda.util;
 
+import java.io.IOException;
+
 /**
  * User canceled exception
  *
  * @author huson
- *         Date: 04-Dec-2003
+ * Date: 04-Dec-2003
  */
-public class CanceledException extends Exception {
+public class CanceledException extends IOException {
     public CanceledException() {
         super();
     }
