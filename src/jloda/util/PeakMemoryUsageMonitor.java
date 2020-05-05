@@ -74,11 +74,11 @@ public class PeakMemoryUsageMonitor {
      * @return peak usage
      */
     public static String getPeakUsageString() {
-        long available = (Runtime.getRuntime().maxMemory() / 1000000);
+        long available = (Runtime.getRuntime().maxMemory() / 1048576);
         if (available < 1024) {
-            return String.format("%d of %dM", getInstance().peak, available);
+            return String.format("%d of %d M", getInstance().peak, available);
         } else {
-            return String.format("%.1f of %.1fG", (double) getInstance().peak / 1000.0, (double) available / 1000.0);
+            return Basic.removeTrailingZerosAfterDot(String.format("%.1f of %.1f G", (double) getInstance().peak / 1024.0, (double) available / 1024.0));
         }
     }
 
@@ -88,7 +88,7 @@ public class PeakMemoryUsageMonitor {
      * @return seconds since start
      */
     public static String getSecondsSinceStartString() {
-        return ((System.currentTimeMillis() - getInstance().start) / 1000) + "s";
+        return String.format("%,ds", (System.currentTimeMillis() - getInstance().start) / 1000);
     }
 
 }
