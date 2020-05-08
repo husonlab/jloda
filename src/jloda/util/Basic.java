@@ -2678,11 +2678,15 @@ public class Basic {
      * copy a file
      *
      * @param source
-     * @param dest
+     * @param target
      * @throws java.io.IOException
      */
-    public static void copyFile(File source, File dest) throws IOException {
-        try (FileChannel sourceChannel = new FileInputStream(source).getChannel(); FileChannel destChannel = new FileOutputStream(dest).getChannel()) {
+    public static void copyFile(File source, File target) throws IOException {
+        copyFile(source.getPath(), target.getPath());
+    }
+
+    public static void copyFile(String source, String target) throws IOException {
+        try (FileChannel sourceChannel = new FileInputStream(source).getChannel(); FileChannel destChannel = new FileOutputStream(target).getChannel()) {
             destChannel.transferFrom(sourceChannel, 0, sourceChannel.size());
         }
     }
