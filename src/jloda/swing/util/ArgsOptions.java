@@ -180,7 +180,7 @@ public class ArgsOptions {
         if (!doHelp) {
             if (version != null)
                 System.err.println("Version   " + version);
-            if (authors != null && license == null)
+            if (authors != null)
                 System.err.println("Author(s) " + authors);
             if (license != null)
                 System.err.println(license);

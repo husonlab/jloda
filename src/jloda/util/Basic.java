@@ -4225,6 +4225,13 @@ public class Basic {
             return 1000000000L * Long.parseLong(string.substring(0, pos));
         return Long.parseLong(string);
     }
+
+    public static int copyBytes(String string, byte[] target) {
+        final byte[] source = string.getBytes();
+        final int len = Math.min(source.length, target.length);
+        System.arraycopy(source, 0, target, 0, len);
+        return len;
+    }
 }
 
 /**

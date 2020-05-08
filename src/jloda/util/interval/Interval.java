@@ -1,7 +1,5 @@
 /*
- * Interval.java Copyright (C) 2020. Daniel H. Huson
- *
- * (Some code written by other authors, as named in code.)
+ * Interval.java Copyright (C) 2020. Algorithms in Bioinformatics, University of Tuebingen
  *
  *  This program is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -15,11 +13,12 @@
  *
  *  You should have received a copy of the GNU General Public License
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
- *
  */
 
 /*
- * Interval.java Copyright (C) 2020. Algorithms in Bioinformatics, University of Tuebingen
+ * Interval.java Copyright (C) 2020. Daniel H. Huson
+ *
+ * (Some code written by other authors, as named in code.)
  *
  *  This program is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
