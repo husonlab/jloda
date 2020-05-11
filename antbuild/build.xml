@@ -51,7 +51,7 @@
 		</target>
 
 		<target name="compile" depends="copy_resources">
-			<javac  target="11" source="11"
+			<javac  target="14" source="14"
 				includeantruntime="false"
 				srcdir="../antbuild/src/jloda"
 				destdir="${buildModulesDir}/jloda"
