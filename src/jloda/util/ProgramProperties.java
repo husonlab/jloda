@@ -46,10 +46,8 @@ public class ProgramProperties {
     static private final java.util.Properties props = new java.util.Properties();
 
     static private final ObservableList<Image> programIconsFX = FXCollections.observableArrayList();
-    static private javafx.scene.text.Font defaultFontFX = javafx.scene.text.Font.font("Arial", 12);
-    private static final ArrayList<ImageIcon> programIcons = new ArrayList<>();
 
-    static private Font defaultFont=new Font("Arial",Font.PLAIN,12);
+    private static final ArrayList<ImageIcon> programIcons = new ArrayList<>();
 
     public static Color SELECTION_COLOR = new Color(252, 208, 102);
     public static Color SELECTION_COLOR_DARKER = new Color(210, 190, 95);
@@ -61,7 +59,6 @@ public class ProgramProperties {
     static private String programLicence = "";
 
     static private String defaultFileName = null;
-
 
     private static final boolean macOS = (System.getProperty("os.name") != null && System.getProperty("os.name").toLowerCase().startsWith("mac"));
     private static boolean useGUI = false;
@@ -82,6 +79,17 @@ public class ProgramProperties {
     public static final String SEARCH_URL = "SearchURL";
     public static final String defaultSearchURL = "http://www.google.com/search?q=%s";
 
+    static private final Font defaultFont = new Font("Arial", Font.PLAIN, 12);
+
+    static private javafx.scene.text.Font defaultFontFX = null;
+
+    static {
+        try {
+
+            defaultFontFX = javafx.scene.text.Font.font("Arial", 12);
+        } catch (Exception ignored) {
+        }
+    }
 
     /**
      * load properties from default file
