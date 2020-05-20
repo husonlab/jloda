@@ -42,4 +42,12 @@ public class SelectionEffect extends DropShadow {
         setRadius(6);
         setSpread(2);
     }
+
+    public static DropShadow create(Color color) {
+        final DropShadow dropShadow = new DropShadow();
+        dropShadow.setColor(color);
+        dropShadow.setRadius(6);
+        dropShadow.setSpread(2);
+        return dropShadow;
+    }
 }
