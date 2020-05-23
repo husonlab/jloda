@@ -188,11 +188,16 @@ public class BitSetUtils {
         final ArrayList<Integer> list = new ArrayList<>(set.cardinality());
             for (Integer a : members(set)) {
                 list.add(a);
-        }
+            }
         return list;
     }
 
     public static void addAll(BitSet bits, int... values) {
+        for (int i : values)
+            bits.set(i);
+    }
+
+    public static void addAll(BitSet bits, Iterable<Integer> values) {
         for (int i : values)
             bits.set(i);
     }

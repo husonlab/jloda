@@ -29,6 +29,7 @@ import jloda.util.Basic;
 import jloda.util.ProgramProperties;
 
 import java.util.Collection;
+import java.util.Map;
 import java.util.TreeMap;
 import java.util.TreeSet;
 
@@ -151,5 +152,12 @@ public class ColorSchemeManager {
 
     public ObservableMap<String, ObservableList<Color>> getName2ColorSchemes() {
         return name2ColorSchemes;
+    }
+
+    public void putAll(Map<String, ObservableList<Color>> colorSchemes) {
+        this.name2ColorSchemes.clear();
+        name2ColorSchemes.putAll(colorSchemes);
+        ProgramProperties.put("ColorSchemes", writeTables());
+        update.set(update.get() + 1);
     }
 }
