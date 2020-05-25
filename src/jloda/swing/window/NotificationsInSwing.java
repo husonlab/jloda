@@ -263,10 +263,12 @@ public class NotificationsInSwing {
             ProgramExecutorService.getInstance().submit(() -> {
                 try {
                     Thread.sleep(milliseconds);
-                } catch (InterruptedException e) {
+                } catch (InterruptedException ignored) {
                 } finally {
                     frame.setVisible(false);
-                    activeNotificationSlots.set(frame2slot.get(frame), null);
+                    final Integer slot=frame2slot.get(frame);
+                    if(slot!=null)
+                        activeNotificationSlots.set(slot, null);
                     frame2slot.remove(frame);
                 }
             });

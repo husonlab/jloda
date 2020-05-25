@@ -439,7 +439,7 @@ public class ArgsOptions {
         else
             longKeys.add(longKey);
 
-        usage.add("\t" + shortKey + ", " + longKey + " [number]: " + description + ". " + (mandatory ? "Mandatory option." : "Default value: " + defaultValue + "."));
+        usage.add("\t" + shortKey + ", " + longKey + " [number]: " + description + ". " + (mandatory ? "Mandatory option." : "Default value: " + defaultValue+"."));
 
         Number result = defaultValue;
 
@@ -549,7 +549,7 @@ public class ArgsOptions {
         else
             longKeys.add(longKey);
 
-        String defaultValueString = (defaultValue.length() == 0 ? "" : "Default value: " + defaultValue + ".");
+        String defaultValueString = (defaultValue.length() == 0 ? "" : "Default value: " + defaultValue);
 
         if (!hide)
             usage.add("\t" + shortKey + ", " + longKey + " [string]: " + description + ". " + (mandatory ? "Mandatory option." : defaultValueString)
@@ -604,10 +604,15 @@ public class ArgsOptions {
         else
             longKeys.add(longKey);
 
-        String defaultValueString = (defaultValue.size() == 0 ? "" : "Default value(s): " + Basic.toString(defaultValue, " ") + ".");
+        String defaultValueString = (defaultValue.size() == 0 ? "" : "Default value(s): '" + Basic.toString(defaultValue, "' "));
 
-        if (!hide)
-            usage.add("\t" + shortKey + ", " + longKey + " [string(s)]: " + description + ". " + (mandatory ? "Mandatory option" : defaultValueString) + (legalValues != null ? " legal values: " + Basic.toString(legalValues, ", ") : "."));
+        if (!hide) {
+            if(mandatory)
+                usage.add("\t" + shortKey + ", " + longKey + " [string(s)]: " + description + ". Mandatory option" +(legalValues != null ? " legal values: " + Basic.toString(legalValues, ", ") : "")+".");
+            else
+            usage.add("\t" + shortKey + ", " + longKey + " [string(s)]: " + description + ". "+ defaultValueString + (legalValues != null ? " legal values: " + Basic.toString(legalValues, ", ")+"." : defaultValueString.length()>0?".":""));
+
+        }
         List<String> result = new LinkedList<>();
         boolean inArguments = false; // once in arguments, will continue until argument starts with -
 
