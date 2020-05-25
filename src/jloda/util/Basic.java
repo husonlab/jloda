@@ -3820,8 +3820,9 @@ public class Basic {
 
     public static String removeTrailingZerosAfterDot(String text) {
         if (text.contains("."))
-            return text.replaceAll("\\.([0-9]*?)0*$", ".$1") // note: *? is lazy, does keep trailing 0's
-                    .replaceAll("\\.([0-9]*?)0*(\\s)", ".$1$2");
+            return text.replaceAll("\\.([0-9]+?)0*$", ".$1") // note: *? lazy, does keep trailing 0's
+                    .replaceAll("\\.([0-9]*?)0+(\\s)", ".$1$2")
+                    .replaceAll("\\.0+$", "").replaceAll("\\.0+(\\s)", "$1");
         else
             return text;
     }
