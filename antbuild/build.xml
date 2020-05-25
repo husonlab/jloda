@@ -18,6 +18,8 @@
 -->
 
 	<project name="JLODA" default="jar" basedir=".">
+	        <property name="ant.build.javac.source" value="13"/>
+        	<property name="ant.build.javac.target" value="13"/>
 
 		<property name="jfxDir" value="../../javafx/lib"/>
 		<property name="buildSrcDir" value="../antbuild/src"/>
