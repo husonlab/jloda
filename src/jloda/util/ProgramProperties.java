@@ -31,10 +31,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.OutputStream;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.LinkedList;
-import java.util.Objects;
+import java.util.*;
 
 /**
  * track program properties
@@ -48,6 +45,8 @@ public class ProgramProperties {
     static private final ObservableList<Image> programIconsFX = FXCollections.observableArrayList();
 
     private static final ArrayList<ImageIcon> programIcons = new ArrayList<>();
+
+    private static final Map<String,Object> presets=new HashMap<>();
 
     public static Color SELECTION_COLOR = new Color(252, 208, 102);
     public static Color SELECTION_COLOR_DARKER = new Color(210, 190, 95);
@@ -605,5 +604,15 @@ public class ProgramProperties {
 
     public static void setDefaultFontFX(javafx.scene.text.Font defaultFontFX) {
         ProgramProperties.defaultFontFX = defaultFontFX;
+    }
+
+    public static void preset (String key,Object value) {
+        presets.put(key,value);
+    }
+
+    public static void addPresets() {
+            for(String key:presets.keySet()) {
+                props.put(key,presets.get(key).toString());
+            }
     }
 }
