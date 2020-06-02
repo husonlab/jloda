@@ -29,10 +29,7 @@ public class GeometryUtilsFX {
 
     /**
      * Computes the angle of a two-dimensional vector.
-     *
-     * @param p Point2D
-     * @return angle in degrees
-     */
+      */
     public static double computeAngle(Point2D p) {
         if (p.getX() != 0) {
             double x = Math.abs(p.getX());
@@ -59,11 +56,6 @@ public class GeometryUtilsFX {
 
     /**
      * computes the angle difference between a and b as viewed from center
-     *
-     * @param center
-     * @param a
-     * @param b
-     * @return angle
      */
     public static double computeObservedAngle(Point2D center, Point2D a, Point2D b) {
         final Point2D da = a.subtract(center);
@@ -82,11 +74,6 @@ public class GeometryUtilsFX {
 
     /**
      * computes the angle difference between a and b as viewed from center
-     *
-     * @param center
-     * @param a
-     * @param b
-     * @return angle
      */
     public static double basicComputeAngle(Point2D center, Point2D a, Point2D b) {
         Point2D da = a.subtract(center);
@@ -124,11 +111,6 @@ public class GeometryUtilsFX {
 
     /**
      * Rotates a point by angle alpha around a second point
-     *
-     * @param src    the point to be rotated
-     * @param alpha  the angle
-     * @param anchor the anchor point
-     * @return the rotated point
      */
     public static Point2D rotateAbout(Point2D src, double alpha, Point2D anchor) {
         Point2D tar = new Point2D(src.getX() - anchor.getX(), src.getY() - anchor.getY());
@@ -139,12 +121,7 @@ public class GeometryUtilsFX {
 
     /**
      * Translate a point in the direction specified by an angle.
-     *
-     * @param apt   Point2D
-     * @param alpha double in degrees
-     * @param dist  double
-     * @return Point2D
-     */
+      */
     public static Point2D translateByAngle(Point2D apt, double alpha, double dist) {
         double dx = dist * Math.cos(DEG_TO_RAD_FACTOR * alpha);
         double dy = dist * Math.sin(DEG_TO_RAD_FACTOR * alpha);
@@ -169,11 +146,6 @@ public class GeometryUtilsFX {
 
     /**
      * Rotates a two-dimensional vector by the angle alpha.
-     *
-     * @param x
-     * @param y
-     * @param alpha angle in degree
-     * @return q point rotated around origin
      */
     public static Point2D rotate(double x, double y, double alpha) {
         double sina = Math.sin(DEG_TO_RAD_FACTOR * alpha);
@@ -183,9 +155,6 @@ public class GeometryUtilsFX {
 
     /**
      * put angle into range 0-360
-     *
-     * @param degrees
-     * @return shifted angle
      */
     public static double modulo360(double degrees) {
         while (degrees > 360)
@@ -197,9 +166,6 @@ public class GeometryUtilsFX {
 
     /**
      * returns the average of angles A and B
-     *
-     * @param AngleA in deg
-     * @param AngleB in deg
      */
     public static double midAngle(double AngleA, double AngleB) {
         if (modulo360(AngleA - AngleB) < 180) {
@@ -213,9 +179,6 @@ public class GeometryUtilsFX {
 
     /**
      * clamp to range 0..2PI
-     *
-     * @param x
-     * @return modulo 2PI
      */
     static public double moduloTwoPI(double x) {
         while (x < 0)
@@ -227,10 +190,7 @@ public class GeometryUtilsFX {
 
     /**
      * returns the difference of angles A and B
-     *
-     * @param A
-     * @param B
-     */
+      */
     public static double squaredDistance(Point2D A, Point2D B) {
         return (B.getX() - A.getX()) * (B.getX() - A.getX()) + (B.getY() - A.getY()) * (B.getY() - A.getY());
     }
@@ -243,7 +203,21 @@ public class GeometryUtilsFX {
         return new Point3D(point.getX(), point.getY(), 0);
     }
 
+    public static Point3D from2Dto3D(Point2D point,double z) {
+        return new Point3D(point.getX(), point.getY(), z);
+    }
+
     public static Point2D from3Dto2D(Point3D point) {
         return new Point2D(point.getX(), point.getY());
+    }
+
+    /**
+     * are three points colinear?
+     */
+    public static boolean colinear(Point3D a, Point3D b, Point3D c) {
+        final double v1=2*((a.getX()-c.getX())*(b.getX()-a.getX())+(a.getY()-c.getY())*(b.getY()-a.getY())+(a.getZ()-c.getZ())*(b.getZ()-a.getZ()));
+              final double v2=4*((a.getX()-b.getX())*(a.getX()-b.getX())+(a.getY()-b.getY())*(a.getY()-b.getY())+(a.getZ()-b.getZ())*(a.getZ()-b.getZ()))
+                      *((b.getX()-a.getX())*(b.getX()-a.getX())+(b.getY()-a.getY())*(b.getY()-a.getY())+(b.getZ()-a.getZ())*(b.getZ()-a.getZ()));
+              return Math.abs(v1*v1-4*v2)<0.001;
     }
 }

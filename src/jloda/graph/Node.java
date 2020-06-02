@@ -654,6 +654,12 @@ public class Node extends NodeEdge implements Comparable<Node> {
         return StreamSupport.stream(parents().spliterator(), parallel);
     }
 
+    public Node getParent() {
+        if(inDegree>0)
+            return getFirstInEdge().getSource();
+        else
+            return null;
+    }
 
     public boolean isLeaf() {
         return outDegree == 0;

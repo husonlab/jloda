@@ -55,6 +55,13 @@ public class ResourceManager {
      * Returns the icon with name specified by the parameter, or <code>null</code> if there is none.
      */
     public static ImageIcon getIcon(String name) {
+        return getIcon(name,isWarningMissingIcon());
+    }
+
+        /**
+         * Returns the icon with name specified by the parameter, or <code>null</code> if there is none.
+         */
+    public static ImageIcon getIcon(String name,boolean warningMissingIcon) {
         if (iconMap.containsKey(name))
             return iconMap.get(name);
 
@@ -329,6 +336,10 @@ public class ResourceManager {
 
     public static void setWarningMissingIcon(boolean warningMissingIcon) {
         ResourceManager.warningMissingIcon = warningMissingIcon;
+    }
+
+    public static boolean isWarningMissingIcon() {
+        return warningMissingIcon;
     }
 
     public static HashMap<String, ImageIcon> getIconMap() {
