@@ -3020,12 +3020,12 @@ public class Basic {
         return union;
     }
 
+    public static boolean notBlank (String s) {
+        return s.trim().length()>0;
+    }
+
     /**
      * read and verify a magic number from a stream
-     *
-     * @param ins
-     * @param expectedMagicNumber
-     * @throws java.io.IOException
      */
     public static void readAndVerifyMagicNumber(InputStream ins, byte[] expectedMagicNumber) throws IOException {
         byte[] magicNumber = new byte[expectedMagicNumber.length];
@@ -3038,10 +3038,6 @@ public class Basic {
 
     /**
      * compare two byte arrays of the same length
-     *
-     * @param a
-     * @param b
-     * @return true, if equals values
      */
     public static boolean equal(byte[] a, byte[] b) {
         if (a == null)
@@ -4237,6 +4233,19 @@ public class Basic {
         final int len = Math.min(source.length, target.length);
         System.arraycopy(source, 0, target, 0, len);
         return len;
+    }
+
+    public static String[] removePositions(BitSet positionsToRemove, String[] strings) {
+        if(strings.length>0) {
+            final String[] result = new String[strings.length - positionsToRemove.cardinality()];
+            for (int i = 0, j = 0; i < strings.length; i++) {
+                if (!positionsToRemove.get(i))
+                    result[j++] = strings[i];
+            }
+            return result;
+        }
+        else
+            return strings;
     }
 }
 
