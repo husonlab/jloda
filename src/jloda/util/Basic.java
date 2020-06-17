@@ -2440,13 +2440,19 @@ public class Basic {
     }
 
     public static void checkFileReadableNonEmpty(String fileName) throws IOException {
-        File file = new File(fileName);
+        final File file = new File(fileName);
         if (!file.exists())
             throw new IOException("No such file: " + fileName);
         if (file.length() == 0)
             throw new IOException("File is empty: " + fileName);
         if (!file.canRead())
             throw new IOException("File not readable: " + fileName);
+        if (file.getName().endsWith(".gz")) {
+            try (InputStream ins = new GZIPInputStream(new FileInputStream(file))) {
+                if ((ins.read() == -1))
+                    throw new IOException("File is empty: " + fileName);
+            }
+        }
     }
 
     public static void checkFileWritable(String fileName, boolean allowOverwrite) throws IOException {
