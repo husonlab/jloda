@@ -52,7 +52,7 @@ public class EditLabelDialog extends Dialog<String> {
         final RichTextLabel displayLabel = new RichTextLabel(label);
 
         controller.getInputTextArea().textProperty().addListener((c, o, n) -> {
-            displayLabel.setText(n.replaceAll("\\s+", " "));
+            displayLabel.setText(n.replaceAll("[\n\r]", " "));
         });
 
         controller.getPreviewStackPane().getChildren().add(displayLabel);
@@ -62,7 +62,7 @@ public class EditLabelDialog extends Dialog<String> {
 
         setResultConverter((dialogButton) -> {
             if (dialogButton == buttonTypeApply)
-                return controller.getInputTextArea().getText();
+                return displayLabel.getText();
             else
                 return null;
         });

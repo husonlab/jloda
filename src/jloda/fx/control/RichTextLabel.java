@@ -23,6 +23,8 @@ import javafx.beans.property.*;
 import javafx.scene.Node;
 import javafx.scene.control.ContentDisplay;
 import javafx.scene.control.Control;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.paint.Color;
 import javafx.scene.paint.Paint;
 import javafx.scene.text.*;
@@ -219,6 +221,7 @@ public class RichTextLabel extends TextFlow {
             for (int i = 1; i < events.size(); i++) {
                 final Event event = events.get(i);
 
+
                 if (event.getPos() > segmentStart) {
                     final Text textItem = new Text(getText().substring(segmentStart, event.getPos()));
                     textItem.setFill(textFill);
@@ -323,11 +326,58 @@ public class RichTextLabel extends TextFlow {
                 active.put(event.getChangeType(), event.isStart());
 
                 segmentStart = event.getSegmentStart();
+
+                if (event.getChange() == Event.Change.image) {
+                    final Node node = getImage(event.getArgument());
+                    if (node != null) {
+                        node.setTranslateY(offset);
+                        getChildren().add(node);
+                    }
+                }
             }
         }
 
         if (getGraphic() != null && (getContentDisplay() != ContentDisplay.BOTTOM || getContentDisplay() != ContentDisplay.RIGHT))
             getChildren().add(getGraphic());
+    }
+
+    private Node getImage(String specification) {
+        if (specification != null) {
+            specification = specification.replaceAll("\\s+\"", " \"").replaceAll("\"\\s+", "\" ");
+
+            final Map<String, String> map = new HashMap<>();
+            final String[] tokens = specification.split(" ");
+            for (String token : tokens) {
+                final String[] pair = token.split("=");
+                if (pair.length == 2) {
+                    final String key = pair[0].trim();
+                    String value = pair[1].trim();
+                    if (value.startsWith("\"") && value.endsWith("\"") && value.length() >= 2)
+                        value = value.substring(1, value.length() - 1);
+                    if (key.length() > 0)
+                        map.put(key, value);
+                }
+            }
+            if (map.containsKey("src")) {
+                final String src = map.get("src");
+                try {
+                    final double width = (map.containsKey("width") ? Double.parseDouble(map.get("width")) : -1);
+                    final double height = (map.containsKey("height") ? Double.parseDouble(map.get("height")) : -1);
+                    final ImageView imageView = new ImageView(new Image(src));
+                    if (width == -1 || height == -1)
+                        imageView.setPreserveRatio(true);
+                    if (width != -1)
+                        imageView.setFitWidth(width);
+                    if (height != -1)
+                        imageView.setFitHeight(height);
+                    return imageView;
+                } catch (Exception ignored) {
+                }
+            }
+            if (map.get("alt") != null)
+                return new Text(map.get("alt"));
+        }
+        return null;
     }
 
     static private class Event {
@@ -341,7 +391,8 @@ public class RichTextLabel extends TextFlow {
             subStart("<sub>"), subEnd("</sub>"),
             colorStart("<c "), colorEnd("</c>"),
             fontSizeStart("<size "), fontSizeEnd("</size>"),
-            fontFamilyStart("<font "), fontFamilyEnd("</font>");
+            fontFamilyStart("<font "), fontFamilyEnd("</font>"),
+            image("<img ");
 
             private final String tag;
 

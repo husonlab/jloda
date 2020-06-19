@@ -54,9 +54,9 @@
         </GridPane>
     </top>
     <center>
-        <TextArea editable="false" focusTraversable="false" minHeight="0.0" opacity="0.57" prefRowCount="4"
+        <TextArea editable="false" focusTraversable="false" minHeight="0.0" opacity="0.57" prefRowCount="5"
                   style="-fx-background-color: lightgray; -fx-border-color: transparent; -fx-border-width: 0;"
-                  text="Supported HTML tags:&#10;&lt;i&gt; italics &lt;/i&gt;, &lt;b&gt; bold &lt;/b&gt;, &lt;sup&gt; super-script &lt;/sup&gt; , &lt;sub&gt; sub-script &lt;/sub&gt; , &lt;u&gt; underline &lt;/u&gt;, &lt;a&gt; strike through &lt;/a&gt; ,  &lt;font &quot;name&quot;&gt;  font name &lt;/font&gt; , &lt;size &quot;value&quot;&gt; font size &lt;/size&gt;, &lt;c &quot;value&quot;&gt; font color &lt;/c&gt;&#10;"
+                  text="Supported HTML tags:&#10;&lt;i&gt; italics &lt;/i&gt;, &lt;b&gt; bold &lt;/b&gt;, &lt;sup&gt; super-script &lt;/sup&gt; , &lt;sub&gt; sub-script &lt;/sub&gt; , &lt;u&gt; underline &lt;/u&gt;, &lt;a&gt; strike through &lt;/a&gt; ,  &lt;font &quot;name&quot;&gt;  font name &lt;/font&gt; , &lt;size &quot;value&quot;&gt; font size &lt;/size&gt;, &lt;c &quot;value&quot;&gt; font color &lt;/c&gt;, &lt;img src=&quot;url&quot; alt=&quot;text&quot; width=&quot;value&quot; height=&quot;value&quot;&gt; adds an image&#10;"
                   wrapText="true" BorderPane.alignment="CENTER">
             <font>
                 <Font size="12.0"/>
