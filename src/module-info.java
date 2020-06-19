@@ -15,6 +15,7 @@ module jloda {
     exports jloda.fx.control.table;
     exports jloda.fx.find;
     exports jloda.fx.graph;
+    exports jloda.fx.label;
     exports jloda.fx.shapes;
     exports jloda.fx.undo;
     exports jloda.fx.util;
@@ -39,11 +40,13 @@ module jloda {
     exports jloda.thirdparty;
 
     opens jloda.fx.colorscale;
+    opens jloda.fx.label;
     opens jloda.fx.control.table;
     opens jloda.fx.find;
     opens jloda.resources.icons;
     opens jloda.resources.icons.sun;
     opens jloda.resources.icons.dialog;
+
     exports jloda;
     exports jloda.swing.window;
 

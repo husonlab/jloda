@@ -20,6 +20,8 @@
 package jloda.fx.control;
 
 import javafx.beans.property.*;
+import javafx.scene.Node;
+import javafx.scene.control.ContentDisplay;
 import javafx.scene.control.Control;
 import javafx.scene.paint.Color;
 import javafx.scene.paint.Paint;
@@ -52,6 +54,9 @@ public class RichTextLabel extends TextFlow {
     private final StringProperty text = new SimpleStringProperty();
     private final BooleanProperty requireHTMLTag = new SimpleBooleanProperty(false);
     private final ObjectProperty<Paint> textFill = new SimpleObjectProperty<>(Color.BLACK);
+    private final ObjectProperty<Node> graphic = new SimpleObjectProperty<>(null);
+
+    private final ObjectProperty<ContentDisplay> contentDisplay = new SimpleObjectProperty<>(ContentDisplay.TOP);
 
     /**
      * constructor
@@ -73,7 +78,23 @@ public class RichTextLabel extends TextFlow {
         fontProperty().addListener(c -> update());
         textFillProperty().addListener(c -> update());
         requireHTMLTagProperty().addListener(c -> update());
+        graphicProperty().addListener(c -> update());
+        contentDisplayProperty().addListener(c -> update());
+
         setText(text);
+    }
+
+    /**
+     * copy constructor. Copies everything except for the graphics node, if set
+     *
+     * @param that label to be copied.
+     */
+    public RichTextLabel(RichTextLabel that) {
+        this(that.getText());
+        setFont(that.getFont());
+        setTextFill(that.getTextFill());
+        setRequireHTMLTag(that.isRequireHTMLTag());
+        setContentDisplay(that.getContentDisplay());
     }
 
     public String getText() {
@@ -124,10 +145,36 @@ public class RichTextLabel extends TextFlow {
         this.requireHTMLTag.set(requireHTMLTag);
     }
 
+    public Node getGraphic() {
+        return graphic.get();
+    }
+
+    public ObjectProperty<Node> graphicProperty() {
+        return graphic;
+    }
+
+    public void setGraphic(Node graphic) {
+        this.graphic.set(graphic);
+    }
+
+    public ContentDisplay getContentDisplay() {
+        return contentDisplay.get();
+    }
+
+    public ObjectProperty<ContentDisplay> contentDisplayProperty() {
+        return contentDisplay;
+    }
+
+    public void setContentDisplay(ContentDisplay contentDisplay) {
+        this.contentDisplay.set(contentDisplay);
+    }
+
     private void update() {
         getChildren().clear();
+        if (getGraphic() != null && (getContentDisplay() != ContentDisplay.TOP || getContentDisplay() != ContentDisplay.LEFT))
+            getChildren().add(getGraphic());
 
-        if (getText().length() > 0) {
+        if (getText().length() > 0 && getContentDisplay() != ContentDisplay.GRAPHIC_ONLY) {
             final ArrayList<Event> events = new ArrayList<>();
             {
                 final Event event = Event.getEventAtPos(getText(), 0);
@@ -209,8 +256,8 @@ public class RichTextLabel extends TextFlow {
                     getChildren().add(textItem);
                 }
 
-                if (event.getChange().getChangeType().equals("fontFamily")) {
-                    if (event.getChange().isStart()) {
+                if (event.getChangeType().equals("fontFamily")) {
+                    if (event.isStart()) {
                         final String argument = event.getArgument();
                         if (argument != null) {
                             fontStack.push(font);
@@ -221,8 +268,8 @@ public class RichTextLabel extends TextFlow {
                             font = fontStack.pop();
                     }
                 }
-                if (event.getChange().getChangeType().equals("fontSize")) {
-                    if (event.getChange().isStart()) {
+                if (event.getChangeType().equals("fontSize")) {
+                    if (event.isStart()) {
                         final String argument = event.getArgument();
                         if (argument != null) {
                             fontSizeStack.push(fontSize);
@@ -236,8 +283,8 @@ public class RichTextLabel extends TextFlow {
                             fontSize = fontSizeStack.pop();
                     }
                 }
-                if (event.getChange().getChangeType().equals("color")) {
-                    if (event.getChange().isStart()) {
+                if (event.getChangeType().equals("color")) {
+                    if (event.isStart()) {
                         final String argument = event.getArgument();
                         if (argument != null) {
                             try {
@@ -253,29 +300,34 @@ public class RichTextLabel extends TextFlow {
                     }
                 }
 
-                if (event.getChange().getChangeType().equals("sup") && !event.getChange().isStart()) {
-                    offset += 0.3 * fontSize;
-                    fontSize *= 1 / 0.8;
-                } else if (event.getChange().getChangeType().equals("sub") && !event.getChange().isStart()) {
-
-                    offset -= 0.3 * fontSize;
-                    fontSize *= 1 / 0.8;
+                if (event.getChangeType().equals("sup")) {
+                    if (event.isStart()) {
+                        fontSize *= 0.8;
+                        offset -= 0.3 * fontSize;
+                    } else {
+                        fontSize *= 1 / 0.8;
+                        offset += 0.3 * fontSize;
+                    }
                 }
 
-                if (event.getChange().getChangeType().equals("sup") && event.getChange().isStart()) {
-                    offset -= 0.3 * fontSize;
-                    fontSize *= 0.8;
-                } else if (event.getChange().getChangeType().equals("sub") && event.getChange().isStart()) {
-
-                    offset += 0.3 * fontSize;
-                    fontSize *= 0.8;
+                if (event.getChangeType().equals("sub")) {
+                    if (event.isStart()) {
+                        offset += 0.3 * fontSize;
+                        fontSize *= 0.8;
+                    } else {
+                        fontSize *= 1 / 0.8;
+                        offset -= 0.3 * fontSize;
+                    }
                 }
 
-                active.put(event.getChange().getChangeType(), event.getChange().isStart());
+                active.put(event.getChangeType(), event.isStart());
 
                 segmentStart = event.getSegmentStart();
             }
         }
+
+        if (getGraphic() != null && (getContentDisplay() != ContentDisplay.BOTTOM || getContentDisplay() != ContentDisplay.RIGHT))
+            getChildren().add(getGraphic());
     }
 
     static private class Event {
@@ -299,14 +351,6 @@ public class RichTextLabel extends TextFlow {
 
             public String getTag() {
                 return tag;
-            }
-
-            public String getChangeType() {
-                return name().replaceAll("Start$", "").replaceAll("End$", "");
-            }
-
-            public boolean isStart() {
-                return name().endsWith("Start");
             }
         }
 
@@ -333,6 +377,15 @@ public class RichTextLabel extends TextFlow {
         public int getSegmentStart() {
             return segmentStart;
         }
+
+        public String getChangeType() {
+            return getChange().name().replaceAll("Start$", "").replaceAll("End$", "");
+        }
+
+        public boolean isStart() {
+            return getChange().name().endsWith("Start");
+        }
+
 
         public static Event getEventAtPos(String line, int pos) {
             line = line.substring(pos);

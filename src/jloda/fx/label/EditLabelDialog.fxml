@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!--
+  ~ LabelEditor.fxml Copyright (C) 2020. Daniel H. Huson
+  ~
+  ~  (Some files contain contributions from other authors, who are then mentioned separately.)
+  ~   
+  ~  This program is free software: you can redistribute it and/or modify
+  ~  it under the terms of the GNU General Public License as published by
+  ~  the Free Software Foundation, either version 3 of the License, or
+  ~  (at your option) any later version.
+  ~  
+  ~  This program is distributed in the hope that it will be useful,
+  ~  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  ~  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  ~  GNU General Public License for more details.
+  ~  
+  ~  You should have received a copy of the GNU General Public License
+  ~  along with this program.  If not, see <http://www.gnu.org/licenses/>.
+  ~
+  -->
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TextArea?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.Font?>
+<BorderPane prefWidth="500.0" xmlns="http://javafx.com/javafx/8.0.111" xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="jloda.fx.label.EditLabelDialogController">
+    <top>
+        <GridPane hgap="5.0" minHeight="-Infinity" vgap="5.0">
+            <columnConstraints>
+                <ColumnConstraints hgrow="NEVER" minWidth="-Infinity"/>
+                <ColumnConstraints hgrow="ALWAYS"/>
+            </columnConstraints>
+            <rowConstraints>
+                <RowConstraints minHeight="30.0" prefHeight="70.0" vgrow="ALWAYS"/>
+                <RowConstraints minHeight="-Infinity" vgrow="SOMETIMES"/>
+            </rowConstraints>
+            <children>
+                <Label alignment="CENTER" text="HTML:"/>
+                <Label alignment="CENTER" layoutX="10.0" layoutY="47.0" text="Label:" GridPane.rowIndex="1"/>
+                <TextArea fx:id="inputTextArea" promptText="Enter label, using supported html tags, if desired"
+                          GridPane.columnIndex="1"/>
+                <StackPane fx:id="previewStackPane" style="-fx-background-color: WHITE;" GridPane.columnIndex="1"
+                           GridPane.rowIndex="1"/>
+            </children>
+            <BorderPane.margin>
+                <Insets/>
+            </BorderPane.margin>
+            <padding>
+                <Insets bottom="5.0" left="10.0" right="10.0" top="5.0"/>
+            </padding>
+        </GridPane>
+    </top>
+    <center>
+        <TextArea editable="false" focusTraversable="false" minHeight="0.0" opacity="0.57" prefRowCount="4"
+                  style="-fx-background-color: lightgray; -fx-border-color: transparent; -fx-border-width: 0;"
+                  text="Supported HTML tags:&#10;&lt;i&gt; italics &lt;/i&gt;, &lt;b&gt; bold &lt;/b&gt;, &lt;sup&gt; super-script &lt;/sup&gt; , &lt;sub&gt; sub-script &lt;/sub&gt; , &lt;u&gt; underline &lt;/u&gt;, &lt;a&gt; strike through &lt;/a&gt; ,  &lt;font &quot;name&quot;&gt;  font name &lt;/font&gt; , &lt;size &quot;value&quot;&gt; font size &lt;/size&gt;, &lt;c &quot;value&quot;&gt; font color &lt;/c&gt;&#10;"
+                  wrapText="true" BorderPane.alignment="CENTER">
+            <font>
+                <Font size="12.0"/>
+            </font>
+        </TextArea>
+    </center>
+</BorderPane>
