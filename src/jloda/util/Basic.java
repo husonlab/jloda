@@ -1210,7 +1210,6 @@ public class Basic {
         return true;
     }
 
-
     /**
      * double backslashes
      *

@@ -39,7 +39,6 @@ package jloda.fx.find;
 
 import javafx.application.Platform;
 import javafx.beans.property.*;
-import javafx.scene.control.Label;
 import jloda.fx.control.ItemSelectionModel;
 import jloda.fx.control.ZoomableScrollPane;
 import jloda.graph.Graph;
@@ -56,20 +55,20 @@ public class GraphSearcher implements IObjectSearcher<Node> {
     private final ZoomableScrollPane scrollPane;
     private final ItemSelectionModel<Node> nodeSelection;
     private final Graph graph;
-    private final Function<Node, Label> labelGetter;
+    private final Function<Node, String> labelGetter;
     private final BiConsumer<Node, String> labelSetter;
+    private final Function<Node, javafx.scene.Node> labelNodeGetter;
+
     private Node which;
     private final ObjectProperty<Node> found = new SimpleObjectProperty<>();
 
-    public GraphSearcher(ZoomableScrollPane scrollPane, Graph graph, ItemSelectionModel<Node> nodeSelection, Function<Node, Label> labelGetter, BiConsumer<Node, String> labelSetter) {
+    public GraphSearcher(ZoomableScrollPane scrollPane, Graph graph, ItemSelectionModel<Node> nodeSelection, Function<Node, String> labelGetter, BiConsumer<Node, String> labelSetter, Function<Node, javafx.scene.Node> labelNodeGetter) {
         this.scrollPane = scrollPane;
         this.graph = graph;
         this.nodeSelection = nodeSelection;
         this.labelGetter = labelGetter;
-        if (labelSetter != null)
-            this.labelSetter = labelSetter;
-        else
-            this.labelSetter = (v, t) -> labelGetter.apply(v).setText(t);
+        this.labelSetter = labelSetter;
+        this.labelNodeGetter = labelNodeGetter;
     }
 
     @Override
@@ -125,7 +124,7 @@ public class GraphSearcher implements IObjectSearcher<Node> {
     @Override
     public String getCurrentLabel() {
         if (which != null)
-            return labelGetter.apply(which).getText();
+            return labelGetter.apply(which);
         else
             return null;
     }
@@ -172,7 +171,7 @@ public class GraphSearcher implements IObjectSearcher<Node> {
     public void updateView() {
         if (which != null) {
             final Node node = which;
-            runInFXApplicationThread(() -> scrollPane.ensureVisible(labelGetter.apply(node)));
+            runInFXApplicationThread(() -> scrollPane.ensureVisible(labelNodeGetter.apply(node)));
         }
     }
 
