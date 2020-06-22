@@ -1650,6 +1650,10 @@ public class NexusStreamParser extends NexusStreamTokenizer implements Closeable
         }
         return blockName;
     }
+
+    public boolean peekInteger() {
+        return Basic.isInteger(peekNextWord());
+    }
 }
 
 // EOF

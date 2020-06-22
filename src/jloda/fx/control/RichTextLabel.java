@@ -100,7 +100,7 @@ public class RichTextLabel extends TextFlow {
     }
 
     public String getText() {
-        return text.get();
+        return text.get().replaceAll("\\n", "<n>");
     }
 
     public StringProperty textProperty() {
@@ -171,8 +171,27 @@ public class RichTextLabel extends TextFlow {
         this.contentDisplay.set(contentDisplay);
     }
 
+    public String getRawText() {
+        String rawText = getText();
+        while (rawText.contains("<")) {
+            int a = rawText.indexOf("<");
+            int b = rawText.indexOf(">", a);
+            if (b != -1)
+                rawText = rawText.substring(0, a) + rawText.substring(b + 1);
+        }
+        return rawText;
+    }
+
+    @Override
+    public String toString() {
+        return getRawText();
+    }
+
     private void update() {
         getChildren().clear();
+
+        setText(getText().replaceAll("'", "\""));
+
         if (getGraphic() != null && (getContentDisplay() != ContentDisplay.TOP || getContentDisplay() != ContentDisplay.LEFT))
             getChildren().add(getGraphic());
 
@@ -333,6 +352,8 @@ public class RichTextLabel extends TextFlow {
                         node.setTranslateY(offset);
                         getChildren().add(node);
                     }
+                } else if (event.getChange() == Event.Change.lineBreak || event.getChange() == Event.Change.lineBreak2) {
+                    getChildren().add(new Text("\n"));
                 }
             }
         }
@@ -392,6 +413,7 @@ public class RichTextLabel extends TextFlow {
             colorStart("<c "), colorEnd("</c>"),
             fontSizeStart("<size "), fontSizeEnd("</size>"),
             fontFamilyStart("<font "), fontFamilyEnd("</font>"),
+            lineBreak("<br>"), lineBreak2("<br/>"),
             image("<img ");
 
             private final String tag;
@@ -436,8 +458,7 @@ public class RichTextLabel extends TextFlow {
         public boolean isStart() {
             return getChange().name().endsWith("Start");
         }
-
-
+        
         public static Event getEventAtPos(String line, int pos) {
             line = line.substring(pos);
             for (Event.Change change : Event.Change.values()) {

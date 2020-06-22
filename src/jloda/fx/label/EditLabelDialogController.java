@@ -22,6 +22,7 @@ package jloda.fx.label;
 
 
 import javafx.fxml.FXML;
+import javafx.scene.control.Button;
 import javafx.scene.control.TextArea;
 import javafx.scene.layout.StackPane;
 
@@ -33,11 +34,18 @@ public class EditLabelDialogController {
     @FXML
     private StackPane previewStackPane;
 
+    @FXML
+    private Button clearHTMLButton;
+
     public TextArea getInputTextArea() {
         return inputTextArea;
     }
 
     public StackPane getPreviewStackPane() {
         return previewStackPane;
+    }
+
+    public Button getClearHTMLButton() {
+        return clearHTMLButton;
     }
 }

@@ -25,6 +25,10 @@ import javafx.geometry.Dimension2D;
 import javafx.scene.Group;
 import javafx.scene.Node;
 import javafx.scene.control.*;
+import javafx.scene.image.Image;
+import javafx.scene.image.PixelReader;
+import javafx.scene.image.PixelWriter;
+import javafx.scene.image.WritableImage;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.Pane;
 import javafx.scene.shape.*;
@@ -244,5 +248,77 @@ public class BasicFX {
                 textField.setText(n.replaceAll("[^\\d]", ""));
             }
         });
+    }
+
+    public static boolean acceptableImageFormat(String name) {
+        name = name.toLowerCase();
+        return name.endsWith(".gif") || name.endsWith(".png") || name.endsWith(".jpg") || name.endsWith(".jpeg");
+    }
+
+    /**
+     * copy and remove white background
+     *
+     * @param image
+     * @param threshold between 0 and 255
+     * @return image with white removed
+     */
+    public static Image copyAndRemoveWhiteBackground(Image image, int threshold) {
+        final int width = (int) Math.round(image.getWidth());
+        final int height = (int) Math.round(image.getHeight());
+        final WritableImage result = new WritableImage(width, height);
+        final PixelReader reader = image.getPixelReader();
+        final PixelWriter writer = result.getPixelWriter();
+
+        // first copy everything:
+        for (int y = 0; y < height; y++) {
+            for (int x = 0; x < width; x++) {
+                writer.setArgb(x, y, reader.getArgb(x, y));
+            }
+        }
+
+        // sweep right and then left:
+        for (int y = 0; y < height; y++) {
+            int right = 0;
+            for (int x = 0; x < width; x++) {
+                if (meetsThreshold(reader.getArgb(x, y), threshold))
+                    writer.setArgb(x, y, 0x00FFFFFF);
+                else
+                    break;
+                right++;
+            }
+            for (int x = width - 1; x >= right; x--) {
+                if (meetsThreshold(reader.getArgb(x, y), threshold))
+                    writer.setArgb(x, y, 0x00FFFFFF);
+                else
+                    break;
+            }
+        }
+        // sweep down and then up:
+        for (int x = 0; x < width; x++) {
+            int bot = 0;
+            for (int y = 0; y < height; y++) {
+                if (meetsThreshold(reader.getArgb(x, y), threshold))
+                    writer.setArgb(x, y, 0x00FFFFFF);
+                else
+                    break;
+                bot++;
+            }
+            for (int y = height - 1; y >= bot; y--) {
+                if (meetsThreshold(reader.getArgb(x, y), threshold))
+                    writer.setArgb(x, y, 0x00FFFFFF);
+                else
+                    break;
+            }
+        }
+
+        return result;
+    }
+
+    public static boolean meetsThreshold(int argb, int threshold) {
+        final int r = (argb >> 16) & 0xFF;
+        final int g = (argb >> 8) & 0xFF;
+        final int b = argb & 0xFF;
+
+        return r >= threshold && g >= threshold && b >= threshold;
     }
 }
