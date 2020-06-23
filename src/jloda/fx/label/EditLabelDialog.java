@@ -78,8 +78,7 @@ public class EditLabelDialog extends Dialog<String> {
                                         try {
                                             final Image image = imageView.getImage(); // todo: remove background
                                             Platform.runLater(() -> imageView.setImage(image));
-                                        } catch (Exception ex) {
-                                            System.err.println(ex);
+                                        } catch (Exception ignored) {
                                         }
                                     });
                                 });
@@ -147,10 +146,6 @@ public class EditLabelDialog extends Dialog<String> {
 
         final Dragboard db = e.getDragboard();
 
-        System.err.println(db);
-        System.err.println(db.getString());
-        System.err.println(db.getImage());
-
         boolean success = false;
         if (db.hasFiles()) {
             success = true;
@@ -158,7 +153,6 @@ public class EditLabelDialog extends Dialog<String> {
             final List<File> files = db.getFiles();
             for (File file : files) {
                 if (BasicFX.acceptableImageFormat(file.getName())) {
-                    System.err.println(file.getAbsolutePath());
                     if (file.getName().startsWith("http") || file.getName().startsWith("file:")) {
                         inputTextArea.setText(inputTextArea.getText() + String.format(" <img src=\"%s\" height=64>", file.getPath()));
                     } else

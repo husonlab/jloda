@@ -40,7 +40,6 @@ package jloda.fx.find;
 import javafx.application.Platform;
 import javafx.beans.property.*;
 import jloda.fx.control.ItemSelectionModel;
-import jloda.fx.control.ZoomableScrollPane;
 import jloda.graph.Graph;
 import jloda.graph.Node;
 
@@ -52,23 +51,19 @@ import java.util.function.Function;
  * Daniel Huson, 2.2020
  */
 public class GraphSearcher implements IObjectSearcher<Node> {
-    private final ZoomableScrollPane scrollPane;
     private final ItemSelectionModel<Node> nodeSelection;
-    private final Graph graph;
+    private Graph graph;
     private final Function<Node, String> labelGetter;
     private final BiConsumer<Node, String> labelSetter;
-    private final Function<Node, javafx.scene.Node> labelNodeGetter;
 
     private Node which;
     private final ObjectProperty<Node> found = new SimpleObjectProperty<>();
 
-    public GraphSearcher(ZoomableScrollPane scrollPane, Graph graph, ItemSelectionModel<Node> nodeSelection, Function<Node, String> labelGetter, BiConsumer<Node, String> labelSetter, Function<Node, javafx.scene.Node> labelNodeGetter) {
-        this.scrollPane = scrollPane;
+    public GraphSearcher(Graph graph, ItemSelectionModel<Node> nodeSelection, Function<Node, String> labelGetter, BiConsumer<Node, String> labelSetter) {
         this.graph = graph;
         this.nodeSelection = nodeSelection;
         this.labelGetter = labelGetter;
         this.labelSetter = labelSetter;
-        this.labelNodeGetter = labelNodeGetter;
     }
 
     @Override
@@ -169,10 +164,17 @@ public class GraphSearcher implements IObjectSearcher<Node> {
 
     @Override
     public void updateView() {
-        if (which != null) {
-            final Node node = which;
-            runInFXApplicationThread(() -> scrollPane.ensureVisible(labelNodeGetter.apply(node)));
-        }
+    }
+
+    public Graph getGraph() {
+        return graph;
+    }
+
+    public void setGraph(Graph graph) {
+        if (graph == null)
+            throw new NullPointerException("graph");
+        which = null;
+        this.graph = graph;
     }
 
     @Override

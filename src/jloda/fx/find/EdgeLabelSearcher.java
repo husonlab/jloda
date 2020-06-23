@@ -68,7 +68,7 @@ public class EdgeLabelSearcher implements IObjectSearcher<Edge> {
         this.graph = graph;
         this.name = name;
         this.edgeSelectionModel = edgeSelectionModel;
-        globalFindable.set(true); // todo: should listen for graphs of graph
+        globalFindable.set(true); // todo: should listen for changes of graph
         selectionReplaceable.bind(Bindings.isNotEmpty(edgeSelectionModel.getSelectedItems()));
     }
 

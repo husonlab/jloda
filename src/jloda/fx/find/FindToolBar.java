@@ -386,4 +386,16 @@ public class FindToolBar extends VBox {
         addSearcher(searcher);
         searchManager.setSearcher(searcher);
     }
+
+    /**
+     * change the set of searchers, setting the first one
+     *
+     * @param searcher
+     */
+    public void setSearchers(ISearcher searcher, ISearcher... others) {
+        searchers.setAll(searcher);
+        searchers.addAll(others);
+        searchManager.setSearcher(searcher);
+    }
+
 }
