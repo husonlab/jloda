@@ -50,7 +50,6 @@ public class EditLabelDialog extends Dialog<String> {
     private final EditLabelDialogController controller;
 
     public EditLabelDialog(Stage owner, RichTextLabel label) {
-
         final ExtendedFXMLLoader<EditLabelDialogController> extendedFXMLLoader = new ExtendedFXMLLoader<>(this.getClass());
         controller = extendedFXMLLoader.getController();
 
@@ -61,9 +60,8 @@ public class EditLabelDialog extends Dialog<String> {
         getDialogPane().setContent(extendedFXMLLoader.getRoot());
         initModality(Modality.WINDOW_MODAL);
 
-        controller.getInputTextArea().setText(label.getText().replaceAll("<n>", "\n"));
-
-        final RichTextLabel displayLabel = new RichTextLabel(label);
+        final RichTextLabel displayLabel = (label != null ? new RichTextLabel(label) : new RichTextLabel());
+        controller.getInputTextArea().setText(displayLabel.getText().replaceAll("<n>", "\n"));
 
         if (false) // todo: implement background removal here
             displayLabel.getChildren().addListener((ListChangeListener<Node>) c -> {
@@ -90,8 +88,9 @@ public class EditLabelDialog extends Dialog<String> {
                 }
             });
         // trigger listener:
-        displayLabel.setText("");
-        displayLabel.setText(label.getText());
+        final String tmp = displayLabel.getText();
+        displayLabel.setText("???");
+        displayLabel.setText(tmp);
 
         controller.getInputTextArea().textProperty().addListener((c, o, n) -> {
             displayLabel.setText(n.replaceAll("[\n\r]", " "));
