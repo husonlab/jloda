@@ -33,6 +33,8 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.Pane;
 import javafx.scene.shape.*;
 import javafx.scene.text.Font;
+import javafx.scene.text.FontPosture;
+import javafx.scene.text.FontWeight;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
 
@@ -263,8 +265,8 @@ public class BasicFX {
      * @return image with white removed
      */
     public static Image copyAndRemoveWhiteBackground(Image image, int threshold) {
-        final int width = (int) Math.round(image.getWidth());
-        final int height = (int) Math.round(image.getHeight());
+        final int width = (int) image.getWidth();
+        final int height = (int) image.getHeight();
         final WritableImage result = new WritableImage(width, height);
         final PixelReader reader = image.getPixelReader();
         final PixelWriter writer = result.getPixelWriter();
@@ -320,5 +322,13 @@ public class BasicFX {
         final int b = argb & 0xFF;
 
         return r >= threshold && g >= threshold && b >= threshold;
+    }
+
+    public static FontWeight getWeight(Font font) {
+        return font.getName().contains("Bold") ? FontWeight.BOLD : FontWeight.NORMAL;
+    }
+
+    public static FontPosture getPosture(Font font) {
+        return font.getName().contains("Italic") ? FontPosture.ITALIC : FontPosture.REGULAR;
     }
 }

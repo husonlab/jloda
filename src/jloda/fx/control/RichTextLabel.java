@@ -28,6 +28,7 @@ import javafx.scene.image.ImageView;
 import javafx.scene.paint.Color;
 import javafx.scene.paint.Paint;
 import javafx.scene.text.*;
+import jloda.fx.util.BasicFX;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -38,7 +39,7 @@ import java.util.Stack;
  * A simple RichTextLabel. A number of html and html-like tags are interpreted.
  * The text can optionally be enclosed in \<html\> \</html\> tags.
  * List of tags:
- * \<i\> and \</i\> - italics
+ * \<i\> and \</i\> - italic
  * \<b\>  and \</b\> - bold
  * \<u\> and \</u\> - underline
  * \<a\> and \</a\> - strike through
@@ -225,8 +226,8 @@ public class RichTextLabel extends TextFlow {
                 events.add(new Event(Event.Change.htmlEnd, getText().length(), getText().length(), null));
 
             double offset = 0;
-            Font font = getFont();
-            double fontSize = font.getSize();
+            Font currentFont = getFont();
+            double fontSize = currentFont.getSize();
             Paint textFill = getTextFill();
 
             final Map<String, Boolean> active = new HashMap<>();
@@ -248,22 +249,25 @@ public class RichTextLabel extends TextFlow {
                     final FontWeight weight;
                     final Boolean bold = active.get("bold");
                     if (bold == null)
-                        weight = font.getName().contains("Bold") ? FontWeight.BOLD : FontWeight.NORMAL;
+                        weight = BasicFX.getWeight(currentFont);
                     else if (bold)
                         weight = FontWeight.BOLD;
                     else
                         weight = FontWeight.NORMAL;
 
                     final FontPosture posture;
-                    final Boolean italics = active.get("italics");
-                    if (italics == null)
-                        posture = font.getName().contains("Italics") ? FontPosture.ITALIC : FontPosture.REGULAR;
-                    else if (italics)
+                    final Boolean italic = active.get("italic");
+                    if (italic == null)
+                        posture = BasicFX.getPosture(currentFont);
+                    else if (italic)
                         posture = FontPosture.ITALIC;
                     else
                         posture = FontPosture.REGULAR;
 
-                    textItem.setFont(Font.font(font.getFamily(), weight, posture, fontSize));
+                    if (weight != FontWeight.NORMAL || posture != FontPosture.REGULAR) {
+                        textItem.setFont(Font.font(currentFont.getFamily(), weight, posture, fontSize));
+                    } else
+                        textItem.setFont(currentFont);
 
                     final Boolean strike = active.get("strike");
                     if (strike != null)
@@ -280,14 +284,19 @@ public class RichTextLabel extends TextFlow {
 
                 if (event.getChangeType().equals("fontFamily")) {
                     if (event.isStart()) {
-                        final String argument = event.getArgument();
-                        if (argument != null) {
-                            fontStack.push(font);
-                            font = new Font(argument, getFont().getSize());
+                        String family = event.getArgument();
+                        if (!Font.getFamilies().contains(family)) {
+                            family = "Arial";
+                        }
+                        if (family != null) {
+                            fontStack.push(currentFont);
+                            final Font newFont = Font.font(family, currentFont.getSize());
+                            System.err.println("2 Font: " + currentFont + " -> " + newFont);
+                            currentFont = newFont;
                         }
                     } else {
                         if (fontStack.size() > 0)
-                            font = fontStack.pop();
+                            currentFont = fontStack.pop();
                     }
                 }
                 if (event.getChangeType().equals("fontSize")) {
@@ -352,7 +361,7 @@ public class RichTextLabel extends TextFlow {
                         node.setTranslateY(offset);
                         getChildren().add(node);
                     }
-                } else if (event.getChange() == Event.Change.lineBreak || event.getChange() == Event.Change.lineBreak2) {
+                } else if (event.getChange() == Event.Change.lineBreak) {
                     getChildren().add(new Text("\n"));
                 }
             }
@@ -404,7 +413,7 @@ public class RichTextLabel extends TextFlow {
     static private class Event {
         enum Change {
             htmlStart("<html>"), htmlEnd("</html>"),
-            italicsStart("<i>"), italicsEnd("</i>"),
+            italicStart("<i>"), italicEnd("</i>"),
             boldStart("<b>"), boldEnd("</b>"),
             strikeStart("<a>"), strikeEnd("</a>"),
             underlineStart("<u>"), underlineEnd("</u>"),
@@ -413,7 +422,7 @@ public class RichTextLabel extends TextFlow {
             colorStart("<c "), colorEnd("</c>"),
             fontSizeStart("<size "), fontSizeEnd("</size>"),
             fontFamilyStart("<font "), fontFamilyEnd("</font>"),
-            lineBreak("<br>"), lineBreak2("<br/>"),
+            lineBreak("<br>"),
             image("<img ");
 
             private final String tag;

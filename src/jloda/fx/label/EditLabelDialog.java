@@ -20,13 +20,11 @@
 
 package jloda.fx.label;
 
-import javafx.application.Platform;
-import javafx.collections.ListChangeListener;
-import javafx.scene.Node;
-import javafx.scene.control.*;
+import javafx.scene.control.ButtonBar;
+import javafx.scene.control.ButtonType;
+import javafx.scene.control.Dialog;
+import javafx.scene.control.TextArea;
 import javafx.scene.effect.DropShadow;
-import javafx.scene.image.Image;
-import javafx.scene.image.ImageView;
 import javafx.scene.input.DragEvent;
 import javafx.scene.input.Dragboard;
 import javafx.scene.input.TransferMode;
@@ -39,7 +37,6 @@ import jloda.util.ProgramProperties;
 
 import java.io.File;
 import java.util.List;
-import java.util.concurrent.Executors;
 
 
 /**
@@ -61,39 +58,15 @@ public class EditLabelDialog extends Dialog<String> {
         initModality(Modality.WINDOW_MODAL);
 
         final RichTextLabel displayLabel = (label != null ? new RichTextLabel(label) : new RichTextLabel());
-        controller.getInputTextArea().setText(displayLabel.getText().replaceAll("<n>", "\n"));
-
-        if (false) // todo: implement background removal here
-            displayLabel.getChildren().addListener((ListChangeListener<Node>) c -> {
-                while (c.next()) {
-                    for (Node node : c.getAddedSubList()) {
-                        if (node instanceof ImageView) {
-                            final ImageView imageView = (ImageView) node;
-                            imageView.setOnContextMenuRequested(z -> {
-                                final MenuItem removeWhiteBackground = new MenuItem("Remove White Background");
-                                removeWhiteBackground.setOnAction(d -> {
-                                    Executors.newSingleThreadExecutor().submit(() -> {
-                                        try {
-                                            final Image image = imageView.getImage(); // todo: remove background
-                                            Platform.runLater(() -> imageView.setImage(image));
-                                        } catch (Exception ignored) {
-                                        }
-                                    });
-                                });
-                                final ContextMenu menu = new ContextMenu(removeWhiteBackground);
-                                menu.show(imageView, z.getScreenX(), z.getScreenY());
-                            });
-                        }
-                    }
-                }
-            });
+        controller.getInputTextArea().setText(displayLabel.getText().replaceAll("<br>", "\n"));
+        
         // trigger listener:
         final String tmp = displayLabel.getText();
         displayLabel.setText("???");
         displayLabel.setText(tmp);
 
         controller.getInputTextArea().textProperty().addListener((c, o, n) -> {
-            displayLabel.setText(n.replaceAll("[\n\r]", " "));
+            displayLabel.setText(n.replaceAll("[\n\r]", "<br>"));
         });
 
         controller.getPreviewStackPane().getChildren().add(displayLabel);
