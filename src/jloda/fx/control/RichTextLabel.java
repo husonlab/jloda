@@ -55,6 +55,7 @@ import java.util.concurrent.Executors;
  * Daniel Huson, 6.2020
  */
 public class RichTextLabel extends TextFlow {
+    private static final Map<String, Image> file2image = new HashMap<>();
     private final ObjectProperty<Font> font = new SimpleObjectProperty<>(Font.font("serif", 14));
     private final StringProperty text = new SimpleStringProperty();
     private final BooleanProperty requireHTMLTag = new SimpleBooleanProperty(false);
@@ -395,15 +396,31 @@ public class RichTextLabel extends TextFlow {
                 try {
                     final double width = (map.containsKey("width") ? Double.parseDouble(map.get("width")) : -1);
                     final double height = (map.containsKey("height") ? Double.parseDouble(map.get("height")) : -1);
-                    final ImageView imageView = new ImageView(new Image(src));
-                    if (true) { // perform naive background removal
-                        Executors.newSingleThreadExecutor().submit(() -> {
-                                    final Image image = BasicFX.copyAndRemoveWhiteBackground(imageView.getImage(), 240, true);
-                                    if (image != null)
-                                        Platform.runLater(() -> imageView.setImage(image));
-                                }
-                        );
+
+                    final ImageView imageView;
+
+                    synchronized (file2image) {
+                        if (file2image.containsKey(src))
+                            imageView = new ImageView(file2image.get(src));
+                        else {
+                            final Image image = new Image(src);
+                            imageView = new ImageView(image);
+                            file2image.put(src, image);
+
+                            if (true) { // perform naive background removal in separate thread...
+                                Executors.newSingleThreadExecutor().submit(() -> {
+                                            final Image image2 = BasicFX.copyAndRemoveWhiteBackground(imageView.getImage(), 240, true);
+                                            if (image2 != null)
+                                                Platform.runLater(() -> {
+                                                    imageView.setImage(image2);
+                                                    file2image.put(src, image2);
+                                                });
+                                        }
+                                );
+                            }
+                        }
                     }
+
                     if (width == -1 || height == -1)
                         imageView.setPreserveRatio(true);
                     if (width != -1)
