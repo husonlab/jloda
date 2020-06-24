@@ -19,6 +19,7 @@
 
 package jloda.fx.control;
 
+import javafx.application.Platform;
 import javafx.beans.property.*;
 import javafx.scene.Node;
 import javafx.scene.control.ContentDisplay;
@@ -34,6 +35,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Stack;
+import java.util.concurrent.Executors;
 
 /**
  * A simple RichTextLabel. A number of html and html-like tags are interpreted.
@@ -356,7 +358,7 @@ public class RichTextLabel extends TextFlow {
                 segmentStart = event.getSegmentStart();
 
                 if (event.getChange() == Event.Change.image) {
-                    final Node node = getImage(event.getArgument());
+                    final Node node = getImageNode(event.getArgument());
                     if (node != null) {
                         node.setTranslateY(offset);
                         getChildren().add(node);
@@ -371,7 +373,7 @@ public class RichTextLabel extends TextFlow {
             getChildren().add(getGraphic());
     }
 
-    private Node getImage(String specification) {
+    private Node getImageNode(String specification) {
         if (specification != null) {
             specification = specification.replaceAll("\\s+\"", " \"").replaceAll("\"\\s+", "\" ");
 
@@ -394,6 +396,14 @@ public class RichTextLabel extends TextFlow {
                     final double width = (map.containsKey("width") ? Double.parseDouble(map.get("width")) : -1);
                     final double height = (map.containsKey("height") ? Double.parseDouble(map.get("height")) : -1);
                     final ImageView imageView = new ImageView(new Image(src));
+                    if (true) { // perform naive background removal
+                        Executors.newSingleThreadExecutor().submit(() -> {
+                                    final Image image = BasicFX.copyAndRemoveWhiteBackground(imageView.getImage(), 240, true);
+                                    if (image != null)
+                                        Platform.runLater(() -> imageView.setImage(image));
+                                }
+                        );
+                    }
                     if (width == -1 || height == -1)
                         imageView.setPreserveRatio(true);
                     if (width != -1)
@@ -467,7 +477,7 @@ public class RichTextLabel extends TextFlow {
         public boolean isStart() {
             return getChange().name().endsWith("Start");
         }
-        
+
         public static Event getEventAtPos(String line, int pos) {
             line = line.substring(pos);
             for (Event.Change change : Event.Change.values()) {

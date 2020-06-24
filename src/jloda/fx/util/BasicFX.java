@@ -261,59 +261,63 @@ public class BasicFX {
      * copy and remove white background
      *
      * @param image
-     * @param threshold between 0 and 255
+     * @param threshold   between 0 and 255
+     * @param outsideOnly only remove white pixels that are accessible from the outside
      * @return image with white removed
      */
-    public static Image copyAndRemoveWhiteBackground(Image image, int threshold) {
-        final int width = (int) image.getWidth();
-        final int height = (int) image.getHeight();
-        final WritableImage result = new WritableImage(width, height);
-        final PixelReader reader = image.getPixelReader();
-        final PixelWriter writer = result.getPixelWriter();
+    public static Image copyAndRemoveWhiteBackground(Image image, int threshold, boolean outsideOnly) {
+        try {
+            final int width = (int) image.getWidth();
+            final int height = (int) image.getHeight();
+            final WritableImage result = new WritableImage(width, height);
+            final PixelReader reader = image.getPixelReader();
+            final PixelWriter writer = result.getPixelWriter();
 
-        // first copy everything:
-        for (int y = 0; y < height; y++) {
-            for (int x = 0; x < width; x++) {
-                writer.setArgb(x, y, reader.getArgb(x, y));
-            }
-        }
-
-        // sweep right and then left:
-        for (int y = 0; y < height; y++) {
-            int right = 0;
-            for (int x = 0; x < width; x++) {
-                if (meetsThreshold(reader.getArgb(x, y), threshold))
-                    writer.setArgb(x, y, 0x00FFFFFF);
-                else
-                    break;
-                right++;
-            }
-            for (int x = width - 1; x >= right; x--) {
-                if (meetsThreshold(reader.getArgb(x, y), threshold))
-                    writer.setArgb(x, y, 0x00FFFFFF);
-                else
-                    break;
-            }
-        }
-        // sweep down and then up:
-        for (int x = 0; x < width; x++) {
-            int bot = 0;
+            // first copy everything:
             for (int y = 0; y < height; y++) {
-                if (meetsThreshold(reader.getArgb(x, y), threshold))
-                    writer.setArgb(x, y, 0x00FFFFFF);
-                else
-                    break;
-                bot++;
+                for (int x = 0; x < width; x++) {
+                    writer.setArgb(x, y, reader.getArgb(x, y));
+                }
             }
-            for (int y = height - 1; y >= bot; y--) {
-                if (meetsThreshold(reader.getArgb(x, y), threshold))
-                    writer.setArgb(x, y, 0x00FFFFFF);
-                else
-                    break;
-            }
-        }
 
-        return result;
+            // sweep right and then left:
+            for (int y = 0; y < height; y++) {
+                int right = 0;
+                for (int x = 0; x < width; x++) {
+                    if (meetsThreshold(reader.getArgb(x, y), threshold))
+                        writer.setArgb(x, y, 0x00FFFFFF);
+                    else if (outsideOnly)
+                        break;
+                    right++;
+                }
+                for (int x = width - 1; x >= right; x--) {
+                    if (meetsThreshold(reader.getArgb(x, y), threshold))
+                        writer.setArgb(x, y, 0x00FFFFFF);
+                    else if (outsideOnly)
+                        break;
+                }
+            }
+            // sweep down and then up:
+            for (int x = 0; x < width; x++) {
+                int bot = 0;
+                for (int y = 0; y < height; y++) {
+                    if (meetsThreshold(reader.getArgb(x, y), threshold))
+                        writer.setArgb(x, y, 0x00FFFFFF);
+                    else if (outsideOnly)
+                        break;
+                    bot++;
+                }
+                for (int y = height - 1; y >= bot; y--) {
+                    if (meetsThreshold(reader.getArgb(x, y), threshold))
+                        writer.setArgb(x, y, 0x00FFFFFF);
+                    else if (outsideOnly)
+                        break;
+                }
+            }
+            return result;
+        } catch (Exception ex) {
+            return null;
+        }
     }
 
     public static boolean meetsThreshold(int argb, int threshold) {

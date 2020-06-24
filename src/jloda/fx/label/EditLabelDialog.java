@@ -59,7 +59,7 @@ public class EditLabelDialog extends Dialog<String> {
 
         final RichTextLabel displayLabel = (label != null ? new RichTextLabel(label) : new RichTextLabel());
         controller.getInputTextArea().setText(displayLabel.getText().replaceAll("<br>", "\n"));
-        
+
         // trigger listener:
         final String tmp = displayLabel.getText();
         displayLabel.setText("???");
@@ -137,5 +137,4 @@ public class EditLabelDialog extends Dialog<String> {
         e.setDropCompleted(success);
         e.consume();
     }
-
 }
