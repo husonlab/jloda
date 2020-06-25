@@ -142,6 +142,11 @@ public class UndoManager {
         } finally {
             isPerformingUndoOrRedo.set(false);
         }
+        if (command instanceof ChangeValueCommand) {
+            if (undoStack.size() > 0 && undoStack.get(undoStack.size() - 1) instanceof ChangeValueCommand && ((ChangeValueCommand<?>) command).getEventId() == ((ChangeValueCommand<?>) undoStack.get(undoStack.size() - 1)).getEventId()) {
+                undo();
+            }
+        }
     }
 
     /**
@@ -164,6 +169,12 @@ public class UndoManager {
             command.redo();
         } finally {
             isPerformingUndoOrRedo.set(false);
+        }
+
+        if (command instanceof ChangeValueCommand) {
+            if (redoStack.size() > 0 && redoStack.get(redoStack.size() - 1) instanceof ChangeValueCommand && ((ChangeValueCommand<?>) command).getEventId() == ((ChangeValueCommand<?>) redoStack.get(redoStack.size() - 1)).getEventId()) {
+                redo();
+            }
         }
     }
 

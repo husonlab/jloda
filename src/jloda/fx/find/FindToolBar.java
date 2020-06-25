@@ -397,5 +397,4 @@ public class FindToolBar extends VBox {
         searchers.addAll(others);
         searchManager.setSearcher(searcher);
     }
-
 }

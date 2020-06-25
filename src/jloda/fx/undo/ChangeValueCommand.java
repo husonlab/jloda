@@ -31,11 +31,18 @@ import java.util.function.Consumer;
 public class ChangeValueCommand<T> extends UndoableRedoableCommand {
     private final Runnable undo;
     private final Runnable redo;
+    private final long eventId;
 
     public ChangeValueCommand(String name, T oldValue, T newValue, Consumer<T> changer) {
+        this(name, System.currentTimeMillis(), oldValue, newValue, changer);
+    }
+
+    public ChangeValueCommand(String name, long eventId, T oldValue, T newValue, Consumer<T> changer) {
         super(name);
+        this.eventId = eventId;
         undo = () -> changer.accept(oldValue);
         redo = () -> changer.accept(newValue);
+        System.err.println(name + " " + eventId + " " + oldValue + " -> " + newValue);
     }
 
     @Override
@@ -46,5 +53,9 @@ public class ChangeValueCommand<T> extends UndoableRedoableCommand {
     @Override
     public void redo() {
         redo.run();
+    }
+
+    public long getEventId() {
+        return eventId;
     }
 }
