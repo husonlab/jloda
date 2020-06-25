@@ -267,10 +267,7 @@ public class RichTextLabel extends TextFlow {
                     else
                         posture = FontPosture.REGULAR;
 
-                    if (weight != FontWeight.NORMAL || posture != FontPosture.REGULAR) {
-                        textItem.setFont(Font.font(currentFont.getFamily(), weight, posture, fontSize));
-                    } else
-                        textItem.setFont(currentFont);
+                    textItem.setFont(Font.font(currentFont.getFamily(), weight, posture, fontSize));
 
                     final Boolean strike = active.get("strike");
                     if (strike != null)
@@ -293,9 +290,7 @@ public class RichTextLabel extends TextFlow {
                         }
                         if (family != null) {
                             fontStack.push(currentFont);
-                            final Font newFont = Font.font(family, currentFont.getSize());
-                            System.err.println("2 Font: " + currentFont + " -> " + newFont);
-                            currentFont = newFont;
+                            currentFont = Font.font(family, currentFont.getSize());
                         }
                     } else {
                         if (fontStack.size() > 0)
@@ -306,16 +301,16 @@ public class RichTextLabel extends TextFlow {
                     if (event.isStart()) {
                         final String argument = event.getArgument();
                         if (argument != null) {
-                            fontSizeStack.push(fontSize);
+                            fontSizeStack.push(currentFont.getSize());
                             try {
                                 fontSize = Double.parseDouble(argument);
                             } catch (NumberFormatException ignored) {
                             }
                         }
-                    } else {
-                        if (fontSizeStack.size() > 0)
-                            fontSize = fontSizeStack.pop();
+                    } else if (fontSizeStack.size() > 0) {
+                        fontSize = fontSizeStack.pop();
                     }
+
                 }
                 if (event.getChangeType().equals("color")) {
                     if (event.isStart()) {
