@@ -37,6 +37,9 @@ public class EditLabelDialogController {
     @FXML
     private Button clearHTMLButton;
 
+    @FXML
+    private TextArea supporteHTMLTextArea;
+
     public TextArea getInputTextArea() {
         return inputTextArea;
     }
@@ -47,5 +50,9 @@ public class EditLabelDialogController {
 
     public Button getClearHTMLButton() {
         return clearHTMLButton;
+    }
+
+    public TextArea getSupporteHTMLTextArea() {
+        return supporteHTMLTextArea;
     }
 }

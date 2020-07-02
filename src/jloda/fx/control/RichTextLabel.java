@@ -56,6 +56,7 @@ import java.util.concurrent.Executors;
  */
 public class RichTextLabel extends TextFlow {
     private static final Map<String, Image> file2image = new HashMap<>();
+
     private final ObjectProperty<Font> font = new SimpleObjectProperty<>(Font.font("serif", 14));
     private final StringProperty text = new SimpleStringProperty();
     private final BooleanProperty requireHTMLTag = new SimpleBooleanProperty(false);
@@ -176,14 +177,31 @@ public class RichTextLabel extends TextFlow {
     }
 
     public String getRawText() {
-        String rawText = getText();
-        while (rawText.contains("<")) {
-            int a = rawText.indexOf("<");
-            int b = rawText.indexOf(">", a);
+        return getRawText(getText());
+    }
+
+    public static String getRawText(String text) {
+        while (text.contains("<")) {
+            int a = text.indexOf("<");
+            int b = text.indexOf(">", a);
             if (b != -1)
-                rawText = rawText.substring(0, a) + rawText.substring(b + 1);
+                text = text.substring(0, a) + text.substring(b + 1);
         }
-        return rawText;
+        return text.replaceAll("\\s+", " ");
+    }
+
+    public static String getSupportedHTMLTags() {
+        return "<i> italics </i>, " +
+                "<b> bold </b>, " +
+                "<sup> super-script </sup> , " +
+                "<sub> sub-script </sub> , " +
+                "<u> underline </u>, " +
+                "<a> strike through </a> , " +
+                "<br> new line, " +
+                "<font \"name\">  font name </font> , " +
+                "<size \"value\"> font size </size>, " +
+                "<c \"value\"> font color </c>, " +
+                "<img src=\"url\" alt=\"text\" width=\"value\" height=\"value\"> adds an image";
     }
 
     @Override
@@ -400,19 +418,18 @@ public class RichTextLabel extends TextFlow {
                         else {
                             final Image image = new Image(src);
                             imageView = new ImageView(image);
-                            file2image.put(src, image);
 
-                            if (true) { // perform naive background removal in separate thread...
-                                Executors.newSingleThreadExecutor().submit(() -> {
-                                            final Image image2 = BasicFX.copyAndRemoveWhiteBackground(imageView.getImage(), 240, true);
-                                            if (image2 != null)
-                                                Platform.runLater(() -> {
-                                                    imageView.setImage(image2);
-                                                    file2image.put(src, image2);
-                                                });
-                                        }
-                                );
-                            }
+                            Executors.newSingleThreadExecutor().submit(() -> {
+                                        // note that the same file might get processed multiple times...
+                                        // to fix this, we will implement storage of the images in a new nexus resources block
+                                        final Image image2 = BasicFX.copyAndRemoveWhiteBackground(imageView.getImage(), 240, true);
+                                        if (image2 != null)
+                                            Platform.runLater(() -> {
+                                                imageView.setImage(image2);
+                                                file2image.put(src, image2);
+                                            });
+                                    }
+                            );
                         }
                     }
 

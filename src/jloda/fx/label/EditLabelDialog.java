@@ -60,6 +60,8 @@ public class EditLabelDialog extends Dialog<String> {
         final RichTextLabel displayLabel = (label != null ? new RichTextLabel(label) : new RichTextLabel());
         controller.getInputTextArea().setText(displayLabel.getText().replaceAll("<br>", "\n"));
 
+        controller.getSupporteHTMLTextArea().setText("Supported HTML tags:\n" + RichTextLabel.getSupportedHTMLTags());
+
         // trigger listener:
         final String tmp = displayLabel.getText();
         displayLabel.setText("???");
