@@ -4252,6 +4252,15 @@ public class Basic {
         else
             return strings;
     }
+
+    public static <T> Iterable<T> asIterable(Iterator<T> it) {
+        return new Iterable<T>() {
+            @Override
+            public Iterator<T> iterator() {
+                return it;
+            }
+        };
+    }
 }
 
 /**
