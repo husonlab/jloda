@@ -21,6 +21,7 @@
 package jloda.util;
 
 import javafx.collections.ObservableList;
+import jloda.fx.util.PrintStreamNoClose;
 
 import java.io.*;
 import java.net.URI;
@@ -34,6 +35,7 @@ import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 import java.util.zip.*;
 
 /**
@@ -2801,13 +2803,13 @@ public class Basic {
      */
     public static OutputStream getOutputStreamPossiblyZIPorGZIP(String fileName) throws IOException {
         if (fileName.endsWith("stdout"))
-            return System.out;
+            return new PrintStreamNoClose(System.out);
         else if(fileName.endsWith("stdout-gz"))
-            return  new GZIPOutputStream(System.out);
+            return new GZIPOutputStream(new PrintStreamNoClose(System.out));
         else if (fileName.endsWith("stderr"))
-            return System.err;
+            return new PrintStreamNoClose(System.err);
         else if(fileName.endsWith("stderr-gz"))
-            return  new GZIPOutputStream(System.err);
+            return new GZIPOutputStream(new PrintStreamNoClose(System.err));
         else {
             OutputStream outs = new FileOutputStream(fileName);
             if (fileName.toLowerCase().endsWith(".gz")) {
@@ -3973,6 +3975,17 @@ public class Basic {
         }
 
         return result;
+    }
+
+    /**
+     * get all files listed below the given root directory
+     *
+     * @param rootDirectoryName
+     * @param recursively
+     * @return list of files
+     */
+    public static List<String> getAllFilesInDirectory(String rootDirectoryName, boolean recursively, String... fileExtensions) {
+        return getAllFilesInDirectory(new File(rootDirectoryName), recursively, fileExtensions).stream().map(File::getPath).collect(Collectors.toList());
     }
 
     public static <S, T> String toString(Pair<S, T> pair, String separator) {

@@ -37,6 +37,16 @@ public class ByteInputBuffer {
     }
 
     /**
+     * constructor
+     *
+     * @param bytes load these bytes into the buffer
+     */
+    public ByteInputBuffer(byte[] bytes) {
+        setSize(bytes.length);
+        System.arraycopy(bytes, 0, getBytes(), 0, bytes.length);
+    }
+
+    /**
      * set the size of the buffer
      *
      * @param size
@@ -81,8 +91,28 @@ public class ByteInputBuffer {
         return bytes[pos++] & 0xFF;
     }
 
+    /**
+     * read int, little endian
+     */
     public int readIntLittleEndian() {
-        return (((int) bytes[pos++] & 0xFF)) | (((int) bytes[pos++] & 0xFF) << 8) | (((int) bytes[pos++] & 0xFF) << 16) | (((int) bytes[pos++]) << 24);
+        return (((int) bytes[pos++] & 0xFF))
+                | (((int) bytes[pos++] & 0xFF) << 8)
+                | (((int) bytes[pos++] & 0xFF) << 16)
+                | (((int) bytes[pos++]) << 24);
+    }
+
+    /**
+     * read long, little endian
+     */
+    public long readLongLittleEndian() {
+        return (((long) bytes[pos++] & 0xFF))
+                | (((long) bytes[pos++] & 0xFF) << 8)
+                | (((long) bytes[pos++] & 0xFF) << 16)
+                | (((long) bytes[pos++] & 0xFF) << 24)
+                | (((long) bytes[pos++] & 0xFF) << 32)
+                | (((long) bytes[pos++] & 0xFF) << 40)
+                | (((long) bytes[pos++] & 0xFF) << 48)
+                | (((long) bytes[pos++] & 0xFF) << 56);
     }
 
     private int readCharLittleEndian() {
