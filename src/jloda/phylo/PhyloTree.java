@@ -28,6 +28,7 @@ import jloda.util.Single;
 
 import java.io.*;
 import java.util.*;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 /**
@@ -232,22 +233,20 @@ public class PhyloTree extends PhyloSplitsGraph {
      *
      * @param writer
      * @param showWeights
-     * @param translate   if non-null, is used to translate labels
+     * @param labeler
      * @throws IOException
      */
-    public void write(final Writer writer, final boolean showWeights, final Map<String, String> translate) throws IOException {
-        if (translate == null || translate.size() == 0) {
+    public void write(final Writer writer, final boolean showWeights, final Function<Node, String> labeler) throws IOException {
+        if (labeler == null) {
             this.write(writer, showWeights);
 
         } else {
             PhyloTree tmpTree = new PhyloTree();
             tmpTree.copy(this);
             for (Node v = tmpTree.getFirstNode(); v != null; v = v.getNext()) {
-                final String key = tmpTree.getLabel(v);
-                if (key != null) {
-                    final String value = translate.get(key);
-                    if (value != null)
-                        tmpTree.setLabel(v, value);
+                final String label = labeler.apply(v);
+                if (label != null) {
+                    tmpTree.setLabel(v, label);
                 }
             }
             tmpTree.write(writer, showWeights);

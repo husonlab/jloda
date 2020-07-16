@@ -1891,10 +1891,6 @@ public class Basic {
 
     /**
      * replace the suffix of a file
-     *
-     * @param fileName
-     * @param newSuffix
-     * @return new file name
      */
     public static String replaceFileSuffix(String fileName, String newSuffix) {
         if (fileName == null)
@@ -1903,12 +1899,24 @@ public class Basic {
             return replaceFileSuffix(new File(fileName), newSuffix).getPath();
     }
 
+
+    /**
+     * replace the suffix of a file, keeping trailing .gz, if present
+     */
+    public static String replaceFileSuffixKeepGZ(String fileName, String newSuffix) {
+        if (fileName == null)
+            return null;
+        else {
+            String name = replaceFileSuffix(new File(Basic.getFileNameWithoutZipOrGZipSuffix(fileName)), newSuffix).getPath();
+            if (fileName.endsWith(".gz"))
+                return name + ".gz";
+            else
+                return name;
+        }
+    }
+
     /**
      * replace the suffix of a file
-     *
-     * @param file
-     * @param newSuffix
-     * @return new file
      */
     public static File replaceFileSuffix(File file, String newSuffix) {
         if (file == null)
@@ -1920,6 +1928,7 @@ public class Basic {
             return new File(file.getParent(), name);
         }
     }
+
 
     public static String getFileNameWithoutZipOrGZipSuffix(String fileName) {
         if (Basic.isZIPorGZIPFile(fileName))
