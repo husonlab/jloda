@@ -497,6 +497,14 @@ public class SequenceUtils {
         return result;
     }
 
+    public static byte[] getSegment (byte[] sequence, int offset, int length, byte[] result) {
+        if (result == null)
+            result = new byte[length];
+        System.arraycopy(sequence, offset , result, 0, length);
+        return result;
+
+    }
+
     /**
      * translate a DNA sequence into protein
      *
@@ -611,6 +619,17 @@ public class SequenceUtils {
             if (str1[offset1 + i] < str2[offset2 + i])
                 return -1;
             else if (str1[offset1 + i] > str2[offset2 + i])
+                return 1;
+        }
+        return -Integer.compare(str1.length, str2.length);
+    }
+
+    public static int compare(byte[] str1,  byte[] str2) {
+        final int top=Math.min(str1.length,str2.length);
+        for(int i=0;i<top;i++) {
+            if(str1[i]<str2[i])
+                return -1;
+            else if(str1[i]>str2[i])
                 return 1;
         }
         return -Integer.compare(str1.length, str2.length);
