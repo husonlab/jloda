@@ -54,21 +54,19 @@ public class Basic {
 
     /**
      * Catch an exception.
-     *
-     * @param ex Exception
      */
     public static void caught(Throwable ex) {
-        if (debugMode) {
-            System.err.println("Caught:");
-            ex.printStackTrace();
-        } else
-            System.err.println(ex.getClass().getSimpleName() + ": " + ex.getMessage());
+        if (!(ex instanceof UsageException && ex.getMessage().startsWith("Help"))) {
+            if (debugMode) {
+                System.err.println("Caught:");
+                ex.printStackTrace();
+            } else
+                System.err.println(ex.getClass().getSimpleName() + ": " + ex.getMessage());
+        }
     }
 
     /**
      * set debug mode. In debug mode, stack traces are printed
-     *
-     * @param mode
      */
     static public void setDebugMode(boolean mode) {
         debugMode = mode;
