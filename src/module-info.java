@@ -49,5 +49,6 @@ module jloda {
 
     exports jloda;
     exports jloda.swing.window;
+    exports jloda.fx.geom;
 
 }
