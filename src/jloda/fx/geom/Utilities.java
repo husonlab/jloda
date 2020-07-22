@@ -14,11 +14,15 @@ package jloda.fx.geom;
 import javafx.beans.binding.DoubleBinding;
 import javafx.beans.binding.ObjectBinding;
 import javafx.beans.property.ReadOnlyProperty;
+import javafx.collections.ObservableFloatArray;
 import javafx.geometry.Bounds;
+import javafx.geometry.Point3D;
 import javafx.scene.Node;
 import javafx.scene.control.Label;
 import javafx.scene.paint.Color;
+import javafx.scene.shape.Mesh;
 import javafx.scene.shape.Rectangle;
+import javafx.scene.shape.TriangleMesh;
 import javafx.stage.Window;
 import jloda.fx.util.FXSwingUtilities;
 import jloda.util.ProgramProperties;
@@ -28,6 +32,21 @@ import jloda.util.ProgramProperties;
  * Daniel Huson, 9.2015
  */
 public class Utilities {
+    /**
+     * translate all points in a mesh
+     */
+    public static void translatePoints(Mesh mesh, Point3D delta) {
+        final ObservableFloatArray source = ((TriangleMesh) mesh).getPoints();
+        final float[] target = new float[source.size()];
+
+        for (int i = 0; i < target.length; ) {
+            target[i] = source.get(i++) + (float) delta.getX();
+            target[i] = source.get(i++) + (float) delta.getY();
+            target[i] = source.get(i++) + (float) delta.getZ();
+        }
+        ((TriangleMesh) mesh).getPoints().setAll(target);
+    }
+
     /**
      * relocate all bodies so that they lie between the given bounds
      *
