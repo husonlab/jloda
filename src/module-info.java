@@ -10,6 +10,7 @@ module jloda {
     requires xml.apis.ext;
     requires VectorGraphics2D;
 
+    exports jloda.fx.dialog;
     exports jloda.fx.colorscale;
     exports jloda.fx.control;
     exports jloda.fx.control.table;
