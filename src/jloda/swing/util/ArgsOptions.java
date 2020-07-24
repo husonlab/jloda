@@ -610,7 +610,7 @@ public class ArgsOptions {
             if(mandatory)
                 usage.add("\t" + shortKey + ", " + longKey + " [string(s)]: " + description + ". Mandatory option" +(legalValues != null ? " legal values: " + Basic.toString(legalValues, ", ") : "")+".");
             else
-            usage.add("\t" + shortKey + ", " + longKey + " [string(s)]: " + description + ". "+ defaultValueString + (legalValues != null ? " legal values: " + Basic.toString(legalValues, ", ")+"." : defaultValueString.length()>0?".":""));
+                usage.add("\t" + shortKey + ", " + longKey + " [string(s)]: " + description + ". " + defaultValueString + (legalValues != null ? " legal values: " + Basic.toString(legalValues, ", ") + "." : defaultValueString.length() > 0 ? "." : ""));
 
         }
         List<String> result = new LinkedList<>();

@@ -45,9 +45,12 @@ public class ArgsOptions {
 
     private boolean alreadyHasOtherComment = false;
 
+    private boolean commandMandatory = false;
+
     private boolean doHelp = false;
 
     private boolean hasMessageWindow = true;
+
 
     /**
      * constructor
@@ -148,7 +151,7 @@ public class ArgsOptions {
     public String getUsage() {
         StringBuilder result = new StringBuilder();
         result.append("SYNOPSIS\n");
-        result.append("\t").append(programName).append(" [options]\n");
+        result.append("\t").append(programName).append(commandMandatory ? " command" : "").append(" [options]\n");
         result.append("DESCRIPTION\n");
         result.append("\t").append(getDescription()).append("\n");
 
@@ -284,6 +287,54 @@ public class ArgsOptions {
             System.err.println(comment);
         if (comment.equals(OTHER))
             alreadyHasOtherComment = true;
+    }
+
+    /**
+     * gets a command (first value in arguments)
+     *
+     * @param legalValues
+     * @return command
+     * @throws UsageException
+     */
+    public String getCommand(String... legalValues) throws UsageException {
+        final Command[] pairs = new Command[legalValues.length];
+        for (int i = 0; i < legalValues.length; i++)
+            pairs[i] = new Command(legalValues[i], null);
+        return getCommand(pairs);
+    }
+
+    /**
+     * gets a command (first value in arguments)
+     *
+     * @param pairs
+     * @return command
+     * @throws UsageException
+     */
+    public String getCommand(Command... pairs) throws UsageException {
+        final String[] legalValues = new String[pairs.length];
+        for (int i = 0; i < pairs.length; i++) {
+            legalValues[i] = pairs[i].get1();
+        }
+        usage.add(" Command " + Basic.toString(legalValues, " | "));
+
+        for (final Pair<String, String> pair : pairs) {
+            if (pair.get2() != null)
+                usage.add("\t" + pair.get1() + ": " + pair.get2());
+        }
+
+        final String command;
+        if (!isDoHelp()) {
+            if (arguments.size() == 0)
+                throw new UsageException("Command expected, must be one of: " + Basic.toString(legalValues, ", "));
+            command = arguments.remove(0);
+            if (!Basic.contains(legalValues, command))
+                throw new UsageException("Command: " + command + ": must be one of: " + Basic.toString(legalValues, ", "));
+
+            if (verbose)
+                System.err.println("\tcommand: " + command);
+            return command;
+        } else
+            return "";
     }
 
     public boolean getOption(String shortKey, String longKey, String description, boolean defaultValue) throws UsageException {
@@ -583,7 +634,7 @@ public class ArgsOptions {
         return result;
     }
 
-    private List<String> getOption(String shortKey, String longKey, String description, Set<String> legalValues, List<String> defaultValue, boolean mandatory) throws UsageException {
+    private List<String> getOption(String shortKey, String longKey, String description, Collection<String> legalValues, List<String> defaultValue, boolean mandatory) throws UsageException {
         boolean hide = false;
         if (shortKey.startsWith("!")) {
             hide = true;
@@ -630,6 +681,7 @@ public class ArgsOptions {
                     it.remove();
                     if (legalValues != null && !legalValues.contains(value))
                         throw new UsageException("Illegal value for option " + longKey + ": " + value + ", legal values: " + Basic.toString(legalValues, ", "));
+
                     result.add(value);
                 }
                 if (done)
@@ -723,5 +775,19 @@ public class ArgsOptions {
 
     public void setHasMessageWindow(boolean hasMessageWindow) {
         this.hasMessageWindow = hasMessageWindow;
+    }
+
+    public boolean isCommandMandatory() {
+        return commandMandatory;
+    }
+
+    public void setCommandMandatory(boolean commandMandatory) {
+        this.commandMandatory = commandMandatory;
+    }
+
+    public static class Command extends Pair<String, String> {
+        public Command(String name, String description) {
+            super(name, description);
+        }
     }
 }
