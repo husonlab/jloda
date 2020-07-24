@@ -292,6 +292,10 @@ public class ArgsOptions {
 
             if (verbose)
                 System.err.println("\tcommand: " + command);
+
+            if (command.equals("help"))
+                doHelp = true;
+
             return command;
         } else
             return "";
