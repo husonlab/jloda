@@ -28,6 +28,7 @@ import java.net.URI;
 import java.net.URL;
 import java.nio.channels.FileChannel;
 import java.nio.file.Files;
+import java.nio.file.StandardCopyOption;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.*;
@@ -2714,18 +2715,7 @@ public class Basic {
      */
     public static void writeStreamToFile(InputStream inputStream, File outputFile) throws IOException {
         System.err.println("Writing file: " + outputFile);
-        if (inputStream == null)
-            throw new IOException("Input stream is null");
-
-        try (BufferedOutputStream outs = new BufferedOutputStream(new FileOutputStream(outputFile), 1048576)) {
-            while (true) {
-                int a = inputStream.read();
-                if (a == -1)
-                    break;
-                else
-                    outs.write((byte) a);
-            }
-        }
+        java.nio.file.Files.copy(inputStream, outputFile.toPath(), StandardCopyOption.REPLACE_EXISTING);
     }
 
     /**
