@@ -48,9 +48,9 @@ public class ProgramProperties {
 
     private static final Map<String,Object> presets=new HashMap<>();
 
-    public static Color SELECTION_COLOR = new Color(252, 208, 102);
-    public static Color SELECTION_COLOR_DARKER = new Color(210, 190, 95);
-    public static Color SELECTION_COLOR_ADDITIONAL_TEXT = new Color(93, 155, 206);
+    public static final Color SELECTION_COLOR = new Color(252, 208, 102);
+    public static final Color SELECTION_COLOR_DARKER = new Color(210, 190, 95);
+    public static final Color SELECTION_COLOR_ADDITIONAL_TEXT = new Color(93, 155, 206);
 
     static private String programName = "";
     static private String programVersion = "";

@@ -52,11 +52,11 @@ public class DefaultGraphDrawer implements IGraphDrawer {
 
     private INodeDrawer nodeDrawer;
 
-    private boolean radialLabels = false;
+    private final boolean radialLabels = false;
 
     private Node foundNode = null;
 
-    private int auxilaryParameter = 0; // not used
+    private final int auxilaryParameter = 0; // not used
 
     /**
      * constructor. Call only after graph and trans have been set for GraphView

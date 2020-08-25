@@ -367,7 +367,7 @@ public class FormatterActions {
                 if (!ignore) {
                     Object selectedValue = ((JComboBox) event.getSource()).getSelectedItem();
                     if (selectedValue != null) {
-                        Byte size = 1;
+                        byte size = 1;
                         try {
                             size = Byte.parseByte((String) selectedValue);
                         } catch (Exception ex) {

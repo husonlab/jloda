@@ -20,6 +20,7 @@
 
 package jloda.util.parse;
 
+import java.io.Closeable;
 import java.io.IOException;
 import java.io.Reader;
 import java.io.StreamTokenizer;
@@ -34,7 +35,7 @@ import java.util.Stack;
  * @author Daniel Huson, 2002
  *
  */
-public class NexusStreamTokenizer extends StreamTokenizer {
+public class NexusStreamTokenizer extends StreamTokenizer implements Closeable {
     final public static String STRICT_PUNCTUATION = "(){}/\\,;:=*\"`+-<>";
     final public static String NEGATIVE_INTEGER_PUNCTUATION = "(){}/\\,;:=*\"`+<>";
     final public static String LABEL_PUNCTUATION = "(),;:=\"`{}";
@@ -69,6 +70,8 @@ public class NexusStreamTokenizer extends StreamTokenizer {
     private final LinkedList<String> svals = new LinkedList<>();
     private final LinkedList<Integer> ttypes = new LinkedList<>();
     private final LinkedList<Integer> lines = new LinkedList<>();
+    
+    private final Reader r; // need a reference so that we can close
 
 
     /**
@@ -76,6 +79,7 @@ public class NexusStreamTokenizer extends StreamTokenizer {
      */
     public NexusStreamTokenizer(Reader r) {
         super(r);
+        this.r=r;
         setSyntax();
     }
 
@@ -449,6 +453,11 @@ public class NexusStreamTokenizer extends StreamTokenizer {
 
     public void setEchoCommentsWithExclamationMark(boolean echoCommentsWithExclamationMark) {
         this.echoCommentsWithExclamationMark = echoCommentsWithExclamationMark;
+    }
+
+    @Override
+    public void close() throws IOException {
+        r.close();
     }
 }
 

@@ -411,7 +411,7 @@ public class IntervalTree<T> implements Iterable<Interval<T>> {
      */
     private void sortList() {
         if (!sorted) {
-            intervalList.sort((a, b) -> a.compareTo(b));
+            intervalList.sort(Comparator.naturalOrder());
             sorted = true;
         }
     }

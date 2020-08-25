@@ -39,8 +39,8 @@ import java.io.IOException;
  * Daniel Huson, 3.2019
  */
 public class ColorScalePane extends Pane {
-    public static Font font = new Font("Arial", 12);
-    private ColorScalePaneController controller;
+    public static final Font font = new Font("Arial", 12);
+    private final ColorScalePaneController controller;
 
     private double mouseX = 0;
     private double mouseY = 0;

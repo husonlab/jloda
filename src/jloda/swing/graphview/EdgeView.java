@@ -76,7 +76,7 @@ final public class EdgeView extends ViewBase implements Cloneable { //, IEdgeVie
      * rounded edge
      */
     public final static byte ROUNDED_EDGE = 6;
-    public static int ROUNDED_EDGE_INCREMENT = 50;
+    public static final int ROUNDED_EDGE_INCREMENT = 50;
 
     /**
      * Edge type.

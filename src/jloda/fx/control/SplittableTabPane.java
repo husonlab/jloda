@@ -56,9 +56,9 @@ public class SplittableTabPane extends Pane {
     private final ObjectProperty<TabPane> focusedTabPane = new SimpleObjectProperty<>();
     private final ASingleSelectionModel<Tab> selectionModel = new ASingleSelectionModel<>();
 
-    private ObservableList<Tab> tabs = FXCollections.observableArrayList();
+    private final ObservableList<Tab> tabs = FXCollections.observableArrayList();
 
-    private ObservableMap<TabPane, SplitPane> tabPane2ParentSplitPane = FXCollections.observableHashMap();
+    private final ObservableMap<TabPane, SplitPane> tabPane2ParentSplitPane = FXCollections.observableHashMap();
 
     private static final String TAB_DRAG_KEY = "tab";
     private final ObjectProperty<Tab> draggingTab = new SimpleObjectProperty<>();

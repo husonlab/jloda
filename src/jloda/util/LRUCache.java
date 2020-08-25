@@ -37,11 +37,11 @@ public class LRUCache<K, V> {
     private final Node head = new Node();
     private final Node tail = new Node();
 
-    private ReadWriteLock lock = new ReentrantReadWriteLock();
+    private final ReadWriteLock lock = new ReentrantReadWriteLock();
 
-    private Lock writeLock = lock.writeLock();
+    private final Lock writeLock = lock.writeLock();
 
-    private Lock readLock = lock.readLock();
+    private final Lock readLock = lock.readLock();
 
     private final boolean lruAlways;
 

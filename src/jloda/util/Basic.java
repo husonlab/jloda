@@ -2387,7 +2387,7 @@ public class Basic {
     public static int getSum(int[] values, int offset, int len) {
         int sum = 0;
         for (int i = offset; i < len; i++) {
-            Integer value = values[i];
+            int value = values[i];
             sum += value;
         }
         return sum;
@@ -2743,7 +2743,8 @@ public class Basic {
     }
 
     /**
-     * gets an input stream. If file ends on gz or zip opens appropriate unzipping stream. Can also be stdin or stdin.gz
+     * gets an input stream. If file ends on gz or zip opens appropriate unzipping stream. Can also be stdin or stdin.gz.
+     * Can also be a URL or a URL ending on .gz
      *
      * @param fileName
      * @return input stream
@@ -2754,6 +2755,9 @@ public class Basic {
             return System.in;
         else if(fileName.endsWith("stdin-gz"))
             return new GZIPInputStream(System.in);
+
+        if(isHTTPorFileURL(fileName))
+            return getInputStreamPossiblyGZIP(null,fileName);
 
         final File file = new File(fileName);
         if (file.isDirectory())
@@ -2774,7 +2778,7 @@ public class Basic {
     }
 
     /**
-     * opens a file or gzipped file for reading. Can also be stdin
+     * opens a file or gzipped file for reading. Can also be stdin or a URL
      * @param ins
      * @param fileName
      * @return
@@ -2785,8 +2789,13 @@ public class Basic {
             return System.in;
         else if(fileName.endsWith("stdin-gz"))
             return new GZIPInputStream(System.in);
-
-        if (fileName.toLowerCase().endsWith(".gz")) {
+        if(isHTTPorFileURL(fileName)) {
+            final URL url=new URL(fileName);
+            if (fileName.toLowerCase().endsWith(".gz")) {
+                return new GZIPInputStream(url.openStream());
+            } else return url.openStream();
+        }
+        else if (fileName.toLowerCase().endsWith(".gz")) {
             return new GZIPInputStream(ins);
         } else return ins;
     }
@@ -2828,6 +2837,10 @@ public class Basic {
      */
     public static boolean isZIPorGZIPFile(String fileName) {
         return fileName.endsWith(".gz") || fileName.endsWith(".zip");
+    }
+
+    public static boolean isHTTPorFileURL (String fileName) {
+        return fileName.matches("^(https|http|file)://[-a-zA-Z0-9+&@#/%?=~_|!:,.;]*[-a-zA-Z0-9+&@#/%=~_|]");
     }
 
     /**
@@ -3025,7 +3038,7 @@ public class Basic {
     }
 
     public static boolean notBlank (String s) {
-        return s.trim().length()>0;
+        return s!=null && s.trim().length()>0;
     }
 
     /**
@@ -4264,12 +4277,7 @@ public class Basic {
     }
 
     public static <T> Iterable<T> asIterable(Iterator<T> it) {
-        return new Iterable<T>() {
-            @Override
-            public Iterator<T> iterator() {
-                return it;
-            }
-        };
+        return () -> it;
     }
 }
 
@@ -4282,7 +4290,7 @@ class NullOutStream extends OutputStream {
 }
 
 class CollectOutStream extends OutputStream {
-    private StringBuilder buf = new StringBuilder();
+    private final StringBuilder buf = new StringBuilder();
 
     @Override
     public void write(int b) throws IOException {

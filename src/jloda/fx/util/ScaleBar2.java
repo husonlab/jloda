@@ -36,7 +36,7 @@ import javafx.scene.text.Font;
  * Daniel Huson, 5.2018
  */
 public class ScaleBar2 extends Pane {
-    public static Font font = new Font("Arial", 12);
+    public static final Font font = new Font("Arial", 12);
 
     private double mouseX = 0;
     private double mouseY = 0;

@@ -327,8 +327,10 @@ public class ArgsOptions {
             if (arguments.size() == 0)
                 throw new UsageException("Command expected, must be one of: " + Basic.toString(legalValues, ", "));
             command = arguments.remove(0);
-            if (!Basic.contains(legalValues, command))
-                throw new UsageException("Command: " + command + ": must be one of: " + Basic.toString(legalValues, ", "));
+            if (!Basic.contains(legalValues, command)) {
+                if(command.startsWith("-"))
+                throw new UsageException("Command: " + (command.startsWith("-")?"":command + ": ")+"+must be one of: " + Basic.toString(legalValues, ", "));
+            }
 
             if (verbose)
                 System.err.println("\tcommand: " + command);

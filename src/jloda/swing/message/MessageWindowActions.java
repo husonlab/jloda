@@ -264,16 +264,8 @@ public class MessageWindowActions {
      * updates the undo action
      */
     public void updateUndoRedo(UndoManager undoManager) {
-        if (undoManager.canUndo()) {
-            undo.setEnabled(true);
-        } else {
-            undo.setEnabled(false);
-        }
-        if (undoManager.canRedo()) {
-            redo.setEnabled(true);
-        } else {
-            redo.setEnabled(false);
-        }
+        undo.setEnabled(undoManager.canUndo());
+        redo.setEnabled(undoManager.canRedo());
     }
 
     private AbstractAction redo;

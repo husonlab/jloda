@@ -154,12 +154,11 @@ class MessageBox extends Window {
         setBackground(Message.PALE_YELLOW);
 
         // setIconImage(ProgramProperties.getProgramIcon().getImage());
-        int x = width;
         int y = parent.getHeight() - height;
 
         setSize(width, height);
         //setLocationRelativeTo(parent);
-        setLocation(x, y);
+        setLocation(width, y);
 
         JPanel panel = new JPanel();
         panel.setLayout(new BorderLayout());

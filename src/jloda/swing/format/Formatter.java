@@ -239,10 +239,7 @@ public class Formatter implements IDirectableViewer {
             else
                 nodeSize.setSelectedItem(Integer.toString(nSize));
             int nShape = viewer.getShapeSelectedNodes();
-            if (nShape == -1)
-                nodeShape.setSelectedIndex(-1);
-            else
-                nodeShape.setSelectedIndex(nShape);
+            nodeShape.setSelectedIndex(nShape);
 
             Color color = null;
             int colorIsDefined = 0; // -1 over defined

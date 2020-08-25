@@ -5,9 +5,7 @@ module jloda {
     requires transitive javafx.fxml;
 
     requires transitive java.desktop;
-    requires transitive java.xml;
 
-    requires xml.apis.ext;
     requires VectorGraphics2D;
 
     exports jloda.fx.dialog;
@@ -51,5 +49,8 @@ module jloda {
     exports jloda;
     exports jloda.swing.window;
     exports jloda.fx.geom;
+    exports jloda.kmers;
+    exports jloda.kmers.bloomfilter;
+    exports jloda.kmers.mash;
 
 }

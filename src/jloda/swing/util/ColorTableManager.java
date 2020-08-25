@@ -171,7 +171,7 @@ public class ColorTableManager {
                 int i = 0;
                 while (i < tokens.length) {
                     String name = tokens[i++];
-                    int numberOfColors = Integer.valueOf(tokens[i++]);
+                    int numberOfColors = Integer.parseInt(tokens[i++]);
                     final ArrayList<Color> colors = new ArrayList<>(numberOfColors);
                     for (int k = 0; k < numberOfColors; k++) {
                         Color color = new Color(Integer.decode(tokens[i++]));

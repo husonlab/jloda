@@ -45,7 +45,7 @@ public class FileLineIterator implements  ICloseableIterator<String> {
 
     private String pushedBackLine = null;
 
-    private String fileName;
+    private final String fileName;
     private ProgressPercentage progress;
 
     /**

@@ -35,7 +35,7 @@ public class FastAFileIterator implements IFastAIterator, Closeable {
     private String nextHeader = null;
     private String nextSequence = null;
     private String nextNextHeader = null;
-    private long endOfLineBytes;
+    private final long endOfLineBytes;
 
     private long currentHeaderPosition;
     private long nextHeaderPosition;

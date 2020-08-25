@@ -37,7 +37,7 @@ public class ColorSchemeManager {
     private final ObservableMap<String, ObservableList<Color>> name2ColorSchemes = FXCollections.observableMap(new TreeMap<>());
     private final StringProperty lastColorScheme = new SimpleStringProperty("Retro29");
 
-    public static String[] BuiltInColorTables = {
+    public static final String[] BuiltInColorTables = {
             "Caspian8;8;0Xf64d1b;0X8633bc;0X41a744;0X747474;0X2746bc;0Xff9301;0Xc03150;0X2198bc;" +
                     "Fews8;8;0X5da6dc;0Xfba53a;0X60be68;0Xf27db0;0Xb39230;0Xb376b2;0Xdfd040;0Xf15954;" +
                     "Pairs12;12;0X267ab2;0Xa8cfe3;0X399f34;0Xb4df8e;0Xe11f27;0Xfa9b9b;0Xfe7f23;0Xfcbf75;0X6a4199;0Xcab3d6;0Xb05a2f;0Xffff9f;" +
@@ -97,7 +97,7 @@ public class ColorSchemeManager {
                 int i = 0;
                 while (i < tokens.length) {
                     String name = tokens[i++];
-                    int numberOfColors = Integer.valueOf(tokens[i++]);
+                    int numberOfColors = Integer.parseInt(tokens[i++]);
                     final ObservableList<Color> colors = FXCollections.observableArrayList();
                     for (int k = 0; k < numberOfColors; k++) {
                         Color color = Color.web(tokens[i++]);

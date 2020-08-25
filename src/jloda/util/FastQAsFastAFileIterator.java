@@ -34,7 +34,7 @@ import java.util.stream.StreamSupport;
 public class FastQAsFastAFileIterator implements IFastAIterator {
     private final BufferedReader r;
     private boolean isClosed = false;
-    private long endOfLineBytes;
+    private final long endOfLineBytes;
     private long nextHeaderPosition;
 
     private String nextLine;

@@ -392,8 +392,7 @@ public class GraphViewListener implements IGraphViewListener {
                 return;
             }
         }
-        int inClick = 1;
-        current = inClick;
+        current = 1;
 
         if (hitNodes.size() == 0 && hitEdges.size() == 0 && hitNodeLabels.size() == 0 && hitEdgeLabels.size() == 0) {
             viewer.firePanelClicked(me);

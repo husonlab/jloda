@@ -1000,7 +1000,7 @@ public class NexusStreamParser extends NexusStreamTokenizer implements Closeable
         pushPunctuationCharacters(NEGATIVE_INTEGER_PUNCTUATION);
         try {
             nextToken();
-            nval = Integer.valueOf(sval);
+            nval = Integer.parseInt(sval);
         } catch (Exception ex) {
             popPunctuationCharacters();
             throw new IOExceptionWithLineNumber("INTEGER expected, got: '" + sval + "'", lineno());
@@ -1039,7 +1039,7 @@ public class NexusStreamParser extends NexusStreamTokenizer implements Closeable
         pushPunctuationCharacters(NEGATIVE_INTEGER_PUNCTUATION);
         try {
             nextToken();
-            nval = Long.valueOf(sval);
+            nval = Long.parseLong(sval);
         } catch (Exception ex) {
             popPunctuationCharacters();
             throw new IOExceptionWithLineNumber("LONG expected, got: '" + sval + "'", lineno());
@@ -1057,7 +1057,7 @@ public class NexusStreamParser extends NexusStreamTokenizer implements Closeable
         pushPunctuationCharacters(LABEL_PUNCTUATION);
         try {
             nextToken();
-            nval = Double.valueOf(sval);
+            nval = Double.parseDouble(sval);
         } catch (Exception ex) {
             popPunctuationCharacters();
             throw new IOExceptionWithLineNumber("DOUBLE expected, got: '" + sval + "'", lineno());

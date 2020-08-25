@@ -358,7 +358,7 @@ public class NotificationsInSwing {
     }
 
     public static Window getActiveWindow() {
-        Window windows[] = Window.getWindows();
+        Window[] windows = Window.getWindows();
         for (Window w:windows) {
             if (w.isActive()) {
                 return w;

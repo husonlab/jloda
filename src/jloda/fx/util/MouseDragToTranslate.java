@@ -32,7 +32,7 @@ import java.util.function.BiConsumer;
 public class MouseDragToTranslate {
     private double mouseX = 0;
     private double mouseY = 0;
-    private BiConsumer<Double,Double> translate;
+    private final BiConsumer<Double,Double> translate;
 
     public static void setup (Node node) {
         setup(node,(deltaX, deltaY) -> {

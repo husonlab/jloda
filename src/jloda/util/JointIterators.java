@@ -32,6 +32,7 @@ public class JointIterators<T> implements Iterator<T> {
     private final ArrayList<Iterator<T>> iterators;
     private Iterator<T> current;
 
+    @SafeVarargs
     public JointIterators(Iterator<T>... iterators) {
         this.iterators = new ArrayList<>(Arrays.asList(iterators));
         if (this.iterators.size() > 0)

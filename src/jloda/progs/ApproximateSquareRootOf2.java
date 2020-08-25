@@ -49,7 +49,7 @@ public class ApproximateSquareRootOf2 {
         while (b - a > maxError) {
             double c = (a + b) / 2;
 
-            System.out.println(String.format("a=%1.12g b=%1.12g   c=%1.12g   b-a=%g", a, b, c, b - a));
+            System.out.printf("a=%1.12g b=%1.12g   c=%1.12g   b-a=%g%n", a, b, c, b - a);
 
             if (c * c < 2)
                 a = c;

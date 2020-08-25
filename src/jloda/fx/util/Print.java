@@ -72,8 +72,8 @@ public class Print {
                 final Scale scale;
                 if (node == node0 && node.getBoundsInParent().getWidth() > pageLayout.getPrintableWidth() || node.getBoundsInParent().getHeight() > pageLayout.getPrintableHeight()) {
                     if (true) {
-                        System.err.println(String.format("Scene size (%.0f x %.0f) exceeds printable area (%.0f x %.0f), scaled to fit", node.getBoundsInParent().getWidth(),
-                                node.getBoundsInParent().getHeight(), pageLayout.getPrintableWidth(), pageLayout.getPrintableHeight()));
+                        System.err.printf("Scene size (%.0f x %.0f) exceeds printable area (%.0f x %.0f), scaled to fit%n", node.getBoundsInParent().getWidth(),
+                                node.getBoundsInParent().getHeight(), pageLayout.getPrintableWidth(), pageLayout.getPrintableHeight());
                         double factor = Math.min(pageLayout.getPrintableWidth() / node.getBoundsInParent().getWidth(), pageLayout.getPrintableHeight() / node.getBoundsInParent().getHeight());
                         scale = new Scale(factor, factor);
                         node.getTransforms().add(scale);

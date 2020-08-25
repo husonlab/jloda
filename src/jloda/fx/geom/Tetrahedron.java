@@ -27,15 +27,14 @@ public class Tetrahedron extends MeshView {
      */
     public Tetrahedron(float length) {
         final TriangleMesh mesh = new TriangleMesh();
-        final float p0 = length;
         final float p1 = 0.0f;
         final float p2 = (float) (length * Math.sqrt(2.0) / 2.0f);
 
         mesh.getPoints().addAll(
-                p0, p1, -p2,
-                -p0, p1, -p2,
-                p1, p0, p2,
-                p1, -p0, p2
+                length, p1, -p2,
+                -length, p1, -p2,
+                p1, length, p2,
+                p1, -length, p2
         );
         mesh.getTexCoords().addAll(
                 0.50f, 1.00f,

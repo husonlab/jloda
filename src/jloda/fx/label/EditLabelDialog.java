@@ -67,9 +67,7 @@ public class EditLabelDialog extends Dialog<String> {
         displayLabel.setText("???");
         displayLabel.setText(tmp);
 
-        controller.getInputTextArea().textProperty().addListener((c, o, n) -> {
-            displayLabel.setText(n.replaceAll("[\n\r]", "<br>"));
-        });
+        controller.getInputTextArea().textProperty().addListener((c, o, n) -> displayLabel.setText(n.replaceAll("[\n\r]", "<br>")));
 
         controller.getPreviewStackPane().getChildren().add(displayLabel);
 

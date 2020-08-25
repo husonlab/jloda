@@ -33,8 +33,8 @@ import java.io.IOException;
  * Daniel Huson, 2018
  */
 public class JavaFX2PDF {
-    private Node printImage;
-    private Stage owner;
+    private final Node printImage;
+    private final Stage owner;
 
 
     /**
@@ -62,7 +62,7 @@ public class JavaFX2PDF {
     /**
      * Write node image to pdf
      */
-    public void print() throws IOException, CanceledException {
+    public void print() throws IOException {
         PrinterJob job = PrinterJob.createPrinterJob();
         boolean executePrint = true;
         Printer pdfPrinter = findPrinter();

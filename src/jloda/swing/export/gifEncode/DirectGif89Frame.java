@@ -46,7 +46,7 @@ import java.io.IOException;
  */
 public class DirectGif89Frame extends Gif89Frame {
 
-    private int[] argbPixels;
+    private final int[] argbPixels;
 
     //----------------------------------------------------------------------------
 

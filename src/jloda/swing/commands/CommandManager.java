@@ -191,7 +191,7 @@ public class CommandManager {
      *
      * @param np
      */
-    public void execute(NexusStreamParser np) throws CanceledException, IOException {
+    public void execute(NexusStreamParser np) throws IOException {
         while (np.peekNextToken() != NexusStreamParser.TT_EOF) {
             if (np.peekMatchIgnoreCase(";")) {
                 np.matchIgnoreCase(";"); // skip empty command
