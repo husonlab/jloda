@@ -111,7 +111,6 @@ public class FileLineIterator implements  ICloseableIterator<String> {
         setReportProgress(reportProgress);
     }
 
-
     /**
      * constructor
      *

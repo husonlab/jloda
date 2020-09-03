@@ -2036,6 +2036,42 @@ public class Basic {
     }
 
     /**
+     * returns the first line of a text.
+     * Breaks at \n, \r or 0
+     */
+    public static String getFirstLine(byte[] text) {
+        if (text == null)
+            return "";
+        final StringBuilder buf = new StringBuilder();
+        for (byte b : text) {
+            char ch = (char) b;
+            if (ch == '\r' || ch == '\n' || ch == 0)
+                break;
+            else
+                buf.append(ch);
+        }
+        return buf.toString();
+    }
+
+    /**
+     * does text start with given word?
+     */
+    public static boolean startsWith(byte[] text, byte[] word) {
+        if (text == null || text.length < word.length)
+            return false;
+        for (int i = 0; i < word.length; i++) {
+            if (word[i] != text[i])
+                return false;
+        }
+        return true;
+    }
+
+    public static boolean startsWith(byte[] text, String word) {
+        return startsWith(text, word.getBytes());
+    }
+
+
+    /**
      * returns the last line beginning with query
      *
      * @param query
@@ -3949,11 +3985,18 @@ public class Basic {
     }
 
     /**
+     * get all files in  any of the given directories
+     */
+    public static Set<File> getAllFilesInDirectories(Collection<File> rootDirectories, boolean recursively, String... fileExtensions) {
+        final Set<File> result = new TreeSet<>();
+        for (File rootDirectory : rootDirectories) {
+            result.addAll(getAllFilesInDirectory(rootDirectory, recursively, fileExtensions));
+        }
+        return result;
+    }
+
+    /**
      * get all files listed below the given root directory
-     *
-     * @param rootDirectory
-     * @param recursively
-     * @return list of files
      */
     public static ArrayList<File> getAllFilesInDirectory(File rootDirectory, boolean recursively, String... fileExtensions) {
         final ArrayList<File> result = new ArrayList<>();
@@ -4182,11 +4225,8 @@ public class Basic {
 
     /**
      * concatenate a list of byte[] into a single byte[]
-     *
-     * @param parts
-     * @return concatenation
      */
-    public static byte[] concatenate(ArrayList<byte[]> parts) {
+    public static byte[] concatenate(Collection<byte[]> parts) {
         final int size = parts.stream().mapToInt(p -> p.length).sum();
         final byte[] result = new byte[size];
         int offset = 0;
@@ -4198,12 +4238,14 @@ public class Basic {
     }
 
     /**
+     * concatenate an array of byte[] into a single byte[]
+     */
+    public static byte[] concatenate(byte[]... parts) {
+        return concatenate(Arrays.asList(parts));
+    }
+
+    /**
      * find a element in the list for which clazz is assignable from
-     *
-     * @param list
-     * @param clazz
-     * @param <T>
-     * @return element or null
      */
     public static <T> T findByClass(ObservableList<T> list, Class clazz) {
         for (T t : list) {
@@ -4219,12 +4261,6 @@ public class Basic {
 
     /**
      * computes the weighted sum of two arrays (not necessarily of the same length_
-     *
-     * @param p
-     * @param array1
-     * @param q
-     * @param array2
-     * @return weighted sum
      */
     public static double[] weightedSum(double p, double[] array1, double q, double[] array2) {
         final int top = Math.max(array1.length, array2.length);
@@ -4238,9 +4274,6 @@ public class Basic {
 
     /**
      * parse a string that might end on k, m or g, for kilo, mega or giga
-     *
-     * @param string
-     * @return size
      */
     public static long parseKiloMegaGiga(String string) {
         string = string.toLowerCase();
@@ -4279,6 +4312,8 @@ public class Basic {
     public static <T> Iterable<T> asIterable(Iterator<T> it) {
         return () -> it;
     }
+
+
 }
 
 /**

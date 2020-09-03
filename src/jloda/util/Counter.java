@@ -82,11 +82,11 @@ public class Counter {
     }
 
     /**
-     * increment by value, unsynchronized
+     * increment by value, not synchronized
      *
      * @param add
      */
-    public void addUnsynchronized(long add) {
+    public void addNotSynchronized(long add) {
         value += add;
     }
 

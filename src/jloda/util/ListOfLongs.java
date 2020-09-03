@@ -20,11 +20,13 @@
 
 package jloda.util;
 
+import java.util.Iterator;
+
 /**
  * a list of longs
  * Created by huson on 5/16/14.
  */
-public class ListOfLongs {
+public class ListOfLongs implements Iterable<Long> {
     private long[] data;
     private int size = 0;
 
@@ -66,5 +68,21 @@ public class ListOfLongs {
         }
         System.arraycopy(listOfLongs.data, 0, data, size, listOfLongs.size);
         size += listOfLongs.size;
+    }
+
+    public Iterator<Long> iterator() {
+        return new Iterator<>() {
+            private int index = 0;
+
+            @Override
+            public boolean hasNext() {
+                return index < size;
+            }
+
+            @Override
+            public Long next() {
+                return get(index++);
+            }
+        };
     }
 }

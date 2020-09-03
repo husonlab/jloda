@@ -105,16 +105,22 @@ public class BloomFilter {
         return add(string, 0, string.length);
     }
 
-    public void addAll(Collection<byte[]> strings) {
+    public int addAll(Collection<byte[]> strings) {
+        int count = 0;
         for (byte[] string : strings) {
-            add(string, 0, string.length);
+            if (add(string, 0, string.length))
+                count++;
         }
+        return count;
     }
 
-    public void addAll(byte[]... strings) {
+    public int addAll(byte[]... strings) {
+        int count = 0;
         for (byte[] string : strings) {
-            add(string, 0, string.length);
+            if (add(string, 0, string.length))
+                count++;
         }
+        return count;
     }
 
     /**
