@@ -20,6 +20,7 @@
 
 package jloda.fx.util;
 
+import javafx.beans.property.ReadOnlyBooleanProperty;
 import javafx.geometry.Bounds;
 import javafx.geometry.Point2D;
 import javafx.scene.Node;
@@ -37,54 +38,65 @@ public class MouseDragClosestNode {
     private double mouseX = 0;
     private double mouseY = 0;
 
-    private boolean moved;
+    private static boolean moved;
     private Node target;
 
-    public static void setup(Node node, Node reference1, Node target1, Node reference2, Node target2, BiConsumer<Node, Point2D> totalTranslation) {
-        new MouseDragClosestNode(node, reference1, target1, reference2, target2, totalTranslation);
+    public static void setup(Node node, ReadOnlyBooleanProperty selected, Node reference1, Node target1, Node reference2, Node target2, BiConsumer<Node, Point2D> totalTranslation) {
+        new MouseDragClosestNode(node, selected, reference1, target1, reference2, target2, totalTranslation);
     }
 
     /**
      * constructor
      */
-    private MouseDragClosestNode(Node node, Node reference1, Node target1, Node reference2, Node target2, BiConsumer<Node, Point2D> totalTranslation2) {
+    private MouseDragClosestNode(Node node, ReadOnlyBooleanProperty selected, Node reference1, Node target1, Node reference2, Node target2, BiConsumer<Node, Point2D> totalTranslation2) {
 
-        node.setOnMousePressed((e -> {
-            mouseDownX=mouseX = e.getScreenX();
-            mouseDownY = mouseY = e.getScreenY();
-            moved = false;
+        node.setOnMousePressed(e -> {
+            if (selected.get()) {
+                mouseDownX = mouseX = e.getScreenX();
+                mouseDownY = mouseY = e.getScreenY();
+                moved = false;
+
+                final Bounds screenBounds1 = reference1.localToScreen(reference1.getBoundsInLocal());
+
+                final double distance1 = (new Point2D(screenBounds1.getCenterX(), screenBounds1.getCenterY())).distance(mouseX, mouseY);
+
+                final Bounds screenBounds2 = reference2.localToScreen(reference2.getBoundsInLocal());
+
+                final double distance2 = (new Point2D(screenBounds2.getCenterX(), screenBounds2.getCenterY())).distance(mouseX, mouseY);
+
+                if (distance1 <= distance2)
+                    target = target1;
+                else
+                    target = target2;
+            }
             e.consume();
-
-            final Bounds screenBounds1=reference1.localToScreen(reference1.getBoundsInLocal());
-
-            final double distance1=(new Point2D(screenBounds1.getCenterX(),screenBounds1.getCenterY())).distance(mouseX,mouseY);
-
-            final Bounds screenBounds2=reference2.localToScreen(reference2.getBoundsInLocal());
-
-            final double distance2=(new Point2D(screenBounds2.getCenterX(),screenBounds2.getCenterY())).distance(mouseX,mouseY);
-
-            if(distance1<=distance2)
-                target=target1;
-           else
-               target=target2;
-        }));
+        });
 
         node.setOnMouseDragged(e -> {
-            target.setTranslateX(target.getTranslateX() + (e.getScreenX() - mouseX));
-            target.setTranslateY(target.getTranslateY() + (e.getScreenY() - mouseY));
-            mouseX = e.getScreenX();
-            mouseY = e.getScreenY();
-            moved = true;
+            if (selected.get()) {
+                target.setTranslateX(target.getTranslateX() + (e.getScreenX() - mouseX));
+                target.setTranslateY(target.getTranslateY() + (e.getScreenY() - mouseY));
+                mouseX = e.getScreenX();
+                mouseY = e.getScreenY();
+                moved = true;
+            }
             e.consume();
         });
 
         node.setOnMouseReleased(e -> {
-            if (moved) {
+            if (selected.get() && moved) {
                 final double dx = e.getScreenX() - mouseDownX;
                 final double dy = e.getScreenY() - mouseDownY;
                 if (dx != 0 && dy != 0)
                     totalTranslation2.accept(target, new Point2D(dx, dy));
             }
+            e.consume();
         });
+    }
+
+    public static boolean wasMoved() {
+        boolean result = moved;
+        moved = false;
+        return result;
     }
 }

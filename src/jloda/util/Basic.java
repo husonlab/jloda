@@ -1724,6 +1724,20 @@ public class Basic {
     }
 
     /**
+     * gets the index of an object s in an array of objects
+     *
+     * @param s
+     * @param array
+     * @return index or -1
+     */
+    public static int getIndex(Object s, Object[]... array) {
+        for (int i = 0; i < array.length; i++)
+            if (s.equals(array[i]))
+                return i;
+        return -1;
+    }
+
+    /**
      * gets the index of a string s in an array of strings
      *
      * @param s
