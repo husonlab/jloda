@@ -19,8 +19,8 @@
 
 package jloda.kmers.mash;
 
-import jloda.util.Basic;
 import jloda.kmers.GenomeDistanceType;
+import jloda.util.Basic;
 
 /**
  * compute the distance between two mash sketches
@@ -68,6 +68,17 @@ public class MashDistance {
      * @return Jaccard index
      */
     public static double computeJaccardIndex(MashSketch sketch1, MashSketch sketch2) {
+        return computeJaccardIndex(sketch1, sketch2, true);
+    }
+
+    /**
+     * computes the Jaccard index for two sketches
+     *
+     * @param sketch1
+     * @param sketch2
+     * @return Jaccard index
+     */
+    public static double computeJaccardIndex(MashSketch sketch1, MashSketch sketch2, boolean normalize) {
         final int sketchSize = Basic.min(sketch1.getSketchSize(), sketch1.getValues().length, sketch2.getSketchSize(), sketch2.getValues().length);
 
         final long[] union = new long[sketchSize];
@@ -121,6 +132,9 @@ public class MashDistance {
             }
         }
 
-        return (double) intersectionSize / (double) union.length;
+        if (normalize)
+            return (double) intersectionSize / (double) union.length;
+        else
+            return intersectionSize;
     }
 }

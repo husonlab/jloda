@@ -2805,7 +2805,6 @@ public class Basic {
             return System.in;
         else if(fileName.endsWith("stdin-gz"))
             return new GZIPInputStream(System.in);
-
         if(isHTTPorFileURL(fileName))
             return getInputStreamPossiblyGZIP(null,fileName);
 
@@ -2890,7 +2889,7 @@ public class Basic {
     }
 
     public static boolean isHTTPorFileURL (String fileName) {
-        return fileName.matches("^(https|http|file)://[-a-zA-Z0-9+&@#/%?=~_|!:,.;]*[-a-zA-Z0-9+&@#/%=~_|]");
+        return fileName.matches("^(https|http|ftp|file)://[-a-zA-Z0-9+&@#/%?=~_|!:,.;]*[-a-zA-Z0-9+&@#/%=~_|]");
     }
 
     /**
@@ -2946,6 +2945,7 @@ public class Basic {
      * @return split string, trimmed
      */
     public static String[] split(String aLine, char splitChar, int maxTokens) {
+        aLine = aLine.trim();
         if (aLine.length() == 0 || maxTokens <= 0)
             return new String[0];
 
@@ -4318,8 +4318,7 @@ public class Basic {
                     result[j++] = strings[i];
             }
             return result;
-        }
-        else
+        } else
             return strings;
     }
 
@@ -4328,6 +4327,27 @@ public class Basic {
     }
 
 
+    public static byte[] gzip(String string) throws IOException {
+        try (ByteArrayOutputStream outs = new ByteArrayOutputStream(); Writer w = new OutputStreamWriter(new GZIPOutputStream(outs))) {
+            w.write(string);
+            return outs.toByteArray();
+        }
+    }
+
+    public static String gunzip(byte[] bytes) throws IOException {
+        try (ByteArrayInputStream ins = new ByteArrayInputStream(bytes); BufferedReader r = new BufferedReader(new InputStreamReader(new GZIPInputStream(ins)))) {
+            return r.lines().collect(Collectors.joining("\n"));
+        }
+    }
+
+    /**
+     * copy from one file to other, gunzipping and gzipping, as appropriate
+     */
+    public static void copy(String srcFile, String targetFile) throws IOException {
+        try (InputStream ins = getInputStreamPossiblyZIPorGZIP(srcFile); OutputStream outs = getOutputStreamPossiblyZIPorGZIP(targetFile)) {
+            ins.transferTo(outs);
+        }
+    }
 }
 
 /**
