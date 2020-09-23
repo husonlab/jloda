@@ -4178,33 +4178,6 @@ public class Basic {
         return false;
     }
 
-    public static Integer[] maxLexRotation(Integer[] numbers) {
-        final int n = numbers.length;
-        if (n == 0)
-            return numbers;
-
-        final Integer[][] array = new Integer[n][];
-        final Integer[] concat = new Integer[2 * numbers.length];
-        System.arraycopy(numbers, 0, concat, 0, n);
-        System.arraycopy(numbers, 0, concat, n, n);
-
-        for (int i = 0; i < n; i++) {
-            array[i] = new Integer[numbers.length];
-            System.arraycopy(concat, i, array[i], 0, n);
-        }
-        Arrays.sort(array, (a, b) -> {
-            for (int i = 0; i < a.length; i++) {
-                if (a[i] > b[i])
-                    return -1;
-                else if (a[i] < b[i])
-                    return 1;
-            }
-            return 0;
-        });
-
-        return array[0];
-    }
-
     public static long getNumberOfLinesInFile(String inputFile) {
         try (BufferedReader r = new BufferedReader(new InputStreamReader(Basic.getInputStreamPossiblyZIPorGZIP(inputFile)))) {
             return r.lines().count();
