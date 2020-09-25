@@ -30,6 +30,7 @@ import java.util.stream.StreamSupport;
  * Daniel Huson, 10.2011
  */
 public class FastAFileIterator implements IFastAIterator, Closeable {
+    private final String fileName;
     private final BufferedReader r;
     private boolean isClosed = false;
     private String nextHeader = null;
@@ -55,6 +56,7 @@ public class FastAFileIterator implements IFastAIterator, Closeable {
      * @throws IOException
      */
     public FastAFileIterator(String fileName) throws IOException {
+        this.fileName = fileName;
         maxProgress = Basic.guessUncompressedSizeOfFile(fileName);
         r = new BufferedReader(new InputStreamReader(Basic.getInputStreamPossiblyZIPorGZIP(fileName)));
         endOfLineBytes = Basic.determineEndOfLinesBytes(new File(fileName));
@@ -126,7 +128,7 @@ public class FastAFileIterator implements IFastAIterator, Closeable {
                 }
                 numberOfSequencesRead++;
             } catch (IOException e) {
-                Basic.caught(e);
+                System.err.println("IOException file=" + fileName + " : " + e.getMessage());
             }
             nextSequence = Basic.concatenateAndRemoveWhiteSpaces(parts);
             parts.clear();

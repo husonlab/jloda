@@ -28,7 +28,6 @@ import java.net.URI;
 import java.net.URL;
 import java.nio.channels.FileChannel;
 import java.nio.file.Files;
-import java.nio.file.StandardCopyOption;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.*;
@@ -2741,31 +2740,24 @@ public class Basic {
 
     /**
      * copy a file
-     *
-     * @param source
-     * @param target
-     * @throws java.io.IOException
      */
     public static void copyFile(File source, File target) throws IOException {
         copyFile(source.getPath(), target.getPath());
     }
 
     public static void copyFile(String source, String target) throws IOException {
-        try (FileChannel sourceChannel = new FileInputStream(source).getChannel(); FileChannel destChannel = new FileOutputStream(target).getChannel()) {
-            destChannel.transferFrom(sourceChannel, 0, sourceChannel.size());
+        try (InputStream ins = getInputStreamPossiblyZIPorGZIP(source); OutputStream outs = getOutputStreamPossiblyZIPorGZIP(target)) {
+            ins.transferTo(outs);
         }
     }
 
     /**
      * write a stream to a file
-     *
-     * @param inputStream
-     * @param outputFile
-     * @throws IOException
      */
-    public static void writeStreamToFile(InputStream inputStream, File outputFile) throws IOException {
-        System.err.println("Writing file: " + outputFile);
-        java.nio.file.Files.copy(inputStream, outputFile.toPath(), StandardCopyOption.REPLACE_EXISTING);
+    public static void writeStreamToFile(InputStream ins, File target) throws IOException {
+        try (OutputStream outs = getOutputStreamPossiblyZIPorGZIP(target.getPath())) {
+            ins.transferTo(outs);
+        }
     }
 
     /**
@@ -4310,15 +4302,6 @@ public class Basic {
     public static String gunzip(byte[] bytes) throws IOException {
         try (ByteArrayInputStream ins = new ByteArrayInputStream(bytes); BufferedReader r = new BufferedReader(new InputStreamReader(new GZIPInputStream(ins)))) {
             return r.lines().collect(Collectors.joining("\n"));
-        }
-    }
-
-    /**
-     * copy from one file to other, gunzipping and gzipping, as appropriate
-     */
-    public static void copy(String srcFile, String targetFile) throws IOException {
-        try (InputStream ins = getInputStreamPossiblyZIPorGZIP(srcFile); OutputStream outs = getOutputStreamPossiblyZIPorGZIP(targetFile)) {
-            ins.transferTo(outs);
         }
     }
 }
