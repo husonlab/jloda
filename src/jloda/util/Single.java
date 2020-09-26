@@ -113,4 +113,8 @@ public class Single<S> implements Comparable<Single<S>>, Comparator<Single<S>> {
     public boolean isNull() {
         return value == null;
     }
+
+    public boolean isNotNull() {
+        return value != null;
+    }
 }
