@@ -108,11 +108,11 @@ public class ExecuteInParallel {
             throw exception.get();
     }
 
-    public static abstract interface FunctionWithException<S, T> {
-        abstract public T apply(S input) throws Exception;
+    public interface FunctionWithException<S, T> {
+        T apply(S input) throws Exception;
     }
 
-    public static abstract interface ConsumerWithException<S> {
-        abstract public void accept(S input) throws Exception;
+    public interface ConsumerWithException<S> {
+        void accept(S input) throws Exception;
     }
 }

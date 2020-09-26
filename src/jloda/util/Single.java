@@ -52,7 +52,7 @@ public class Single<S> implements Comparable<Single<S>>, Comparator<Single<S>> {
     }
 
     public String toString() {
-        return value.toString();
+        return value == null ? null : value.toString();
     }
 
     public int hashCode() {
