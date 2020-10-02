@@ -53,11 +53,14 @@ public class MashDistance {
      * @return mash distance
      */
     public static double compute(MashSketch a, MashSketch b) {
-        final double j = computeJaccardIndex(a, b);
-        if (j == 0)
+        return compute(computeJaccardIndex(a, b), a.getkSize());
+    }
+
+    public static double compute(double jaccardIndex, int k) {
+        if (jaccardIndex == 0)
             return 1;
         else
-            return Math.max(0f, -1.0 / a.getkSize() * Math.log(2.0 * j / (1 + j)));
+            return Math.max(0f, -1.0 / k * Math.log(2.0 * jaccardIndex / (1 + jaccardIndex)));
     }
 
     /**

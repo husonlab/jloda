@@ -2514,6 +2514,9 @@ public class Basic {
     }
 
     public static void checkFileWritable(String fileName, boolean allowOverwrite) throws IOException {
+        if (fileName.equals("stdout") || fileName.equals("stderr") || fileName.equals("stdout-gz"))
+            return;
+
         final File file = new File(fileName);
         if (file.exists()) {
             if (!allowOverwrite)
