@@ -171,23 +171,20 @@ public class ResourceManager {
     }
 
     /**
-     * Returns file resource as stream, unless the string contains a slash, in which case returns Stream from the file system
+     * first tries to open as file, then as resource in jar
      *
      * @param filePackage the package containing file
      * @param fileName    the name of the file
      */
     public static InputStream getFileAsStream(Class clazz, String filePackage, String fileName) {
-        if (fileName.contains("/") || fileName.contains("\\")) {
-            File file = new File(fileName);
             try {
-                return Basic.getInputStreamPossiblyZIPorGZIP(file.getPath());
-            } catch (IOException e) {
-                if (!fileName.endsWith(".info")) // don't complain about missing info files
-                    System.err.println(e.getMessage());
-                return null;
+                final File file = new File(fileName);
+                final InputStream ins=Basic.getInputStreamPossiblyZIPorGZIP(file.getPath());
+                if(ins!=null)
+                    return ins;
+            } catch (IOException ignored) {
             }
-        } else
-            return getFileResourceAsStream(clazz, filePackage, fileName);
+        return getFileResourceAsStream(clazz, filePackage, fileName);
     }
 
     /**

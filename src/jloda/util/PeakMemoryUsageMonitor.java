@@ -32,7 +32,7 @@ import static java.util.concurrent.TimeUnit.SECONDS;
 public class PeakMemoryUsageMonitor {
     private static PeakMemoryUsageMonitor instance;
     private final long start;
-    private long peak = ((Runtime.getRuntime().totalMemory() - Runtime.getRuntime().freeMemory()) / 1000000);
+    private long peak = ((Runtime.getRuntime().totalMemory() - Runtime.getRuntime().freeMemory()) / 1048576);
 
     /**
      * constructor
@@ -40,7 +40,7 @@ public class PeakMemoryUsageMonitor {
     private PeakMemoryUsageMonitor() {
         start = System.currentTimeMillis();
         Executors.newScheduledThreadPool(1).scheduleAtFixedRate(() -> {
-            long used = ((Runtime.getRuntime().totalMemory() - Runtime.getRuntime().freeMemory()) / 1000000);
+            long used = ((Runtime.getRuntime().totalMemory() - Runtime.getRuntime().freeMemory()) / 1048576);
             if (used > peak)
                 peak = used;
         }, 0, 5, SECONDS);

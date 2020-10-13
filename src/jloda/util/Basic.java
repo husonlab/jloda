@@ -22,12 +22,16 @@ package jloda.util;
 
 import javafx.collections.ObservableList;
 import jloda.fx.util.PrintStreamNoClose;
+import jloda.thirdparty.HexUtils;
 
 import java.io.*;
 import java.net.URI;
 import java.net.URL;
 import java.nio.channels.FileChannel;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.*;
@@ -105,12 +109,13 @@ public class Basic {
     }
 
     public static String stopCollectingStdErr() {
-        if (collectOut != null) {
-            String result = collectOut.toString();
-            collectOut = null;
-            return result;
-        } else
-            return "";
+        String result=getCollected();
+        collectOut=null;
+        return result;
+    }
+
+    public static String getCollected () {
+            return collectOut!=null?collectOut.toString():"";
     }
 
     /**
@@ -4305,6 +4310,18 @@ public class Basic {
     public static String gunzip(byte[] bytes) throws IOException {
         try (ByteArrayInputStream ins = new ByteArrayInputStream(bytes); BufferedReader r = new BufferedReader(new InputStreamReader(new GZIPInputStream(ins)))) {
             return r.lines().collect(Collectors.joining("\n"));
+        }
+    }
+
+    public static String computeMD5(String string) {
+        try {
+            final MessageDigest messageDigest = MessageDigest.getInstance("MD5");
+            messageDigest.reset();
+            messageDigest.update(string.getBytes(StandardCharsets.UTF_8));
+            byte[] resultByte = messageDigest.digest();
+            return HexUtils.encodeHexString(resultByte);
+        } catch (NoSuchAlgorithmException ignored) {
+            return "";
         }
     }
 }

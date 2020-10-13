@@ -63,15 +63,31 @@ public class MashDistance {
             return Math.max(0f, -1.0 / k * Math.log(2.0 * jaccardIndex / (1 + jaccardIndex)));
     }
 
-    /**
-     * computes the Jaccard index for two sketches
-     *
-     * @param sketch1
-     * @param sketch2
-     * @return Jaccard index
-     */
-    public static double computeJaccardIndex(MashSketch sketch1, MashSketch sketch2) {
-        return computeJaccardIndex(sketch1, sketch2, true);
+    public static int computeIntersection (MashSketch sketch1, MashSketch sketch2) {
+        final int sketchSize=sketch1.getSketchSize();
+
+        int intersectionSize = 0;
+            int i = 0;
+            int j = 0;
+            while (true) {
+                final long value1 = sketch1.getValue(i);
+                final long value2 = sketch2.getValue(j);
+
+                if(value1<value2) {
+                    if(++i==sketchSize)
+                        break;
+                } else if(value1>value2){
+                    if(++j==sketchSize)
+                        break;
+                } else {
+                    intersectionSize++;
+                    if(++i==sketchSize)
+                        break;
+                    if(++j==sketchSize)
+                        break;
+                }
+            }
+        return intersectionSize;
     }
 
     /**
@@ -81,8 +97,8 @@ public class MashDistance {
      * @param sketch2
      * @return Jaccard index
      */
-    public static double computeJaccardIndex(MashSketch sketch1, MashSketch sketch2, boolean normalize) {
-        final int sketchSize = Basic.min(sketch1.getSketchSize(), sketch1.getValues().length, sketch2.getSketchSize(), sketch2.getValues().length);
+    public static double computeJaccardIndex(MashSketch sketch1, MashSketch sketch2) {
+         final int sketchSize = Basic.min(sketch1.getSketchSize(), sketch1.getValues().length, sketch2.getSketchSize(), sketch2.getValues().length);
 
         final long[] union = new long[sketchSize];
 
@@ -135,9 +151,6 @@ public class MashDistance {
             }
         }
 
-        if (normalize)
             return (double) intersectionSize / (double) union.length;
-        else
-            return intersectionSize;
-    }
+     }
 }
