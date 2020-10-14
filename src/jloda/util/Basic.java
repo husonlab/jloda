@@ -1271,9 +1271,10 @@ public class Basic {
      */
     public static String getFileNameWithoutPath(String name) {
         if (name != null) {
-            int pos = name.lastIndexOf(File.separatorChar);
-            if (pos != -1 && pos < name.length() - 1) {
-                name = name.substring(pos + 1);
+            int pos = name.lastIndexOf(File.separatorChar)+1;
+            pos=Math.max(pos,name.lastIndexOf("::")+2);
+            if (pos >0&& pos < name.length()) {
+                name = name.substring(pos);
             }
         }
         return name;
