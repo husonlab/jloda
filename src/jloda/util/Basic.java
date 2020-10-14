@@ -1271,10 +1271,10 @@ public class Basic {
      */
     public static String getFileNameWithoutPath(String name) {
         if (name != null) {
-            int pos = name.lastIndexOf(File.separatorChar)+1;
-            pos=Math.max(pos,name.lastIndexOf("::")+2);
+            int pos = name.lastIndexOf(File.separatorChar);
+            pos=Math.max(pos,name.lastIndexOf("::")+1);
             if (pos >0&& pos < name.length()) {
-                name = name.substring(pos);
+                name = name.substring(pos+1);
             }
         }
         return name;
