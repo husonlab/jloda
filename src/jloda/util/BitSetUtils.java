@@ -186,10 +186,26 @@ public class BitSetUtils {
             set.or(b);
         }
         final ArrayList<Integer> list = new ArrayList<>(set.cardinality());
-            for (Integer a : members(set)) {
-                list.add(a);
-            }
+        for (Integer a : members(set)) {
+            list.add(a);
+        }
         return list;
+    }
+
+    public static Iterable<Integer> range(int startInclusive, int endExclusive) {
+        return () -> new Iterator<>() {
+            private int i = startInclusive;
+
+            @Override
+            public boolean hasNext() {
+                return i < endExclusive;
+            }
+
+            @Override
+            public Integer next() {
+                return i++;
+            }
+        };
     }
 
     public static void addAll(BitSet bits, int... values) {

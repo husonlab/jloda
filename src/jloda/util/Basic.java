@@ -500,11 +500,13 @@ public class Basic {
         final String suffix = Basic.getFileSuffix(name);
         File result = new File(name);
         int count = 0;
-        while (usedFiles.contains(result) || result.exists()) {
-            result = new File(replaceFileSuffix(name, "-" + (++count)  + suffix));
+        synchronized (usedFiles) {
+            while (usedFiles.contains(result) || result.exists()) {
+                result = new File(replaceFileSuffix(name, "-" + (++count) + suffix));
 
+            }
+            usedFiles.add(result);
         }
-        usedFiles.add(result);
         return result;
     }
 
