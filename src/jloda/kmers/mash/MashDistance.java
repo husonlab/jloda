@@ -20,7 +20,6 @@
 package jloda.kmers.mash;
 
 import jloda.kmers.GenomeDistanceType;
-import jloda.util.Basic;
 
 /**
  * compute the distance between two mash sketches
@@ -38,7 +37,7 @@ public class MashDistance {
         final double jaccardIndex = computeJaccardIndex(a, b);
         if (genomeDistanceType == GenomeDistanceType.Mash) {
             if (jaccardIndex == 0)
-                return 1;
+                return 0.75;
             else
                 return Math.max(0f, -1.0 / a.getkSize() * Math.log(2.0 * jaccardIndex / (1 + jaccardIndex)));
         } else
@@ -50,7 +49,7 @@ public class MashDistance {
      *
      * @param a
      * @param b
-     * @return mash distance
+     * @return mash distance or 0.75, if Jaccard Index is 0
      */
     public static double compute(MashSketch a, MashSketch b) {
         return compute(computeJaccardIndex(a, b), a.getkSize());
@@ -58,7 +57,7 @@ public class MashDistance {
 
     public static double compute(double jaccardIndex, int k) {
         if (jaccardIndex == 0)
-            return 1;
+            return 0.75;
         else
             return Math.max(0f, -1.0 / k * Math.log(2.0 * jaccardIndex / (1 + jaccardIndex)));
     }
@@ -98,59 +97,6 @@ public class MashDistance {
      * @return Jaccard index
      */
     public static double computeJaccardIndex(MashSketch sketch1, MashSketch sketch2) {
-        final int sketchSize = Basic.min(sketch1.getSketchSize(), sketch1.getValues().length, sketch2.getSketchSize(), sketch2.getValues().length);
-
-        final long[] union = new long[sketchSize];
-
-        // compute the union:
-        {
-            int i = 0;
-            int j = 0;
-            for (int k = 0; k < sketchSize; k++) { // union upto MashSketch size
-                final long value1 = sketch1.getValue(i);
-                final long value2 = sketch2.getValue(j);
-                if (value1 < value2) {
-                    union[k] = value1;
-                    i++;
-                } else if (value1 > value2) {
-                    union[k] = value2;
-                    j++;
-                } else // if (values1[i] == values2[j])
-                {
-                    union[k] = value1;
-                    i++;
-                    j++;
-                }
-            }
-        }
-        // compute intersection size:
-        int intersectionSize = 0;
-        {
-            int i = 0;
-            int j = 0;
-            int k = 0;
-            while (k < sketchSize) {
-                final long value1 = sketch1.getValue(i);
-                final long value2 = sketch2.getValue(j);
-
-                if (value1 < union[k]) {
-                    i++;
-                    if (i == sketchSize)
-                        break;
-                } else if (value2 < union[k]) {
-                    j++;
-                    if (j == sketchSize)
-                        break;
-                } else if (value1 == union[k] && value2 == union[k]) {
-                    intersectionSize++;
-                    i++;
-                    j++;
-                    k++;
-                } else // one of values1[i] and values2[j] is larger than union[k], let k catch up
-                    k++;
-            }
-        }
-
-        return (double) intersectionSize / (double) union.length;
+        return (double) computeIntersection(sketch1, sketch2) / (double) Math.min(sketch1.getSketchSize(), sketch2.getSketchSize());
     }
 }
