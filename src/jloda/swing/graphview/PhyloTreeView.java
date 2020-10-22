@@ -28,8 +28,8 @@ import jloda.util.Pair;
 import java.util.*;
 
 /**
- *  tree viewer
- *  Daniel Huson, 2000
+ * tree viewer
+ * Daniel Huson, 2000
  */
 
 public class PhyloTreeView extends GraphView {

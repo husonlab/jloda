@@ -55,7 +55,7 @@ public class ReorderListDialog extends JDialog implements DropTargetListener, Ac
     private final JButton cancel;
 
     /*
-      * implements for interface DrogTargetListener
+     * implements for interface DrogTargetListener
      */
 
     public void dragEnter(DropTargetDragEvent event) {
@@ -149,9 +149,9 @@ public class ReorderListDialog extends JDialog implements DropTargetListener, Ac
     }
 
     /*
-      * implement for ActionListerner that buttons use
-      * @see java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
-      */
+     * implement for ActionListerner that buttons use
+     * @see java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
+     */
 
     public void actionPerformed(ActionEvent e) {
         if (e.getSource() == apply) {
@@ -217,8 +217,8 @@ public class ReorderListDialog extends JDialog implements DropTargetListener, Ac
     }
 
     /*
-      * constructor
-      */
+     * constructor
+     */
 
     public ReorderListDialog(String title, boolean showCopy) {
         super();
@@ -227,8 +227,8 @@ public class ReorderListDialog extends JDialog implements DropTargetListener, Ac
         this.showCopy = showCopy;
 
         /*
-           * left list
-           */
+         * left list
+         */
         /*
          *attributes for JDialog
          */
@@ -241,8 +241,8 @@ public class ReorderListDialog extends JDialog implements DropTargetListener, Ac
         scroll1.setPreferredSize(new Dimension(240, 300));
 
         /*
-        * right list
-        */
+         * right list
+         */
         JLabel reorderedLabel = new JLabel("Reordered");
         reorderedLabel.setHorizontalAlignment(SwingConstants.CENTER);
 
@@ -259,8 +259,8 @@ public class ReorderListDialog extends JDialog implements DropTargetListener, Ac
         scroll2.setPreferredSize(new Dimension(240, 300));
 
         /*
-           * buttons in the middle
-           */
+         * buttons in the middle
+         */
         copy = new JButton("Copy=>");
         copy.setMinimumSize(new Dimension(120, 30));
         copy.setMaximumSize(new Dimension(120, 30));
@@ -292,8 +292,8 @@ public class ReorderListDialog extends JDialog implements DropTargetListener, Ac
         rotateUp.addActionListener(this);
 
         /*
-           * botton apply, cancel
-           */
+         * botton apply, cancel
+         */
         cancel = new JButton("Cancel");
         cancel.setMinimumSize(new Dimension(100, 30));
         cancel.setMaximumSize(new Dimension(100, 30));
@@ -312,8 +312,8 @@ public class ReorderListDialog extends JDialog implements DropTargetListener, Ac
         JPanel panel = new JPanel();
 
         /*
-        * layout for the dialog
-        */
+         * layout for the dialog
+         */
         GridBagLayout gbl = new GridBagLayout();
         GridBagConstraints gbc = new GridBagConstraints();
         panel.setLayout(gbl);

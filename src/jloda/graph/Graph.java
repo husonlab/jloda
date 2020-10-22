@@ -107,14 +107,15 @@ public class Graph extends GraphBase {
 
     /**
      * constructs a new node and reuses an old id
+     *
      * @param info
      * @param recycledId
      * @return
      */
-    public Node newNode (Object info,int recycledId) {
-       final Node v=new Node(this,info);
-       v.setId(recycledId);
-       idsNodes--; // count back down
+    public Node newNode(Object info, int recycledId) {
+        final Node v = new Node(this, info);
+        v.setId(recycledId);
+        idsNodes--; // count back down
         return v;
     }
 
@@ -235,8 +236,8 @@ public class Graph extends GraphBase {
      * @param obj the info object
      * @return a new edge between nodes v and w and sets its info to obj
      */
-    public Edge newEdge(Node v, Node w, Object obj,int recycledId) throws IllegalSelfEdgeException {
-        final Edge e= new Edge(this, v, w, obj);
+    public Edge newEdge(Node v, Node w, Object obj, int recycledId) throws IllegalSelfEdgeException {
+        final Edge e = new Edge(this, v, w, obj);
         e.setId(recycledId);
         idsEdges--;
         return e;
@@ -505,7 +506,7 @@ public class Graph extends GraphBase {
      *
      * @param v the node
      * @return the first adjacent edge
-     *  Better: use v.getFirstAdjacentEdge()
+     * Better: use v.getFirstAdjacentEdge()
      */
     public Edge getFirstAdjacentEdge(Node v) {
         checkOwner(v);
@@ -531,7 +532,7 @@ public class Graph extends GraphBase {
      * @param e the edge
      * @param v the node
      * @return the successor of edge adjacent to v
-     *  Better: use v.getNextAdjacentEdge(e)
+     * Better: use v.getNextAdjacentEdge(e)
      */
     public Edge getNextAdjacentEdge(Edge e, Node v) {
         checkOwner(v);
@@ -544,7 +545,7 @@ public class Graph extends GraphBase {
      * @param e the edge
      * @param v the node
      * @return the predecessor of edge adjacent to v
-     *  Better: use v.getPrevAdjacentEdge(e)
+     * Better: use v.getPrevAdjacentEdge(e)
      */
     public Edge getPrevAdjacentEdge(Edge e, Node v) {
         checkOwner(v);
@@ -557,7 +558,7 @@ public class Graph extends GraphBase {
      * @param e the edge
      * @param v the node
      * @return the cyclic successor of edge adjacent to v
-     *  Better: use v.getNextAdjacentEdgeCyclic(e)
+     * Better: use v.getNextAdjacentEdgeCyclic(e)
      */
     public Edge getNextAdjacentEdgeCyclic(Edge e, Node v) {
         checkOwner(v);
@@ -570,7 +571,7 @@ public class Graph extends GraphBase {
      * @param e the edge
      * @param v the node
      * @return the cyclic predecessor of edge adjacent to v
-     *  Better: use v.getPrevAdjacentEdgeCyclic(e)
+     * Better: use v.getPrevAdjacentEdgeCyclic(e)
      */
     public Edge getPrevAdjacentEdgeCyclic(Edge e, Node v) {
         checkOwner(v);
@@ -1008,8 +1009,8 @@ public class Graph extends GraphBase {
     }
 
     /* Fires the newNode event for all GraphUpdateListeners
-    *@param v the node
-    */
+     *@param v the node
+     */
     protected void fireNewNode(Node v) {
         checkOwner(v);
 
@@ -1019,8 +1020,8 @@ public class Graph extends GraphBase {
     }
 
     /* Fires the deleteNode event for all GraphUpdateListeners
-    *@param v the node
-    */
+     *@param v the node
+     */
 
     protected void fireDeleteNode(Node v) {
         checkOwner(v);
@@ -1032,6 +1033,7 @@ public class Graph extends GraphBase {
 
     /**
      * fires the node label changed event
+     *
      * @param v
      * @param label
      */
@@ -1039,13 +1041,13 @@ public class Graph extends GraphBase {
         checkOwner(v);
 
         for (GraphUpdateListener gul : graphUpdateListeners) {
-            gul.nodeLabelChanged(v,label);
+            gul.nodeLabelChanged(v, label);
         }
     }
 
     /* Fires the newEdge event for all GraphUpdateListeners
-    *@param e the edge
-    */
+     *@param e the edge
+     */
 
     protected void fireNewEdge(Edge e) {
         checkOwner(e);
@@ -1056,8 +1058,8 @@ public class Graph extends GraphBase {
     }
 
     /* Fires the deleteEdge event for all GraphUpdateListeners
-    *@param e the edge
-    */
+     *@param e the edge
+     */
 
     protected void fireDeleteEdge(Edge e) {
         checkOwner(e);
@@ -1069,6 +1071,7 @@ public class Graph extends GraphBase {
 
     /**
      * fires the edge label changed event
+     *
      * @param e
      * @param label
      */
@@ -1076,12 +1079,12 @@ public class Graph extends GraphBase {
         checkOwner(e);
 
         for (GraphUpdateListener gul : graphUpdateListeners) {
-            gul.edgeLabelChanged(e,label);
+            gul.edgeLabelChanged(e, label);
         }
     }
 
     /* Fires the graphHasChanged event for all GraphUpdateListeners
-    */
+     */
 
     protected void fireGraphHasChanged() {
         if (!ignoreGraphHasChanged) {
@@ -1282,8 +1285,8 @@ public class Graph extends GraphBase {
      */
     public void setLabel(Edge e, String lab) {
         edgeLabels.put(e, lab);
-        fireEdgeLabelChanged(e,lab);
-        
+        fireEdgeLabelChanged(e, lab);
+
     }
 
     /**
@@ -1299,12 +1302,12 @@ public class Graph extends GraphBase {
     /**
      * Sets the label of a node.
      *
-     * @param v   Node
+     * @param v     Node
      * @param label String
      */
     public void setLabel(Node v, String label) {
         nodeLabels.setValue(v, label);
-        fireNodeLabelChanged(v,label);
+        fireNodeLabelChanged(v, label);
     }
 
     /**
@@ -1431,8 +1434,7 @@ public class Graph extends GraphBase {
      * @param array
      */
     void registerEdgeAssociation(EdgeAssociation array) {
-        synchronized (edgeAssociations)
-        {
+        synchronized (edgeAssociations) {
             final List<WeakReference> toDelete = new LinkedList<>();
             for (WeakReference<EdgeAssociation> ref : edgeAssociations) {
                 if (ref.get() == null)
@@ -1884,7 +1886,7 @@ public class Graph extends GraphBase {
         for (Node v = getFirstNode(); v != null; v = getNextNode(v)) {
             w.write("\tnode [\n");
             w.write("\t\tid " + v.getId() + "\n");
-            if(label2nodes!=null) {
+            if (label2nodes != null) {
                 for (String aLabel : label2nodes.keySet()) {
                     NodeArray<?> array = label2nodes.get(aLabel);
                     if (array != null) {
@@ -1905,7 +1907,7 @@ public class Graph extends GraphBase {
             w.write("\t\tsource " + e.getSource().getId() + "\n");
             w.write("\t\ttarget " + e.getTarget().getId() + "\n");
 
-            if(label2edges!=null) {
+            if (label2edges != null) {
                 for (String aLabel : label2edges.keySet()) {
                     EdgeArray<?> array = label2edges.get(aLabel);
                     if (array != null) {
@@ -2039,8 +2041,8 @@ public class Graph extends GraphBase {
     }
 
     public Node searchNodeId(int id) {
-        for(Node v:nodes())
-            if(v.getId()==id)
+        for (Node v : nodes())
+            if (v.getId() == id)
                 return v;
         return null;
     }

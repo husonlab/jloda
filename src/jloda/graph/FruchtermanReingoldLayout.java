@@ -141,8 +141,8 @@ public class FruchtermanReingoldLayout {
      * @param numberOfIterations
      * @return
      */
-    public NodeArray<APoint2D> apply(int numberOfIterations) {
-        final NodeArray<APoint2D> result = new NodeArray<>(graph);
+    public NodeArray<APoint2D<?>> apply(int numberOfIterations) {
+        final NodeArray<APoint2D<?>> result = new NodeArray<>(graph);
         try {
             apply(numberOfIterations, result, new ProgressSilent(), ProgramExecutorService.getNumberOfCoresToUse());
         } catch (CanceledException ignored) { // can't happen
@@ -156,7 +156,7 @@ public class FruchtermanReingoldLayout {
      * @param numberOfIterations
      * @param result
      */
-    public void apply(int numberOfIterations, NodeArray<APoint2D> result) {
+    public void apply(int numberOfIterations, NodeArray<APoint2D<?>> result) {
         try {
             apply(numberOfIterations, result, new ProgressSilent(), ProgramExecutorService.getNumberOfCoresToUse());
         } catch (CanceledException ignored) { // can't happen
@@ -169,7 +169,7 @@ public class FruchtermanReingoldLayout {
      * @param numberOfIterations
      * @param result
      */
-    public void apply(int numberOfIterations, NodeArray<APoint2D> result, ProgressListener progress, int numberOfThreads) throws CanceledException {
+    public void apply(int numberOfIterations, NodeArray<APoint2D<?>> result, ProgressListener progress, int numberOfThreads) throws CanceledException {
         progress.setMaximum(numberOfIterations);
         progress.setProgress(0);
 
@@ -191,7 +191,7 @@ public class FruchtermanReingoldLayout {
                     service.submit(() -> {
                         try {
                             for (int v = thread; v < nodes.length; v += threads) {
-                                result.setValue(nodes[v], new APoint2D(coordinates[0][v], coordinates[1][v]));
+                                result.setValue(nodes[v], new APoint2D<>(coordinates[0][v], coordinates[1][v]));
                             }
                         } finally {
                             countDownLatch.countDown();

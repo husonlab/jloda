@@ -90,8 +90,7 @@ public class CompositeObjectSearcher implements IObjectSearcher {
             return false;
         else if (searchers[whichSearcher].gotoNext()) {
             return true;
-        }
-        else {
+        } else {
             for (int i = whichSearcher + 1; i < searchers.length; i++) {
                 if (searchers[i].gotoFirst()) {
                     whichSearcher = i;
@@ -176,8 +175,7 @@ public class CompositeObjectSearcher implements IObjectSearcher {
     public String getCurrentLabel() {
         if (whichSearcher != None) {
             return searchers[whichSearcher].getCurrentLabel();
-        }
-        else
+        } else
             return null;
     }
 

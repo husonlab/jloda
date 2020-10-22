@@ -172,8 +172,8 @@ public class NodeDoubleArray extends GraphBase implements NodeAssociation<Double
         }
     }
 
-   /**
-    * is array erase, that is, has nothing been set
+    /**
+     * is array erase, that is, has nothing been set
      *
      * @return true, if erase
      */

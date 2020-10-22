@@ -22,12 +22,12 @@ package jloda.swing.graphview;
 
 /**
  * @version $Id: GraphViewListener.java,v 1.100 2010-06-14 13:34:40 huson Exp $
- *
+ * <p>
  * Listener for all graphview events.
- *
  * @author Daniel Huson
  */
 
+import jloda.fx.util.ProgramExecutorService;
 import jloda.graph.*;
 import jloda.swing.util.Cursors;
 import jloda.swing.util.Geometry;
@@ -38,15 +38,12 @@ import java.awt.*;
 import java.awt.event.*;
 import java.awt.geom.Point2D;
 import java.util.LinkedList;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 
 
 /**
  * Listener for all GraphView events
  */
 public class GraphViewListener implements IGraphViewListener {
-    private final static ExecutorService service = Executors.newFixedThreadPool(1);
     private boolean inWait = false;
 
     private final GraphView viewer;
@@ -71,7 +68,6 @@ public class GraphViewListener implements IGraphViewListener {
 
     private boolean allowDeselectAllByMouseClick = true;
     private boolean allowSelectConnectedComponent = false;
-
 
     private NodeSet hitNodes;
     private NodeSet hitNodeLabels;
@@ -184,14 +180,14 @@ public class GraphViewListener implements IGraphViewListener {
                 viewer.setCursor(Cursors.getClosedHand());
 
                 if (!inWait) {
-                    service.execute(new Runnable() {
+                    ProgramExecutorService.getInstance().execute(new Runnable() {
                         public void run() {
                             try {
                                 inWait = true;
                                 synchronized (this) {
                                     Thread.sleep(500);
                                 }
-                            } catch (InterruptedException e) {
+                            } catch (InterruptedException ignored) {
                             }
                             if (stillDownWithoutMoving) {
                                 current = inRubberband;
@@ -508,14 +504,14 @@ public class GraphViewListener implements IGraphViewListener {
 
             if (dY != 0) {
                 JScrollBar scrollBar = scrollPane.getVerticalScrollBar();
-                int amount = Math.round(dY * (scrollBar.getMaximum() - scrollBar.getMinimum()) / viewer.getHeight());
+                int amount = Math.round(dY * (scrollBar.getMaximum() - scrollBar.getMinimum()) / (float) viewer.getHeight());
                 if (amount != 0) {
                     scrollBar.setValue(scrollBar.getValue() - amount);
                 }
             }
             if (dX != 0) {
                 JScrollBar scrollBar = scrollPane.getHorizontalScrollBar();
-                int amount = Math.round(dX * (scrollBar.getMaximum() - scrollBar.getMinimum()) / viewer.getWidth());
+                int amount = Math.round(dX * (scrollBar.getMaximum() - scrollBar.getMinimum()) / (float) viewer.getWidth());
                 if (amount != 0) {
                     scrollBar.setValue(scrollBar.getValue() - amount);
                 }
@@ -563,7 +559,7 @@ public class GraphViewListener implements IGraphViewListener {
                 }
                 for (Edge e = G.getFirstEdge(); e != null; e = G.getNextEdge(e)) {
                     if (viewer.getSelected(e.getSource()) && viewer.getSelected(e.getTarget())) {
-                        java.util.List internalPoints = viewer.getInternalPoints(e);
+                        final java.util.List<Point2D> internalPoints = viewer.getInternalPoints(e);
                         if (internalPoints != null) {
                             for (Object internalPoint : internalPoints) {
                                 Point2D apt = (Point2D) internalPoint;
@@ -617,8 +613,10 @@ public class GraphViewListener implements IGraphViewListener {
                     } else {
                         prevPt = new Point(downX, downY);
                         Point labPt = nv.getLabelPosition(trans);
-                        offset.x = labPt.x - downX;
-                        offset.y = labPt.y - downY;
+                        if (labPt != null) {
+                            offset.x = labPt.x - downX;
+                            offset.y = labPt.y - downY;
+                        }
                     }
                     gc.drawLine(apt.x, apt.y, meX, meY);
                     nv.hiliteLabel(gc, viewer.trans, viewer.getFont());
@@ -661,7 +659,7 @@ public class GraphViewListener implements IGraphViewListener {
                     Point pv = vv.computeConnectPoint(nextToV, trans);
                     Point pw = wv.computeConnectPoint(nextToW, trans);
 
-                    if (G.findDirectedEdge(G.getTarget(e), G.getSource(e)) != null)
+                    if (pv != null && pw != null && G.findDirectedEdge(G.getTarget(e), G.getSource(e)) != null)
                         viewer.adjustBiEdge(pv, pw); // want parallel bi-edges
 
                     final Graphics2D gc = (Graphics2D) viewer.getGraphics();
@@ -679,8 +677,10 @@ public class GraphViewListener implements IGraphViewListener {
                         else {
                             prevPt = new Point(downX, downY);
                             Point labPt = ev.getLabelPosition(trans);
-                            offset.x = labPt.x - downX;
-                            offset.y = labPt.y - downY;
+                            if (labPt != null) {
+                                offset.x = labPt.x - downX;
+                                offset.y = labPt.y - downY;
+                            }
                         }
                         gc.drawLine(apt.x, apt.y, meX, meY);
                         ev.drawLabel(gc, trans, viewer.getSelected(e));

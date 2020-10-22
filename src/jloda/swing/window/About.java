@@ -36,7 +36,7 @@ import java.util.concurrent.Executors;
  * splashes an about window on the screen
  *
  * @author huson
- *         Date: 11-Feb-2004
+ * Date: 11-Feb-2004
  */
 public class About {
     private String versionString;
@@ -47,10 +47,11 @@ public class About {
     private String additionalString;
     private int additionalStringVerticalPosition = 100;
 
-    static private About instance=null;
+    static private About instance = null;
 
     /**
      * get the current about window
+     *
      * @return about window or null
      */
     public static About getAbout() {
@@ -59,6 +60,7 @@ public class About {
 
     /**
      * set the current about window
+     *
      * @param fileName
      * @param version
      * @param closeOperation
@@ -69,7 +71,8 @@ public class About {
 
     /**
      * constructs an about message for splashing the screen
-     *  @param fileName       name of image file
+     *
+     * @param fileName       name of image file
      * @param version0       version string to include in message
      * @param closeOperation default close operation, e.g. JDialog.HIDE_ON_CLOSE
      */
@@ -214,7 +217,7 @@ public class About {
     }
 
     public static boolean isSet() {
-        return instance!=null;
+        return instance != null;
     }
 
     public String getAdditionalString() {

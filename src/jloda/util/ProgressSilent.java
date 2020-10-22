@@ -24,7 +24,7 @@ package jloda.util;
  * silent progress listener
  *
  * @author huson
- *         Date: 26-Jun-2004
+ * Date: 26-Jun-2004
  */
 public class ProgressSilent implements ProgressListener {
     /**

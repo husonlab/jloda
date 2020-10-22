@@ -29,7 +29,7 @@ public class GeometryUtilsFX {
 
     /**
      * Computes the angle of a two-dimensional vector.
-      */
+     */
     public static double computeAngle(Point2D p) {
         if (p.getX() != 0) {
             double x = Math.abs(p.getX());
@@ -121,7 +121,7 @@ public class GeometryUtilsFX {
 
     /**
      * Translate a point in the direction specified by an angle.
-      */
+     */
     public static Point2D translateByAngle(Point2D apt, double alpha, double dist) {
         double dx = dist * Math.cos(DEG_TO_RAD_FACTOR * alpha);
         double dy = dist * Math.sin(DEG_TO_RAD_FACTOR * alpha);
@@ -190,7 +190,7 @@ public class GeometryUtilsFX {
 
     /**
      * returns the difference of angles A and B
-      */
+     */
     public static double squaredDistance(Point2D A, Point2D B) {
         return (B.getX() - A.getX()) * (B.getX() - A.getX()) + (B.getY() - A.getY()) * (B.getY() - A.getY());
     }
@@ -203,7 +203,7 @@ public class GeometryUtilsFX {
         return new Point3D(point.getX(), point.getY(), 0);
     }
 
-    public static Point3D from2Dto3D(Point2D point,double z) {
+    public static Point3D from2Dto3D(Point2D point, double z) {
         return new Point3D(point.getX(), point.getY(), z);
     }
 
@@ -215,9 +215,9 @@ public class GeometryUtilsFX {
      * are three points colinear?
      */
     public static boolean colinear(Point3D a, Point3D b, Point3D c) {
-        final double v1=2*((a.getX()-c.getX())*(b.getX()-a.getX())+(a.getY()-c.getY())*(b.getY()-a.getY())+(a.getZ()-c.getZ())*(b.getZ()-a.getZ()));
-              final double v2=4*((a.getX()-b.getX())*(a.getX()-b.getX())+(a.getY()-b.getY())*(a.getY()-b.getY())+(a.getZ()-b.getZ())*(a.getZ()-b.getZ()))
-                      *((b.getX()-a.getX())*(b.getX()-a.getX())+(b.getY()-a.getY())*(b.getY()-a.getY())+(b.getZ()-a.getZ())*(b.getZ()-a.getZ()));
-              return Math.abs(v1*v1-4*v2)<0.001;
+        final double v1 = 2 * ((a.getX() - c.getX()) * (b.getX() - a.getX()) + (a.getY() - c.getY()) * (b.getY() - a.getY()) + (a.getZ() - c.getZ()) * (b.getZ() - a.getZ()));
+        final double v2 = 4 * ((a.getX() - b.getX()) * (a.getX() - b.getX()) + (a.getY() - b.getY()) * (a.getY() - b.getY()) + (a.getZ() - b.getZ()) * (a.getZ() - b.getZ()))
+                * ((b.getX() - a.getX()) * (b.getX() - a.getX()) + (b.getY() - a.getY()) * (b.getY() - a.getY()) + (b.getZ() - a.getZ()) * (b.getZ() - a.getZ()));
+        return Math.abs(v1 * v1 - 4 * v2) < 0.001;
     }
 }

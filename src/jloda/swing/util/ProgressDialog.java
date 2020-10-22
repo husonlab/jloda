@@ -35,7 +35,7 @@ import java.util.Stack;
  * A progress bar dialog that updates via the swing event queue
  *
  * @author huson
- *         Date: 02-Dec-2003
+ * Date: 02-Dec-2003
  */
 public class ProgressDialog implements ProgressListener {
     static private long delayInMilliseconds = 2000;// wait two seconds before opening progress bar
@@ -90,7 +90,8 @@ public class ProgressDialog implements ProgressListener {
     /**
      * sets up Progress Dialog with a given task name and subtask name. The dialog is embedded into
      * the given frame. If frame = null then the dialog will appear as a separate window.
-     *  @param taskName
+     *
+     * @param taskName
      * @param subtaskName
      */
     private void setup(final String taskName, final String subtaskName, final long delayInMillisec) {
@@ -401,10 +402,10 @@ public class ProgressDialog implements ProgressListener {
     public void setSubtask(final String subtaskName) {
         checkTimeAndShow();
 
-            run(() -> {
-                subtask = subtaskName;
-                updateTaskLabel();
-            });
+        run(() -> {
+            subtask = subtaskName;
+            updateTaskLabel();
+        });
     }
 
 
@@ -417,11 +418,11 @@ public class ProgressDialog implements ProgressListener {
      */
     public void setTasks(final String taskName, final String subtaskName) {
         checkTimeAndShow();
-            run(() -> {
-                task = taskName;
-                subtask = subtaskName;
-                updateTaskLabel();
-            });
+        run(() -> {
+            task = taskName;
+            subtask = subtaskName;
+            updateTaskLabel();
+        });
     }
 
     private void updateTaskLabel() {

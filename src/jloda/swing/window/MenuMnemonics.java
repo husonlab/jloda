@@ -76,7 +76,7 @@ public class MenuMnemonics {
                                 if (!seen.get(letter)) {
                                     menu.getItem(itemNumber).setMnemonic(letter);
                                     seen.set(letter);
-                                    if (subMenu !=null) {
+                                    if (subMenu != null) {
                                         subMenu.setMnemonic(letter);
                                     }
                                     break; // found a usable letter

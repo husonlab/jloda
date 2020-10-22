@@ -37,7 +37,7 @@ import java.util.*;
  * manages all the different projects
  *
  * @author huson
- *         Date: 01-Dec-2003
+ * Date: 01-Dec-2003
  */
 public class ProjectManager {
     final static private List<IDirector> projects = Collections.synchronizedList(new LinkedList<>());
@@ -87,7 +87,8 @@ public class ProjectManager {
 
     /**
      * add a new project
-     *  @param dir    director
+     *
+     * @param dir    director
      * @param viewer the main viewer associated with the director
      */
     static public IDirector addProject(final IDirector dir, final IMainViewer viewer) {

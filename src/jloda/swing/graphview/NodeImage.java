@@ -173,7 +173,7 @@ public class NodeImage {
      * @param x
      * @param y
      * @return true, if hit
-     *         todo: this is broken
+     * todo: this is broken
      */
     public boolean contains(int x, int y) {
         //System.err.println("x y: "+x+" "+y);

@@ -20,8 +20,8 @@
 
 /**
  * Edge set
- * @author Daniel Huson, 2003
  *
+ * @author Daniel Huson, 2003
  */
 package jloda.graph;
 
@@ -113,7 +113,6 @@ public class EdgeSet extends GraphBase implements Set<Edge>, Iterable<Edge> {
         }
         return result;
     }
-
 
 
     /**

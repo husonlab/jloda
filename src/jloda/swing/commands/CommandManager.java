@@ -80,7 +80,8 @@ public class CommandManager {
 
     /**
      * construct a parser and load all commands found for the given paths
-     * @param viewer  usually an IDirectableViewer, but sometimes a JDialog
+     *
+     * @param viewer usually an IDirectableViewer, but sometimes a JDialog
      */
     public CommandManager(IDirector dir, Object viewer, String... commandsPaths) {
         this(dir, viewer, commandsPaths, false);
@@ -96,7 +97,7 @@ public class CommandManager {
     /**
      * construct a parser and load all commands found for the given paths
      *
-     * @param viewer  usually an IDirectableViewer, but sometimes a JDialog
+     * @param viewer usually an IDirectableViewer, but sometimes a JDialog
      */
     public CommandManager(IDirector dir, Object viewer, String[] commandsPaths, boolean returnOnCommandNotFound) {
         this.dir = dir;
@@ -117,7 +118,7 @@ public class CommandManager {
     public void addCommands(Object viewer, String[] commandsPaths) {
         final List<ICommand> commands = new LinkedList<>();
         for (String commandsPath : commandsPaths) {
-            for (Object obj : PluginClassLoader.getInstances(ICommand.class,commandsPath)) {
+            for (Object obj : PluginClassLoader.getInstances(ICommand.class, commandsPath)) {
                 if (obj instanceof ICommand)
                     commands.add((ICommand) obj);
             }
@@ -139,8 +140,7 @@ public class CommandManager {
                     command = new WrappedCheckBoxCommand((ICheckBoxCommand) command0);
                 else
                     command = new WrappedCommand(command0);
-            }
-            else
+            } else
                 command = command0;
 
             command.setDir(dir);
@@ -309,7 +309,7 @@ public class CommandManager {
 
                 }
             }
-            } catch (Exception ex) {
+        } catch (Exception ex) {
             Basic.caught(ex);
         }
     }

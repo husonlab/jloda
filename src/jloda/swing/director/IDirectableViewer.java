@@ -29,7 +29,7 @@ import javax.swing.*;
  * on the uptodate status
  *
  * @author huson
- *         Date: 26-Nov-2003
+ * Date: 26-Nov-2003
  */
 public interface IDirectableViewer extends IDirectorListener {
     /**

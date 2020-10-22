@@ -25,7 +25,7 @@ package jloda.util;
  * progress listener that writes only to the command line
  *
  * @author huson
- *         Date: 26-Jun-2004
+ * Date: 26-Jun-2004
  */
 public class ProgressCmdLine implements ProgressListener {
     private long steps = 0;

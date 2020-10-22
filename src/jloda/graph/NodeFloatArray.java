@@ -100,7 +100,7 @@ public class NodeFloatArray extends GraphBase implements NodeAssociation<Float> 
     /**
      * Set the entry for node v to obj.
      *
-     * @param v   Node
+     * @param v     Node
      * @param value Object
      */
     public void setValue(Node v, Float value) {

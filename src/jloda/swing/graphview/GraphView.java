@@ -20,9 +20,8 @@
 
 /**
  * @version $Id: GraphView.java,v 1.189 2010-06-08 08:55:32 huson Exp $
- *
+ * <p>
  * Graph tree class.
- *
  * @author Daniel Huson
  */
 package jloda.swing.graphview;
@@ -193,7 +192,7 @@ public class GraphView extends JPanel implements Printable, Scrollable, INodeEdg
 
         getScrollPane().addComponentListener(new ComponentAdapter() {
             public void componentResized(ComponentEvent event) {
-                    //centerGraph();
+                //centerGraph();
             }
         });
 
@@ -543,6 +542,7 @@ public class GraphView extends JPanel implements Printable, Scrollable, INodeEdg
     public NodeShape getNodeShape(Node v) {
         return getNV(v).getNodeShape();
     }
+
     /**
      * Set the default edge label.
      *

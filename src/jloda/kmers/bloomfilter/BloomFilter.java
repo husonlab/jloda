@@ -85,7 +85,7 @@ public class BloomFilter {
     }
 
     public String toString() {
-        return String.format("Bloom filter %,d items added",itemsAdded);
+        return String.format("Bloom filter %,d items added", itemsAdded);
     }
 
     private static long ceilingPowerOf2(long value) {

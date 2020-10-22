@@ -109,13 +109,13 @@ public class Basic {
     }
 
     public static String stopCollectingStdErr() {
-        String result=getCollected();
-        collectOut=null;
+        String result = getCollected();
+        collectOut = null;
         return result;
     }
 
-    public static String getCollected () {
-            return collectOut!=null?collectOut.toString():"";
+    public static String getCollected() {
+        return collectOut != null ? collectOut.toString() : "";
     }
 
     /**
@@ -912,8 +912,8 @@ public class Basic {
      * returns an array of integers as a separated string
      *
      * @param array
-     * @param offset where to start reading array
-     * @param length how many entries to read
+     * @param offset    where to start reading array
+     * @param length    how many entries to read
      * @param separator
      * @return string representation
      */
@@ -1085,6 +1085,7 @@ public class Basic {
 
     /**
      * gets members of bit set as as string
+     *
      * @param set
      * @param separator
      * @return string
@@ -1274,9 +1275,9 @@ public class Basic {
     public static String getFileNameWithoutPath(String name) {
         if (name != null) {
             int pos = name.lastIndexOf(File.separatorChar);
-            pos=Math.max(pos,name.lastIndexOf("::")+1);
-            if (pos >0&& pos < name.length()) {
-                name = name.substring(pos+1);
+            pos = Math.max(pos, name.lastIndexOf("::") + 1);
+            if (pos > 0 && pos < name.length()) {
+                name = name.substring(pos + 1);
             }
         }
         return name;
@@ -1465,8 +1466,8 @@ public class Basic {
      */
     public static ArrayList<String> getLinesFromFile(String file) throws IOException {
         final ArrayList<String> result = new ArrayList<>();
-        try(FileLineIterator it=new FileLineIterator(file)){
-            while(it.hasNext()) {
+        try (FileLineIterator it = new FileLineIterator(file)) {
+            while (it.hasNext()) {
                 result.add(it.next());
             }
         }
@@ -1475,6 +1476,7 @@ public class Basic {
 
     /**
      * write lines to file
+     *
      * @param lines
      * @param file
      * @param showProgress
@@ -1482,7 +1484,7 @@ public class Basic {
      * @throws CanceledException
      */
     public static void writeLinesToFile(Collection<String> lines, String file, boolean showProgress) throws IOException, CanceledException {
-        try(ProgressListener progress=(showProgress?new ProgressPercentage("Writing "+file+":",lines.size()):new ProgressSilent())) {
+        try (ProgressListener progress = (showProgress ? new ProgressPercentage("Writing " + file + ":", lines.size()) : new ProgressSilent())) {
             try (BufferedWriter w = new BufferedWriter(new OutputStreamWriter(Basic.getOutputStreamPossiblyZIPorGZIP(file)))) {
                 for (String line : lines) {
                     w.write(line);
@@ -1652,6 +1654,7 @@ public class Basic {
 
     /**
      * convert bytes to a string
+     *
      * @param length number of bytes, starting at index 0
      * @return string
      */
@@ -1666,6 +1669,7 @@ public class Basic {
 
     /**
      * convert bytes to a string
+     *
      * @param offset start here
      * @param length number of bytes
      * @return string
@@ -2804,12 +2808,12 @@ public class Basic {
      * @throws IOException
      */
     public static InputStream getInputStreamPossiblyZIPorGZIP(String fileName) throws IOException {
-        if(fileName.endsWith("stdin"))
+        if (fileName.endsWith("stdin"))
             return System.in;
-        else if(fileName.endsWith("stdin-gz"))
+        else if (fileName.endsWith("stdin-gz"))
             return new GZIPInputStream(System.in);
-        if(isHTTPorFileURL(fileName))
-            return getInputStreamPossiblyGZIP(null,fileName);
+        if (isHTTPorFileURL(fileName))
+            return getInputStreamPossiblyGZIP(null, fileName);
 
         final File file = new File(fileName);
         if (file.isDirectory())
@@ -2831,23 +2835,23 @@ public class Basic {
 
     /**
      * opens a file or gzipped file for reading. Can also be stdin or a URL
+     *
      * @param ins
      * @param fileName
      * @return
      * @throws IOException
      */
     public static InputStream getInputStreamPossiblyGZIP(InputStream ins, String fileName) throws IOException {
-        if(fileName.endsWith("stdin"))
+        if (fileName.endsWith("stdin"))
             return System.in;
-        else if(fileName.endsWith("stdin-gz"))
+        else if (fileName.endsWith("stdin-gz"))
             return new GZIPInputStream(System.in);
-        if(isHTTPorFileURL(fileName)) {
-            final URL url=new URL(fileName);
+        if (isHTTPorFileURL(fileName)) {
+            final URL url = new URL(fileName);
             if (fileName.toLowerCase().endsWith(".gz")) {
                 return new GZIPInputStream(url.openStream());
             } else return url.openStream();
-        }
-        else if (fileName.toLowerCase().endsWith(".gz")) {
+        } else if (fileName.toLowerCase().endsWith(".gz")) {
             return new GZIPInputStream(ins);
         } else return ins;
     }
@@ -2862,11 +2866,11 @@ public class Basic {
     public static OutputStream getOutputStreamPossiblyZIPorGZIP(String fileName) throws IOException {
         if (fileName.endsWith("stdout"))
             return new PrintStreamNoClose(System.out);
-        else if(fileName.endsWith("stdout-gz"))
+        else if (fileName.endsWith("stdout-gz"))
             return new GZIPOutputStream(new PrintStreamNoClose(System.out));
         else if (fileName.endsWith("stderr"))
             return new PrintStreamNoClose(System.err);
-        else if(fileName.endsWith("stderr-gz"))
+        else if (fileName.endsWith("stderr-gz"))
             return new GZIPOutputStream(new PrintStreamNoClose(System.err));
         else {
             OutputStream outs = new FileOutputStream(fileName);
@@ -2891,7 +2895,7 @@ public class Basic {
         return fileName.endsWith(".gz") || fileName.endsWith(".zip");
     }
 
-    public static boolean isHTTPorFileURL (String fileName) {
+    public static boolean isHTTPorFileURL(String fileName) {
         return fileName.matches("^(https|http|ftp|file)://[-a-zA-Z0-9+&@#/%?=~_|!:,.;]*[-a-zA-Z0-9+&@#/%=~_|]");
     }
 
@@ -3090,8 +3094,8 @@ public class Basic {
         return union;
     }
 
-    public static boolean notBlank (String s) {
-        return s!=null && s.trim().length()>0;
+    public static boolean notBlank(String s) {
+        return s != null && s.trim().length() > 0;
     }
 
     /**
@@ -3402,8 +3406,8 @@ public class Basic {
      * @throws IOException
      */
     public static String getFirstLineFromFile(File file) {
-            try (BufferedReader ins = new BufferedReader(new InputStreamReader(getInputStreamPossiblyZIPorGZIP(file.getPath())))) {
-                return ins.readLine();
+        try (BufferedReader ins = new BufferedReader(new InputStreamReader(getInputStreamPossiblyZIPorGZIP(file.getPath())))) {
+            return ins.readLine();
         } catch (IOException ex) {
             return null;
         }
@@ -3419,7 +3423,7 @@ public class Basic {
      * @throws IOException
      */
     public static String getFirstLineFromFile(File file, String ignoreLinesThatStartWithThis, int maxLines) {
-            int count = 0;
+        int count = 0;
         try (BufferedReader ins = new BufferedReader(new InputStreamReader(getInputStreamPossiblyZIPorGZIP(file.getPath())))) {
             String aLine;
             while ((aLine = ins.readLine()) != null) {
@@ -3640,6 +3644,7 @@ public class Basic {
 
     /**
      * gets next word after given first word
+     *
      * @param first
      * @param text
      * @return next word or null
@@ -4287,7 +4292,7 @@ public class Basic {
     }
 
     public static String[] removePositions(BitSet positionsToRemove, String[] strings) {
-        if(strings.length>0) {
+        if (strings.length > 0) {
             final String[] result = new String[strings.length - positionsToRemove.cardinality()];
             for (int i = 0, j = 0; i < strings.length; i++) {
                 if (!positionsToRemove.get(i))

@@ -18,11 +18,11 @@
  *
  */
 
-/**@version $Id: CommandLineOptions.java,v 1.22 2007-07-15 11:02:36 huson Exp $
- *
+/**
+ * @version $Id: CommandLineOptions.java,v 1.22 2007-07-15 11:02:36 huson Exp $
+ * <p>
  * Unix style command line option handling
- *
- *@author Daniel Huson
+ * @author Daniel Huson
  * 11.02
  */
 package jloda.swing.util;

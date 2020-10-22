@@ -89,10 +89,10 @@ public class AMultipleSelectionModel<T> extends MultipleSelectionModel<T> {
                         for (int i : c.getRemoved()) {
                             set.add(AMultipleSelectionModel.this.items[i]);
                         }
-                            if (!getListenersSuspended()) {
-                                unmodifiableSelectedIndices.removeAll(c.getAddedSubList());
-                                unmodifiableSelectedItems.removeAll(set);
-                            }
+                        if (!getListenersSuspended()) {
+                            unmodifiableSelectedIndices.removeAll(c.getAddedSubList());
+                            unmodifiableSelectedItems.removeAll(set);
+                        }
                         selectedItems.removeAll(set);
                     }
                     if (!getListenersSuspended()) {
@@ -259,7 +259,7 @@ public class AMultipleSelectionModel<T> extends MultipleSelectionModel<T> {
 
     public void clearSelection(int index) {
         if (index >= 0 && selectedIndicesBits.get(index)) {
-            update(Update.Remove,index);
+            update(Update.Remove, index);
         }
     }
 

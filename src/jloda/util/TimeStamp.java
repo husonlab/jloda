@@ -18,7 +18,9 @@
  *
  */
 
-/** A unique time stamp at every call
+/**
+ * A unique time stamp at every call
+ *
  * @version $Id: TimeStamp.java,v 1.2 2006-06-06 18:56:04 huson Exp $
  * @author Daniel Huson
  * 5.03

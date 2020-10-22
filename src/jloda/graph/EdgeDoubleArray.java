@@ -106,7 +106,7 @@ public class EdgeDoubleArray extends GraphBase implements EdgeAssociation<Double
     /**
      * Set the entry for edge e to obj.
      *
-     * @param e Edge
+     * @param e     Edge
      * @param value Object
      */
     public void put(Edge e, Double value) {

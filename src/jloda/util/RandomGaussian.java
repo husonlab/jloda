@@ -20,9 +20,10 @@
 
 /**
  * Random numbers from Gaussian distribution
+ *
  * @version $Id: RandomGaussian.java,v 1.3 2006-06-06 18:56:04 huson Exp $
  * @author Daniel Huson
- *        9.2003
+ * 9.2003
  */
 package jloda.util;
 

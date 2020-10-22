@@ -55,13 +55,13 @@ public class ResourceManager {
      * Returns the icon with name specified by the parameter, or <code>null</code> if there is none.
      */
     public static ImageIcon getIcon(String name) {
-        return getIcon(name,isWarningMissingIcon());
+        return getIcon(name, isWarningMissingIcon());
     }
 
-        /**
-         * Returns the icon with name specified by the parameter, or <code>null</code> if there is none.
-         */
-    public static ImageIcon getIcon(String name,boolean warningMissingIcon) {
+    /**
+     * Returns the icon with name specified by the parameter, or <code>null</code> if there is none.
+     */
+    public static ImageIcon getIcon(String name, boolean warningMissingIcon) {
         if (iconMap.containsKey(name))
             return iconMap.get(name);
 
@@ -157,10 +157,10 @@ public class ResourceManager {
                     return stream;
             }
             {
-                final String filesDirectory=ProgramProperties.get("FilesDirectory","");
-                if(filesDirectory.length()>0 &&  new File(filesDirectory,name).canRead()) {
+                final String filesDirectory = ProgramProperties.get("FilesDirectory", "");
+                if (filesDirectory.length() > 0 && new File(filesDirectory, name).canRead()) {
                     try {
-                        return Basic.getInputStreamPossiblyZIPorGZIP(new File(filesDirectory,name).getAbsolutePath());
+                        return Basic.getInputStreamPossiblyZIPorGZIP(new File(filesDirectory, name).getAbsolutePath());
                     } catch (IOException ignored) {
                     }
                 }
@@ -177,13 +177,13 @@ public class ResourceManager {
      * @param fileName    the name of the file
      */
     public static InputStream getFileAsStream(Class clazz, String filePackage, String fileName) {
-            try {
-                final File file = new File(fileName);
-                final InputStream ins=Basic.getInputStreamPossiblyZIPorGZIP(file.getPath());
-                if(ins!=null)
-                    return ins;
-            } catch (IOException ignored) {
-            }
+        try {
+            final File file = new File(fileName);
+            final InputStream ins = Basic.getInputStreamPossiblyZIPorGZIP(file.getPath());
+            if (ins != null)
+                return ins;
+        } catch (IOException ignored) {
+        }
         return getFileResourceAsStream(clazz, filePackage, fileName);
     }
 
@@ -267,11 +267,11 @@ public class ResourceManager {
             final String resourceName = ("/" + packageName.replace('.', '/') + "/" + fileName).replace(" ", "\\ ");
             return clazz.getResourceAsStream(resourceName);
         } catch (Exception ex) {
-            final String filesDirectory=ProgramProperties.get("FilesDirectory","");
-            if(filesDirectory.length()>0) {
-                if(Basic.isDirectory(filesDirectory)){
-                    final File file=new File(filesDirectory,fileName);
-                    if(file.canRead()) {
+            final String filesDirectory = ProgramProperties.get("FilesDirectory", "");
+            if (filesDirectory.length() > 0) {
+                if (Basic.isDirectory(filesDirectory)) {
+                    final File file = new File(filesDirectory, fileName);
+                    if (file.canRead()) {
                         try {
                             return Basic.getInputStreamPossiblyZIPorGZIP(file.getPath());
                         } catch (IOException ignored) {

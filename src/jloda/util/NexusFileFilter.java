@@ -26,8 +26,8 @@ import java.io.FilenameFilter;
 
 /**
  * @author Daniel Huson
- *         Nexus file filter
- *         6.2010
+ * Nexus file filter
+ * 6.2010
  */
 
 public class NexusFileFilter extends FileFilterBase implements FilenameFilter {

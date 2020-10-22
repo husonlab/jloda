@@ -287,27 +287,27 @@ public class PhyloGraphView extends GraphView {
                 List<Pair<Node, Edge>> separators = new LinkedList<>();
                 graph.getAllSeparators(splitId, one, null, new NodeSet(graph), separators);
                 if (updateNodePositions) {
-                        // move all the nodes on one side of the split:
+                    // move all the nodes on one side of the split:
                     Pair separator = separators.get(0);
-                        Node v = (Node) separator.getFirst();
-                        Edge e = (Edge) separator.getSecond();
-                        Node w = graph.getOpposite(v, e);
-                        Point2D offset = Geometry.diff(getLocation(w), getLocation(v));
-                        Point2D oneSideOffset = new Point2D.Double(0.5 * offset.getX(), 0.5 * offset.getY());
-                        moveNodes(splitId, oneSideOffset, v, null, new NodeSet(graph));
-                        Point2D otherSideOffset = new Point2D.Double(-0.5 * offset.getX(), -0.5 * offset.getY());
-                        moveNodes(splitId, otherSideOffset, w, null, new NodeSet(graph));
-                    }
+                    Node v = (Node) separator.getFirst();
+                    Edge e = (Edge) separator.getSecond();
+                    Node w = graph.getOpposite(v, e);
+                    Point2D offset = Geometry.diff(getLocation(w), getLocation(v));
+                    Point2D oneSideOffset = new Point2D.Double(0.5 * offset.getX(), 0.5 * offset.getY());
+                    moveNodes(splitId, oneSideOffset, v, null, new NodeSet(graph));
+                    Point2D otherSideOffset = new Point2D.Double(-0.5 * offset.getX(), -0.5 * offset.getY());
+                    moveNodes(splitId, otherSideOffset, w, null, new NodeSet(graph));
+                }
 
-                    // remove the split in the graph
-                    graph.removeSplit(splitId);
+                // remove the split in the graph
+                graph.removeSplit(splitId);
 
-                    // update labels:
+                // update labels:
 
                 for (Pair<Node, Edge> separator : separators) {
                     Node u = separator.getFirst();
-                        setLabel(u, graph.getLabel(u));
-                    }
+                    setLabel(u, graph.getLabel(u));
+                }
             }
         } catch (NotOwnerException ex) {
             Basic.caught(ex);
@@ -615,8 +615,7 @@ public class PhyloGraphView extends GraphView {
             }
         }
 
-        for (Node v : diVertices)
-        {
+        for (Node v : diVertices) {
             Edge f = graph.newEdge(v.getFirstInEdge().getSource(), v.getFirstOutEdge().getTarget());
             graph.setWeight(f, graph.getWeight(v.getFirstInEdge()) + graph.getWeight(v.getFirstOutEdge()));
             graph.setConfidence(f, 0.5 * (graph.getConfidence(v.getFirstInEdge()) + graph.getConfidence(v.getFirstOutEdge())));

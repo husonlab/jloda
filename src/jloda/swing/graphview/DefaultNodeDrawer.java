@@ -348,8 +348,8 @@ public class DefaultNodeDrawer implements INodeDrawer {
                         final float labelAngle = nv.getLabelAngle() + 0.00001f; // to ensure that labels all get same orientation in
 
                         final Dimension labelSize = nv.getLabelSize();
-                            // save current transform:
-                            AffineTransform saveTransform = gc.getTransform();
+                        // save current transform:
+                        AffineTransform saveTransform = gc.getTransform();
                         // a vertical phylogram tree
 
                             /*
@@ -363,17 +363,17 @@ public class DefaultNodeDrawer implements INodeDrawer {
                                 localTransform.rotate(labelAngle, apt.getX(), apt.getY());
                            gc.setTransform(localTransform);
                             */
-                            // todo: this doesn't work well as the angles aren't drawn correctly
+                        // todo: this doesn't work well as the angles aren't drawn correctly
 
-                            // rotate label to desired angle
-                            if (labelAngle >= 0.5 * Math.PI && labelAngle <= 1.5 * Math.PI) {
-                                apt = Geometry.translateByAngle(apt, labelAngle, nv.getLabelSize().getWidth());
-                                gc.rotate(Geometry.moduloTwoPI(labelAngle - Math.PI), apt.getX(), apt.getY());
-                            } else {
-                                gc.rotate(labelAngle, apt.getX(), apt.getY());
-                            }
-                            gc.drawString(nv.getLabel(), (int) apt.getX(), (int) apt.getY());
-                            gc.setTransform(saveTransform);
+                        // rotate label to desired angle
+                        if (labelAngle >= 0.5 * Math.PI && labelAngle <= 1.5 * Math.PI) {
+                            apt = Geometry.translateByAngle(apt, labelAngle, nv.getLabelSize().getWidth());
+                            gc.rotate(Geometry.moduloTwoPI(labelAngle - Math.PI), apt.getX(), apt.getY());
+                        } else {
+                            gc.rotate(labelAngle, apt.getX(), apt.getY());
+                        }
+                        gc.drawString(nv.getLabel(), (int) apt.getX(), (int) apt.getY());
+                        gc.setTransform(saveTransform);
                     }
                 }
             }

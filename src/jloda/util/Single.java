@@ -24,7 +24,7 @@ import java.util.Comparator;
 
 /**
  * a mutable object
- *
+ * <p>
  * Daniel Huson, 2004
  */
 public class Single<S> implements Comparable<Single<S>>, Comparator<Single<S>> {
@@ -87,8 +87,8 @@ public class Single<S> implements Comparable<Single<S>>, Comparator<Single<S>> {
      * @param p1 the first object to be compared.
      * @param p2 the second object to be compared.
      * @return a negative integer, zero, or a positive integer as the
-     *         first argument is less than, equals to, or greater than the
-     *         second.
+     * first argument is less than, equals to, or greater than the
+     * second.
      * @throws ClassCastException if the arguments' types prevent them from
      *                            being compared by this comparator.
      */

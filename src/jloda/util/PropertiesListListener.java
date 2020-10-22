@@ -26,7 +26,7 @@ import java.util.List;
  * listen for changes to list of values of a property
  *
  * @author huson
- *         Date: 11-Dec-2004
+ * Date: 11-Dec-2004
  */
 public interface PropertiesListListener {
     /**

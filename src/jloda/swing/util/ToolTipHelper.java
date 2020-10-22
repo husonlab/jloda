@@ -20,10 +20,10 @@
 
 package jloda.swing.util;
 
+import jloda.fx.util.ProgramExecutorService;
+
 import javax.swing.*;
 import java.awt.*;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 
 /**
@@ -31,7 +31,6 @@ import java.util.concurrent.Future;
  * Daniel Huson, 5.2012
  */
 public abstract class ToolTipHelper {
-    private final ExecutorService executorService = Executors.newFixedThreadPool(1);
     private final JComponent component;
     private Future future;
 
@@ -61,20 +60,13 @@ public abstract class ToolTipHelper {
             future.cancel(true);
             future = null;
         }
-        future = executorService.submit(() -> {
+        future = ProgramExecutorService.getInstance().submit(() -> {
             try {
                 final String toolTipText = computeToolTip(newMousePosition);
                 SwingUtilities.invokeAndWait(() -> component.setToolTipText(toolTipText));
 
-            } catch (Exception e) {
+            } catch (Exception ignored) {
             }
         });
-    }
-
-    /**
-     * shut down this service
-     */
-    public void shutdownNow() {
-        executorService.shutdownNow();
     }
 }

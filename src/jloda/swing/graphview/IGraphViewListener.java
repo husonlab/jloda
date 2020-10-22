@@ -23,6 +23,7 @@ package jloda.swing.graphview;
 import java.awt.event.*;
 
 /**
+ *
  */
 public interface IGraphViewListener extends MouseListener, MouseMotionListener, KeyListener, ComponentListener, MouseWheelListener {
 }

@@ -334,8 +334,7 @@ public class SequenceUtils {
      * start at the end of the leading strand and repeatedly call this method with letters at positions pos, pos-1, pos-2
      *
      * @param a
-     * @param b
-     * param c
+     * @param b param c
      * @return amino acid
      */
     static public byte getAminoAcidReverse(byte a, byte b, byte c) {
@@ -497,10 +496,10 @@ public class SequenceUtils {
         return result;
     }
 
-    public static byte[] getSegment (byte[] sequence, int offset, int length, byte[] result) {
+    public static byte[] getSegment(byte[] sequence, int offset, int length, byte[] result) {
         if (result == null)
             result = new byte[length];
-        System.arraycopy(sequence, offset , result, 0, length);
+        System.arraycopy(sequence, offset, result, 0, length);
         return result;
 
     }
@@ -624,12 +623,12 @@ public class SequenceUtils {
         return -Integer.compare(str1.length, str2.length);
     }
 
-    public static int compare(byte[] str1,  byte[] str2) {
-        final int top=Math.min(str1.length,str2.length);
-        for(int i=0;i<top;i++) {
-            if(str1[i]<str2[i])
+    public static int compare(byte[] str1, byte[] str2) {
+        final int top = Math.min(str1.length, str2.length);
+        for (int i = 0; i < top; i++) {
+            if (str1[i] < str2[i])
                 return -1;
-            else if(str1[i]>str2[i])
+            else if (str1[i] > str2[i])
                 return 1;
         }
         return -Integer.compare(str1.length, str2.length);

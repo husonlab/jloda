@@ -37,7 +37,7 @@ import java.util.List;
  * automatic layout of labels
  *
  * @author huson
- *         Date: 09-Jan-2004
+ * Date: 09-Jan-2004
  */
 public class LabelLayouter {
     final Graphics2D gc;

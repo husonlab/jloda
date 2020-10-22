@@ -22,7 +22,6 @@
  * Node visualization
  *
  * @version $Id: NodeView.java,v 1.82 2010-05-27 14:17:33 huson Exp $
- *
  * @author Daniel Huson
  */
 package jloda.swing.graphview;
@@ -97,8 +96,8 @@ final public class NodeView extends ViewBase implements Cloneable {
         width = src.width;
         nodeShape = src.nodeShape;
         fixedSize = src.getFixedSize();
-        borderColor=src.getBorderColor();
-        image=src.image;
+        borderColor = src.getBorderColor();
+        image = src.image;
     }
 
     /**
@@ -517,8 +516,8 @@ final public class NodeView extends ViewBase implements Cloneable {
                     } else {
                         final float labelAngle = this.labelAngle + 0.00001f; // to ensure that labels all get same orientation in
 
-                            // save current transform:
-                            AffineTransform saveTransform = gc.getTransform();
+                        // save current transform:
+                        AffineTransform saveTransform = gc.getTransform();
                         // a vertical phylogram tree
 
                             /*
@@ -532,17 +531,17 @@ final public class NodeView extends ViewBase implements Cloneable {
                                 localTransform.rotate(labelAngle, apt.getX(), apt.getY());
                            gc.setTransform(localTransform);
                             */
-                            // todo: this doesn't work well as the angles aren't drawn correctly
+                        // todo: this doesn't work well as the angles aren't drawn correctly
 
-                            // rotate label to desired angle
-                            if (labelAngle >= 0.5 * Math.PI && labelAngle <= 1.5 * Math.PI) {
-                                apt = Geometry.translateByAngle(apt, labelAngle, getLabelSize().getWidth());
-                                gc.rotate(Geometry.moduloTwoPI(labelAngle - Math.PI), apt.getX(), apt.getY());
-                            } else {
-                                gc.rotate(labelAngle, apt.getX(), apt.getY());
-                            }
-                            gc.drawString(label, (int) apt.getX(), (int) apt.getY());
-                            gc.setTransform(saveTransform);
+                        // rotate label to desired angle
+                        if (labelAngle >= 0.5 * Math.PI && labelAngle <= 1.5 * Math.PI) {
+                            apt = Geometry.translateByAngle(apt, labelAngle, getLabelSize().getWidth());
+                            gc.rotate(Geometry.moduloTwoPI(labelAngle - Math.PI), apt.getX(), apt.getY());
+                        } else {
+                            gc.rotate(labelAngle, apt.getX(), apt.getY());
+                        }
+                        gc.drawString(label, (int) apt.getX(), (int) apt.getY());
+                        gc.setTransform(saveTransform);
                     }
                 }
             }

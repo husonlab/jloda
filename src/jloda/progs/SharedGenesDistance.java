@@ -20,6 +20,7 @@
 
 /**
  * gene content distance calculation
+ *
  * @version $Id: SharedGenesDistance.java,v 1.4 2009-09-25 13:47:13 huson Exp $
  * @author Daniel Huson
  * 9.2003

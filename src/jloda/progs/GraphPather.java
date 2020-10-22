@@ -106,10 +106,10 @@ public class GraphPather {
             edges[count++] = e;
         }
 
-        Arrays.sort(edges,(edge1, edge2) -> {
-            if ((Integer)edge1.getInfo() <(Integer)edge2.getInfo())
+        Arrays.sort(edges, (edge1, edge2) -> {
+            if ((Integer) edge1.getInfo() < (Integer) edge2.getInfo())
                 return -1;
-            else if ((Integer)edge1.getInfo() > (Integer)edge2.getInfo())
+            else if ((Integer) edge1.getInfo() > (Integer) edge2.getInfo())
                 return 1;
             else return Integer.compare(edge1.getId(), edge2.getId());
         });

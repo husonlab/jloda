@@ -32,22 +32,23 @@ import java.util.function.BiConsumer;
 public class MouseDragToTranslate {
     private double mouseX = 0;
     private double mouseY = 0;
-    private final BiConsumer<Double,Double> translate;
+    private final BiConsumer<Double, Double> translate;
 
-    public static void setup (Node node) {
-        setup(node,(deltaX, deltaY) -> {
+    public static void setup(Node node) {
+        setup(node, (deltaX, deltaY) -> {
             node.setTranslateX(node.getTranslateX() + deltaX);
-            node.setTranslateY(node.getTranslateY() + deltaY);});
+            node.setTranslateY(node.getTranslateY() + deltaY);
+        });
     }
 
-    public static void setup (Node node,BiConsumer<Double,Double> translate)  {
-        new MouseDragToTranslate(node,translate);
-        }
+    public static void setup(Node node, BiConsumer<Double, Double> translate) {
+        new MouseDragToTranslate(node, translate);
+    }
 
     /**
      * constructor
      */
-    private MouseDragToTranslate(Node node, BiConsumer<Double,Double> translate) {
+    private MouseDragToTranslate(Node node, BiConsumer<Double, Double> translate) {
         this.translate = Objects.requireNonNullElseGet(translate, () -> (deltaX, deltaY) -> {
             node.setTranslateX(node.getTranslateX() + deltaX);
             node.setTranslateY(node.getTranslateY() + deltaY);
@@ -60,7 +61,7 @@ public class MouseDragToTranslate {
         }));
 
         node.setOnMouseDragged((e -> {
-            this.translate.accept(e.getScreenX() - mouseX,e.getScreenY() - mouseY);
+            this.translate.accept(e.getScreenX() - mouseX, e.getScreenY() - mouseY);
             mouseX = e.getScreenX();
             mouseY = e.getScreenY();
             e.consume();

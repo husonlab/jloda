@@ -255,23 +255,23 @@ public class QuasiMedianNetwork {
                 result.addAll(geodesic);
 
 
-                    System.err.println("------Sequences :");
-                    System.err.println(input[i]);
-                    System.err.println(input[j]);
-                    for (int x = 0; x < sequenceLength; x++)
-                        System.err.print(use.get(x) ? "x" : " ");
-                    System.err.println();
-                    System.err.println("Refs:");
+                System.err.println("------Sequences :");
+                System.err.println(input[i]);
+                System.err.println(input[j]);
+                for (int x = 0; x < sequenceLength; x++)
+                    System.err.print(use.get(x) ? "x" : " ");
+                System.err.println();
+                System.err.println("Refs:");
 
-                    System.err.println(refA);
-                    System.err.println(refB);
-                    System.err.println("Compressed (" + compressed.size() + "):");
+                System.err.println(refA);
+                System.err.println(refB);
+                System.err.println("Compressed (" + compressed.size() + "):");
                 for (String aCompressed : compressed) System.err.println(aCompressed);
-                    System.err.println("Closure (" + closure.size() + "):");
+                System.err.println("Closure (" + closure.size() + "):");
                 for (Object aClosure : closure) System.err.println(aClosure);
-                    System.err.println("Expanded (" + expanded.size() + "):");
+                System.err.println("Expanded (" + expanded.size() + "):");
                 for (Object anExpanded : expanded) System.err.println(anExpanded);
-                    System.err.println("Geodesic (" + geodesic.size() + "):");
+                System.err.println("Geodesic (" + geodesic.size() + "):");
                 for (Object aGeodesic : geodesic) System.err.println(aGeodesic);
 
             }

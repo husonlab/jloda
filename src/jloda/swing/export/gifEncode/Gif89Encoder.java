@@ -706,7 +706,7 @@ class ReverseColorMap {
         for (int itable = rgb % hTable.length;
              (rec = hTable[itable]) != null && rec.rgb != rgb;
              itable = ++itable % hTable.length
-                )
+        )
             ;
 
         if (rec != null)
@@ -725,7 +725,7 @@ class ReverseColorMap {
         for (itable = rgb % hTable.length;
              hTable[itable] != null;
              itable = ++itable % hTable.length
-                )
+        )
             ;
 
         hTable[itable] = new ColorRecord(rgb, ipalette);

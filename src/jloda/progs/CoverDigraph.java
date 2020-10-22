@@ -20,6 +20,7 @@
 
 /**
  * Cover digraph construction
+ *
  * @version $Id: CoverDigraph.java,v 1.6 2009-09-25 13:47:12 huson Exp $
  * @author daniel Huson
  * 7.03

@@ -106,8 +106,7 @@ public class ColorTableManager {
         init();
         if (name != null && name2ColorTable.containsKey(name)) {
             return name2ColorTable.get(name);
-        }
-        else
+        } else
             return name2ColorTable.get(DefaultColorTableName);
     }
 

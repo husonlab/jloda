@@ -22,7 +22,6 @@
  * Edge visualization
  *
  * @version $Id: EdgeView.java,v 1.61 2010-05-18 15:42:26 huson Exp $
- *
  * @author Daniel Huson
  */
 package jloda.swing.graphview;
@@ -122,7 +121,7 @@ final public class EdgeView extends ViewBase implements Cloneable { //, IEdgeVie
             }
         }
         labelLayout = src.getLabelLayout();
-        labelReferencePoint=src.labelReferencePoint;
+        labelReferencePoint = src.labelReferencePoint;
     }
 
     /**

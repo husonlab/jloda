@@ -24,7 +24,7 @@ package jloda.swing.director;
  * an updatable tree
  *
  * @author huson
- *         Date: 28-Mar-2004
+ * Date: 28-Mar-2004
  */
 public interface IUpdateableView {
     void updateView(String what);

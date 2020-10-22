@@ -109,20 +109,20 @@ public class MainWindowManager {
      * @return true, if closed
      */
     public boolean closeMainWindow(IMainWindow mainWindow) {
-            if (MainWindowManager.getInstance().size() == 1) {
-                if (!ClosingLastDocument.apply(mainWindow.getStage())) {
-                    if (!mainWindow.isEmpty()) {
-                        createAndShowWindow(false);
+        if (MainWindowManager.getInstance().size() == 1) {
+            if (!ClosingLastDocument.apply(mainWindow.getStage())) {
+                if (!mainWindow.isEmpty()) {
+                    createAndShowWindow(false);
 
-                        mainWindow.getStage().close();
-                        MainWindowManager.getInstance().closeAndRemoveAuxiliaryWindows(mainWindow);
-                        mainWindows.remove(mainWindow);
-                        fireChanged();
+                    mainWindow.getStage().close();
+                    MainWindowManager.getInstance().closeAndRemoveAuxiliaryWindows(mainWindow);
+                    mainWindows.remove(mainWindow);
+                    fireChanged();
 
-                    }
-                    return false;
                 }
+                return false;
             }
+        }
         ProgramProperties.put("WindowGeometry", (new WindowGeometry(mainWindow.getStage())).toString());
         // mainWindow.getStage().close();
 
@@ -138,7 +138,7 @@ public class MainWindowManager {
         }
 
         if (lastFocusedMainWindow == mainWindow) {
-                lastFocusedMainWindow = mainWindows.get(mainWindows.size() - 1);
+            lastFocusedMainWindow = mainWindows.get(mainWindows.size() - 1);
         }
         return true;
     }

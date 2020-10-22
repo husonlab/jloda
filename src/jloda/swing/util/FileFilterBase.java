@@ -91,8 +91,7 @@ public abstract class FileFilterBase extends FileFilter implements FilenameFilte
         }
         if (allowZipped) {
             if (first) {
-            }
-            else
+            } else
                 buf.append(", ");
             buf.append(".zip");
         }

@@ -164,7 +164,8 @@ public class NotificationsInSwing {
 
     /**
      * show a notification
-     *  @param title
+     *
+     * @param title
      * @param message0
      * @param mode
      * @param milliseconds
@@ -173,7 +174,7 @@ public class NotificationsInSwing {
         final String message = (message0.length() > maxLength + 3 ? (message0.substring(0, maxLength) + "...") : message0);
 
         if (isShowNotifications() && ProgramProperties.isUseGUI()) {
-            final Window activeWindow= getActiveWindow();
+            final Window activeWindow = getActiveWindow();
             if (title == null || title.length() == 0) {
                 title = ProgramProperties.getProgramName();
             }
@@ -266,14 +267,14 @@ public class NotificationsInSwing {
                 } catch (InterruptedException ignored) {
                 } finally {
                     frame.setVisible(false);
-                    final Integer slot=frame2slot.get(frame);
-                    if(slot!=null)
+                    final Integer slot = frame2slot.get(frame);
+                    if (slot != null)
                         activeNotificationSlots.set(slot, null);
                     frame2slot.remove(frame);
                 }
             });
             frame.setVisible(true);
-            if(activeWindow!=null)
+            if (activeWindow != null)
                 SwingUtilities.invokeLater(activeWindow::toFront);
         }
 
@@ -359,7 +360,7 @@ public class NotificationsInSwing {
 
     public static Window getActiveWindow() {
         Window[] windows = Window.getWindows();
-        for (Window w:windows) {
+        for (Window w : windows) {
             if (w.isActive()) {
                 return w;
             }

@@ -53,6 +53,7 @@ public abstract class CommandBase {
 
     /**
      * constructor
+     *
      * @param commandManager
      */
     public CommandBase(CommandManager commandManager) {

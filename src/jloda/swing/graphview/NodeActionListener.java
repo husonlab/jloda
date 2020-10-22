@@ -22,9 +22,8 @@ package jloda.swing.graphview;
 
 /**
  * @version $Id: NodeActionListener.java,v 1.8 2007-09-11 12:33:14 kloepper Exp $
- *
+ * <p>
  * Actions performed during interaction.
- *
  * @author Daniel Huson
  * 6.2001
  */

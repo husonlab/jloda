@@ -19,9 +19,9 @@
 
 package jloda.kmers.mash;
 
+import jloda.kmers.bloomfilter.BloomFilter;
 import jloda.thirdparty.MurmurHash;
 import jloda.util.*;
-import jloda.kmers.bloomfilter.BloomFilter;
 
 import java.io.IOException;
 import java.util.Collection;

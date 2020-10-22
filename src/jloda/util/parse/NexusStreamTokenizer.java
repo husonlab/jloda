@@ -33,7 +33,6 @@ import java.util.Stack;
  * tokenizer for nexus streams and similar input
  *
  * @author Daniel Huson, 2002
- *
  */
 public class NexusStreamTokenizer extends StreamTokenizer implements Closeable {
     final public static String STRICT_PUNCTUATION = "(){}/\\,;:=*\"`+-<>";
@@ -70,7 +69,7 @@ public class NexusStreamTokenizer extends StreamTokenizer implements Closeable {
     private final LinkedList<String> svals = new LinkedList<>();
     private final LinkedList<Integer> ttypes = new LinkedList<>();
     private final LinkedList<Integer> lines = new LinkedList<>();
-    
+
     private final Reader r; // need a reference so that we can close
 
 
@@ -79,7 +78,7 @@ public class NexusStreamTokenizer extends StreamTokenizer implements Closeable {
      */
     public NexusStreamTokenizer(Reader r) {
         super(r);
-        this.r=r;
+        this.r = r;
         setSyntax();
     }
 

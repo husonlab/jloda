@@ -22,9 +22,8 @@ package jloda.swing.graphview;
 
 /**
  * @version $Id: EdgeActionListener.java,v 1.5 2007-01-05 17:38:14 huson Exp $
- *
+ * <p>
  * Actions performed during interaction.
- *
  * @author Daniel Huson
  * 6.2001
  */

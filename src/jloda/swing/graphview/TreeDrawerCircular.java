@@ -165,8 +165,8 @@ public class TreeDrawerCircular extends DefaultGraphDrawer implements IGraphDraw
             viewer.setLocation(w, Geometry.translateByAngle(viewer.getLocation(root), angles.get(f),
                     tree.getWeight(f)));
 
-                setCoordsRec(viewer.getLocation(root), w, f, angles);
-                addInternalPoints(angles);
+            setCoordsRec(viewer.getLocation(root), w, f, angles);
+            addInternalPoints(angles);
         }
     }
 

@@ -52,45 +52,45 @@ public class ChooseFileDialog {
         File file = null;
 
         if (ProgramProperties.isMacOS() && (event == null || (event.getModifiers() & ActionEvent.SHIFT_MASK) == 0)) {
-                //Use native file dialog on mac
-                java.awt.FileDialog dialog;
+            //Use native file dialog on mac
+            java.awt.FileDialog dialog;
             if (parent instanceof JFrame)
-                    dialog = new java.awt.FileDialog((JFrame) parent, message, java.awt.FileDialog.LOAD);
+                dialog = new java.awt.FileDialog((JFrame) parent, message, java.awt.FileDialog.LOAD);
             else if (parent instanceof Dialog)
-                    dialog = new java.awt.FileDialog((Dialog) parent, message, java.awt.FileDialog.LOAD);
-                else
-                    dialog = new java.awt.FileDialog((JFrame) null, message, java.awt.FileDialog.LOAD);
-                if (parent != null)
-                    dialog.setLocationRelativeTo(parent);
-                //dialog.setModalityType(Dialog.ModalityType.APPLICATION_MODAL);
-                dialog.setModal(true);
-                if (fileNameFilter != null)
-                    dialog.setFilenameFilter(fileNameFilter);
-                if (lastOpenFile != null) {
-                    dialog.setDirectory(lastOpenFile.getParent());
-                    dialog.setFile(lastOpenFile.getName());
-                }
-                dialog.setVisible(true);
-                if (dialog.getFile() != null) {
-                    file = new File(dialog.getDirectory(), dialog.getFile());
-                }
-            } else {
-                JFileChooser chooser;
-                try {
-                    chooser = new JFileChooser(lastOpenFile);
-                    chooser.setSelectedFile(lastOpenFile);
-                } catch (Exception ex) {
-                    chooser = new JFileChooser();
-                }
-                chooser.setAcceptAllFileFilterUsed(true);
-                if (fileFilter != null)
-                    chooser.setFileFilter(fileFilter);
-
-                int result = chooser.showOpenDialog(parent);
-                if (result == JFileChooser.APPROVE_OPTION) {
-                    file = chooser.getSelectedFile();
-                }
+                dialog = new java.awt.FileDialog((Dialog) parent, message, java.awt.FileDialog.LOAD);
+            else
+                dialog = new java.awt.FileDialog((JFrame) null, message, java.awt.FileDialog.LOAD);
+            if (parent != null)
+                dialog.setLocationRelativeTo(parent);
+            //dialog.setModalityType(Dialog.ModalityType.APPLICATION_MODAL);
+            dialog.setModal(true);
+            if (fileNameFilter != null)
+                dialog.setFilenameFilter(fileNameFilter);
+            if (lastOpenFile != null) {
+                dialog.setDirectory(lastOpenFile.getParent());
+                dialog.setFile(lastOpenFile.getName());
             }
+            dialog.setVisible(true);
+            if (dialog.getFile() != null) {
+                file = new File(dialog.getDirectory(), dialog.getFile());
+            }
+        } else {
+            JFileChooser chooser;
+            try {
+                chooser = new JFileChooser(lastOpenFile);
+                chooser.setSelectedFile(lastOpenFile);
+            } catch (Exception ex) {
+                chooser = new JFileChooser();
+            }
+            chooser.setAcceptAllFileFilterUsed(true);
+            if (fileFilter != null)
+                chooser.setFileFilter(fileFilter);
+
+            int result = chooser.showOpenDialog(parent);
+            if (result == JFileChooser.APPROVE_OPTION) {
+                file = chooser.getSelectedFile();
+            }
+        }
         return file;
     }
 

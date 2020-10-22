@@ -655,7 +655,7 @@ public class Node extends NodeEdge implements Comparable<Node> {
     }
 
     public Node getParent() {
-        if(inDegree>0)
+        if (inDegree > 0)
             return getFirstInEdge().getSource();
         else
             return null;

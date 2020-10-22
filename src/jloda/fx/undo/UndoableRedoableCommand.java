@@ -73,7 +73,7 @@ abstract public class UndoableRedoableCommand {
         return true;
     }
 
-    public static UndoableRedoableCommand create (String name,Runnable undo,Runnable redo) {
+    public static UndoableRedoableCommand create(String name, Runnable undo, Runnable redo) {
         return new UndoableRedoableCommand(name) {
             @Override
             public void undo() {
@@ -87,12 +87,12 @@ abstract public class UndoableRedoableCommand {
 
             @Override
             public boolean isUndoable() {
-                return undo!=null;
+                return undo != null;
             }
 
             @Override
             public boolean isRedoable() {
-                return redo!=null;
+                return redo != null;
             }
         };
     }

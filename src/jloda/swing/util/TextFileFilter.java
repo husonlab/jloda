@@ -24,8 +24,8 @@ import java.io.FilenameFilter;
 
 /**
  * @author Daniel Huson
- *         text file filter
- *         12.03
+ * text file filter
+ * 12.03
  */
 
 public class TextFileFilter extends FileFilterBase implements FilenameFilter {

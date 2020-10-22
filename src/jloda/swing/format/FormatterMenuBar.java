@@ -23,7 +23,6 @@ package jloda.swing.format;
 /**
  * Formatter menu bar
  * Daniel Huson, 7.2010
- *
  */
 
 import jloda.swing.director.IDirector;

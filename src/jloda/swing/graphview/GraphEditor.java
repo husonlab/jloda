@@ -22,9 +22,8 @@ package jloda.swing.graphview;
 
 /**
  * @version $Id: GraphEditor.java,v 1.10 2006-01-19 12:00:33 huson Exp $
- *
+ * <p>
  * Graph editor class.
- *
  * @author Daniel Huson
  */
 

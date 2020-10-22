@@ -25,8 +25,6 @@ import javafx.scene.transform.Rotate;
 import javafx.scene.transform.Transform;
 import javafx.scene.transform.Translate;
 import jloda.fx.util.GeometryUtilsFX;
-import jloda.swing.util.Geometry;
-
 
 
 /**
@@ -59,7 +57,7 @@ public class LabeledArrow extends Group {
         // transform diff to x-axis:
         if (diff.getY() != 0 || diff.getZ() != 0) {
             // compute z-angle:
-            double angle1 =GeometryUtilsFX.computeAngle(new Point2D(diff.getZ(), diff.getY()));
+            double angle1 = GeometryUtilsFX.computeAngle(new Point2D(diff.getZ(), diff.getY()));
             transform = new Rotate(angle1, xAxis); // rotate into
             point1 = transform.transform(diff);
         } else {

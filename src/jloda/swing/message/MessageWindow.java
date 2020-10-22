@@ -38,7 +38,7 @@ import java.io.PrintStream;
  * message window
  *
  * @author huson & Franz
- *         17.2.2004
+ * 17.2.2004
  */
 public class MessageWindow {
     private final MessageWindowActions actions;

@@ -25,7 +25,7 @@ package jloda.util;
  * Progress listener interface
  *
  * @author huson
- *         Date: 02-Dec-2003
+ * Date: 02-Dec-2003
  */
 public interface ProgressListener extends AutoCloseable {
     /**

@@ -64,13 +64,12 @@ public class FastaFileFilter extends FileFilterBase implements FilenameFilter {
         setAllowGZipped(allowGZip);
     }
 
-    public boolean accept (String fileName) {
+    public boolean accept(String fileName) {
         boolean suffixOk = super.accept(Basic.getFileNameWithoutZipOrGZipSuffix(fileName));
         if (suffixOk) {   // look inside the file
-            final String[] lines=Basic.getFirstLinesFromFile(new File(fileName),2);
-            return lines!=null && lines[0]!=null && isFastAHeaderLine(lines[0])   && lines[1]!=null && !lines[1].startsWith(">");
-        }
-        else
+            final String[] lines = Basic.getFirstLinesFromFile(new File(fileName), 2);
+            return lines != null && lines[0] != null && isFastAHeaderLine(lines[0]) && lines[1] != null && !lines[1].startsWith(">");
+        } else
             return false;
     }
 
@@ -94,12 +93,11 @@ public class FastaFileFilter extends FileFilterBase implements FilenameFilter {
     }
 
     private static boolean isFastAHeaderLine(String line) {
-        if(line.startsWith("> ")) {
-            return line.length()>2 && Character.isLetterOrDigit(line.charAt(2));
-        } else  if(line.startsWith(">")) {
-            return line.length()>1 && Character.isLetterOrDigit(line.charAt(1));
-        }
-        else
+        if (line.startsWith("> ")) {
+            return line.length() > 2 && Character.isLetterOrDigit(line.charAt(2));
+        } else if (line.startsWith(">")) {
+            return line.length() > 1 && Character.isLetterOrDigit(line.charAt(1));
+        } else
             return false;
     }
 }

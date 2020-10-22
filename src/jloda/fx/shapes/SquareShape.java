@@ -41,6 +41,7 @@ public class SquareShape extends Polygon implements ISized {
         setStroke(stroke);
         setFill(fill);
     }
+
     public SquareShape(double size, Point2D location) {
         setSize(size, size, location);
     }

@@ -50,7 +50,7 @@ public class ProgramExecutorService {
     }
 
     public static ExecutorService createServiceForParallelAlgorithm(int numberOfThreads) {
-        return Executors.newFixedThreadPool(ProgramExecutorService.getNumberOfCoresToUse());
+        return Executors.newFixedThreadPool(numberOfThreads);
     }
 
     public static void setNumberOfCoresToUse(int numberOfCoresToUse) {

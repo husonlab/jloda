@@ -28,7 +28,7 @@ import java.util.stream.StreamSupport;
  * iterates over all lines in a file. File can also be a .gz file.
  * Daniel Huson, 3.2012
  */
-public class FileLineIterator implements  ICloseableIterator<String> {
+public class FileLineIterator implements ICloseableIterator<String> {
     public static final String PREFIX_TO_INDICATE_TO_PARSE_FILENAME_STRING = "!!!";
     private final BufferedReader reader;
     private String nextLine = null;

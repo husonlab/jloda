@@ -20,6 +20,7 @@
 
 /**
  * director events that viewers listen to
+ *
  * @author huson
  * 11.03
  */

@@ -25,9 +25,9 @@ import java.awt.event.*;
 import java.util.List;
 
 /*
-** sends ACTION_PERFORMED event for double-click
-** and ENTER key
-*/
+ ** sends ACTION_PERFORMED event for double-click
+ ** and ENTER key
+ */
 
 public class ActionJList<E> extends JList<E> {
     ActionListener al;

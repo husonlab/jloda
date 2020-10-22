@@ -31,7 +31,7 @@ import java.util.List;
  * slow exact max clique search and fast d-degree heuristic
  *
  * @author huson
- *         Date: 10-Aug-2004
+ * Date: 10-Aug-2004
  */
 public class MaxClique {
     /**
@@ -83,8 +83,8 @@ public class MaxClique {
         BitSet maxClique = new BitSet();
         int numNodes = matrix.length;
         /*
-        * compute max clique for adjaceny matrix
-        */
+         * compute max clique for adjaceny matrix
+         */
         for (int vi = 0; vi < numNodes; vi++) {
             BitSet possible = getAllAdjacentNodes(matrix, vi);
             BitSet clique = new BitSet();

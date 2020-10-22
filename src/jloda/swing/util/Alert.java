@@ -30,7 +30,7 @@ import java.awt.*;
  * show an alert window
  *
  * @author huson
- *         Date: 23-Feb-2004
+ * Date: 23-Feb-2004
  */
 public class Alert {
     /**

@@ -91,16 +91,15 @@ public class StatusBar extends JPanel {
         this.add(splitPane2, BorderLayout.CENTER);
 
         if (showMemoryUsage) {
-            changeListener=changeEvent -> setText3(changeEvent.getSource().toString());
+            changeListener = changeEvent -> setText3(changeEvent.getSource().toString());
             SwingUtilities.invokeLater(() -> {
                 setText3("------------");
                 text3Panel.add(text3);
                 this.add(Box.createHorizontalStrut(10), BorderLayout.EAST);
                 MemoryUsageManager.addChangeListener(changeListener);
             });
-        }
-        else
-            changeListener=null;
+        } else
+            changeListener = null;
     }
 
     /**

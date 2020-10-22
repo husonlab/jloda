@@ -30,7 +30,7 @@ import java.awt.event.ActionEvent;
  * show a message window
  *
  * @author huson
- *         Date: 23-Feb-2004
+ * Date: 23-Feb-2004
  */
 public class Message {
     public static final Color PALE_YELLOW = new Color(252, 232, 131, 100);

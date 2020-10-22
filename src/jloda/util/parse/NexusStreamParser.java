@@ -896,8 +896,8 @@ public class NexusStreamParser extends NexusStreamTokenizer implements Closeable
     /**
      * Searches for an occurrence of a token value, where value is a color
      *
-     * @param tokens the list of tokens
-     * @param token    the token to look for
+     * @param tokens       the list of tokens
+     * @param token        the token to look for
      * @param defaultValue the return value, if token not found
      * @return the value
      */

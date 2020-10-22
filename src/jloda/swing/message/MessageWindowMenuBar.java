@@ -31,7 +31,7 @@ import javax.swing.*;
  * the editor window menu bar
  *
  * @author huson
- *         Date: 17.2.04
+ * Date: 17.2.04
  */
 public class MessageWindowMenuBar extends JMenuBar {
     private final MessageWindow viewer;

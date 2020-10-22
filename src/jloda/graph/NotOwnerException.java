@@ -20,9 +20,8 @@
 
 /**
  * @version $Id: NotOwnerException.java,v 1.7 2006-06-06 18:56:03 huson Exp $
- *
+ * <p>
  * Exceptions for all of jloda
- *
  * @author Daniel Huson
  */
 

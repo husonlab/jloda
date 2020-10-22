@@ -30,7 +30,7 @@ import java.io.OutputStream;
 
 /**
  * @author huson, schroeder
- *         interface for export graphics classes, 2004, 5.2006
+ * interface for export graphics classes, 2004, 5.2006
  */
 public interface ExportGraphicType {
 

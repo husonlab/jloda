@@ -334,6 +334,7 @@ public class ArgsOptions {
             throw new UsageException("Option " + longKey + ": value=" + result + ": out of range: " + low + " - " + high);
         return result;
     }
+
     public int getOptionMandatory(String shortKey, String longKey, String description, Integer defaultValue) throws UsageException {
         return getOption(shortKey, longKey, description, defaultValue, true).intValue();
     }
@@ -443,7 +444,7 @@ public class ArgsOptions {
         else
             longKeys.add(longKey);
 
-        usage.add("\t" + shortKey + ", " + longKey + " [number]: " + description + ". " + (mandatory ? "Mandatory option." : "Default value: " + defaultValue+"."));
+        usage.add("\t" + shortKey + ", " + longKey + " [number]: " + description + ". " + (mandatory ? "Mandatory option." : "Default value: " + defaultValue + "."));
 
         Number result = defaultValue;
 
@@ -611,8 +612,8 @@ public class ArgsOptions {
         String defaultValueString = (defaultValue.size() == 0 ? "" : "Default value(s): '" + Basic.toString(defaultValue, "' "));
 
         if (!hide) {
-            if(mandatory)
-                usage.add("\t" + shortKey + ", " + longKey + " [string(s)]: " + description + ". Mandatory option" +(legalValues != null ? " legal values: " + Basic.toString(legalValues, ", ") : "")+".");
+            if (mandatory)
+                usage.add("\t" + shortKey + ", " + longKey + " [string(s)]: " + description + ". Mandatory option" + (legalValues != null ? " legal values: " + Basic.toString(legalValues, ", ") : "") + ".");
             else
                 usage.add("\t" + shortKey + ", " + longKey + " [string(s)]: " + description + ". " + defaultValueString + (legalValues != null ? " legal values: " + Basic.toString(legalValues, ", ") + "." : defaultValueString.length() > 0 ? "." : ""));
 
@@ -620,14 +621,14 @@ public class ArgsOptions {
         List<String> result = new LinkedList<>();
         boolean inArguments = false; // once in arguments, will continue until argument starts with -
 
-        optionFound =false;
+        optionFound = false;
         Iterator<String> it = arguments.iterator();
         while (it.hasNext()) {
             String arg = it.next();
             if (arg.equals(shortKey) || arg.equals(longKey)) {
                 it.remove();
                 inArguments = true;
-                optionFound =true;
+                optionFound = true;
             }
             if (inArguments) {
                 boolean done = false;
@@ -657,6 +658,7 @@ public class ArgsOptions {
             System.err.println("\t" + longKey + ": " + Basic.toString(result, " "));
         return result;
     }
+
     /**
      * return number from value as object same as defaultValue
      *

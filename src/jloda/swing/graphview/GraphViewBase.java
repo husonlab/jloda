@@ -23,8 +23,8 @@ package jloda.swing.graphview;
 /**
  * @author Daniel Huson
  * @version $Id: GraphViewBase.java,v 1.2 2005-06-28 14:06:12 huson Exp $
- *          <p/>
- *          Base class for GraphView
+ * <p/>
+ * Base class for GraphView
  */
 
 public class GraphViewBase {

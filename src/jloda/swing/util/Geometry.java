@@ -22,6 +22,7 @@ package jloda.swing.util;
 
 /**
  * Some useful geometry stuff.
+ *
  * @author Daniel Huson
  * 7.01
  */

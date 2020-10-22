@@ -31,7 +31,7 @@ import java.util.TreeSet;
  * Dijkstras algorithm for single source shortest path, non-negative edge lengths
  *
  * @author huson
- *         Date: 11-Dec-2004
+ * Date: 11-Dec-2004
  */
 public class Dijkstra {
     /**

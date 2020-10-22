@@ -20,9 +20,7 @@
 
 /**
  * @version $Id:
- *
  * @author Daniel Huson
- *
  */
 package jloda.graph;
 

@@ -156,7 +156,7 @@ public class EPSGraphics extends Graphics2D {
         this.background = g.background;
         this.tx = g.tx;
         this.drawTextAsOutlines = g.drawTextAsOutlines;
-        this.stroke=g.stroke;
+        this.stroke = g.stroke;
 
     }
 
