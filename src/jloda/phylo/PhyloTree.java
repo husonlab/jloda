@@ -207,7 +207,6 @@ public class PhyloTree extends PhyloSplitsGraph {
         try (StringWriter sw = new StringWriter()) {
             if (translate == null || translate.size() == 0) {
                 this.write(sw, true);
-
             } else {
                 PhyloTree tmpTree = new PhyloTree();
                 tmpTree.copy(this);
@@ -336,7 +335,7 @@ public class PhyloTree extends PhyloSplitsGraph {
             System.err.println(str);
             throw ex;
         }
-        Node v = getFirstNode();
+        final Node v = getFirstNode();
         if (v != null) {
             if (rooted) {
                 setRoot(v);
@@ -345,9 +344,9 @@ public class PhyloTree extends PhyloSplitsGraph {
                     setWeight(v.getLastAdjacentEdge(), 0.5);
                 }
             } else {
-                setRoot(null);
                 if (isUnlabeledDiVertex(v))
-                    delDivertex(v);
+                    setRoot(delDivertex(v).getSource());
+                else setRoot(v);
             }
         }
         if (ALLOW_READ_RETICULATE)
