@@ -44,15 +44,7 @@ public class ProgramExecutorService {
             instance = Executors.newCachedThreadPool();
         return instance;
     }
-
-    public static ExecutorService createServiceForParallelAlgorithm() {
-        return createServiceForParallelAlgorithm(ProgramExecutorService.getNumberOfCoresToUse());
-    }
-
-    public static ExecutorService createServiceForParallelAlgorithm(int numberOfThreads) {
-        return Executors.newFixedThreadPool(numberOfThreads);
-    }
-
+    
     public static void setNumberOfCoresToUse(int numberOfCoresToUse) {
         ProgramExecutorService.numberOfCoresToUse = (numberOfCoresToUse > 0 ? numberOfCoresToUse : Runtime.getRuntime().availableProcessors());
         ProgramProperties.put("NumberOfCores", ProgramExecutorService.numberOfCoresToUse);
