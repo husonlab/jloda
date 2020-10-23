@@ -145,7 +145,7 @@ public class MashSketch {
                     sketch.hashValues[pos++] = value;
             }
             if (sortedSet.size() < sketchSize) {
-                System.err.println(String.format("Warning: Computing sketch %s: Too few k-mers: %,d of %,d", sketch.getName(), sortedSet.size(), sketchSize));
+                System.err.printf("Warning: Computing sketch %s: Too few k-mers: %,d of %,d%n", sketch.getName(), sortedSet.size(), sketchSize);
             }
             progress.incrementProgress();
         } catch (CanceledException ignored) {
