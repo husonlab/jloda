@@ -76,9 +76,9 @@ public class PeakMemoryUsageMonitor {
     public static String getPeakUsageString() {
         long available = (Runtime.getRuntime().maxMemory() / 1048576);
         if (available < 1024) {
-            return String.format("%d of %d M", getInstance().peak, available);
+            return String.format("%d of %dM", getInstance().peak, available);
         } else {
-            return Basic.removeTrailingZerosAfterDot(String.format("%.1f of %.1f G", (double) getInstance().peak / 1024.0, (double) available / 1024.0));
+            return Basic.removeTrailingZerosAfterDot(String.format("%.1f of %.1f", (double) getInstance().peak / 1024.0, (double) available / 1024.0))+"G";
         }
     }
 

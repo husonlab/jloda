@@ -658,7 +658,7 @@ public class ArgsOptions {
         else
             longKeys.add(longKey);
 
-        final String defaultValueString = (defaultValue.size() == 0 ? "" : "Default value(s): " + Basic.toString(defaultValue, " ") + ".");
+        final String defaultValueString = (defaultValue.size() == 0 ? "" : "Default value(s): '" + Basic.toString(defaultValue, "' '") + "'");
 
         if (!hide)
             usage.add("\t" + shortKey + ", " + longKey + " [string(s)]: " + description + ". " + (mandatory ? "Mandatory option." : defaultValueString)
