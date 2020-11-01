@@ -4001,7 +4001,7 @@ public class Basic {
                         break;
                 }
             }
-        } catch (IOException ex) {
+        } catch (IOException ignored) {
         }
         return null;
     }
@@ -4023,17 +4023,19 @@ public class Basic {
     public static ArrayList<File> getAllFilesInDirectory(File rootDirectory, boolean recursively, String... fileExtensions) {
         final ArrayList<File> result = new ArrayList<>();
 
-        final Queue<File> queue = new LinkedList<>();
-        File[] list = rootDirectory.listFiles();
-        if (list != null) {
-            Collections.addAll(queue, list);
-            while (queue.size() > 0) {
-                File file = queue.poll();
+        File[] array = rootDirectory.listFiles();
+        if (array != null) {
+            Arrays.sort(array);
+            final ArrayList<File> list=new ArrayList<>();
+            Collections.addAll(list, array);
+            while (list.size() > 0) {
+                final File file = list.remove(0);
                 if (file.isDirectory()) {
                     if (recursively) {
-                        File[] below = file.listFiles();
+                        final File[] below = file.listFiles();
                         if (below != null) {
-                            Collections.addAll(queue, below);
+                            Arrays.sort(below);
+                            Collections.addAll(list, below);
                         }
                     }
                 } else if (fileExtensions.length == 0)
@@ -4048,7 +4050,6 @@ public class Basic {
                 }
             }
         }
-
         return result;
     }
 
