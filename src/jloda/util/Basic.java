@@ -4333,6 +4333,13 @@ public class Basic {
             return "";
         }
     }
+
+    public static String convertPercentEncoding (String uri) {
+        return uri.replace("%20"," ")
+                .replace("%5C","\\")
+                .replace("%7E","~")
+                .replace("%2F","/");
+    }
 }
 
 /**

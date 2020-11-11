@@ -62,10 +62,14 @@ public class ResourceManagerFX {
             return iconMap.get(fileName);
 
         for (Pair<Class, String> pair : classLoadersAndRoots) {
-            final Image iconImage = getImageResource(pair.getFirst(), pair.getSecond() + "/icons", fileName);
-            if (iconImage != null) {
-                iconMap.put(fileName, iconImage);
-                return iconMap.get(fileName);
+            try {
+                final Image iconImage = getImageResource(pair.getFirst(), pair.getSecond() + "/icons", fileName);
+                if (iconImage != null) {
+                    iconMap.put(fileName, iconImage);
+                    return iconMap.get(fileName);
+                }
+            }
+            catch(Exception ignored) {
             }
         }
         if (Basic.getDebugMode())

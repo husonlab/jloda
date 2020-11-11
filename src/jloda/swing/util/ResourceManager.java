@@ -66,11 +66,14 @@ public class ResourceManager {
             return iconMap.get(name);
 
         for (Pair<Class, String> pair : classLoadersAndRoots) {
-            final Image iconImage = getImageResource(pair.getFirst(), pair.getSecond() + "/icons", name);
+            try {
+                final Image iconImage = getImageResource(pair.getFirst(), pair.getSecond() + "/icons", name);
             if (iconImage != null) {
-                final ImageIcon icon = new ImageIcon(iconImage);
-                iconMap.put(name, icon);
-                return iconMap.get(name);
+                    final ImageIcon icon = new ImageIcon(iconImage);
+                    iconMap.put(name, icon);
+                    return iconMap.get(name);
+                }
+            } catch (Exception ignored) {
             }
         }
         if (Basic.getDebugMode() && warningMissingIcon)
