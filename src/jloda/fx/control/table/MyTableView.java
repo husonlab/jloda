@@ -28,6 +28,8 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.collections.ObservableMap;
 import javafx.collections.ObservableSet;
+import javafx.event.EventHandler;
+import javafx.event.EventType;
 import javafx.scene.Node;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.TextFieldTableCell;
@@ -91,6 +93,7 @@ public class MyTableView extends Pane {
 
     public MyTableView() {
         rowHeaderView = new ListView<>();
+        rowHeaderView.setMinWidth(200);
         rowHeaderView.setPrefWidth(200);
         rowHeaderView.setSelectionModel(new AMultipleSelectionModel<>());
         rowHeaderView.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
@@ -263,7 +266,7 @@ public class MyTableView extends Pane {
                 column.getStyleClass().remove("selected");
             }
 
-            for (TablePosition pos : tableView.getSelectionModel().getSelectedCells()) {
+            for (var pos : tableView.getSelectionModel().getSelectedCells()) {
                 selectedRows.set(pos.getRow());
                 selectedCols.set(pos.getColumn());
                 if (pos.getColumn() < tableView.getColumns().size()) {
@@ -282,7 +285,21 @@ public class MyTableView extends Pane {
         });
 
         dragImage = createRectangleImage();
+
+
+        tableView.setOnKeyPressed((KeyEvent t) -> {
+            if (!t.isControlDown() && (t.getCode().isLetterKey() || t.getCode().isDigitKey())) {
+                lastKey = t.getText();
+                var tp = tableView.getFocusModel().getFocusedCell();
+                tableView.edit(tp.getRow(),tp.getTableColumn());
+                lastKey = null;
+            }
+        });
+
     }
+
+    String lastKey;
+
 
     public void pausePostingUpdates() {
         updatePauseLevel++;
@@ -341,6 +358,8 @@ public class MyTableView extends Pane {
         return list;
     }
 
+    private boolean downKey=false;
+
     private TableColumn<MyTableRow, String> createTableCol(String colName) {
         final TableColumn<MyTableRow, String> tableColumn = new TableColumn<>(colName);
 
@@ -349,7 +368,13 @@ public class MyTableView extends Pane {
         tableColumn.setCellValueFactory(p -> p.getValue().valueProperty(tableColumn.getText()));
 
         tableColumn.setCellFactory(param -> {
-            final TextFieldTableCell<MyTableRow, String> cell = new TextFieldTableCell<>(new DefaultStringConverter());
+            final MyTextFieldTableCell<MyTableRow, String> cell = new MyTextFieldTableCell<>(new DefaultStringConverter());
+            cell.addEventFilter(  KeyEvent.KEY_PRESSED,e->{
+                if(e.getCode()==KeyCode.DOWN) {
+                    downKey=true;
+                    cell.commitEdit(cell.getConverter().fromString(cell.getTextField().getText()));
+                }
+            });
             cell.editableProperty().bind(editable);
             return cell;
         });
@@ -359,13 +384,15 @@ public class MyTableView extends Pane {
                     final String newValue = t.getNewValue();
                     if (!newValue.equals(oldValue)) {
                         t.getTableView().getItems().get(t.getTablePosition().getRow()).valueProperty(tableColumn.getText()).set(newValue);
-                        Platform.runLater(this::postUpdate);
+                        if(!downKey)
+                            Platform.runLater(this::postUpdate);
                     }
                     Platform.runLater(() -> {
                         tableView.requestFocus();
                         final int row = t.getTablePosition().getRow();
                         tableView.getSelectionModel().clearAndSelect(row < tableView.getItems().size() ? row + 1 : row, t.getTableColumn());
                     });
+                    downKey=false;
                 }
         );
 
