@@ -32,28 +32,24 @@ import java.util.NoSuchElementException;
 public class NodeArray<T> extends GraphBase implements NodeAssociation<T> {
     private T[] data;
     private boolean isClear = true;
+    private T defaultValue;
 
     /**
-     * Construct a node array.
-     *
-     * @param g Graph
+     * Construct a node array with default value null
      */
     public NodeArray(Graph g) {
         setOwner(g);
         data = (T[]) new Object[g.getMaxNodeId() + 1];
         g.registerNodeAssociation(this);
+        defaultValue = null;
     }
 
     /**
-     * Construct a node array for the given graph and initialize all entries
-     * to obj.
-     *
-     * @param g     Graph
-     * @param value Object
+     * Construct a node array for the given graph and set the default value
      */
-    public NodeArray(Graph g, T value) {
+    public NodeArray(Graph g, T defaultValue) {
         this(g);
-        setAll(value);
+        this.defaultValue = defaultValue;
     }
 
     /**
@@ -64,6 +60,7 @@ public class NodeArray<T> extends GraphBase implements NodeAssociation<T> {
     public NodeArray(NodeAssociation<T> src) {
         this(src.getOwner());
         getOwner().nodeStream().forEach(v -> setValue(v, src.getValue(v)));
+        defaultValue = src.getDefaultValue();
     }
 
     /**
@@ -82,7 +79,10 @@ public class NodeArray<T> extends GraphBase implements NodeAssociation<T> {
      */
     public T getValue(Node v) {
         checkOwner(v);
-        return (v.getId() < data.length ? data[v.getId()] : null);
+        if (v.getId() < data.length && data[v.getId()] != null)
+            return data[v.getId()];
+        else
+            return defaultValue;
     }
 
     public T get(Node v) {
@@ -233,6 +233,11 @@ public class NodeArray<T> extends GraphBase implements NodeAssociation<T> {
                 return result;
             }
         };
+    }
+
+    @Override
+    public T getDefaultValue() {
+        return defaultValue;
     }
 }
 

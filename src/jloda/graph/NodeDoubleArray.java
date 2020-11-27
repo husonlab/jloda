@@ -33,28 +33,24 @@ import java.util.Arrays;
 public class NodeDoubleArray extends GraphBase implements NodeAssociation<Double> {
     private Double[] data;
     private boolean isClear = true;
+    private Double defaultValue;
 
     /**
-     * Construct a node array.
-     *
-     * @param g Graph
+     * Construct a node array with default value null
      */
     public NodeDoubleArray(Graph g) {
         setOwner(g);
         data = new Double[g.getMaxNodeId() + 1];
         g.registerNodeAssociation(this);
+        defaultValue = null;
     }
 
     /**
-     * Construct a node array for the given graph and initialize all entries
-     * to obj.
-     *
-     * @param g     Graph
-     * @param value Object
+     * Construct a node array for the given graph and set the default value
      */
-    public NodeDoubleArray(Graph g, Double value) {
+    public NodeDoubleArray(Graph g, Double defaultValue) {
         this(g);
-        setAll(value);
+        this.defaultValue = defaultValue;
     }
 
     /**
@@ -65,6 +61,7 @@ public class NodeDoubleArray extends GraphBase implements NodeAssociation<Double
     public NodeDoubleArray(NodeAssociation<Double> src) {
         this(src.getOwner());
         getOwner().nodeStream().forEach(e -> put(e, src.getValue(e)));
+        defaultValue = src.getDefaultValue();
     }
 
     /**
@@ -83,10 +80,10 @@ public class NodeDoubleArray extends GraphBase implements NodeAssociation<Double
      */
     public Double getValue(Node v) {
         checkOwner(v);
-        if (v.getId() < data.length)
+        if (v.getId() < data.length && data[v.getId()] != null)
             return data[v.getId()];
         else
-            return null;
+            return defaultValue;
     }
 
 
@@ -97,11 +94,12 @@ public class NodeDoubleArray extends GraphBase implements NodeAssociation<Double
      * @return value or 0
      */
     public double get(Node v) {
-        checkOwner(v);
-        if (v.getId() < data.length && data[v.getId()] != null)
-            return data[v.getId()];
+        final Double value = getValue(v);
+        if (value != null)
+            return value;
         else
-            return 0.0;
+            return defaultValue != null ? defaultValue : 0.0;
+
     }
 
     /**
@@ -193,6 +191,12 @@ public class NodeDoubleArray extends GraphBase implements NodeAssociation<Double
         System.arraycopy(data, 0, result.data, 0, data.length);
         return result;
     }
+
+    @Override
+    public Double getDefaultValue() {
+        return defaultValue;
+    }
+
 }
 
 // EOF

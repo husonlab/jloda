@@ -35,11 +35,10 @@ import java.util.NoSuchElementException;
 public class EdgeArray<T> extends GraphBase implements EdgeAssociation<T> {
     private T[] data;
     private boolean isClear = true;
+    private T defaultValue;
 
     /**
-     * Construct an edge array.
-     *
-     * @param g Graph
+     * Construct an edge array with default value null
      */
     public EdgeArray(Graph g) {
         setOwner(g);
@@ -48,15 +47,11 @@ public class EdgeArray<T> extends GraphBase implements EdgeAssociation<T> {
     }
 
     /**
-     * Construct an edge array for the given graph and initialize all entries
-     * to obj.
-     *
-     * @param g     Graph
-     * @param value Object
+     * Construct an edge array for the given graph and set the default value
      */
-    public EdgeArray(Graph g, T value) {
+    public EdgeArray(Graph g, T defaultValue) {
         this(g);
-        putAll(value);
+        this.defaultValue = defaultValue;
     }
 
     /**
@@ -67,6 +62,7 @@ public class EdgeArray<T> extends GraphBase implements EdgeAssociation<T> {
     public EdgeArray(EdgeAssociation<T> src) {
         setOwner(src.getOwner());
         getOwner().edges().forEach(e -> put(e, src.getValue(e)));
+        defaultValue = src.getDefaultValue();
     }
 
     /**
@@ -77,7 +73,10 @@ public class EdgeArray<T> extends GraphBase implements EdgeAssociation<T> {
      */
     public T getValue(Edge e) {
         checkOwner(e);
-        return (e.getId() < data.length ? data[e.getId()] : null);
+        if (e.getId() < data.length && data[e.getId()] != null)
+            return data[e.getId()];
+        else
+            return defaultValue;
     }
 
     public T get(Edge e) {
@@ -199,6 +198,11 @@ public class EdgeArray<T> extends GraphBase implements EdgeAssociation<T> {
                 return result;
             }
         };
+    }
+
+    @Override
+    public T getDefaultValue() {
+        return defaultValue;
     }
 }
 

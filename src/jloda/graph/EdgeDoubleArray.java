@@ -31,11 +31,11 @@ import java.util.Arrays;
 public class EdgeDoubleArray extends GraphBase implements EdgeAssociation<Double> {
     private Double[] data;
     private boolean isClear = true;
+    private Double defaultValue;
+
 
     /**
-     * Construct an edge array.
-     *
-     * @param g Graph
+     * Construct an edge array with default value null
      */
     public EdgeDoubleArray(Graph g) {
         setOwner(g);
@@ -44,15 +44,12 @@ public class EdgeDoubleArray extends GraphBase implements EdgeAssociation<Double
     }
 
     /**
-     * Construct an edge array for the given graph and initialize all entries
-     * to obj.
-     *
-     * @param g     Graph
-     * @param value initial value
+     * Construct an edge array for the given graph and set the default value
      */
-    public EdgeDoubleArray(Graph g, Double value) {
+    public EdgeDoubleArray(Graph g, Double defaultValue) {
         this(g);
-        setAll(value);
+        setAll(defaultValue);
+        this.defaultValue = defaultValue;
     }
 
     /**
@@ -63,6 +60,7 @@ public class EdgeDoubleArray extends GraphBase implements EdgeAssociation<Double
     public EdgeDoubleArray(EdgeAssociation<Double> src) {
         setOwner(src.getOwner());
         src.getOwner().edges().forEach(e -> put(e, src.getValue(e)));
+        defaultValue = src.getDefaultValue();
     }
 
     /**
@@ -82,10 +80,10 @@ public class EdgeDoubleArray extends GraphBase implements EdgeAssociation<Double
      */
     public Double getValue(Edge e) {
         checkOwner(e);
-        if (e.getId() < data.length)
+        if (e.getId() < data.length && data[e.getId()] != null)
             return data[e.getId()];
         else
-            return null;
+            return defaultValue;
     }
 
     /**
@@ -95,13 +93,12 @@ public class EdgeDoubleArray extends GraphBase implements EdgeAssociation<Double
      * @return double or 0
      */
     public double get(Edge e) {
-        checkOwner(e);
-        if (e.getId() < data.length && data[e.getId()] != null)
-            return data[e.getId()];
+        final Double value = getValue(e);
+        if (value != null)
+            return value;
         else
-            return 0.0;
+            return defaultValue != null ? defaultValue : 0.0;
     }
-
 
     /**
      * Set the entry for edge e to obj.
@@ -175,6 +172,12 @@ public class EdgeDoubleArray extends GraphBase implements EdgeAssociation<Double
     public boolean isClear() {
         return isClear;
     }
+
+    @Override
+    public Double getDefaultValue() {
+        return defaultValue;
+    }
+
 }
 
 // EOF

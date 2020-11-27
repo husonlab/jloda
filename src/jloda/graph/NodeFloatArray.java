@@ -33,28 +33,24 @@ import java.util.Arrays;
 public class NodeFloatArray extends GraphBase implements NodeAssociation<Float> {
     private Float[] data;
     private boolean isClear = true;
+    private Float defaultValue;
 
     /**
-     * Construct a node array.
-     *
-     * @param g Graph
+     * Construct a node array with default value null
      */
     public NodeFloatArray(Graph g) {
         setOwner(g);
         data = new Float[g.getMaxNodeId() + 1];
         g.registerNodeAssociation(this);
+        defaultValue = null;
     }
 
     /**
-     * Construct a node array for the given graph and initialize all entries
-     * to obj.
-     *
-     * @param g Graph
-     * @param f Object
+     * Construct a node array for the given graph and set the default value
      */
-    public NodeFloatArray(Graph g, Float f) {
+    public NodeFloatArray(Graph g, Float defaultValue) {
         this(g);
-        setAll(f);
+        this.defaultValue = defaultValue;
     }
 
     /**
@@ -65,6 +61,7 @@ public class NodeFloatArray extends GraphBase implements NodeAssociation<Float> 
     public NodeFloatArray(NodeAssociation<Float> src) {
         setOwner(src.getOwner());
         src.getOwner().nodes().forEach(v -> put(v, src.getValue(v)));
+        defaultValue = src.getDefaultValue();
     }
 
     /**
@@ -83,18 +80,19 @@ public class NodeFloatArray extends GraphBase implements NodeAssociation<Float> 
      */
     public Float getValue(Node v) {
         checkOwner(v);
-        if (v.getId() < data.length)
-            return data[v.getId()];
-        else
-            return null;
-    }
-
-    public float get(Node v) {
-        checkOwner(v);
         if (v.getId() < data.length && data[v.getId()] != null)
             return data[v.getId()];
         else
-            return 0f;
+            return defaultValue;
+    }
+
+    public float get(Node v) {
+        final Float value = getValue(v);
+        if (value != null)
+            return value;
+        else
+            return defaultValue != null ? defaultValue : 0f;
+
     }
 
     /**
@@ -191,6 +189,12 @@ public class NodeFloatArray extends GraphBase implements NodeAssociation<Float> 
         result.isClear = isClear();
         return result;
     }
+
+    @Override
+    public Float getDefaultValue() {
+        return defaultValue;
+    }
+
 }
 
 // EOF

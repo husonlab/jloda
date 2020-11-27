@@ -75,4 +75,6 @@ public interface EdgeAssociation<T> {
      * @return true, if erase
      */
     boolean isClear();
+
+    T getDefaultValue();
 }

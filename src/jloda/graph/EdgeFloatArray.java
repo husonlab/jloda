@@ -31,11 +31,10 @@ import java.util.Arrays;
 public class EdgeFloatArray extends GraphBase implements EdgeAssociation<Float> {
     private Float[] data;
     private boolean isClear = true;
+    private Float defaultValue;
 
     /**
-     * Construct an edge array.
-     *
-     * @param g Graph
+     * Construct an edge array with default value null
      */
     public EdgeFloatArray(Graph g) {
         setOwner(g);
@@ -44,15 +43,11 @@ public class EdgeFloatArray extends GraphBase implements EdgeAssociation<Float> 
     }
 
     /**
-     * Construct an edge array for the given graph and initialize all entries
-     * to obj.
-     *
-     * @param g     Graph
-     * @param value Object
+     * Construct an edge array for the given graph and set the default value
      */
-    public EdgeFloatArray(Graph g, Float value) {
+    public EdgeFloatArray(Graph g, Float defaultValue) {
         this(g);
-        setAll(value);
+        this.defaultValue = defaultValue;
     }
 
     /**
@@ -63,6 +58,7 @@ public class EdgeFloatArray extends GraphBase implements EdgeAssociation<Float> 
     public EdgeFloatArray(EdgeAssociation<Float> src) {
         setOwner(src.getOwner());
         src.getOwner().edges().forEach(e -> put(e, src.getValue(e)));
+        defaultValue = src.getDefaultValue();
     }
 
     /**
@@ -81,24 +77,19 @@ public class EdgeFloatArray extends GraphBase implements EdgeAssociation<Float> 
      */
     public Float getValue(Edge e) {
         checkOwner(e);
-        if (e.getId() < data.length)
-            return data[e.getId()];
-        else
-            return null;
-    }
-
-    /**
-     * Get the entry for edge e.
-     *
-     * @param e Edge
-     * @return float or 0
-     */
-    public float get(Edge e) {
-        checkOwner(e);
         if (e.getId() < data.length && data[e.getId()] != null)
             return data[e.getId()];
         else
-            return 0f;
+            return defaultValue;
+    }
+
+    public float get(Edge e) {
+        final Float value = getValue(e);
+        if (value != null)
+            return value;
+        else
+            return defaultValue != null ? defaultValue : 0f;
+
     }
 
 
@@ -173,6 +164,12 @@ public class EdgeFloatArray extends GraphBase implements EdgeAssociation<Float> 
     public boolean isClear() {
         return isClear;
     }
+
+    @Override
+    public Float getDefaultValue() {
+        return defaultValue;
+    }
+
 }
 
 // EOF

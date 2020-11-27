@@ -35,28 +35,24 @@ import java.util.NoSuchElementException;
 public class NodeIntegerArray extends GraphBase implements NodeAssociation<Integer> {
     private Integer[] data;
     private boolean isClear = true;
+    private Integer defaultValue;
 
     /**
-     * Construct a node array.
-     *
-     * @param g Graph
+     * Construct a node array with default value null
      */
     public NodeIntegerArray(Graph g) {
         setOwner(g);
         data = new Integer[g.getMaxNodeId() + 1];
         g.registerNodeAssociation(this);
+        defaultValue = null;
     }
 
     /**
-     * Construct a node array for the given graph and initialize all entries
-     * to obj.
-     *
-     * @param g     Graph
-     * @param value Object
+     * Construct a node array for the given graph and set the default value
      */
     public NodeIntegerArray(Graph g, Integer value) {
         this(g);
-        setAll(value);
+        defaultValue = value;
     }
 
     /**
@@ -67,6 +63,7 @@ public class NodeIntegerArray extends GraphBase implements NodeAssociation<Integ
     public NodeIntegerArray(NodeAssociation<Integer> src) {
         setOwner(src.getOwner());
         src.getOwner().nodes().forEach(v -> put(v, src.getValue(v)));
+        defaultValue = src.getDefaultValue();
     }
 
     /**
@@ -85,10 +82,10 @@ public class NodeIntegerArray extends GraphBase implements NodeAssociation<Integ
      */
     public Integer getValue(Node v) {
         checkOwner(v);
-        if (v.getId() < data.length)
+        if (v.getId() < data.length && data[v.getId()] != null)
             return data[v.getId()];
         else
-            return null;
+            return defaultValue;
     }
 
     /**
@@ -98,11 +95,11 @@ public class NodeIntegerArray extends GraphBase implements NodeAssociation<Integ
      * @return value or 0
      */
     public int get(Node v) {
-        checkOwner(v);
-        if (v.getId() < data.length && data[v.getId()] != null)
-            return data[v.getId()];
+        final Integer value = getValue(v);
+        if (value != null)
+            return value;
         else
-            return 0;
+            return defaultValue != null ? defaultValue : 0;
     }
 
     /**
@@ -218,6 +215,12 @@ public class NodeIntegerArray extends GraphBase implements NodeAssociation<Integ
             }
         };
     }
+
+    @Override
+    public Integer getDefaultValue() {
+        return defaultValue;
+    }
+
 }
 
 // EOF

@@ -34,28 +34,24 @@ import java.util.NoSuchElementException;
 public class EdgeIntegerArray extends GraphBase implements EdgeAssociation<Integer> {
     private Integer[] data;
     private boolean isClear = true;
+    private Integer defaultValue;
 
     /**
-     * Construct an edge array.
-     *
-     * @param g Graph
+     * Construct an edge array with default value null
      */
     public EdgeIntegerArray(Graph g) {
         setOwner(g);
         data = new Integer[g.getMaxEdgeId() + 1];
         g.registerEdgeAssociation(this);
+        defaultValue = null;
     }
 
     /**
-     * Construct an edge array for the given graph and initialize all entries
-     * to obj.
-     *
-     * @param g     Graph
-     * @param value Object
+     * Construct an edge array for the given graph and set the default value
      */
-    public EdgeIntegerArray(Graph g, Integer value) {
+    public EdgeIntegerArray(Graph g, Integer defaultValue) {
         this(g);
-        setAll(value);
+        this.defaultValue = defaultValue;
     }
 
     /**
@@ -66,6 +62,7 @@ public class EdgeIntegerArray extends GraphBase implements EdgeAssociation<Integ
     public EdgeIntegerArray(EdgeAssociation<Integer> src) {
         setOwner(src.getOwner());
         src.getOwner().edges().forEach(e -> put(e, src.getValue(e)));
+        defaultValue = src.getDefaultValue();
     }
 
     /**
@@ -75,8 +72,7 @@ public class EdgeIntegerArray extends GraphBase implements EdgeAssociation<Integ
         isClear = true;
         Arrays.fill(data, null);
     }
-
-
+    
     /**
      * Get the entry for edge e.
      *
@@ -85,10 +81,10 @@ public class EdgeIntegerArray extends GraphBase implements EdgeAssociation<Integ
      */
     public Integer getValue(Edge e) {
         checkOwner(e);
-        if (e.getId() < data.length)
+        if (e.getId() < data.length && data[e.getId()] != null)
             return data[e.getId()];
         else
-            return null;
+            return defaultValue;
     }
 
     /**
@@ -98,11 +94,11 @@ public class EdgeIntegerArray extends GraphBase implements EdgeAssociation<Integ
      * @return integer or 0
      */
     public int get(Edge e) {
-        checkOwner(e);
-        if (e.getId() < data.length && data[e.getId()] != null)
-            return data[e.getId()];
+        final Integer value = getValue(e);
+        if (value != null)
+            return value;
         else
-            return 0;
+            return defaultValue != null ? defaultValue : 0;
     }
 
     /**
@@ -233,6 +229,11 @@ public class EdgeIntegerArray extends GraphBase implements EdgeAssociation<Integ
                 return value;
             }
         };
+    }
+
+    @Override
+    public Integer getDefaultValue() {
+        return defaultValue;
     }
 }
 

@@ -74,4 +74,6 @@ public interface NodeAssociation<T> {
      * @return true, if erase
      */
     boolean isClear();
+
+    T getDefaultValue();
 }
