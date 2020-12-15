@@ -42,7 +42,7 @@ public class ChangeValueCommand<T> extends UndoableRedoableCommand {
         this.eventId = eventId;
         undo = () -> changer.accept(oldValue);
         redo = () -> changer.accept(newValue);
-        System.err.println(name + " " + eventId + " " + oldValue + " -> " + newValue);
+        // System.err.println(name + " " + eventId + " " + oldValue + " -> " + newValue);
     }
 
     @Override
