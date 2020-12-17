@@ -34,10 +34,10 @@ import java.util.*;
  * @author Daniel Huson, 2005, 2018
  */
 public class PhyloGraph extends Graph {
-    protected final EdgeDoubleArray edgeWeights;
-    protected final EdgeDoubleArray edgeConfidences;
-    protected final Map<Integer, Node> taxon2node;
-    protected final NodeArray<List<Integer>> node2taxa;
+    final EdgeDoubleArray edgeWeights;
+    private final EdgeDoubleArray edgeConfidences;
+    final Map<Integer, Node> taxon2node;
+    final NodeArray<List<Integer>> node2taxa;
 
     public boolean edgeConfidencesSet = false; // use this to decide whether to output edge confidences
 
@@ -224,7 +224,7 @@ public class PhyloGraph extends Graph {
     }
 
     public int getNumberOfTaxa(Node v) {
-        final List list = node2taxa.get(v);
+        final List<Integer> list = node2taxa.get(v);
         return list == null ? 0 : list.size();
     }
 

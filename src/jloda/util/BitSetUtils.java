@@ -72,13 +72,17 @@ public class BitSetUtils {
 
     /**
      * iterable over all members
-     *
-     * @param set
-     * @return members
      */
     public static Iterable<Integer> members(BitSet set) {
+        return members(set, 0);
+    }
+
+    /**
+     * iterable over all members
+     */
+    public static Iterable<Integer> members(BitSet set, int start) {
         return () -> new Iterator<>() {
-            private int i = set.nextSetBit(0);
+            private int i = set.nextSetBit(start);
 
             @Override
             public boolean hasNext() {
@@ -93,7 +97,6 @@ public class BitSetUtils {
             }
         };
     }
-
     public static BitSet asBitSet(Iterable<Integer> bits) {
         final BitSet bitSet = new BitSet();
         for (Integer i : bits) {
