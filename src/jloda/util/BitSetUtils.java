@@ -60,14 +60,14 @@ public class BitSetUtils {
     }
 
     /**
-     * does set a contain set b?
+     * does first set contain second set?
      *
-     * @param a
-     * @param b
-     * @return true if b is contained in a
+     * @param set
+     * @param subset
+     * @return true first set contains second set
      */
-    public static boolean contains(BitSet a, BitSet b) {
-        return intersection(a, b).cardinality() == b.cardinality();
+    public static boolean contains(BitSet set, BitSet subset) {
+        return intersection(set, subset).cardinality() == subset.cardinality();
     }
 
     /**
