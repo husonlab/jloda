@@ -1242,6 +1242,11 @@ public class Basic {
      */
     public static String getFileBaseName(String name) {
         if (name != null) {
+            if (name.endsWith(".gz"))
+                name = name.substring(0, name.lastIndexOf(".gz"));
+            else if (name.endsWith(".zip"))
+                name = name.substring(0, name.lastIndexOf(".zip"));
+
             int pos = name.lastIndexOf(".");
             if (pos > 0)
                 name = name.substring(0, pos);
