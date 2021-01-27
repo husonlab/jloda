@@ -50,8 +50,6 @@ public class PhyloTree extends PhyloSplitsGraph {
 
     private final boolean cleanLabelsOnWrite;
 
-    private boolean internalNodeLabelsAreEdgeLabels = false;
-
     private double weight = 1;
 
     protected final NodeArray<List<Node>> node2GuideTreeChildren; // keep track of children in LSA tree in network
@@ -1381,14 +1379,6 @@ public class PhyloTree extends PhyloSplitsGraph {
             }
         }
         return changed;
-    }
-
-    public boolean isInternalNodeLabelsAreEdgeLabels() {
-        return internalNodeLabelsAreEdgeLabels;
-    }
-
-    public void setInternalNodeLabelsAreEdgeLabels(boolean internalNodeLabelsAreEdgeLabels) {
-        this.internalNodeLabelsAreEdgeLabels = internalNodeLabelsAreEdgeLabels;
     }
 
     /**
