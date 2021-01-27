@@ -1164,7 +1164,7 @@ public class Basic {
      * returns true, if string can be parsed as int
      *
      * @param next
-     * @return true, if int
+     * @return true, if boolean
      */
     public static boolean parseBoolean(String next) {
         next = next.trim();
@@ -1176,7 +1176,7 @@ public class Basic {
      * returns true, if string can be parsed as long
      *
      * @param next
-     * @return true, if int
+     * @return true, if long
      */
     public static boolean isLong(String next) {
         try {
@@ -1192,7 +1192,7 @@ public class Basic {
      * returns true, if string can be parsed as float
      *
      * @param next
-     * @return true, if int
+     * @return true, if float
      */
     public static boolean isFloat(String next) {
         try {
@@ -1207,7 +1207,7 @@ public class Basic {
      * returns true, if string can be parsed as double
      *
      * @param next
-     * @return true, if int
+     * @return true, if double
      */
     public static boolean isDouble(String next) {
         try {
