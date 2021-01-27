@@ -62,6 +62,15 @@ public class MashDistance {
             return Math.max(0f, -1.0 / k * Math.log(2.0 * jaccardIndex / (1 + jaccardIndex)));
     }
 
+    public static int computeMinIntersectionSizeForMaxDistance(double maxDistance, int k, int s) {
+        for (int j = (s + 1); j > 0; j--) {
+            double d = compute((j - 1.0) / (double) s, k);
+            if (d > maxDistance)
+                return j;
+        }
+        return 1;
+    }
+
     public static int computeIntersection(MashSketch sketch1, MashSketch sketch2) {
         final int sketchSize = sketch1.getSketchSize();
 
