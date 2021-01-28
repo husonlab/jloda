@@ -241,9 +241,10 @@ public class PhyloTree extends PhyloSplitsGraph {
             PhyloTree tmpTree = new PhyloTree();
             tmpTree.copy(this);
             for (Node v = tmpTree.getFirstNode(); v != null; v = v.getNext()) {
-                final String label = labeler.apply(v);
+                String label = labeler.apply(v);
                 if (label != null) {
-                    if (v.getOutDegree() == 0 && !label.startsWith("'")) // put all internal labels in quotes
+                    label = label.replaceAll("'", "_");
+                    if (Basic.intersects(label, " :(),"))
                         tmpTree.setLabel(v, "'" + label + "'");
                     else
                         tmpTree.setLabel(v, label);

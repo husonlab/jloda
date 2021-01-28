@@ -3103,6 +3103,14 @@ public class Basic {
         return s != null && s.trim().length() > 0;
     }
 
+    public static boolean intersects(String a, String b) {
+        for (int i = 0; i < b.length(); i++) {
+            if (a.contains("" + b.charAt(i)))
+                return true;
+        }
+        return false;
+    }
+
     /**
      * read and verify a magic number from a stream
      */
