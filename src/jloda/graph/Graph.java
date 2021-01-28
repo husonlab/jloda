@@ -2061,6 +2061,27 @@ public class Graph extends GraphBase {
     public ArrayList<Edge> edgesList() {
         return Basic.asList(edges());
     }
+
+    public boolean isTree() {
+        try {
+            final NodeSet visited = new NodeSet(this);
+            return !hasCycleRec(getFirstNode(), null, visited) && visited.size() == getNumberOfNodes();
+        } catch (Exception e) {
+            return false;
+        }
+    }
+
+    private boolean hasCycleRec(Node v, Edge e, NodeSet visited) {
+        visited.add(v);
+        for (Edge f : v.adjacentEdges()) {
+            if (f != e) {
+                Node w = f.getOpposite(v);
+                if (visited.contains(w) || hasCycleRec(w, f, visited))
+                    return true;
+            }
+        }
+        return false;
+    }
 }
 
 // EOF

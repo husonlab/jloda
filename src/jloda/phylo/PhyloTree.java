@@ -1187,7 +1187,7 @@ public class PhyloTree extends PhyloSplitsGraph {
     private void redirectEdgesAwayFromRootRec(Node v, Edge e) {
         if (e != null && v != e.getTarget() && !isSpecial(e))
             e.reverse();
-        for (Edge f = v.getFirstAdjacentEdge(); f != null; f = v.getNextAdjacentEdge(f)) {
+        for (Edge f : Basic.asList(v.adjacentEdges())) {
             if (f != e && PhyloTreeUtils.okToDescendDownThisEdge(this, f, v))
                 redirectEdgesAwayFromRootRec(f.getOpposite(v), f);
         }
