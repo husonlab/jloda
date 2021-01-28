@@ -2531,7 +2531,8 @@ public class Basic {
     }
 
     public static void checkFileWritable(String fileName, boolean allowOverwrite) throws IOException {
-        if (fileName.equals("stdout") || fileName.equals("stderr") || fileName.equals("stdout-gz"))
+        if (fileName.equalsIgnoreCase("stdout") || fileName.equalsIgnoreCase("stderr")
+                || fileName.equalsIgnoreCase("stdout-gz"))
             return;
 
         final File file = new File(fileName);
@@ -2541,6 +2542,8 @@ public class Basic {
             else if (!file.delete())
                 throw new IOException("Failed to delete existing file: " + fileName);
         }
+        if (!file.getParentFile().exists())
+            throw new IOException("Directory doesn't exist: " + file.getParentFile());
         try (Writer w = new FileWriter(file)) {
             w.write("");
         } catch (IOException ex) {
@@ -2869,24 +2872,26 @@ public class Basic {
      * @throws IOException
      */
     public static OutputStream getOutputStreamPossiblyZIPorGZIP(String fileName) throws IOException {
-        if (fileName.endsWith("stdout"))
-            return new PrintStreamNoClose(System.out);
-        else if (fileName.endsWith("stdout-gz"))
-            return new GZIPOutputStream(new PrintStreamNoClose(System.out));
-        else if (fileName.endsWith("stderr"))
-            return new PrintStreamNoClose(System.err);
-        else if (fileName.endsWith("stderr-gz"))
-            return new GZIPOutputStream(new PrintStreamNoClose(System.err));
-        else {
-            OutputStream outs = new FileOutputStream(fileName);
-            if (fileName.toLowerCase().endsWith(".gz")) {
-                outs = new GZIPOutputStream(outs);
-            } else if (fileName.toLowerCase().endsWith(".zip")) {
-                final ZipOutputStream out = new ZipOutputStream(outs);
-                ZipEntry e = new ZipEntry(Basic.replaceFileSuffix(fileName, ""));
-                out.putNextEntry(e);
-            }
-            return outs;
+        final String fileNameLowerCase = fileName.toLowerCase();
+        switch (fileNameLowerCase) {
+            case "stdout":
+                return new PrintStreamNoClose(System.out);
+            case "stdout-gz":
+                return new GZIPOutputStream(new PrintStreamNoClose(System.out));
+            case "stderr":
+                return new PrintStreamNoClose(System.err);
+            case "stderr-gz":
+                return new GZIPOutputStream(new PrintStreamNoClose(System.err));
+            default:
+                OutputStream outs = new FileOutputStream(fileName);
+                if (fileNameLowerCase.endsWith(".gz")) {
+                    outs = new GZIPOutputStream(outs);
+                } else if (fileNameLowerCase.endsWith(".zip")) {
+                    final ZipOutputStream out = new ZipOutputStream(outs);
+                    ZipEntry e = new ZipEntry(Basic.replaceFileSuffix(fileName, ""));
+                    out.putNextEntry(e);
+                }
+                return outs;
         }
     }
 
