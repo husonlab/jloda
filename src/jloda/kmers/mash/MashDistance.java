@@ -75,6 +75,7 @@ public class MashDistance {
         final int sketchSize = sketch1.getSketchSize();
 
         int intersectionSize = 0;
+        int mergeSize = 0;
         int i = 0;
         int j = 0;
         while (true) {
@@ -93,6 +94,9 @@ public class MashDistance {
                     break;
                 if (++j == sketchSize)
                     break;
+            }
+            if (++mergeSize == sketchSize) {
+                break;
             }
         }
         return intersectionSize;
