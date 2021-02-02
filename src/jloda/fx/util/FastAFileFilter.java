@@ -32,7 +32,7 @@ public class FastAFileFilter {
 
     public static FileChooser.ExtensionFilter getInstance() {
         if (instance == null)
-            instance = new FileChooser.ExtensionFilter("FastA File", "*.fasta", "*.fna", "*.fa", "*.fasta.gz", "*fna.gz", "*.fa.gz");
+            instance = new FileChooser.ExtensionFilter("FastA File", "*.fasta", "*.fna", "*.fa", "*.fasta.gz", "*.faa", "*.faa.gz", "*.fna.gz", "*.fa.gz");
         return instance;
     }
 

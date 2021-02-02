@@ -226,6 +226,10 @@ public class FastAFileIterator implements IFastAIterator, Closeable {
         return StreamSupport.stream(records().spliterator(), false);
     }
 
+    public String getFileName() {
+        return fileName;
+    }
+
     /**
      * choose fastA or fastQ as fastA getLetterCodeIterator
      *
@@ -245,5 +249,4 @@ public class FastAFileIterator implements IFastAIterator, Closeable {
                 throw new IOException("File empty or not in FastA or FastQ format: " + inputFile);
         }
     }
-
 }

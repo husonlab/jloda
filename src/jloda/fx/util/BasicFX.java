@@ -245,11 +245,39 @@ public class BasicFX {
      * @param textField
      */
     public static void ensureAcceptsIntegersOnly(TextField textField) {
-        textField.textProperty().addListener((c, o, n) -> {
-            if (!n.matches("\\d*")) {
-                textField.setText(n.replaceAll("[^\\d]", ""));
+        textField.getProperties().put("vkType", "numeric");
+        textField.setTextFormatter(new TextFormatter<>(c -> {
+            if (c.isContentChange()) {
+                if (c.getControlNewText().length() == 0) {
+                    return c;
+                }
+                try {
+                    Integer.parseInt(c.getControlNewText());
+                    return c;
+                } catch (NumberFormatException ignored) {
+                    return null;
+                }
             }
-        });
+            return c;
+        }));
+    }
+
+    public static void ensureAcceptsDoubleOnly(TextField textField) {
+        textField.getProperties().put("vkType", "numeric");
+        textField.setTextFormatter(new TextFormatter<>(c -> {
+            if (c.isContentChange()) {
+                if (c.getControlNewText().length() == 0) {
+                    return c;
+                }
+                try {
+                    Double.parseDouble(c.getControlNewText());
+                    return c;
+                } catch (NumberFormatException ignored) {
+                    return null;
+                }
+            }
+            return c;
+        }));
     }
 
     public static boolean acceptableImageFormat(String name) {
