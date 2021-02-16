@@ -2951,7 +2951,7 @@ public class Basic {
      * @return split string, trimmed
      */
     public static String[] split(String aLine, char splitChar) {
-        return split(aLine, splitChar, Integer.MAX_VALUE);
+        return split(aLine, splitChar, Integer.MAX_VALUE,false);
     }
 
     /**
@@ -2962,6 +2962,18 @@ public class Basic {
      * @return split string, trimmed
      */
     public static String[] split(String aLine, char splitChar, int maxTokens) {
+        return split(aLine,splitChar,maxTokens,false);
+    }
+
+
+        /**
+         * split string on given character. Note that results are subsequently trimmed
+         *
+         * @param aLine
+         * @param splitChar
+         * @return split string, trimmed
+         */
+    public static String[] split(String aLine, char splitChar, int maxTokens,boolean skipEmptyTokens) {
         aLine = aLine.trim();
         if (aLine.length() == 0 || maxTokens <= 0)
             return new String[0];
@@ -2971,13 +2983,19 @@ public class Basic {
 
         // count the number of tokens
         int count = 1;
-        if (maxTokens > 1) {
-            for (int i = 0; i < length; i++) {
-                if (aLine.charAt(i) == splitChar) {
-                    if (count < maxTokens)
-                        count++;
-                    else
-                        break;
+        {
+            int prev = -1;
+            if (maxTokens > 1) {
+                for (int i = 0; i < length; i++) {
+                    if (aLine.charAt(i) == splitChar) {
+                        if (!skipEmptyTokens || i > prev + 1) {
+                            if (count < maxTokens)
+                                count++;
+                            else
+                                break;
+                        }
+                        prev = i;
+                    }
                 }
             }
         }
@@ -2988,10 +3006,12 @@ public class Basic {
         int pos = 0;
         for (; pos < length; pos++) {
             if (aLine.charAt(pos) == splitChar) {
-                result[which++] = aLine.substring(prev, pos).trim();
-                prev = pos + 1;
-                if (which == count)
-                    return result;
+                if(!skipEmptyTokens || pos>prev+1) {
+                    result[which++] = aLine.substring(prev, pos).trim();
+                    prev = pos + 1;
+                    if (which == count)
+                        return result;
+                }
             }
         }
         if (pos > prev) {
