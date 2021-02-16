@@ -27,7 +27,7 @@
  *****************************************************************************
  *  Compilation:  javac LinearProgramming.java
  *  Execution:    java LinearProgramming m n
- *  Dependencies: System.out.java
+ *  Dependencies: System.err.java
  *
  *  Given an m-by-n matrix A, an m-length vector b, and an
  *  n-length vector c, solve the  LP { max cx : Ax <= b, x >= 0 }.
@@ -115,7 +115,8 @@ public class LinearProgramming {
         while (true) {
 
             // find entering column q
-            int q = bland();
+            // int q = bland();
+            int q= dantzig();
             if (q == -1) break;  // optimal
 
             // find leaving row p
@@ -219,7 +220,7 @@ public class LinearProgramming {
         // check that x >= 0
         for (int j = 0; j < x.length; j++) {
             if (x[j] < 0.0) {
-                System.out.println("x[" + j + "] = " + x[j] + " is negative");
+                System.err.println("x[" + j + "] = " + x[j] + " is negative");
                 return false;
             }
         }
@@ -231,8 +232,8 @@ public class LinearProgramming {
                 sum += A[i][j] * x[j];
             }
             if (sum > b[i] + EPSILON) {
-                System.out.println("not primal feasible");
-                System.out.println("b[" + i + "] = " + b[i] + ", sum = " + sum);
+                System.err.println("not primal feasible");
+                System.err.println("b[" + i + "] = " + b[i] + ", sum = " + sum);
                 return false;
             }
         }
@@ -246,7 +247,7 @@ public class LinearProgramming {
         // check that y >= 0
         for (int i = 0; i < y.length; i++) {
             if (y[i] < 0.0) {
-                System.out.println("y[" + i + "] = " + y[i] + " is negative");
+                System.err.println("y[" + i + "] = " + y[i] + " is negative");
                 return false;
             }
         }
@@ -258,8 +259,8 @@ public class LinearProgramming {
                 sum += A[i][j] * y[i];
             }
             if (sum < c[j] - EPSILON) {
-                System.out.println("not dual feasible");
-                System.out.println("c[" + j + "] = " + c[j] + ", sum = " + sum);
+                System.err.println("not dual feasible");
+                System.err.println("c[" + j + "] = " + c[j] + ", sum = " + sum);
                 return false;
             }
         }
@@ -280,7 +281,7 @@ public class LinearProgramming {
         for (int i = 0; i < y.length; i++)
             value2 += y[i] * b[i];
         if (Math.abs(value - value1) > EPSILON || Math.abs(value - value2) > EPSILON) {
-            System.out.println("value = " + value + ", cx = " + value1 + ", yb = " + value2);
+            System.err.println("value = " + value + ", cx = " + value1 + ", yb = " + value2);
             return false;
         }
 
@@ -293,19 +294,19 @@ public class LinearProgramming {
 
     // print tableaux
     private void show() {
-        System.out.println("m = " + m);
-        System.out.println("n = " + n);
+        System.err.println("m = " + m);
+        System.err.println("n = " + n);
         for (int i = 0; i <= m; i++) {
             for (int j = 0; j <= m + n; j++) {
-                System.out.printf("%7.2f ", a[i][j]);
-                // System.out.printf("%10.7f ", a[i][j]);
+                System.err.printf("%7.2f ", a[i][j]);
+                // System.err.printf("%10.7f ", a[i][j]);
             }
-            System.out.println();
+            System.err.println();
         }
-        System.out.println("value = " + value());
+        System.err.println("value = " + value());
         for (int i = 0; i < m; i++)
-            if (basis[i] < n) System.out.println("x_" + basis[i] + " = " + a[i][m + n]);
-        System.out.println();
+            if (basis[i] < n) System.err.println("x_" + basis[i] + " = " + a[i][m + n]);
+        System.err.println();
     }
 
 
@@ -314,17 +315,17 @@ public class LinearProgramming {
         try {
             lp = new LinearProgramming(A, b, c);
         } catch (ArithmeticException e) {
-            System.out.println(e.getMessage());
+            System.err.println(e.getMessage());
             return;
         }
 
-        System.out.println("value = " + lp.value());
+        System.err.println("value = " + lp.value());
         double[] x = lp.primal();
         for (int i = 0; i < x.length; i++)
-            System.out.println("x[" + i + "] = " + x[i]);
+            System.err.println("x[" + i + "] = " + x[i]);
         double[] y = lp.dual();
         for (int j = 0; j < y.length; j++)
-            System.out.println("y[" + j + "] = " + y[j]);
+            System.err.println("y[" + j + "] = " + y[j]);
     }
 
     private static void test1() {
@@ -384,23 +385,23 @@ public class LinearProgramming {
      */
     public static void main(String[] args) {
 
-        System.out.println("----- test 1 --------------------");
+        System.err.println("----- test 1 --------------------");
         test1();
-        System.out.println();
+        System.err.println();
 
-        System.out.println("----- test 2 --------------------");
+        System.err.println("----- test 2 --------------------");
         test2();
-        System.out.println();
+        System.err.println();
 
-        System.out.println("----- test 3 --------------------");
+        System.err.println("----- test 3 --------------------");
         test3();
-        System.out.println();
+        System.err.println();
 
-        System.out.println("----- test 4 --------------------");
+        System.err.println("----- test 4 --------------------");
         test4();
-        System.out.println();
+        System.err.println();
 
-        System.out.println("----- test random ---------------");
+        System.err.println("----- test random ---------------");
         int m = Integer.parseInt(args[0]);
         int n = Integer.parseInt(args[1]);
         final Random random = new Random();
