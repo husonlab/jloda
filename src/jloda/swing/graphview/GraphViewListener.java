@@ -212,7 +212,7 @@ public class GraphViewListener implements IGraphViewListener {
             } else if (numHitNodes == 0 && numHitEdges == 0 && numHitNodeLabels == 0 && numHitEdgeLabels > 0) {
                 final Edge e = hitEdgeLabels.getFirstElement();
                 if (!viewer.getSelected(e) || viewer.getLabel(e) == null)
-                    return; // move labels only of selected edges
+                    return; // move labels only of selected adjacentEdges
                 current = inMoveEdgeLabel;
                 viewer.setCursor(Cursor.getPredefinedCursor(Cursor.MOVE_CURSOR));
 
@@ -638,7 +638,7 @@ public class GraphViewListener implements IGraphViewListener {
                 try {
                     final Edge e = hitEdgeLabels.getFirstElement();
                     if (!viewer.getSelected(e))
-                        return; // move labels only of selected edges
+                        return; // move labels only of selected adjacentEdges
                     EdgeView ev = viewer.getEV(e);
 
                     if (ev.getLabel() == null)
@@ -660,7 +660,7 @@ public class GraphViewListener implements IGraphViewListener {
                     Point pw = wv.computeConnectPoint(nextToW, trans);
 
                     if (pv != null && pw != null && G.findDirectedEdge(G.getTarget(e), G.getSource(e)) != null)
-                        viewer.adjustBiEdge(pv, pw); // want parallel bi-edges
+                        viewer.adjustBiEdge(pv, pw); // want parallel bi-adjacentEdges
 
                     final Graphics2D gc = (Graphics2D) viewer.getGraphics();
 
@@ -751,7 +751,7 @@ public class GraphViewListener implements IGraphViewListener {
     }
 
     /**
-     * Updates the selection of nodes and edges.
+     * Updates the selection of nodes and adjacentEdges.
      *
      * @param hitNodes NodeSet
      * @param hitEdges EdgeSet
@@ -1010,7 +1010,7 @@ public class GraphViewListener implements IGraphViewListener {
      * If edge lengths can be maintained in user interaction, returns
      * the length of any edge connecting the selected from the non-selected
      * nodes. Otherwise, returns -1
-     * We can maintain edge lengths if every edge in the set of edges that
+     * We can maintain edge lengths if every edge in the set of adjacentEdges that
      * separate the selected from the none-selected nodes
      * has the same angle and length
      *

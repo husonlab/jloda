@@ -25,15 +25,16 @@
  */
 package jloda.graph;
 
+import jloda.graphs.interfaces.IEdgeSet;
+
 import java.util.BitSet;
 import java.util.Collection;
 import java.util.Iterator;
-import java.util.Set;
 
 /**
- * EdgeSet implements a set of edges contained in a given graph
+ * EdgeSet implements a set of adjacentEdges contained in a given graph
  */
-public class EdgeSet extends GraphBase implements Set<Edge>, Iterable<Edge> {
+public class EdgeSet extends GraphBase implements IEdgeSet<Edge> {
     final BitSet bits;
 
     /**
@@ -87,7 +88,7 @@ public class EdgeSet extends GraphBase implements Set<Edge>, Iterable<Edge> {
     }
 
     /**
-     * adds all edges in the given collection
+     * adds all adjacentEdges in the given collection
      *
      * @param collection
      * @return true, if some element is new
@@ -131,7 +132,7 @@ public class EdgeSet extends GraphBase implements Set<Edge>, Iterable<Edge> {
     }
 
     /**
-     * removes all edges in the collection
+     * removes all adjacentEdges in the collection
      *
      * @param collection
      * @return true, if something actually removed
@@ -167,7 +168,7 @@ public class EdgeSet extends GraphBase implements Set<Edge>, Iterable<Edge> {
     }
 
     /**
-     * Delete all edges from set.
+     * Delete all adjacentEdges from set.
      */
     public void clear() {
         bits.clear();
@@ -183,9 +184,9 @@ public class EdgeSet extends GraphBase implements Set<Edge>, Iterable<Edge> {
     }
 
     /**
-     * return all contained edges as edges
+     * return all contained adjacentEdges as adjacentEdges
      *
-     * @return contained edges
+     * @return contained adjacentEdges
      */
     public Edge[] toArray() {
         Edge[] result = new Edge[bits.cardinality()];
@@ -207,7 +208,7 @@ public class EdgeSet extends GraphBase implements Set<Edge>, Iterable<Edge> {
     }
 
     /**
-     * Puts all edges into set.
+     * Puts all adjacentEdges into set.
      */
     public void addAll() {
         for (Edge e : getOwner().edges()) {

@@ -19,13 +19,12 @@
  */
 package jloda.graph;
 
+import jloda.graphs.interfaces.IEditableGraph;
+import jloda.graphs.interfaces.IGraph;
 import jloda.util.Basic;
+import jloda.util.IterationUtils;
 import jloda.util.IteratorAdapter;
-import jloda.util.parse.NexusStreamParser;
 
-import java.io.IOException;
-import java.io.Reader;
-import java.io.Writer;
 import java.lang.ref.WeakReference;
 import java.util.*;
 import java.util.stream.Stream;
@@ -34,14 +33,14 @@ import java.util.stream.StreamSupport;
 /**
  * A graph
  * <p/>
- * The nodes and edges are stored in several doubly-linked lists.
+ * The nodes and adjacentEdges are stored in several doubly-linked lists.
  * The set of nodes in the graph is stored in a list
- * The set of edges in the graph is stored in a list
- * Around each node, the set of incident edges is stored in a list.
+ * The set of adjacentEdges in the graph is stored in a list
+ * Around each node, the set of incident adjacentEdges is stored in a list.
  * Daniel Huson, 2002
  * <p/>
  */
-public class Graph extends GraphBase {
+public class Graph extends GraphBase implements IGraph<Node, Edge>, IEditableGraph<Node, Edge> {
     protected final NodeArray<String> nodeLabels;
     protected final EdgeArray<String> edgeLabels;
     private Node firstNode;
@@ -54,7 +53,7 @@ public class Graph extends GraphBase {
     protected Edge lastEdge;
     private int numberEdges;
     private int numberOfEdgesThatAreHidden;
-    private int idsEdges; // number of ids assigned to edges
+    private int idsEdges; // number of ids assigned to adjacentEdges
 
     private boolean ignoreGraphHasChanged = false; // set this when we are deleting a whole graph
 
@@ -65,11 +64,11 @@ public class Graph extends GraphBase {
     private final List<WeakReference<NodeSet>> nodeSets = new LinkedList<>();
     // created node arrays are kept here. When an node is deleted, it's
     // entry in all node arrays is set to null
-    private final List<WeakReference<NodeAssociation>> nodeAssociations = new LinkedList<>();
+    private final List<WeakReference<NodeArray<?>>> nodeArrays = new LinkedList<>();
 
     // created edge arrays are kept here. When an edge is deleted, it's
     // entry in all edge arrays is set to null
-    private final List<WeakReference<EdgeAssociation>> edgeAssociations = new LinkedList<>();
+    private final List<WeakReference<EdgeArray<?>>> edgeArrays = new LinkedList<>();
     // keep track of edge sets
     private final List<WeakReference<EdgeSet>> edgeSets = new LinkedList<>();
     private String name;
@@ -172,7 +171,7 @@ public class Graph extends GraphBase {
 
 
     /**
-     * sets the hidden state of a edge. Hidden edges are not returned by edge iterators
+     * sets the hidden state of a edge. Hidden adjacentEdges are not returned by edge iterators
      *
      * @param e
      * @param hide
@@ -244,10 +243,10 @@ public class Graph extends GraphBase {
     }
 
     /**
-     * Constructs a new edge between nodes v and w. The edge is inserted into the list of edges incident with
-     * v and the list of edges incident with w. The place it is inserted into these list for edges
+     * Constructs a new edge between nodes v and w. The edge is inserted into the list of adjacentEdges incident with
+     * v and the list of adjacentEdges incident with w. The place it is inserted into these list for adjacentEdges
      * incident with v is determined by e_v and dir_v: if dir_v = Edge.AFTER then it is inserted after
-     * e_v in the list, otherwise it is inserted before e_v. Likewise for the list of edges incident with w.
+     * e_v in the list, otherwise it is inserted before e_v. Likewise for the list of adjacentEdges incident with w.
      * <p/>
      * The info is set using the obj.
      *
@@ -266,10 +265,10 @@ public class Graph extends GraphBase {
     }
 
     /**
-     * Adds a  edge to the graph. The edge is inserted into the list of edges incident with
-     * v and the list of edges incident with w. The place it is inserted into these list for edges
+     * Adds a  edge to the graph. The edge is inserted into the list of adjacentEdges incident with
+     * v and the list of adjacentEdges incident with w. The place it is inserted into these list for adjacentEdges
      * incident with v is determined by e_v and dir_v: if dir_v = Edge.AFTER then it is inserted after
-     * e_v in the list, otherwise it is inserted before e_v. Likewise for the list of edges incident with w.
+     * e_v in the list, otherwise it is inserted before e_v. Likewise for the list of adjacentEdges incident with w.
      * <p/>
      * The info is set using the obj.
      *
@@ -364,7 +363,7 @@ public class Graph extends GraphBase {
     }
 
     /**
-     * Deletes all edges.
+     * Deletes all adjacentEdges.
      */
     public void deleteAllEdges() {
         while (firstEdge != null)
@@ -390,10 +389,10 @@ public class Graph extends GraphBase {
     }
 
     /**
-     * Change the order of edges adjacent to a node.
+     * Change the order of adjacentEdges adjacent to a node.
      *
      * @param v        the node in question.
-     * @param newOrder the desired sequence of edges.
+     * @param newOrder the desired sequence of adjacentEdges.
      */
     public void rearrangeAdjacentEdges(Node v, List<Edge> newOrder) {
         checkOwner(v);
@@ -423,7 +422,7 @@ public class Graph extends GraphBase {
     }
 
     /**
-     * move the node to the bacl of the list of nodes
+     * move the node to the back of the list of nodes
      *
      * @param v
      */
@@ -445,7 +444,7 @@ public class Graph extends GraphBase {
     }
 
     /**
-     * move the edge to the front of the list of edges
+     * move the edge to the front of the list of adjacentEdges
      *
      * @param e
      */
@@ -467,7 +466,7 @@ public class Graph extends GraphBase {
     }
 
     /**
-     * move the edge to the back of the list of edges
+     * move the edge to the back of the list of adjacentEdges
      *
      * @param e
      */
@@ -689,9 +688,9 @@ public class Graph extends GraphBase {
     }
 
     /**
-     * Get number of edges.
+     * Get number of adjacentEdges.
      *
-     * @return the number of edges
+     * @return the number of adjacentEdges
      */
     public int getNumberOfEdges() {
         return numberEdges - numberOfEdgesThatAreHidden;
@@ -755,29 +754,7 @@ public class Graph extends GraphBase {
     }
 
     /**
-     * Get an iterator over all edges
-     *
-     * @return edge iterator
-     * Better: use edges()
-     */
-    public Iterator<Edge> edgeIterator() {
-        return new IteratorAdapter<>() {
-            private Edge e = getFirstEdge();
-
-            protected Edge findNext() throws NoSuchElementException {
-                if (e != null) {
-                    final Edge result = e;
-                    e = getNextEdge(e);
-                    return result;
-                } else {
-                    throw new NoSuchElementException("at end");
-                }
-            }
-        };
-    }
-
-    /**
-     * Get an iterator over all edges, including hidden ones
+     * Get an iterator over all adjacentEdges, including hidden ones
      *
      * @return edge iterator
      */
@@ -794,32 +771,6 @@ public class Graph extends GraphBase {
                 } else {
                     throw new NoSuchElementException("at end");
                 }
-            }
-        };
-    }
-
-    /**
-     * Get an iterator over all nodes
-     *
-     * @return node iterator
-     * Better: use nodes()
-     */
-    public Iterator<Node> nodeIterator() {
-        return new IteratorAdapter<>() {
-            private Node v = getFirstNode();
-
-            protected Node findNext() throws NoSuchElementException {
-                if (v != null) {
-                    final Node result = v;
-                    v = getNextNode(v);
-                    return result;
-                } else {
-                    throw new NoSuchElementException("at end");
-                }
-            }
-
-            public boolean hasNext() {
-                return v != null;
             }
         };
     }
@@ -847,50 +798,6 @@ public class Graph extends GraphBase {
                 return v != null;
             }
         };
-    }
-
-    /**
-     * Get an iterator over all nodes adjacent to v.
-     *
-     * @param v node
-     * @return all nodes adjacent to v
-     * Better: use v.adjacentNodes()
-     */
-    public Iterable<Node> adjacentNodes(Node v) {
-        return v.adjacentNodes();
-    }
-
-    /**
-     * Get an iterator over all edges adjacent to v.
-     *
-     * @param v node
-     * @return all edges adjacent to v
-     * Better: use v.adjacentEdges()
-     */
-    public Iterable<Edge> adjacentEdges(Node v) {
-        return v.adjacentEdges();
-    }
-
-    /**
-     * Get an iterator over all all in-edges adjacent to v.
-     *
-     * @param v node
-     * @return all in-edges adjacent to v
-     * Better: use v.inEdges()
-     */
-    public Iterable<Edge> inEdges(Node v) {
-        return v.inEdges();
-    }
-
-    /**
-     * Get an iterator over all all out-edges adjacent to v.
-     *
-     * @param v node
-     * @return all out-edges adjacent to v
-     * Better: use v.outEdges()
-     */
-    public Iterable<Edge> outEdges(Node v) {
-        return v.outEdges();
     }
 
     /**
@@ -1105,13 +1012,13 @@ public class Graph extends GraphBase {
     }
 
     /**
-     * Copies one graph onto another. Maintains the ids of nodes and edges
+     * Copies one graph onto another. Maintains the ids of nodes and adjacentEdges
      *
      * @param src             the source graph
      * @param oldNode2newNode if not null, returns map: old node id onto new node id
      * @param oldEdge2newEdge if not null, returns map: old edge id onto new edge id
      */
-    public void copy(Graph src, NodeAssociation<Node> oldNode2newNode, EdgeAssociation<Edge> oldEdge2newEdge) {
+    public void copy(Graph src, NodeArray<Node> oldNode2newNode, EdgeArray<Edge> oldEdge2newEdge) {
         clear();
 
         if (oldNode2newNode == null)
@@ -1156,7 +1063,7 @@ public class Graph extends GraphBase {
     }
 
     /**
-     * Copies one graph onto another. Maintains the ids of nodes and edges
+     * Copies one graph onto another. Maintains the ids of nodes and adjacentEdges
      *
      * @param src             the source graph
      * @param srcNodes        the nodes of the source graph to be copied
@@ -1207,74 +1114,6 @@ public class Graph extends GraphBase {
             }
             w.rearrangeAdjacentEdges(newOrder);
         }
-    }
-
-    /**
-     * iterates over all node labels
-     *
-     * @return node labels
-     */
-    public Iterable<String> nodeLabels() {
-        return () -> new Iterator<>() {
-            private Node v = getFirstNode();
-
-            {
-                while (v != null && getLabel(v) == null) {
-                    v = v.getNext();
-                }
-            }
-
-            @Override
-            public boolean hasNext() {
-                return v != null;
-            }
-
-            @Override
-            public String next() {
-                final String result = getLabel(v);
-                {
-                    do {
-                        v = v.getNext();
-                    }
-                    while (v != null && getLabel(v) == null);
-                }
-                return result;
-            }
-        };
-    }
-
-    /**
-     * iterates over all edge labels
-     *
-     * @return edge labels
-     */
-    public Iterable<String> edgeLabels() {
-        return () -> new Iterator<>() {
-            private Edge e = getFirstEdge();
-
-            {
-                while (e != null && getLabel(e) == null) {
-                    e = e.getNext();
-                }
-            }
-
-            @Override
-            public boolean hasNext() {
-                return e != null;
-            }
-
-            @Override
-            public String next() {
-                final String result = getLabel(e);
-                {
-                    do {
-                        e = e.getNext();
-                    }
-                    while (e != null && getLabel(e) == null);
-                }
-                return result;
-            }
-        };
     }
 
     /**
@@ -1332,33 +1171,20 @@ public class Graph extends GraphBase {
     }
 
     /**
-     * determines whether two nodes are adjacent
-     *
-     * @param a
-     * @param b
-     * @return true, if adjacent
-     * Better: use a.isAdjacent(b)
-     */
-    public boolean areAdjacent(Node a, Node b) {
-        checkOwner(a);
-        return a.isAdjacent(b);
-    }
-
-    /**
      * called from constructor of NodeAssociation to register with graph
      *
      * @param array
      */
-    void registerNodeAssociation(NodeAssociation array) {
-        synchronized (nodeAssociations) {
+    void registerNodeArray(NodeArray<?> array) {
+        synchronized (nodeArrays) {
             final List<WeakReference> toDelete = new LinkedList<>();
-            for (WeakReference<NodeAssociation> ref : nodeAssociations) {
+            for (WeakReference<NodeArray<?>> ref : nodeArrays) {
                 if (ref.get() == null)
                     toDelete.add(ref); // reference is dead
             }
             if (toDelete.size() > 0)
-                nodeAssociations.removeAll(toDelete);
-            nodeAssociations.add(new WeakReference<>(array));
+                nodeArrays.removeAll(toDelete);
+            nodeArrays.add(new WeakReference<>(array));
         }
     }
 
@@ -1369,10 +1195,10 @@ public class Graph extends GraphBase {
      */
     void deleteNodeFromArrays(Node v) {
         checkOwner(v);
-        synchronized (nodeAssociations) {
+        synchronized (nodeArrays) {
             List<WeakReference> toDelete = new LinkedList<>();
-            for (WeakReference<NodeAssociation> ref : nodeAssociations) {
-                NodeAssociation<?> as = ref.get();
+            for (WeakReference<NodeArray<?>> ref : nodeArrays) {
+                NodeArray<?> as = ref.get();
                 if (as == null)
                     toDelete.add(ref); // reference is dead
                 else {
@@ -1380,7 +1206,7 @@ public class Graph extends GraphBase {
                 }
             }
             for (WeakReference ref : toDelete) {
-                nodeAssociations.remove(ref);
+                nodeArrays.remove(ref);
             }
         }
     }
@@ -1433,17 +1259,17 @@ public class Graph extends GraphBase {
      *
      * @param array
      */
-    void registerEdgeAssociation(EdgeAssociation array) {
-        synchronized (edgeAssociations) {
+    void registerEdgeArray(EdgeArray<?> array) {
+        synchronized (edgeArrays) {
             final List<WeakReference> toDelete = new LinkedList<>();
-            for (WeakReference<EdgeAssociation> ref : edgeAssociations) {
+            for (WeakReference<EdgeArray<?>> ref : edgeArrays) {
                 if (ref.get() == null)
                     toDelete.add(ref); // reference is dead
             }
             if (toDelete.size() > 0)
-                edgeAssociations.removeAll(toDelete);
+                edgeArrays.removeAll(toDelete);
         }
-        edgeAssociations.add(new WeakReference<>(array));
+        edgeArrays.add(new WeakReference<>(array));
     }
 
     /**
@@ -1453,10 +1279,10 @@ public class Graph extends GraphBase {
      */
     void deleteEdgeFromArrays(Edge edge) {
         checkOwner(edge);
-        synchronized (edgeAssociations) {
+        synchronized (edgeArrays) {
             List<WeakReference> toDelete = new LinkedList<>();
-            for (WeakReference<EdgeAssociation> ref : edgeAssociations) {
-                EdgeAssociation<?> as = ref.get();
+            for (WeakReference<EdgeArray<?>> ref : edgeArrays) {
+                EdgeArray<?> as = ref.get();
                 if (as == null)
                     toDelete.add(ref); // reference is dead
                 else {
@@ -1464,7 +1290,7 @@ public class Graph extends GraphBase {
                 }
             }
             for (WeakReference ref : toDelete) {
-                edgeAssociations.remove(ref);
+                edgeArrays.remove(ref);
             }
         }
     }
@@ -1511,39 +1337,6 @@ public class Graph extends GraphBase {
     }
 
     /**
-     * gets the number of connected components of the graph
-     *
-     * @return connected components
-     */
-    public int getNumberConnectedComponents() {
-        int result = 0;
-        NodeSet used = new NodeSet(this);
-
-        for (Node v = getFirstNode(); v != null; v = v.getNext()) {
-            if (!used.contains(v)) {
-                visitConnectedComponent(v, used);
-                result++;
-            }
-        }
-        return result;
-    }
-
-    /**
-     * visit all nodes in a connected component
-     *
-     * @param v
-     * @param used
-     */
-    public void visitConnectedComponent(Node v, Set<Node> used) {
-        used.add(v);
-        for (Edge f = getFirstAdjacentEdge(v); f != null; f = v.getNextAdjacentEdge(f)) {
-            Node w = f.getOpposite(v);
-            if (!used.contains(w))
-                visitConnectedComponent(w, used);
-        }
-    }
-
-    /**
      * gets the current maximal node id
      *
      * @return max node id
@@ -1585,18 +1378,18 @@ public class Graph extends GraphBase {
     }
 
     /**
-     * gets the number of special edges
+     * gets the number of special adjacentEdges
      *
-     * @return number of special edges
+     * @return number of special adjacentEdges
      */
     public int getNumberSpecialEdges() {
         return specialEdges.size();
     }
 
     /**
-     * gets the set of special edges
+     * gets the set of special adjacentEdges
      *
-     * @return special edges
+     * @return special adjacentEdges
      */
     public EdgeSet getSpecialEdges() {
         return specialEdges;
@@ -1657,26 +1450,24 @@ public class Graph extends GraphBase {
      *
      * @return node set of nodes
      */
-    public NodeSet getNodesAsSet() {
-        final NodeSet nodes = new NodeSet(this);
-        nodes.addAll(nodes());
-        return nodes;
+    public Set<Node> getNodesAsSet() {
+        return IterationUtils.asSet(nodes());
     }
 
     /**
-     * iterable over all edges
+     * iterable over all adjacentEdges
      *
-     * @return iterable over all edges
+     * @return iterable over all adjacentEdges
      */
     public Iterable<Edge> edges() {
         return edges(null);
     }
 
     /**
-     * iterable over all edges after given edge prev
+     * iterable over all adjacentEdges after given edge prev
      *
-     * @param afterMe the previous edge, after which the iteration starts. If null, iterates over all edges
-     * @return iterable over all edges
+     * @param afterMe the previous edge, after which the iteration starts. If null, iterates over all adjacentEdges
+     * @return iterable over all adjacentEdges
      */
     public Iterable<Edge> edges(Edge afterMe) {
         return () -> new Iterator<>() {
@@ -1714,14 +1505,12 @@ public class Graph extends GraphBase {
     }
 
     /**
-     * gets all edges as a new set
+     * gets all adjacentEdges as a new set
      *
-     * @return edge set of edges
+     * @return edge set of adjacentEdges
      */
-    public EdgeSet getEdgesAsSet() {
-        final EdgeSet edges = new EdgeSet(this);
-        edges.addAll(edges());
-        return edges;
+    public Set<Edge> getEdgesAsSet() {
+        return IterationUtils.asSet(edges());
     }
 
     /**
@@ -1850,149 +1639,6 @@ public class Graph extends GraphBase {
     }
 
     /**
-     * write a graph in GML
-     *
-     * @param w
-     * @param comment
-     * @param directed
-     * @param label
-     * @param graphId
-     * @throws IOException
-     */
-    public void writeGML(Writer w, String comment, boolean directed, String label, int graphId) throws IOException {
-        writeGML(w, comment, directed, label, graphId, null, null);
-    }
-
-
-    /**
-     * write a graph in GML
-     *
-     * @param w
-     * @param comment
-     * @param directed
-     * @param label
-     * @param graphId
-     * @throws IOException
-     */
-    public void writeGML(Writer w, String comment, boolean directed, String label, int graphId, Map<String, NodeArray<?>> label2nodes, Map<String, EdgeArray<?>> label2edges) throws IOException {
-        w.write("graph [\n");
-        if (comment != null)
-            w.write("\tcomment \"" + comment + "\"\n");
-        w.write("\tdirected " + (directed ? 1 : 0) + "\n");
-        w.write("\tid " + graphId + "\n");
-        if (label != null)
-            w.write("\tlabel \"" + label + "\"\n");
-        boolean hasNodeLabels = (label2nodes != null && label2nodes.containsKey("label"));
-        for (Node v = getFirstNode(); v != null; v = getNextNode(v)) {
-            w.write("\tnode [\n");
-            w.write("\t\tid " + v.getId() + "\n");
-            if (label2nodes != null) {
-                for (String aLabel : label2nodes.keySet()) {
-                    NodeArray<?> array = label2nodes.get(aLabel);
-                    if (array != null) {
-                        Object obj = array.get(v);
-                        w.write("\t\t" + aLabel + " \"" + (obj != null ? obj.toString() : "null") + "\"\n");
-                    }
-                }
-            }
-            if (!hasNodeLabels)
-                w.write("\t\tlabel \"" + (v.getInfo() != null ? v.getInfo().toString() : "null") + "\"\n");
-
-            w.write("\t]\n");
-        }
-        boolean hasEdgeLabels = (label2edges != null && label2edges.containsKey("label"));
-
-        for (Edge e = getFirstEdge(); e != null; e = getNextEdge(e)) {
-            w.write("\tedge [\n");
-            w.write("\t\tsource " + e.getSource().getId() + "\n");
-            w.write("\t\ttarget " + e.getTarget().getId() + "\n");
-
-            if (label2edges != null) {
-                for (String aLabel : label2edges.keySet()) {
-                    EdgeArray<?> array = label2edges.get(aLabel);
-                    if (array != null) {
-                        Object obj = array.get(e);
-                        w.write("\t\t" + aLabel + " \"" + (obj != null ? obj.toString() : "null") + "\"\n");
-                    }
-                }
-            }
-            if (!hasEdgeLabels)
-                w.write("\t\tlabel \"" + (e.getInfo() != null ? e.getInfo().toString() : "null") + "\"\n");
-
-            w.write("\t]\n");
-        }
-        w.write("]\n");
-        w.flush();
-    }
-
-    /**
-     * read a graph in GML for that was previously saved using writeGML. This is not a general parser.
-     *
-     * @param r
-     */
-    public void readGML(Reader r) throws IOException {
-        final NexusStreamParser np = new NexusStreamParser(r);
-        np.setSquareBracketsSurroundComments(false);
-
-        clear();
-
-        np.matchIgnoreCase("graph [");
-        if (np.peekMatchIgnoreCase("comment")) {
-            np.matchIgnoreCase("comment");
-            System.err.println("Comment: " + getQuotedString(np));
-        }
-        np.matchIgnoreCase("directed");
-        System.err.println("directed: " + (np.getInt(0, 1) == 1));
-        np.matchIgnoreCase("id");
-        System.err.println("id: " + np.getInt());
-        if (np.peekMatchIgnoreCase("label")) {
-            np.matchIgnoreCase("label");
-            System.err.println("Label: " + getQuotedString(np));
-        }
-
-
-        Map<Integer, Node> id2node = new HashMap<>();
-        while (np.peekMatchIgnoreCase("node")) {
-            np.matchIgnoreCase("node [");
-            np.matchIgnoreCase("id");
-            int id = np.getInt();
-            Node v = newNode();
-            id2node.put(id, v);
-            if (np.peekMatchIgnoreCase("label")) {
-                np.matchIgnoreCase("label");
-                v.setInfo(getQuotedString(np));
-            }
-            np.matchIgnoreCase("]");
-        }
-        while (np.peekMatchIgnoreCase("edge")) {
-            np.matchIgnoreCase("edge [");
-            np.matchIgnoreCase("source");
-            int sourceId = np.getInt();
-            np.matchIgnoreCase("target");
-            int targetId = np.getInt();
-            if (!id2node.containsKey(sourceId))
-                throw new IOException("Undefined node id: " + sourceId);
-            if (!id2node.containsKey(targetId))
-                throw new IOException("Undefined node id: " + targetId);
-            Edge e = newEdge(id2node.get(sourceId), id2node.get(targetId));
-            if (np.peekMatchIgnoreCase("label")) {
-                np.matchIgnoreCase("label");
-                e.setInfo(getQuotedString(np));
-            }
-            np.matchIgnoreCase("]");
-        }
-        np.matchIgnoreCase("]");
-    }
-
-    public static String getQuotedString(NexusStreamParser np) throws IOException {
-        np.matchIgnoreCase("\"");
-        ArrayList<String> words = new ArrayList<>();
-        while (!np.peekMatchIgnoreCase("\""))
-            words.add(np.getWordRespectCase());
-        return Basic.toString(words, " ");
-    }
-
-    /**
      * compute the current set of all leaves
      *
      * @return all leaves
@@ -2005,39 +1651,12 @@ public class Graph extends GraphBase {
         return nodes;
     }
 
-    /**
-     * compute the max id of any node
-     *
-     * @return max id
-     */
-    public int computeMaxId() {
-        int max = 0;
-        for (Node v = getFirstNode(); v != null; v = getNextNode(v)) {
-            if (max < v.getId())
-                max = v.getId();
-        }
-        return max;
-    }
-
     public String getName() {
         return name;
     }
 
     public void setName(String name) {
         this.name = name;
-    }
-
-    /**
-     * Gets an enumeration of all node labels.
-     */
-    public Set<String> getNodeLabels() {
-        Set<String> set = new HashSet<>();
-
-        for (Node v = getFirstNode(); v != null; v = getNextNode(v))
-            if (getLabel(v) != null && getLabel(v).length() > 0)
-                set.add(getLabel(v));
-
-        return set;
     }
 
     public Node searchNodeId(int id) {
@@ -2054,33 +1673,91 @@ public class Graph extends GraphBase {
         return null;
     }
 
-    public ArrayList<Node> nodesList() {
-        return Basic.asList(nodes());
-    }
-
-    public ArrayList<Edge> edgesList() {
-        return Basic.asList(edges());
-    }
-
-    public boolean isTree() {
-        try {
-            final NodeSet visited = new NodeSet(this);
-            return !hasCycleRec(getFirstNode(), null, visited) && visited.size() == getNumberOfNodes();
-        } catch (Exception e) {
-            return false;
+    public void resetIdsDoNotUse() {
+        idsNodes = 0;
+        for (var v : nodes()) {
+            v.setId(++idsNodes);
+        }
+        idsEdges = 0;
+        for (var v : nodes()) {
+            v.setId(++idsEdges);
         }
     }
 
-    private boolean hasCycleRec(Node v, Edge e, NodeSet visited) {
-        visited.add(v);
-        for (Edge f : v.adjacentEdges()) {
-            if (f != e) {
-                Node w = f.getOpposite(v);
-                if (visited.contains(w) || hasCycleRec(w, f, visited))
-                    return true;
+    @Override
+    public NodeSet newNodeSet() {
+        return new NodeSet(this);
+    }
+
+    @Override
+    public <T> NodeArray<T> newNodeArray() {
+        return new NodeArray<>(this);
+    }
+
+    @Override
+    public NodeIntegerArray newNodeIntArray() {
+        return new NodeIntegerArray(this);
+    }
+
+    @Override
+    public NodeDoubleArray newNodeDoubleArray() {
+        return new NodeDoubleArray(this);
+    }
+
+    @Override
+    public EdgeSet newEdgeSet() {
+        return new EdgeSet(this);
+    }
+
+    @Override
+    public <T> EdgeArray<T> newEdgeArray() {
+        return new EdgeArray<>(this);
+    }
+
+    @Override
+    public EdgeIntegerArray newEdgeIntArray() {
+        return new EdgeIntegerArray(this);
+    }
+
+    @Override
+    public EdgeDoubleArray newEdgeDoubleArray() {
+        return new EdgeDoubleArray(this);
+    }
+
+    /**
+     * Gets an enumeration of all node labels.
+     */
+    public Iterable<String> getNodeLabels() {
+        return new Iterable<String>() {
+            @Override
+            public Iterator<String> iterator() {
+                return new Iterator<>() {
+                    Iterator<Node> it = nodes().iterator();
+                    Node next = nextWithLabel();
+
+                    @Override
+                    public boolean hasNext() {
+                        return next != null;
+                    }
+
+                    @Override
+                    public String next() {
+                        var label = next.getLabel();
+                        next = nextWithLabel();
+                        return label;
+                    }
+
+                    private Node nextWithLabel() {
+                        while (it.hasNext()) {
+                            Node v = it.next();
+                            if (v.getLabel() != null)
+                                return v;
+                        }
+                        return null;
+                    }
+                };
             }
-        }
-        return false;
+        };
     }
 }
 

@@ -21,6 +21,8 @@
 package jloda.graph;
 
 
+import jloda.graphs.interfaces.INode;
+
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
@@ -32,7 +34,7 @@ import java.util.stream.StreamSupport;
  * Node class used by Graph class
  * Daniel Huson, 2003
  */
-public class Node extends NodeEdge implements Comparable<Node> {
+public class Node extends NodeEdge implements Comparable<Node>, INode {
     private Edge firstAdjacentEdge;
     private Edge lastAdjacentEdge;
     private int inDegree = 0;
@@ -66,7 +68,7 @@ public class Node extends NodeEdge implements Comparable<Node> {
     }
 
     /**
-     * initalizes a new node in graph
+     * initializes a new node in graph
      *
      * @param G    Graph
      * @param prev NodeEdge
@@ -94,7 +96,7 @@ public class Node extends NodeEdge implements Comparable<Node> {
     }
 
     /**
-     * delete this node from graph. Any incident edges are deleted.
+     * delete this node from graph. Any incident adjacentEdges are deleted.
      */
     public void deleteNode() {
         getOwner().fireDeleteNode(this);
@@ -113,7 +115,7 @@ public class Node extends NodeEdge implements Comparable<Node> {
     }
 
     /**
-     * rearrange the adjacent edges
+     * rearrange the adjacent adjacentEdges
      *
      * @param newOrder
      */
@@ -145,7 +147,7 @@ public class Node extends NodeEdge implements Comparable<Node> {
     }
 
     /**
-     * reverse the order of the adjacent edges
+     * reverse the order of the adjacent adjacentEdges
      */
     public void reverseOrderAdjacentEdges() {
         List<Edge> order = new ArrayList<>();
@@ -155,7 +157,7 @@ public class Node extends NodeEdge implements Comparable<Node> {
     }
 
     /**
-     * rotate the order of the adjacent edges
+     * rotate the order of the adjacent adjacentEdges
      */
     public void rotateOrderAdjacentEdges() {
         List<Edge> order = new ArrayList<>();
@@ -193,6 +195,15 @@ public class Node extends NodeEdge implements Comparable<Node> {
      */
     public Edge getLastAdjacentEdge() {
         return lastAdjacentEdge;
+    }
+
+    @Override
+    public boolean isAdjacent(INode v) {
+        for (var e : adjacentEdges()) {
+            if (e.getOpposite(this) == v)
+                return true;
+        }
+        return false;
     }
 
     /**
@@ -430,9 +441,9 @@ public class Node extends NodeEdge implements Comparable<Node> {
     }
 
     /**
-     * get the indegree of this node
+     * get the in degree of this node
      *
-     * @return indegree of this node
+     * @return in degree of this node
      */
     public int getInDegree() {
         return inDegree;
@@ -689,6 +700,14 @@ public class Node extends NodeEdge implements Comparable<Node> {
     @Override
     public int hashCode() {
         return Integer.hashCode(getId());
+    }
+
+    public String getLabel() {
+        return getOwner().getLabel(this);
+    }
+
+    public void setLabel(String label) {
+        getOwner().setLabel(this, label);
     }
 }
 

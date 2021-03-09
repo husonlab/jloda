@@ -1,7 +1,7 @@
 /*
- * DirectedCycleDetector.java Copyright (C) 2020. Daniel H. Huson
+ * DirectedCycleDetector.java Copyright (C) 2021. Daniel H. Huson
  *
- * (Some code written by other authors, as named in code.)
+ *  (Some files contain contributions from other authors, who are then mentioned separately.)
  *
  *  This program is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -15,10 +15,11 @@
  *
  *  You should have received a copy of the GNU General Public License
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
- *
  */
 
-package jloda.graph;
+package jloda.graphs.algorithms;
+
+import jloda.graph.*;
 
 import java.util.Collection;
 import java.util.Stack;
@@ -85,8 +86,8 @@ public class DirectedCycleDetector {
                 detectRec(G, w);
             } else if (onStack.contains(w)) {
                 cycle.push(e);
-                for (Node x = v; x != w; x = edgeTo.get(x).getSource())
-                    cycle.push(edgeTo.get(x));
+                for (Node x = v; x != w; x = edgeTo.getValue(x).getSource())
+                    cycle.push(edgeTo.getValue(x));
             }
         }
         onStack.remove(v);

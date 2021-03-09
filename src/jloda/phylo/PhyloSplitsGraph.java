@@ -161,7 +161,7 @@ public class PhyloSplitsGraph extends PhyloGraph {
     }
 
     /**
-     * removes a split from the graph by contracting all edges associated with the split
+     * removes a split from the graph by contracting all adjacentEdges associated with the split
      *
      * @param splitId
      */
@@ -169,13 +169,13 @@ public class PhyloSplitsGraph extends PhyloGraph {
         Node one = getTaxon2Node(1);
 
         if (one != null) {
-            // determine all nodes and edges that separate S(1) from X-S(1)
+            // determine all nodes and adjacentEdges that separate S(1) from X-S(1)
             List<Pair<Node, Edge>> separators = new ArrayList<>(); // each is a pair consisting of a node and edge
             NodeSet seen = new NodeSet(this);
 
             getAllSeparators(splitId, one, null, seen, separators);
 
-            // determine all nodes on opposite end of separating edges
+            // determine all nodes on opposite end of separating adjacentEdges
             NodeSet opposites = new NodeSet(this);
             Iterator it = separators.iterator();
             while (it.hasNext()) {
@@ -183,7 +183,7 @@ public class PhyloSplitsGraph extends PhyloGraph {
                 opposites.add(getOpposite((Node) pair.getFirst(), (Edge) pair.getSecond()));
             }
 
-            // reconnect edges that are adjacent to opposite ends of separators:
+            // reconnect adjacentEdges that are adjacent to opposite ends of separators:
 
             it = separators.iterator();
             while (it.hasNext()) {
@@ -231,7 +231,7 @@ public class PhyloSplitsGraph extends PhyloGraph {
     }
 
     /**
-     * recursively finds all edges representing the named split.
+     * recursively finds all adjacentEdges representing the named split.
      *
      * @param splitId
      * @param v

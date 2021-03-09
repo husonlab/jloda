@@ -35,19 +35,16 @@ public class LongBitSet implements Iterable<Long> {
 
     private final Object[] sync = new Object[1024];
 
-    {
-        for (int i = 0; i < sync.length; i++) {
-            sync[i] = new Object();
-        }
-    }
-
     /**
      * constructor
      *
      * @param maxCardinality
      */
     public LongBitSet(long maxCardinality) {
-        bits = new long[(int) (maxCardinality >>> 6) + 1];
+        bits = new long[(int) (maxCardinality / 64) + 1];
+        for (int i = 0; i < sync.length; i++) {
+            sync[i] = new Object();
+        }
     }
 
     /**
@@ -185,7 +182,7 @@ public class LongBitSet implements Iterable<Long> {
         final long cardinality = buffer.readLongLittleEndian();
         final int bitsLength = buffer.readIntLittleEndian();
 
-        final LongBitSet bitset = new LongBitSet(64 * bitsLength - 1);
+        final LongBitSet bitset = new LongBitSet(64L * bitsLength - 1L);
         for (int i = 0; i < bitsLength; i++)
             bitset.getBits()[i] = buffer.readLongLittleEndian();
         bitset.cardinality = cardinality;

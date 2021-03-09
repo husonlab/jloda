@@ -136,7 +136,7 @@ public class DefaultGraphDrawer implements IGraphDrawer {
 
             // first we draw the unselected items:
 
-            // draw unselected edges
+            // draw unselected adjacentEdges
             for (Edge e = graph.getFirstEdge(); e != null; e = graph.getNextEdge(e)) {
                 if (!graphView.selectedEdges.contains(e)) {
                     final EdgeView ev = graphView.getEV(e);
@@ -173,7 +173,7 @@ public class DefaultGraphDrawer implements IGraphDrawer {
                     }
 
                     if (graph.findDirectedEdge(w, v) != null)
-                        graphView.adjustBiEdge(pv, pw); // want parallel bi-edges
+                        graphView.adjustBiEdge(pv, pw); // want parallel bi-adjacentEdges
 
                     ev.draw(gc, pv, pw, trans, false);
 
@@ -210,7 +210,7 @@ public class DefaultGraphDrawer implements IGraphDrawer {
                 }
             }
 
-            //draw selected edges
+            //draw selected adjacentEdges
             for (Edge e : graphView.selectedEdges) {
                 final EdgeView ev = graphView.getEV(e);
                 final Node v = graph.getSource(e);
@@ -242,7 +242,7 @@ public class DefaultGraphDrawer implements IGraphDrawer {
                 }
 
                 if (graph.findDirectedEdge(w, v) != null)
-                    graphView.adjustBiEdge(pv, pw); // want parallel bi-edges
+                    graphView.adjustBiEdge(pv, pw); // want parallel bi-adjacentEdges
 
                 ev.draw(gc, pv, pw, trans, true);
 
@@ -390,11 +390,11 @@ public class DefaultGraphDrawer implements IGraphDrawer {
 
 
     /**
-     * get all edges hit by mouse at (x,y)
+     * get all adjacentEdges hit by mouse at (x,y)
      *
      * @param x
      * @param y
-     * @return edges hits
+     * @return adjacentEdges hits
      */
     public EdgeSet getHitEdges(int x, int y) {
         hitEdges.clear();
@@ -450,10 +450,10 @@ public class DefaultGraphDrawer implements IGraphDrawer {
     }
 
     /**
-     * get all edges contained in rect
+     * get all adjacentEdges contained in rect
      *
      * @param rect
-     * @return edges contained in rect
+     * @return adjacentEdges contained in rect
      */
     public EdgeSet getHitEdges(Rectangle rect) {
         hitEdges.clear();
@@ -470,7 +470,7 @@ public class DefaultGraphDrawer implements IGraphDrawer {
      * get all edge labels contained in rect
      *
      * @param rect
-     * @return edges contained in rect
+     * @return adjacentEdges contained in rect
      */
     public EdgeSet getHitEdgeLabels(Rectangle rect) {
         hitEdgeLabels.clear();
@@ -500,7 +500,7 @@ public class DefaultGraphDrawer implements IGraphDrawer {
     }
 
     /**
-     * set the default label positions for nodes and edges
+     * set the default label positions for nodes and adjacentEdges
      *
      * @param resetAll if true, reset positions for user-placed labels, too
      */

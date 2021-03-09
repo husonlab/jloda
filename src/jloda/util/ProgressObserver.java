@@ -1,7 +1,7 @@
 package jloda.util;
 
 public interface ProgressObserver {
-	
-	void reportProgress(int progress);
-	
+
+    void reportProgress(int progress);
+
 }

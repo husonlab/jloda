@@ -91,4 +91,43 @@ public class IterationUtils {
         }
         return set;
     }
+
+    public static <T> Iterator<T> iteratorNonNullElements(Iterator<T> it) {
+        return new Iterator<T>() {
+            T next = getNextNonNull();
+
+            @Override
+            public boolean hasNext() {
+                return next != null;
+            }
+
+            @Override
+            public T next() {
+                var result = next;
+                next = getNextNonNull();
+                return result;
+            }
+
+            private T getNextNonNull() {
+                while (it.hasNext()) {
+                    T a = it.next();
+                    if (a != null)
+                        return a;
+                }
+                return null;
+
+            }
+        };
+    }
+
+    public static <T> int count(Iterable<T> iterable) {
+        int count = 0;
+
+        var it = iterable.iterator();
+        while (it.hasNext()) {
+            it.next();
+            count++;
+        }
+        return count;
+    }
 }

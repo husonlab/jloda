@@ -27,7 +27,7 @@ import java.util.LinkedList;
 import java.util.List;
 
 /**
- * utilities used when drawing edges under magnification
+ * utilities used when drawing adjacentEdges under magnification
  * Daniel Huson, 1.2007
  */
 public class MagnifierUtil {
@@ -48,7 +48,7 @@ public class MagnifierUtil {
     }
 
     /**
-     * add internal points to approximate curved edges
+     * add internal points to approximate curved adjacentEdges
      *
      * @param e
      * @return original internal points

@@ -153,7 +153,7 @@ public class PhyloTreeView extends GraphView {
                     b = setAnglesRec(a, G.getOpposite(root, e), e, leaves, angle, rand);
 
                     // point towards the segment of the unit circle a...b:
-                    angle.set(e, Math.PI * (a + b) / leaves.size());
+                    angle.put(e, Math.PI * (a + b) / leaves.size());
 
                     a = b;
                 }
@@ -201,7 +201,7 @@ public class PhyloTreeView extends GraphView {
     }
 
     /**
-     * update tree of nodes and edges
+     * update tree of nodes and adjacentEdges
      */
     public void resetViews() {
         PhyloTree G = (PhyloTree) getGraph();

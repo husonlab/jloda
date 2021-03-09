@@ -111,11 +111,11 @@ public interface IGraphDrawer {
     NodeSet getHitNodeLabels(Rectangle rect);
 
     /**
-     * get all edges hit by mouse at (x,y)
+     * get all adjacentEdges hit by mouse at (x,y)
      *
      * @param x
      * @param y
-     * @return edges hits
+     * @return adjacentEdges hits
      */
     EdgeSet getHitEdges(int x, int y);
 
@@ -129,10 +129,10 @@ public interface IGraphDrawer {
     EdgeSet getHitEdgeLabels(int x, int y);
 
     /**
-     * get all edges contained in rect
+     * get all adjacentEdges contained in rect
      *
      * @param rect
-     * @return edges contained in rect
+     * @return adjacentEdges contained in rect
      */
     EdgeSet getHitEdges(Rectangle rect);
 
@@ -140,7 +140,7 @@ public interface IGraphDrawer {
      * get all edge labels contained in rect
      *
      * @param rect
-     * @return edges contained in rect
+     * @return adjacentEdges contained in rect
      */
     EdgeSet getHitEdgeLabels(Rectangle rect);
 
@@ -178,7 +178,7 @@ public interface IGraphDrawer {
     void setEdgesHasMovedInternalPoints(Edge e);
 
     /**
-     * set the default label positions for nodes and edges
+     * set the default label positions for nodes and adjacentEdges
      *
      * @param resetAll if true, reset positions for user-placed labels, too
      */

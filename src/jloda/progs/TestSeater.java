@@ -43,45 +43,45 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 
 public class TestSeater {
-    public static void main (String[] args) throws IOException {
-        final BufferedReader inputReader=new BufferedReader(new InputStreamReader(System.in));
+    public static void main(String[] args) throws IOException {
+        final BufferedReader inputReader = new BufferedReader(new InputStreamReader(System.in));
 
         System.out.print("Enter array length: ");
-        String line=inputReader.readLine();
-        final boolean[] array=new boolean[Integer.parseInt(line)];
+        String line = inputReader.readLine();
+        final boolean[] array = new boolean[Integer.parseInt(line)];
 
         System.out.println("Enter ?number or +number to query or add number of seats, respectively, s to show array and q to quit");
 
-        while((line=inputReader.readLine())!=null) {
+        while ((line = inputReader.readLine()) != null) {
             try {
                 if (line.startsWith("?")) {
                     final int requestedSeats = Integer.parseInt(line.substring(1).trim());
                     if (requestedSeats > 0) {
-                        boolean found=false;
+                        boolean found = false;
                         for (int pos = 0; !found && pos < array.length; pos++) {
                             if (canSeat(array, pos, requestedSeats)) {
                                 System.out.println("yes");
                                 //System.out.println("can seat: " + pos + " - " + (pos + requestedSeats - 1));
-                               found=true;
+                                found = true;
                             }
                         }
-                        if(!found)
+                        if (!found)
                             System.out.println("no");
                     }
                 } else if (line.startsWith("+")) {
                     final int requestedSeats = Integer.parseInt(line.substring(1).trim());
                     if (requestedSeats > 0) {
-                        boolean found=false;
+                        boolean found = false;
                         for (int pos = 0; !found && pos < array.length; pos++) {
                             if (canSeat(array, pos, requestedSeats)) {
                                 System.out.println("assigned");
                                 //System.out.println("Added: " + pos + " - " + (pos + requestedSeats - 1));
                                 for (int i = pos; i < pos + requestedSeats; i++)
                                     array[i] = true;
-                               found=true;
+                                found = true;
                             }
                         }
-                        if(!found)
+                        if (!found)
                             System.out.println("failed");
                     }
                 } else if (line.equals("s")) {
@@ -99,15 +99,14 @@ public class TestSeater {
                 } else if (line.equals("q"))
                     break;
                 else
-                    throw new IOException("Unknown command: "+line);
-            }
-            catch(Exception ex) {
-                System.out.println("Error: "+ex.getMessage());
+                    throw new IOException("Unknown command: " + line);
+            } catch (Exception ex) {
+                System.out.println("Error: " + ex.getMessage());
             }
         }
     }
 
-    public static boolean canSeat (boolean[] array,int pos,int requestedSeats) {
+    public static boolean canSeat(boolean[] array, int pos, int requestedSeats) {
         return true;
     }
 }

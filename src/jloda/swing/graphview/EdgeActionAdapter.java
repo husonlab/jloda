@@ -47,7 +47,7 @@ public class EdgeActionAdapter implements EdgeActionListener {
     }
 
     /**
-     * Called when edges are clicked on.
+     * Called when adjacentEdges are clicked on.
      *
      * @param edges  EdgeSet
      * @param clicks int
@@ -56,7 +56,7 @@ public class EdgeActionAdapter implements EdgeActionListener {
     }
 
     /**
-     * Called when edges are pressed.
+     * Called when adjacentEdges are pressed.
      *
      * @param edges EdgeSet
      */
@@ -64,7 +64,7 @@ public class EdgeActionAdapter implements EdgeActionListener {
     }
 
     /**
-     * Called when edges are released.
+     * Called when adjacentEdges are released.
      *
      * @param edges EdgeSet
      */
@@ -72,7 +72,7 @@ public class EdgeActionAdapter implements EdgeActionListener {
     }
 
     /**
-     * Called when edges are selected.
+     * Called when adjacentEdges are selected.
      *
      * @param edges EdgeSet
      */
@@ -80,7 +80,7 @@ public class EdgeActionAdapter implements EdgeActionListener {
     }
 
     /**
-     * Called when edges are de-selected.
+     * Called when adjacentEdges are de-selected.
      *
      * @param edges EdgeSet
      */

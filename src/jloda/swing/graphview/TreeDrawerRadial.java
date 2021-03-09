@@ -29,7 +29,7 @@ import java.awt.geom.Point2D;
 import java.util.Random;
 
 /**
- * draws a tree using parallel edges
+ * draws a tree using parallel adjacentEdges
  * Daniel Huson, 1.2007
  */
 public class TreeDrawerRadial extends DefaultGraphDrawer implements IGraphDrawer {
@@ -114,14 +114,14 @@ public class TreeDrawerRadial extends DefaultGraphDrawer implements IGraphDrawer
         rand.setSeed(1);
         int seen = setAnglesRec(0, root, null, leaves, angle, rand);
 
-        // rotate all edges so that taxon number 1 appears on the right:
+        // rotate all adjacentEdges so that taxon number 1 appears on the right:
         Node v = tree.getTaxon2Node(1);
         if (v != null) {
             Edge e = v.getFirstAdjacentEdge();
             if (e != null) {
                 double alpha = angle.get(e);
                 for (Edge f = tree.getFirstEdge(); f != null; f = f.getNext()) {
-                    angle.set(f, angle.get(f) - alpha);
+                    angle.put(f, angle.get(f) - alpha);
                 }
             }
         }
@@ -159,7 +159,7 @@ public class TreeDrawerRadial extends DefaultGraphDrawer implements IGraphDrawer
                     b = setAnglesRec(a, tree.getOpposite(root, e), e, leaves, angle, rand);
 
                     // point towards the segment of the unit circle a...b:
-                    angle.set(e, Math.PI * (a + 1 + b) / leaves.size());
+                    angle.put(e, Math.PI * (a + 1 + b) / leaves.size());
                     a = b;
                 }
             }
@@ -238,11 +238,11 @@ public class TreeDrawerRadial extends DefaultGraphDrawer implements IGraphDrawer
     }
 
     /**
-     * get all edges hit by mouse at (x,y)
+     * get all adjacentEdges hit by mouse at (x,y)
      *
      * @param x
      * @param y
-     * @return edges hits
+     * @return adjacentEdges hits
      */
     public EdgeSet getHitEdges(int x, int y) {
         return super.getHitEdges(x, y);
@@ -261,10 +261,10 @@ public class TreeDrawerRadial extends DefaultGraphDrawer implements IGraphDrawer
     }
 
     /**
-     * get all edges contained in rect
+     * get all adjacentEdges contained in rect
      *
      * @param rect
-     * @return edges contained in rect
+     * @return adjacentEdges contained in rect
      */
     public EdgeSet getHitEdges(Rectangle rect) {
         return super.getHitEdges(rect);
@@ -274,14 +274,14 @@ public class TreeDrawerRadial extends DefaultGraphDrawer implements IGraphDrawer
      * get all edge labels contained in rect
      *
      * @param rect
-     * @return edges contained in rect
+     * @return adjacentEdges contained in rect
      */
     public EdgeSet getHitEdgeLabels(Rectangle rect) {
         return super.getHitEdgeLabels(rect);
     }
 
     /**
-     * set the default label positions for nodes and edges
+     * set the default label positions for nodes and adjacentEdges
      *
      * @param resetAll
      */

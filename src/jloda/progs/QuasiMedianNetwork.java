@@ -338,13 +338,13 @@ public class QuasiMedianNetwork {
                 System.err.println("Updating best score: " + bestScore.getValue(end) + " -> " + currentScore);
                 bestPath.clear();
                 bestPath.addAll(currentPath);
-                bestScore.set(v, currentScore);
+                bestScore.put(v, currentScore);
             } else if (currentScore == bestScore.getValue(end)) {
                 bestPath.addAll(currentPath); // don't break ties
             }
         } else {
             if (currentScore >= bestScore.getValue(v)) {
-                bestScore.set(v, currentScore);
+                bestScore.put(v, currentScore);
                 for (Edge f = v.getFirstAdjacentEdge(); f != null; f = v.getNextAdjacentEdge(f)) {
                     if (f != e) {
                         Node w = f.getOpposite(v);
@@ -768,7 +768,7 @@ public class QuasiMedianNetwork {
                 }
             }
 
-            // determine new edges for minimum spanning network and determine feasible links
+            // determine new adjacentEdges for minimum spanning network and determine feasible links
             List<Pair<Integer, Integer>> newPairs = new LinkedList<>();
             for (Pair<Integer, Integer> ijPair : ijPairs) {
                 int i = ijPair.getFirst();
@@ -794,7 +794,7 @@ public class QuasiMedianNetwork {
                 }
             }
             if (numComponentsMSN == 1 && maxValue == Double.POSITIVE_INFINITY)
-                maxValue = threshold + epsilon; // once network is connected, add all edges upto threshold+epsilon
+                maxValue = threshold + epsilon; // once network is connected, add all adjacentEdges upto threshold+epsilon
         }
     }
 

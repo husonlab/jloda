@@ -39,7 +39,7 @@ public class Magnifier {
     private double magnificationFactor = 1;
     private double displacement = 0.75; // new distance (*radius) from axis of a point that originally had distance 0.5*radius
     private boolean active = false;
-    private boolean inRectilinearMode = false; // in this mode, don't need to add internal nodes to edges
+    private boolean inRectilinearMode = false; // in this mode, don't need to add internal nodes to adjacentEdges
 
     private boolean hyperbolicMode = false;
 
@@ -351,8 +351,8 @@ public class Magnifier {
 
     /**
      * are we in rectilinear mode?
-     * In this mode, all edges are drawn either horizontal or vertical and zoom is vertical only. No need
-     * to add internal nodes to edges. Used by TreeDrawerParallel
+     * In this mode, all adjacentEdges are drawn either horizontal or vertical and zoom is vertical only. No need
+     * to add internal nodes to adjacentEdges. Used by TreeDrawerParallel
      *
      * @return true, if so
      */

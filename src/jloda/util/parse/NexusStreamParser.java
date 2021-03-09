@@ -756,7 +756,7 @@ public class NexusStreamParser extends NexusStreamTokenizer implements Closeable
         } catch (IOException ex) {
             throw new IOExceptionWithLineNumber(lineno(), ex);
         }
-        return result;
+        return result.toLowerCase();
     }
 
     /**
@@ -1654,6 +1654,17 @@ public class NexusStreamParser extends NexusStreamTokenizer implements Closeable
     public boolean peekInteger() {
         return Basic.isInteger(peekNextWord());
     }
+
+
+    public static String getQuotedString(NexusStreamParser np) throws IOException {
+        np.matchIgnoreCase("\"");
+        ArrayList<String> words = new ArrayList<>();
+        while (!np.peekMatchIgnoreCase("\""))
+            words.add(np.getWordRespectCase());
+        np.matchIgnoreCase("\"");
+        return Basic.toString(words, " ");
+    }
+
 }
 
 // EOF

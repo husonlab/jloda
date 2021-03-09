@@ -21,36 +21,26 @@
 package jloda.graph;
 
 
-import jloda.util.Basic;
-
-import java.util.Arrays;
+import jloda.graphs.interfaces.INodeArray;
 
 /**
  * Node float array
  * Daniel Huson, 2003
  */
 
-public class NodeFloatArray extends GraphBase implements NodeAssociation<Float> {
-    private Float[] data;
-    private boolean isClear = true;
-    private Float defaultValue;
-
+public class NodeFloatArray extends NodeArray<Float> implements INodeArray<Node, Float> {
     /**
      * Construct a node array with default value null
      */
     public NodeFloatArray(Graph g) {
-        setOwner(g);
-        data = new Float[g.getMaxNodeId() + 1];
-        g.registerNodeAssociation(this);
-        defaultValue = null;
+        super(g);
     }
 
     /**
      * Construct a node array for the given graph and set the default value
      */
     public NodeFloatArray(Graph g, Float defaultValue) {
-        this(g);
-        this.defaultValue = defaultValue;
+        super(g, defaultValue);
     }
 
     /**
@@ -58,32 +48,8 @@ public class NodeFloatArray extends GraphBase implements NodeAssociation<Float> 
      *
      * @param src NodeArray
      */
-    public NodeFloatArray(NodeAssociation<Float> src) {
-        setOwner(src.getOwner());
-        src.getOwner().nodes().forEach(v -> put(v, src.getValue(v)));
-        defaultValue = src.getDefaultValue();
-    }
-
-    /**
-     * Clear all entries.
-     */
-    public void clear() {
-        Arrays.fill(data, 0);
-        isClear = true;
-    }
-
-    /**
-     * Get the entry for node v or the default object
-     *
-     * @param v Node
-     * @return an Object the entry for node v
-     */
-    public Float getValue(Node v) {
-        checkOwner(v);
-        if (v.getId() < data.length && data[v.getId()] != null)
-            return data[v.getId()];
-        else
-            return defaultValue;
+    public NodeFloatArray(NodeArray<Float> src) {
+        super(src);
     }
 
     public float get(Node v) {
@@ -91,110 +57,18 @@ public class NodeFloatArray extends GraphBase implements NodeAssociation<Float> 
         if (value != null)
             return value;
         else
-            return defaultValue != null ? defaultValue : 0f;
+            return getDefaultValue() != null ? getDefaultValue() : 0f;
 
-    }
-
-    /**
-     * Set the entry for node v to obj.
-     *
-     * @param v     Node
-     * @param value Object
-     */
-    public void setValue(Node v, Float value) {
-        checkOwner(v);
-
-        if (value != null && isClear)
-            isClear = false;
-
-        if (v.getId() >= data.length) {
-            grow(v.getId());
-        }
-        data[v.getId()] = value;
     }
 
     public void set(Node v, float value) {
-        checkOwner(v);
-        if (isClear)
-            isClear = false;
-
-        if (v.getId() >= data.length) {
-            grow(v.getId());
-        }
-        data[v.getId()] = value;
+        put(v, value);
     }
 
     @Override
     public void put(Node v, Float value) {
         setValue(v, value);
     }
-
-    /**
-     * grows the array. Repeatedly doubles the size of the array until it contains index n
-     *
-     * @param n index to be included in array
-     */
-    private void grow(int n) {
-        int newSize = Math.max(1, 2 * data.length);
-        while (newSize <= n && 2L * newSize < (long) Basic.MAX_ARRAY_SIZE) {
-            newSize *= 2;
-        }
-        if (newSize > data.length) {
-            Float[] newData = new Float[newSize];
-            for (Node v = getOwner().getFirstNode(); v != null; v = v.getNext())
-                if (v.getId() < data.length)
-                    newData[v.getId()] = data[v.getId()];
-            data = newData;
-        }
-    }
-
-    /**
-     * Set the entry for all nodes to obj.
-     *
-     * @param value Object
-     */
-    public void setAll(Float value) {
-        clear();
-        if (value != null && getOwner().getNumberOfNodes() > 0) {
-            isClear = false;
-            for (Node v = getOwner().getFirstNode(); v != null; v = v.getNext()) {
-                if (v.getId() >= data.length) {
-                    grow(v.getId());
-                }
-                data[v.getId()] = value;
-            }
-        }
-    }
-
-
-    /**
-     * is array erase, that is, has nothing been set
-     *
-     * @return true, if erase
-     */
-    public boolean isClear() {
-        return isClear;
-    }
-
-    /**
-     * create a clone
-     *
-     * @return clone
-     */
-    public Object clone() {
-        Graph graph = getOwner();
-        NodeFloatArray result = new NodeFloatArray(graph);
-        result.data = new Float[data.length];
-        System.arraycopy(data, 0, result.data, 0, data.length);
-        result.isClear = isClear();
-        return result;
-    }
-
-    @Override
-    public Float getDefaultValue() {
-        return defaultValue;
-    }
-
 }
 
 // EOF

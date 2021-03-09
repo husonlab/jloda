@@ -27,7 +27,7 @@ import javax.swing.*;
 import java.awt.*;
 
 /**
- * used to format nodes and edges
+ * used to format nodes and adjacentEdges
  * Daniel Huson, 7.2010
  */
 public interface INodeEdgeFormatable {

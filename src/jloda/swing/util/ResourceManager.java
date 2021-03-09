@@ -68,7 +68,7 @@ public class ResourceManager {
         for (Pair<Class, String> pair : classLoadersAndRoots) {
             try {
                 final Image iconImage = getImageResource(pair.getFirst(), pair.getSecond() + "/icons", name);
-            if (iconImage != null) {
+                if (iconImage != null) {
                     final ImageIcon icon = new ImageIcon(iconImage);
                     iconMap.put(name, icon);
                     return iconMap.get(name);

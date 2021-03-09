@@ -63,25 +63,53 @@ public class BloomFilter {
      * @param totalNumberOfBytes    bytes to use
      */
     public BloomFilter(int expectedNumberOfItems, int totalNumberOfBytes) {
-        this.bitsPerItem = Math.min(128, (int) Math.ceil((8d * totalNumberOfBytes) / expectedNumberOfItems));
-        this.numberOfHashFunctions = (int) Math.ceil(bitsPerItem * Math.log(2));
-        this.totalBits = ceilingPowerOf2((long) Math.ceil(expectedNumberOfItems * bitsPerItem));
-        this.hashBits = totalBits - 1;
-        this.bitSet = new LongBitSet(totalBits);
+        this(expectedNumberOfItems, -1.0, totalNumberOfBytes);
     }
 
     /**
      * constructor for expected number of items and max false positive probability
-     *
-     * @param expectedNumberOfItems
-     * @param falsePositiveProbability
      */
     public BloomFilter(int expectedNumberOfItems, double falsePositiveProbability) {
-        this.bitsPerItem = (int) Math.ceil(-Math.log(falsePositiveProbability) / (Math.log(2) * Math.log(2))); // m/n = -(log_2(p)/ln(2)) = -(ln(p)/(ln(2)*ln(2))
-        this.totalBits = ceilingPowerOf2((long) Math.ceil(expectedNumberOfItems * bitsPerItem));
-        this.numberOfHashFunctions = (int) (Math.ceil(-Math.log(falsePositiveProbability) / Math.log(2))); //  k = -ln(p)/(ln(2)
-        this.hashBits = totalBits - 1;
-        this.bitSet = new LongBitSet(totalBits);
+        this(expectedNumberOfItems, -falsePositiveProbability, -1);
+    }
+
+    /**
+     * constructor for expected number of items and max false positive probability and max number of bytes
+     */
+    public BloomFilter(int expectedNumberOfItems, double falsePositiveProbability, int maxNumberOfBytes) {
+        if (useMaxNumberOfBytes(expectedNumberOfItems, falsePositiveProbability, maxNumberOfBytes)) {
+            this.bitsPerItem = Math.min(128, (int) Math.ceil((8d * maxNumberOfBytes) / expectedNumberOfItems));
+            this.numberOfHashFunctions = (int) Math.ceil(bitsPerItem * Math.log(2));
+            this.totalBits = ceilingPowerOf2((long) Math.ceil(expectedNumberOfItems * bitsPerItem));
+            this.hashBits = totalBits - 1;
+            this.bitSet = new LongBitSet(totalBits);
+        } else {
+            if (falsePositiveProbability <= 0 || falsePositiveProbability >= 1) {
+                System.err.print("Warning: invalid falsePositiveProbability=" + falsePositiveProbability + ", changed to: 0.0001");
+                falsePositiveProbability = 0.0001;
+            }
+            this.bitsPerItem = (int) Math.ceil(-Math.log(falsePositiveProbability) / (Math.log(2) * Math.log(2))); // m/n = -(log_2(p)/ln(2)) = -(ln(p)/(ln(2)*ln(2))
+            this.totalBits = ceilingPowerOf2((long) Math.ceil(expectedNumberOfItems * bitsPerItem));
+            this.numberOfHashFunctions = (int) (Math.ceil(-Math.log(falsePositiveProbability) / Math.log(2))); //  k = -ln(p)/(ln(2)
+            this.hashBits = totalBits - 1;
+            this.bitSet = new LongBitSet(totalBits);
+        }
+    }
+
+    /**
+     * determine whether to use max number of bytes, rather than false positive probability, to initialize
+     *
+     * @return true, if and only if using falsePositiveProbability would use more than max number of bytes
+     */
+    private static boolean useMaxNumberOfBytes(int expectedNumberOfItems, double falsePositiveProbability, int maxNumberOfBytes) {
+        if (falsePositiveProbability <= 0)
+            return true;
+        else if (maxNumberOfBytes <= 0)
+            return false;
+        final int bitsPerItemForFalsePositiveProbability = (int) Math.ceil(-Math.log(falsePositiveProbability) / (Math.log(2) * Math.log(2)));
+        final int bitsPerItemForMaxNumberOfBytes = Math.min(128, (int) Math.ceil((8d * maxNumberOfBytes) / expectedNumberOfItems));
+        return bitsPerItemForMaxNumberOfBytes < bitsPerItemForFalsePositiveProbability;
+
     }
 
     public String toString() {
@@ -97,9 +125,6 @@ public class BloomFilter {
 
     /**
      * adds a string
-     *
-     * @param string
-     * @return true, if definitely newly added
      */
     public boolean add(byte[] string) {
         return add(string, 0, string.length);
@@ -126,7 +151,6 @@ public class BloomFilter {
     /**
      * adds a string
      *
-     * @param string
      * @return true, if definitely newly added
      */
     public synchronized boolean add(byte[] string, int offset, int length) {

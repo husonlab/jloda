@@ -68,8 +68,7 @@ public class ResourceManagerFX {
                     iconMap.put(fileName, iconImage);
                     return iconMap.get(fileName);
                 }
-            }
-            catch(Exception ignored) {
+            } catch (Exception ignored) {
             }
         }
         if (Basic.getDebugMode())

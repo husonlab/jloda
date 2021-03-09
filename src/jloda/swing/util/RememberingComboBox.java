@@ -29,7 +29,6 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.StringTokenizer;
-import java.util.stream.Collectors;
 
 /**
  * remembering combo box
@@ -129,7 +128,7 @@ public class RememberingComboBox extends JComboBox<String> {
     }
 
     public void addItems(Collection<String> items) {
-        items.stream().filter(s->s.length()>0).forEach(this::addItem);
+        items.stream().filter(s -> s.length() > 0).forEach(this::addItem);
     }
 
     /**

@@ -21,6 +21,7 @@
 package jloda.swing.graphview;
 
 import jloda.graph.*;
+import jloda.graphs.algorithms.ConnectedComponents;
 import jloda.phylo.PhyloSplitsGraph;
 import jloda.phylo.PhyloTree;
 import jloda.swing.util.Geometry;
@@ -87,7 +88,7 @@ public class PhyloGraphView extends GraphView {
         resetViews();
 
         // this takes care of the split selection mode: whenever an edge is clicked on,
-        // we select all edges of the same split and also all nodes on one side of the split
+        // we select all adjacentEdges of the same split and also all nodes on one side of the split
         addEdgeActionListener(new EdgeActionAdapter() {
             public void doClick(EdgeSet edges, int numClicks) {
                 inEdgeClickSelection = true;
@@ -107,7 +108,7 @@ public class PhyloGraphView extends GraphView {
                             return;
                         selectAllNodes(false);
                         selectAllEdges(false);
-                        // todo: for this to work for reticulate networks, reticulate edges
+                        // todo: for this to work for reticulate networks, reticulate adjacentEdges
                         // must be oriented toward the reticulation node
                         selectGraphComponent(getGraph().getTarget(e), splitId);
                         if (2 * getSelectedNodes().size() > getGraph().getNumberOfNodes()) {
@@ -161,7 +162,7 @@ public class PhyloGraphView extends GraphView {
 
 
     /**
-     * selects all nodes and edges on the smaller part of the split
+     * selects all nodes and adjacentEdges on the smaller part of the split
      *
      * @param v  the start node
      * @param id the split id
@@ -188,7 +189,7 @@ public class PhyloGraphView extends GraphView {
     }
 
     /**
-     * update tree of nodes and edges
+     * update tree of nodes and adjacentEdges
      */
     public void resetViews() {
         PhyloSplitsGraph G = (PhyloSplitsGraph) getGraph();
@@ -274,7 +275,7 @@ public class PhyloGraphView extends GraphView {
     }
 
     /**
-     * removes the given split from the graph by contracting all edges representing
+     * removes the given split from the graph by contracting all adjacentEdges representing
      * the split
      *
      * @param splitId
@@ -347,7 +348,7 @@ public class PhyloGraphView extends GraphView {
      */
     public String getNewick(boolean wgts) {
         if (getPhyloGraph().getNumberOfEdges() != getPhyloGraph().getNumberOfNodes() - 1
-                || getPhyloGraph().getNumberConnectedComponents() != 1)
+                || ConnectedComponents.count(getPhyloGraph()) != 1)
             return null; // graph is not a tree
 
         StringWriter out = new StringWriter();
@@ -475,14 +476,14 @@ public class PhyloGraphView extends GraphView {
                 rand.setSeed(1);
                 int seen = setAnglesRec(0, root, null, leaves, angle, rand);
 
-                // rotate all edges so that taxon number 1 appears on the right:
+                // rotate all adjacentEdges so that taxon number 1 appears on the right:
                 Node v = getPhyloGraph().getTaxon2Node(1);
                 if (v != null) {
                     Edge e = v.getFirstAdjacentEdge();
                     if (e != null) {
                         double alpha = angle.get(e);
                         for (Edge f = getGraph().getFirstEdge(); f != null; f = f.getNext()) {
-                            angle.set(f, angle.get(f) - alpha);
+                            angle.put(f, angle.get(f) - alpha);
                         }
                     }
                 }
@@ -525,7 +526,7 @@ public class PhyloGraphView extends GraphView {
                     b = setAnglesRec(a, G.getOpposite(root, e), e, leaves, angle, rand);
 
                     // point towards the segment of the unit circle a...b:
-                    angle.set(e, Math.PI * (a + b) / leaves.size());
+                    angle.put(e, Math.PI * (a + b) / leaves.size());
 
                     a = b;
                 }
@@ -574,10 +575,10 @@ public class PhyloGraphView extends GraphView {
     }
 
     /**
-     * contract all given edges
+     * contract all given adjacentEdges
      *
      * @param edges
-     * @return number of edges successfully removed
+     * @return number of adjacentEdges successfully removed
      */
     public boolean contractAll(Set<Edge> edges) {
         boolean result = false;

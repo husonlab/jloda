@@ -34,7 +34,7 @@ import jloda.graph.EdgeSet;
 //import jloda.util.*;
 
 /**
- * Interface for actions performed on edges during GraphView interaction.
+ * Interface for actions performed on adjacentEdges during GraphView interaction.
  */
 public interface EdgeActionListener {
     /**
@@ -52,7 +52,7 @@ public interface EdgeActionListener {
     void doDelete(Edge e);
 
     /**
-     * Called when edges are clicked on.
+     * Called when adjacentEdges are clicked on.
      *
      * @param edges  EdgeSet
      * @param clicks int
@@ -69,28 +69,28 @@ public interface EdgeActionListener {
 
 
     /**
-     * Called when edges are pressed.
+     * Called when adjacentEdges are pressed.
      *
      * @param edges EdgeSet
      */
     void doPress(EdgeSet edges);
 
     /**
-     * Called when edges are released.
+     * Called when adjacentEdges are released.
      *
      * @param edges EdgeSet
      */
     void doRelease(EdgeSet edges);
 
     /**
-     * Called when edges are selected.
+     * Called when adjacentEdges are selected.
      *
      * @param edges EdgeSet
      */
     void doSelect(EdgeSet edges);
 
     /**
-     * Called when edges are de-selected.
+     * Called when adjacentEdges are de-selected.
      *
      * @param edges EdgeSet
      */

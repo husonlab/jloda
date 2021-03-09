@@ -29,7 +29,7 @@ import jloda.phylo.PhyloTree;
 import java.awt.*;
 
 /**
- * draws a tree using parallel edges
+ * draws a tree using parallel adjacentEdges
  * Daniel Huson, 1.2007
  */
 public class TreeDrawerAngled extends DefaultGraphDrawer implements IGraphDrawer {
@@ -178,11 +178,11 @@ public class TreeDrawerAngled extends DefaultGraphDrawer implements IGraphDrawer
     }
 
     /**
-     * get all edges hit by mouse at (x,y)
+     * get all adjacentEdges hit by mouse at (x,y)
      *
      * @param x
      * @param y
-     * @return edges hits
+     * @return adjacentEdges hits
      */
     public EdgeSet getHitEdges(int x, int y) {
         return super.getHitEdges(x, y);
@@ -201,10 +201,10 @@ public class TreeDrawerAngled extends DefaultGraphDrawer implements IGraphDrawer
     }
 
     /**
-     * get all edges contained in rect
+     * get all adjacentEdges contained in rect
      *
      * @param rect
-     * @return edges contained in rect
+     * @return adjacentEdges contained in rect
      */
     public EdgeSet getHitEdges(Rectangle rect) {
         return super.getHitEdges(rect);
@@ -214,14 +214,14 @@ public class TreeDrawerAngled extends DefaultGraphDrawer implements IGraphDrawer
      * get all edge labels contained in rect
      *
      * @param rect
-     * @return edges contained in rect
+     * @return adjacentEdges contained in rect
      */
     public EdgeSet getHitEdgeLabels(Rectangle rect) {
         return super.getHitEdgeLabels(rect);
     }
 
     /**
-     * set the default label positions for nodes and edges
+     * set the default label positions for nodes and adjacentEdges
      *
      * @param resetAll
      */

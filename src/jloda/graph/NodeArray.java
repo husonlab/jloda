@@ -20,6 +20,9 @@
 
 package jloda.graph;
 
+import jloda.graphs.interfaces.INodeArray;
+import jloda.util.IterationUtils;
+
 import java.util.Arrays;
 import java.util.Iterator;
 import java.util.NoSuchElementException;
@@ -29,7 +32,7 @@ import java.util.NoSuchElementException;
  * Daniel Huson, 2003
  */
 
-public class NodeArray<T> extends GraphBase implements NodeAssociation<T> {
+public class NodeArray<T> extends GraphBase implements INodeArray<Node, T> {
     private T[] data;
     private boolean isClear = true;
     private T defaultValue;
@@ -40,7 +43,7 @@ public class NodeArray<T> extends GraphBase implements NodeAssociation<T> {
     public NodeArray(Graph g) {
         setOwner(g);
         data = (T[]) new Object[g.getMaxNodeId() + 1];
-        g.registerNodeAssociation(this);
+        g.registerNodeArray(this);
         defaultValue = null;
     }
 
@@ -57,7 +60,7 @@ public class NodeArray<T> extends GraphBase implements NodeAssociation<T> {
      *
      * @param src NodeArray
      */
-    public NodeArray(NodeAssociation<T> src) {
+    public NodeArray(NodeArray<T> src) {
         this(src.getOwner());
         getOwner().nodeStream().forEach(v -> setValue(v, src.getValue(v)));
         defaultValue = src.getDefaultValue();
@@ -85,10 +88,6 @@ public class NodeArray<T> extends GraphBase implements NodeAssociation<T> {
             return defaultValue;
     }
 
-    public T get(Node v) {
-        return getValue(v);
-    }
-
     /**
      * Set the entry for node v to obj.
      *
@@ -96,6 +95,11 @@ public class NodeArray<T> extends GraphBase implements NodeAssociation<T> {
      * @param obj Object
      */
     public void setValue(Node v, T obj) {
+        put(v, obj);
+    }
+
+    @Override
+    public void put(Node v, T obj) {
         checkOwner(v);
 
         if (v.getId() >= data.length) {
@@ -106,11 +110,6 @@ public class NodeArray<T> extends GraphBase implements NodeAssociation<T> {
         data[v.getId()] = obj;
         if (obj != null && isClear)
             isClear = false;
-    }
-
-    @Override
-    public void put(Node v, T obj) {
-        setValue(v, obj);
     }
 
     /**
@@ -163,39 +162,23 @@ public class NodeArray<T> extends GraphBase implements NodeAssociation<T> {
      *
      * @return iterator
      */
+    @Override
     public Iterable<T> values() {
-        return () -> new Iterator<>() {
-            private Node v = getOwner().getFirstNode();
-
-            {
-                while (v != null) {
-                    if (v.getId() < data.length && data[v.getId()] != null)
-                        break;
-                    v = v.getNext();
-                }
-            }
+        return () -> IterationUtils.iteratorNonNullElements(new Iterator<T>() {
+            int i = 0;
 
             @Override
             public boolean hasNext() {
-                return v != null;
+                return i < data.length;
             }
 
             @Override
             public T next() {
-                if (v == null)
-                    throw new NoSuchElementException();
-                T result = data[v.getId()];
-
-                v = v.getNext();
-                while (v != null) {
-                    if (v.getId() < data.length && data[v.getId()] != null)
-                        break;
-                    v = v.getNext();
-                }
-                return result;
+                return data[i++];
             }
-        };
+        });
     }
+
 
     /**
      * get an iterator over all non-null values
@@ -235,7 +218,6 @@ public class NodeArray<T> extends GraphBase implements NodeAssociation<T> {
         };
     }
 
-    @Override
     public T getDefaultValue() {
         return defaultValue;
     }

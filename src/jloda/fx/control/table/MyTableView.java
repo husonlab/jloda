@@ -28,11 +28,8 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.collections.ObservableMap;
 import javafx.collections.ObservableSet;
-import javafx.event.EventHandler;
-import javafx.event.EventType;
 import javafx.scene.Node;
 import javafx.scene.control.*;
-import javafx.scene.control.cell.TextFieldTableCell;
 import javafx.scene.image.Image;
 import javafx.scene.input.*;
 import javafx.scene.layout.HBox;
@@ -291,7 +288,7 @@ public class MyTableView extends Pane {
             if (!t.isControlDown() && (t.getCode().isLetterKey() || t.getCode().isDigitKey())) {
                 lastKey = t.getText();
                 var tp = tableView.getFocusModel().getFocusedCell();
-                tableView.edit(tp.getRow(),tp.getTableColumn());
+                tableView.edit(tp.getRow(), tp.getTableColumn());
                 lastKey = null;
             }
         });
@@ -358,7 +355,7 @@ public class MyTableView extends Pane {
         return list;
     }
 
-    private boolean downKey=false;
+    private boolean downKey = false;
 
     private TableColumn<MyTableRow, String> createTableCol(String colName) {
         final TableColumn<MyTableRow, String> tableColumn = new TableColumn<>(colName);
@@ -369,9 +366,9 @@ public class MyTableView extends Pane {
 
         tableColumn.setCellFactory(param -> {
             final MyTextFieldTableCell<MyTableRow, String> cell = new MyTextFieldTableCell<>(new DefaultStringConverter());
-            cell.addEventFilter(  KeyEvent.KEY_PRESSED,e->{
-                if(e.getCode()==KeyCode.DOWN) {
-                    downKey=true;
+            cell.addEventFilter(KeyEvent.KEY_PRESSED, e -> {
+                if (e.getCode() == KeyCode.DOWN) {
+                    downKey = true;
                     cell.commitEdit(cell.getConverter().fromString(cell.getTextField().getText()));
                 }
             });
@@ -384,15 +381,15 @@ public class MyTableView extends Pane {
                     final String newValue = t.getNewValue();
                     if (!newValue.equals(oldValue)) {
                         t.getTableView().getItems().get(t.getTablePosition().getRow()).valueProperty(tableColumn.getText()).set(newValue);
-                        if(!downKey)
+                        if (!downKey)
                             Platform.runLater(this::postUpdate);
                     }
-                    Platform.runLater(() -> {
-                        tableView.requestFocus();
-                        final int row = t.getTablePosition().getRow();
-                        tableView.getSelectionModel().clearAndSelect(row < tableView.getItems().size() ? row + 1 : row, t.getTableColumn());
-                    });
-                    downKey=false;
+            Platform.runLater(() -> {
+                tableView.requestFocus();
+                final int row = t.getTablePosition().getRow();
+                tableView.getSelectionModel().clearAndSelect(row < tableView.getItems().size() ? row + 1 : row, t.getTableColumn());
+            });
+            downKey = false;
                 }
         );
 

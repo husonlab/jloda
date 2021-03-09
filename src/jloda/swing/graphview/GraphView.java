@@ -27,13 +27,13 @@
 package jloda.swing.graphview;
 
 import jloda.graph.*;
+import jloda.graphs.algorithms.ConnectedComponents;
 import jloda.swing.export.ExportManager;
 import jloda.swing.util.BasicSwing;
 import jloda.swing.util.Cursors;
 import jloda.swing.util.Geometry;
 import jloda.util.Basic;
 import jloda.util.ProgramProperties;
-import jloda.util.parse.NexusStreamParser;
 
 import javax.swing.*;
 import java.awt.*;
@@ -46,9 +46,6 @@ import java.awt.geom.Rectangle2D;
 import java.awt.print.PageFormat;
 import java.awt.print.Printable;
 import java.awt.print.PrinterException;
-import java.io.IOException;
-import java.io.Reader;
-import java.io.Writer;
 import java.util.List;
 import java.util.*;
 
@@ -1091,7 +1088,7 @@ public class GraphView extends JPanel implements Printable, Scrollable, INodeEdg
     }
 
     /**
-     * Sets the line width for all selected nodes and edges
+     * Sets the line width for all selected nodes and adjacentEdges
      *
      * @param a the line width
      */
@@ -1117,7 +1114,7 @@ public class GraphView extends JPanel implements Printable, Scrollable, INodeEdg
     }
 
     /**
-     * Sets the line width for all selected edges
+     * Sets the line width for all selected adjacentEdges
      *
      * @param a the line width
      */
@@ -1237,7 +1234,7 @@ public class GraphView extends JPanel implements Printable, Scrollable, INodeEdg
     }
 
     /**
-     * Gets the edges direction.
+     * Gets the adjacentEdges direction.
      *
      * @param e the edge
      * @return the direction
@@ -1283,7 +1280,7 @@ public class GraphView extends JPanel implements Printable, Scrollable, INodeEdg
     /**
      * Sets the selection state.
      *
-     * @param edges the edges
+     * @param edges the adjacentEdges
      * @param a     the selection state
      */
     public void setSelected(EdgeSet edges, boolean a) {
@@ -1312,7 +1309,7 @@ public class GraphView extends JPanel implements Printable, Scrollable, INodeEdg
     }
 
     /**
-     * set the color of selected nodes and edges
+     * set the color of selected nodes and adjacentEdges
      *
      * @param a    color
      * @param kind "line", "fill" or "label"
@@ -1337,7 +1334,7 @@ public class GraphView extends JPanel implements Printable, Scrollable, INodeEdg
     }
 
     /**
-     * Sets the color for all selected nodes and edges
+     * Sets the color for all selected nodes and adjacentEdges
      *
      * @param a the color
      */
@@ -1353,7 +1350,7 @@ public class GraphView extends JPanel implements Printable, Scrollable, INodeEdg
     }
 
     /**
-     * Sets the color for all selected nodes and edges
+     * Sets the color for all selected nodes and adjacentEdges
      *
      * @param a the color
      */
@@ -1462,7 +1459,7 @@ public class GraphView extends JPanel implements Printable, Scrollable, INodeEdg
     }
 
     /**
-     * Sets the edges direction.
+     * Sets the adjacentEdges direction.
      *
      * @param e the edge
      * @param a the direction
@@ -1495,7 +1492,7 @@ public class GraphView extends JPanel implements Printable, Scrollable, INodeEdg
 
 
     /**
-     * Sets the font for all selected nodes and edges
+     * Sets the font for all selected nodes and adjacentEdges
      *
      * @param font
      */
@@ -1506,7 +1503,7 @@ public class GraphView extends JPanel implements Printable, Scrollable, INodeEdg
 
 
     /**
-     * Sets the font for all selected edges
+     * Sets the font for all selected adjacentEdges
      *
      * @param font
      */
@@ -1518,7 +1515,7 @@ public class GraphView extends JPanel implements Printable, Scrollable, INodeEdg
 
 
     /**
-     * Sets the font for all selected edges. Only sets those parts that are not null or -1
+     * Sets the font for all selected adjacentEdges. Only sets those parts that are not null or -1
      *
      * @param family
      * @param bold
@@ -1621,13 +1618,13 @@ public class GraphView extends JPanel implements Printable, Scrollable, INodeEdg
      * @return the NodeView
      */
     public NodeView getNV(Node v) {
-        if (nodeViews.get(v) == null) {
+        if (nodeViews.getValue(v) == null) {
             NodeView nv = new NodeView(defaultNodeView);
             nodeViews.put(v, nv);
             if (nv.getLocation() == null)
                 nv.setLocation(trans.getRandomVisibleLocation());
         }
-        return nodeViews.get(v);
+        return nodeViews.getValue(v);
     }
 
     /**
@@ -1637,11 +1634,11 @@ public class GraphView extends JPanel implements Printable, Scrollable, INodeEdg
      * @return the EdgeView
      */
     public EdgeView getEV(Edge e) {
-        if (edgeViews.get(e) == null) {
+        if (edgeViews.getValue(e) == null) {
             EdgeView ev = new EdgeView(defaultEdgeView);
             edgeViews.put(e, ev);
         }
-        return edgeViews.get(e);
+        return edgeViews.getValue(e);
     }
 
     /**
@@ -1729,7 +1726,7 @@ public class GraphView extends JPanel implements Printable, Scrollable, INodeEdg
     }
 
     /**
-     * Select all edges.
+     * Select all adjacentEdges.
      *
      * @param select value to set selection states to
      * @return true, if selection state of at least one edge changed
@@ -1754,7 +1751,7 @@ public class GraphView extends JPanel implements Printable, Scrollable, INodeEdg
 
 
     /**
-     * inverts the selection state of all nodes and edges
+     * inverts the selection state of all nodes and adjacentEdges
      */
     public void invertSelection() {
         invertNodeSelection();
@@ -1778,7 +1775,7 @@ public class GraphView extends JPanel implements Printable, Scrollable, INodeEdg
     }
 
     /**
-     * inverts the selection state of all edges
+     * inverts the selection state of all adjacentEdges
      */
     public void invertEdgeSelection() {
         EdgeSet oldSelected = (EdgeSet) selectedEdges.clone();
@@ -1809,7 +1806,7 @@ public class GraphView extends JPanel implements Printable, Scrollable, INodeEdg
     }
 
     /**
-     * delete all selected edges.
+     * delete all selected adjacentEdges.
      */
     public void delSelectedEdges() {
         Graph G = getGraph();
@@ -1945,11 +1942,11 @@ public class GraphView extends JPanel implements Printable, Scrollable, INodeEdg
             for (Node v = G.getFirstNode(); v != null; v = G.getNextNode(v)) {
                 if (startFromCurrent) {
                     Point2D p = getLocation(v);
-                    xPos.set(v, p.getX());
-                    yPos.set(v, p.getY());
+                    xPos.put(v, p.getX());
+                    yPos.put(v, p.getY());
                 } else {
-                    xPos.set(v, 1000 * Math.sin(6.24 * i / G.getNumberOfNodes()));
-                    yPos.set(v, 1000 * Math.cos(6.24 * i / G.getNumberOfNodes()));
+                    xPos.put(v, 1000 * Math.sin(6.24 * i / G.getNumberOfNodes()));
+                    yPos.put(v, 1000 * Math.cos(6.24 * i / G.getNumberOfNodes()));
                     i++;
                 }
             }
@@ -1980,8 +1977,8 @@ public class GraphView extends JPanel implements Printable, Scrollable, INodeEdg
                         if (dist < 1e-3)
                             dist = 1e-3;
                         double repulse = k * k / dist;
-                        xDispl.set(v, xDispl.getValue(v) + repulse * xDist);
-                        yDispl.set(v, yDispl.getValue(v) + repulse * yDist);
+                        xDispl.put(v, xDispl.getValue(v) + repulse * xDist);
+                        yDispl.put(v, yDispl.getValue(v) + repulse * yDist);
                     }
 
                     for (Edge e = G.getFirstEdge(); e != null; e = G.getNextEdge(e)) {
@@ -1995,8 +1992,8 @@ public class GraphView extends JPanel implements Printable, Scrollable, INodeEdg
                         if (dist < 1e-3)
                             dist = 1e-3;
                         double repulse = k * k / dist;
-                        xDispl.set(v, xDispl.getValue(v) + repulse * xDist);
-                        yDispl.set(v, yDispl.getValue(v) + repulse * yDist);
+                        xDispl.put(v, xDispl.getValue(v) + repulse * xDist);
+                        yDispl.put(v, yDispl.getValue(v) + repulse * yDist);
                     }
                 }
 
@@ -2013,10 +2010,10 @@ public class GraphView extends JPanel implements Printable, Scrollable, INodeEdg
 
                     dist /= ((G.getDegree(u) + G.getDegree(v)) / 16.0);
 
-                    xDispl.set(v, xDispl.getValue(v) - xDist * dist / k);
-                    yDispl.set(v, yDispl.getValue(v) - yDist * dist / k);
-                    xDispl.set(u, xDispl.getValue(u) + xDist * dist / k);
-                    yDispl.set(u, yDispl.getValue(u) + yDist * dist / k);
+                    xDispl.put(v, xDispl.getValue(v) - xDist * dist / k);
+                    yDispl.put(v, yDispl.getValue(v) - yDist * dist / k);
+                    xDispl.put(u, xDispl.getValue(u) + xDist * dist / k);
+                    yDispl.put(u, yDispl.getValue(u) + yDist * dist / k);
                 }
 
                 // preventions
@@ -2030,8 +2027,8 @@ public class GraphView extends JPanel implements Printable, Scrollable, INodeEdg
                     xd = tx * xd / dist;
                     yd = ty * yd / dist;
 
-                    xPos.set(v, xPos.getValue(v) + xd);
-                    yPos.set(v, yPos.getValue(v) + yd);
+                    xPos.put(v, xPos.getValue(v) + xd);
+                    yPos.put(v, yPos.getValue(v) + yd);
                 }
             }
 
@@ -2230,7 +2227,7 @@ public class GraphView extends JPanel implements Printable, Scrollable, INodeEdg
     }
 
     /**
-     * We want bidirectional edges to be drawn parallel, not on top of each
+     * We want bidirectional adjacentEdges to be drawn parallel, not on top of each
      * other and this method does the necessary coordinate adjustments.
      *
      * @param pv source position in device coordinates
@@ -2253,7 +2250,7 @@ public class GraphView extends JPanel implements Printable, Scrollable, INodeEdg
      * This method does the necessary coordinate adjustments.
      *
      * @param i  the rank 0..n-1 of the edge
-     * @param n  the number of parallel edges
+     * @param n  the number of parallel adjacentEdges
      * @param pv source position in device coordinates
      * @param pw target position in device coordinates
      */
@@ -2676,34 +2673,34 @@ public class GraphView extends JPanel implements Printable, Scrollable, INodeEdg
     public Iterator<Node> getSelectedOrAllNodesIterator() {
         if (selectedNodes.size() > 0)
             return selectedNodes.iterator();
-        else return getGraph().nodeIterator();
+        else return getGraph().nodes().iterator();
     }
 
     /**
-     * Gets the set of all selected edges
+     * Gets the set of all selected adjacentEdges
      *
-     * @return selected edges
+     * @return selected adjacentEdges
      */
     public EdgeSet getSelectedEdges() {
         return selectedEdges;
     }
 
     /**
-     * gets an iterator over all selected edges, if any selected, otherwise over all edges
+     * gets an iterator over all selected adjacentEdges, if any selected, otherwise over all adjacentEdges
      *
      * @return iterator
      */
-    public Iterator getSelectedOrAllEdgesIterator() {
+    public Iterator<Edge> getSelectedOrAllEdgesIterator() {
         if (selectedEdges.size() > 0)
             return selectedEdges.iterator();
         else
-            return getGraph().edgeIterator();
+            return getGraph().edges().iterator();
     }
 
     /**
-     * Gets the number of selected edges
+     * Gets the number of selected adjacentEdges
      *
-     * @return the number of selected edges
+     * @return the number of selected adjacentEdges
      */
     public int getNumberSelectedEdges() {
         return selectedEdges.size();
@@ -2737,9 +2734,9 @@ public class GraphView extends JPanel implements Printable, Scrollable, INodeEdg
     }
 
     /**
-     * is user allowed to rubberband selecte edges?
+     * is user allowed to rubberband selecte adjacentEdges?
      *
-     * @return allowed to rubberband select edges?
+     * @return allowed to rubberband select adjacentEdges?
      */
     public boolean isAllowRubberbandEdges() {
         return allowRubberbandEdges;
@@ -2764,7 +2761,7 @@ public class GraphView extends JPanel implements Printable, Scrollable, INodeEdg
     }
 
     /**
-     * set user is allowed to rubberband select edges
+     * set user is allowed to rubberband select adjacentEdges
      *
      * @param allowRubberbandEdges
      */
@@ -3241,122 +3238,8 @@ public class GraphView extends JPanel implements Printable, Scrollable, INodeEdg
         }
     }
 
-
     /**
-     * writes the graphview
-     *
-     * @param w
-     * @throws IOException
-     */
-    public void write(Writer w) throws IOException {
-        Graph graph = getGraph();
-        Map<Integer, Integer> nodeId2Number = new HashMap<>();
-        Map<Integer, Integer> edgeId2Number = new HashMap<>();
-
-        int count = 0;
-        for (Node v = graph.getFirstNode(); v != null; v = v.getNext()) {
-            nodeId2Number.put(v.getId(), ++count);
-        }
-        count = 0;
-        for (Edge e = graph.getFirstEdge(); e != null; e = e.getNext()) {
-            edgeId2Number.put(e.getId(), ++count);
-        }
-        write(w, nodeId2Number, edgeId2Number);
-    }
-
-    /**
-     * writes the graphview
-     *
-     * @param w
-     * @param nodeId2Number the node-id to number mapping established by Graph.write
-     * @param edgeId2Number the edge-id to number mapping established by Graph.write
-     * @throws IOException
-     */
-    public void write(Writer w, Map nodeId2Number, Map edgeId2Number) throws IOException {
-        Graph graph = getGraph();
-        w.write("{GRAPHVIEW\n");
-        w.write("nnodes=" + graph.getNumberOfNodes() + " nedges=" + graph.getNumberOfEdges() + "\n");
-        w.write("nodes\n");
-        NodeView prevNV = null;
-        for (Node v = graph.getFirstNode(); v != null; v = v.getNext()) {
-            w.write(nodeId2Number.get(v.getId()) + ":");
-            getNV(v).write(w, prevNV);
-            prevNV = getNV(v);
-        }
-        w.write("edges\n");
-        EdgeView prevEV = null;
-        for (Edge e = graph.getFirstEdge(); e != null; e = e.getNext()) {
-            w.write((edgeId2Number.get(e.getId())) + ":");
-            getEV(e).write(w, prevEV);
-            prevEV = getEV(e);
-        }
-        w.write("}\n");
-    }
-
-
-    /**
-     * read graph and graphview.
-     *
-     * @param r
-     * @throws IOException
-     */
-    public void read(Reader r) throws IOException {
-        final Graph graph = getGraph();
-
-        Num2NodeArray num2node = new Num2NodeArray(graph.getNumberOfNodes() + 1);
-        Num2EdgeArray num2edge = new Num2EdgeArray(graph.getNumberOfEdges() + 1);
-
-        int count = 0;
-        for (Node v = graph.getFirstNode(); v != null; v = v.getNext())
-            num2node.put(++count, v);
-
-
-        count = 0;
-        for (Edge e = graph.getFirstEdge(); e != null; e = e.getNext())
-            num2edge.put(++count, e);
-
-        read(r, num2node, num2edge);
-    }
-
-    /**
-     * read graph and graphview.
-     *
-     * @param r
-     * @param num2node the num2node map computed by Graph.read
-     * @param num2edge the num2edge map computed by Graph.read
-     * @throws IOException
-     */
-    public void read(Reader r, Num2NodeArray num2node, Num2EdgeArray num2edge) throws IOException {
-        final Graph graph = getGraph();
-
-        NexusStreamParser np = new NexusStreamParser(r);
-        np.matchRespectCase("{GRAPHVIEW\n");
-        np.matchRespectCase("nnodes = " + graph.getNumberOfNodes() + " nedges = " + graph.getNumberOfEdges());
-
-        np.matchRespectCase("nodes");
-        NodeView prevNV = defaultNodeView;
-        while (!np.peekMatchRespectCase("edges")) {
-            int vid = np.getInt(1, graph.getNumberOfNodes());
-            Node v = num2node.get(vid);
-            NodeView nv = getNV(v);
-            nv.read(np, np.getTokensRespectCase(":", ";"), prevNV);
-            prevNV = nv;
-        }
-
-        np.matchRespectCase("edges");
-        EdgeView prevEV = defaultEdgeView;
-        while (!np.peekMatchRespectCase("}")) {
-            int eid = np.getInt(1, graph.getNumberOfEdges());
-            Edge e = num2edge.get(eid);
-            EdgeView ev = getEV(e);
-            ev.read(np, np.getTokensRespectCase(":", ";"), prevEV);
-            prevEV = ev;
-        }
-        np.matchRespectCase("}");
-    }
-
-    /**
-     * rotateAbout labels of all selected nodes and edges
+     * rotateAbout labels of all selected nodes and adjacentEdges
      *
      * @param percent
      */
@@ -3441,7 +3324,7 @@ public class GraphView extends JPanel implements Printable, Scrollable, INodeEdg
     }
 
     /**
-     * select the given edges and all nodes and edges below
+     * select the given adjacentEdges and all nodes and adjacentEdges below
      *
      * @param edges
      */
@@ -3842,7 +3725,7 @@ public class GraphView extends JPanel implements Printable, Scrollable, INodeEdg
     public void selectConnectedComponents(NodeSet nodes) {
         final NodeSet nodesToSelect = new NodeSet(G);
         for (Node v : nodes) {
-            G.visitConnectedComponent(v, nodesToSelect);
+            ConnectedComponents.collect(v, nodesToSelect);
         }
         nodesToSelect.removeAll(getSelectedNodes());
         if (nodesToSelect.size() > 0)

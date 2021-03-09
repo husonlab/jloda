@@ -21,18 +21,19 @@
 package jloda.graph;
 
 
+import jloda.graphs.interfaces.IEdgeArray;
 import jloda.util.Basic;
+import jloda.util.IterationUtils;
 
 import java.util.Arrays;
 import java.util.Iterator;
-import java.util.NoSuchElementException;
 
 /**
  * Edge array
  * Daniel Huson 2004
  */
 
-public class EdgeArray<T> extends GraphBase implements EdgeAssociation<T> {
+public class EdgeArray<T> extends GraphBase implements IEdgeArray<Edge, T> {
     private T[] data;
     private boolean isClear = true;
     private T defaultValue;
@@ -43,7 +44,7 @@ public class EdgeArray<T> extends GraphBase implements EdgeAssociation<T> {
     public EdgeArray(Graph g) {
         setOwner(g);
         data = (T[]) new Object[g.getMaxEdgeId() + 1];
-        g.registerEdgeAssociation(this);
+        g.registerEdgeArray(this);
     }
 
     /**
@@ -59,7 +60,7 @@ public class EdgeArray<T> extends GraphBase implements EdgeAssociation<T> {
      *
      * @param src EdgeArray
      */
-    public EdgeArray(EdgeAssociation<T> src) {
+    public EdgeArray(EdgeArray<T> src) {
         setOwner(src.getOwner());
         getOwner().edges().forEach(e -> put(e, src.getValue(e)));
         defaultValue = src.getDefaultValue();
@@ -79,16 +80,13 @@ public class EdgeArray<T> extends GraphBase implements EdgeAssociation<T> {
             return defaultValue;
     }
 
-    public T get(Edge e) {
-        return getValue(e);
-    }
-
     /**
      * Set the entry for edge e to obj.
      *
      * @param e   Edge
      * @param obj Object
      */
+    @Override
     public void put(Edge e, T obj) {
         checkOwner(e);
         int id = e.getId();
@@ -102,12 +100,10 @@ public class EdgeArray<T> extends GraphBase implements EdgeAssociation<T> {
             isClear = false;
     }
 
-    @Override
     public void setValue(Edge e, T obj) {
         this.put(e, obj);
     }
 
-    @Override
     public void setAll(T obj) {
         this.putAll(obj);
     }
@@ -159,48 +155,24 @@ public class EdgeArray<T> extends GraphBase implements EdgeAssociation<T> {
         return isClear;
     }
 
-    /**
-     * get an iterator over all non-null values
-     *
-     * @return iterator
-     */
-    public Iterable<T> values() {
-        return () -> new Iterator<>() {
-            private Edge e = getOwner().getFirstEdge();
 
-            {
-                while (e != null) {
-                    if (e.getId() < data.length && data[e.getId()] != null)
-                        break;
-                    e = e.getNext();
-                }
-            }
+    @Override
+    public Iterable<T> values() {
+        return () -> IterationUtils.iteratorNonNullElements(new Iterator<T>() {
+            int i = 0;
 
             @Override
             public boolean hasNext() {
-                return e != null;
+                return i < data.length;
             }
 
             @Override
             public T next() {
-                if (e == null)
-                    throw new NoSuchElementException();
-                T result = data[e.getId()];
-
-                e = e.getNext();
-                {
-                    while (e != null) {
-                        if (e.getId() < data.length && data[e.getId()] != null)
-                            break;
-                        e = e.getNext();
-                    }
-                }
-                return result;
+                return data[i++];
             }
-        };
+        });
     }
 
-    @Override
     public T getDefaultValue() {
         return defaultValue;
     }

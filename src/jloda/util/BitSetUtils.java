@@ -97,6 +97,7 @@ public class BitSetUtils {
             }
         };
     }
+
     public static BitSet asBitSet(Iterable<Integer> bits) {
         final BitSet bitSet = new BitSet();
         for (Integer i : bits) {

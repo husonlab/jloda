@@ -101,8 +101,8 @@ public class GraphViewPopupListener implements IPopupListener {
                 viewer.selectAllNodes(false);
                 viewer.selectAllEdges(false);
             }
-            if (!viewer.getSelected(edges.getFirstElement()))
-                viewer.setSelected(edges.getFirstElement(), true);
+            if (!viewer.getSelected(adjacentEdges.getFirstElement()))
+                viewer.setSelected(adjacentEdges.getFirstElement(), true);
                 */
             edgeMenu.show(me.getComponent(), me.getX(), me.getY());
             viewer.repaint(); // stuff gets messed up

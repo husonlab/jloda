@@ -22,10 +22,13 @@ package jloda.fx.util;
 
 import javafx.application.Platform;
 import javafx.geometry.Side;
+import javafx.scene.Cursor;
 import javafx.scene.chart.NumberAxis;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.Pane;
 import javafx.scene.text.Font;
+import jloda.util.Basic;
+
 
 /**
  * maintains a scale bar
@@ -48,33 +51,42 @@ public class ScaleBar extends AnchorPane {
 
         pane.getChildren().add(numberAxis);
 
+        // pane.setBackground(new Background(new BackgroundFill(Color.YELLOW,null,null)));
+
         AnchorPane.setLeftAnchor(pane, 5.0);
         AnchorPane.setTopAnchor(pane, 2.0);
         getChildren().add(pane);
 
         numberAxis.setSide(Side.TOP);
+
         numberAxis.setAutoRanging(false);
         numberAxis.setLowerBound(0);
         numberAxis.prefHeightProperty().set(20);
         numberAxis.prefWidthProperty().set(150);
         numberAxis.setTickLabelFont(Font.font("Arial", 10));
-        update();
 
-        pane.setOnMousePressed((e -> {
+        pane.setOnMousePressed(e -> {
             mouseX = e.getScreenX();
             mouseY = e.getScreenY();
             e.consume();
-        }));
+            pane.setCursor(Cursor.CLOSED_HAND);
+        });
 
-        pane.setOnMouseDragged((e -> {
+        pane.setOnMouseDragged(e -> {
             double deltaX = e.getScreenX() - mouseX;
             double deltaY = e.getScreenY() - mouseY;
             AnchorPane.setLeftAnchor(pane, AnchorPane.getLeftAnchor(pane) + deltaX);
-            AnchorPane.setTopAnchor(pane, AnchorPane.getTopAnchor(pane) - deltaY);
+            AnchorPane.setTopAnchor(pane, AnchorPane.getTopAnchor(pane) + deltaY);
             mouseX = e.getScreenX();
             mouseY = e.getScreenY();
             e.consume();
-        }));
+        });
+
+        pane.setOnMouseReleased(e -> {
+            pane.setCursor(Cursor.DEFAULT);
+        });
+
+        update();
     }
 
     public double getFactorX() {
@@ -97,9 +109,9 @@ public class ScaleBar extends AnchorPane {
 
     public void update() {
         Platform.runLater(() -> {
-            final double value = numberAxis.getWidth() / (unitLengthX * factorX);
+            final double value = Basic.roundSigFig(numberAxis.getWidth() / (unitLengthX * factorX), 2);
             numberAxis.setUpperBound(value);
-            numberAxis.setTickUnit(ceilingPowerOf10(value));
+            numberAxis.setTickUnit(ceilingPowerOf10(value) / 10);
             pane.layout();
         });
     }

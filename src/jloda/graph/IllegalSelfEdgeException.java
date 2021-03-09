@@ -21,7 +21,7 @@
 package jloda.graph;
 
 /**
- * we don't support self-edges
+ * we don't support self-adjacentEdges
  * Daniel Huson
  */
 public class IllegalSelfEdgeException extends RuntimeException {

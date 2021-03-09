@@ -224,7 +224,7 @@ public class PhyloGraph extends Graph {
     }
 
     public int getNumberOfTaxa(Node v) {
-        final List<Integer> list = node2taxa.get(v);
+        final List<Integer> list = node2taxa.getValue(v);
         return list == null ? 0 : list.size();
     }
 
@@ -236,7 +236,7 @@ public class PhyloGraph extends Graph {
      */
     public void addTaxon(Node v, int taxId) {
         taxon2node.put(taxId, v);
-        List<Integer> list = node2taxa.get(v);
+        List<Integer> list = node2taxa.getValue(v);
         if (list == null) {
             list = new ArrayList<>();
             list.add(taxId);
@@ -253,7 +253,7 @@ public class PhyloGraph extends Graph {
      * @param v the node
      */
     public void clearTaxa(Node v) {
-        final List<Integer> list = node2taxa.get(v);
+        final List<Integer> list = node2taxa.getValue(v);
         if (list != null) {
             for (int t : list) {
                 if (taxon2node.get(t) == v)
@@ -271,10 +271,10 @@ public class PhyloGraph extends Graph {
      */
     public Iterable<Integer> getTaxa(Node v) {
         return () -> {
-            if (node2taxa.get(v) == null)
+            if (node2taxa.getValue(v) == null)
                 return new EmptyIterator<>();
             else
-                return node2taxa.get(v).iterator();
+                return node2taxa.getValue(v).iterator();
         };
     }
 
@@ -295,7 +295,7 @@ public class PhyloGraph extends Graph {
         if (taxonId > 0 && taxonId < taxon2node.size()) {
             taxon2node.put(taxonId, null);
             for (Node v : nodes()) {
-                List<Integer> list = node2taxa.get(v);
+                List<Integer> list = node2taxa.getValue(v);
                 if (list != null && list.contains(taxonId)) {
                     list.remove((Integer) taxonId);
                     if (list.size() == 0)
@@ -333,7 +333,7 @@ public class PhyloGraph extends Graph {
     }
 
     /**
-     * add the nodes and edges of another graph to this graph. Doesn't make the graph connected, though!
+     * add the nodes and adjacentEdges of another graph to this graph. Doesn't make the graph connected, though!
      *
      * @param graph
      */

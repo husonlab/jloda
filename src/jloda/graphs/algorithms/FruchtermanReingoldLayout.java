@@ -1,11 +1,31 @@
 /*
+ *  FruchtermanReingoldLayout.java Copyright (C) 2021. Daniel H. Huson
+ *
+ *  (Some files contain contributions from other authors, who are then mentioned separately.)
+ *
+ *  This program is free software: you can redistribute it and/or modify
+ *  it under the terms of the GNU General Public License as published by
+ *  the Free Software Foundation, either version 3 of the License, or
+ *  (at your option) any later version.
+ *
+ *  This program is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *  GNU General Public License for more details.
+ *
+ *  You should have received a copy of the GNU General Public License
+ *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
+
+/*
  * FruchtermanReingoldLayout.java
  *  Copyright (C) 2019 Mathieu Jacomy
  * Original implementation in Gephi by Mathieu Jacomy
  */
-package jloda.graph;
+package jloda.graphs.algorithms;
 
 import jloda.fx.util.ProgramExecutorService;
+import jloda.graphs.interfaces.*;
 import jloda.util.*;
 
 import java.util.BitSet;
@@ -20,7 +40,7 @@ import java.util.concurrent.Executors;
  * Original implementation in Gephi by Mathieu Jacomy
  * adapted by Daniel Huson, 5.2013, 2020
  */
-public class FruchtermanReingoldLayout {
+public class FruchtermanReingoldLayout<N extends INode, E extends IEdge> {
 
     private static final float SPEED_DIVISOR = 800;
     private static final float AREA_MULTIPLICATOR = 10000;
@@ -31,8 +51,8 @@ public class FruchtermanReingoldLayout {
     private double speed;
 
     // data
-    private final Graph graph;
-    private final Node[] nodes;
+    private final IGraph<N, E> graph;
+    private final N[] nodes;
     private final int[][] edges;
     private final float[][] coordinates;
     private final float[][] forceDelta;
@@ -42,34 +62,36 @@ public class FruchtermanReingoldLayout {
 
     /**
      * constructor. Do not change graph after calling the constructor
-     *
-     * @param graph
      */
-    public FruchtermanReingoldLayout(Graph graph) {
+    public FruchtermanReingoldLayout(IGraph<N, E> graph) {
         this(graph, null, null);
     }
 
     /**
      * constructor. Do not change graph after calling the constructor
      *
-     * @param graph
      * @param fixedNodes nodes not to be moved
      */
-    public FruchtermanReingoldLayout(Graph graph, NodeSet fixedNodes) {
+    public FruchtermanReingoldLayout(IGraph<N, E> graph, INodeSet<N> fixedNodes) {
         this(graph, fixedNodes, null);
     }
-
 
     /**
      * constructor. Do not change graph after calling the constructor
      *
-     * @param graph
      * @param fixedNodes nodes not to be moved
      * @param node2start starting coordinates
      */
-    public FruchtermanReingoldLayout(Graph graph, NodeSet fixedNodes, NodeArray<float[]> node2start) {
+    public FruchtermanReingoldLayout(IGraph<N, E> graph, INodeSet<N> fixedNodes, INodeArray<N, APoint2D<?>> node2start) {
         this.graph = graph;
-        nodes = graph.getNodesAsSet().toArray();
+        //noinspection unchecked
+        nodes = (N[]) new INode[graph.getNumberOfNodes()];
+        {
+            int i = 0;
+            for (var v : graph.nodes()) {
+                nodes[i++] = v;
+            }
+        }
         edges = new int[2][graph.getNumberOfEdges()];
         coordinates = new float[2][nodes.length];
         forceDelta = new float[2][nodes.length];
@@ -81,44 +103,45 @@ public class FruchtermanReingoldLayout {
     /**
      * initialize
      */
-    private void initialize(NodeSet fixedNodes, NodeArray<float[]> node2start) {
-        NodeArray<Integer> node2id = new NodeArray<>(graph);
+    private void initialize(INodeSet<N> fixedNodes, INodeArray<N, APoint2D<?>> node2start) {
+        var node2id = graph.newNodeIntArray();
         for (int v = 0; v < nodes.length; v++) {
             node2id.put(nodes[v], v);
             if (fixedNodes != null && fixedNodes.contains(nodes[v]))
                 fixed.set(v);
         }
-        int eId = 0;
-        for (Edge e = graph.getFirstEdge(); e != null; e = e.getNext()) {
-            edges[0][eId] = node2id.get(e.getSource());
-            edges[1][eId] = node2id.get(e.getTarget());
-            eId++;
+        {
+            int eId = 0;
+            for (var e : graph.edges()) {
+                edges[0][eId] = node2id.getValue((N) e.getSource());
+                edges[1][eId] = node2id.getValue((N) e.getTarget());
+                eId++;
+            }
         }
 
         if (graph.getNumberOfNodes() > 0) {
             if (node2start != null) {
-                for (Object obj : graph.nodes()) {
-                    final Node v = (Node) obj;
-                    final int id = node2id.get(v);
-                    coordinates[0][id] = 10 * node2start.get(v)[0];
-                    coordinates[1][id] = 10 * node2start.get(v)[1];
+                for (var v : graph.nodes()) {
+                    final int id = node2id.getValue(v);
+                    coordinates[0][id] = 10 * (float) node2start.getValue(v).getX();
+                    coordinates[1][id] = 10 * (float) node2start.getValue(v).getY();
                 }
             } else {
-                final NodeSet seen = new NodeSet(graph);
-                final Stack<Node> stack = new Stack<>();
+                final INodeSet<N> seen = graph.newNodeSet();
+                final Stack<N> stack = new Stack<>();
                 int count = 0;
-                for (Node v = graph.getFirstNode(); v != null; v = v.getNext()) {
+                for (var v : graph.nodes()) {
                     if (!seen.contains(v)) {
                         seen.add(v);
                         stack.push(v);
                         while (stack.size() > 0) {
-                            final Node w = stack.pop();
-                            final int id = node2id.get(w);
+                            final N w = stack.pop();
+                            final int id = node2id.getValue(w);
                             coordinates[0][id] = (float) (100 * Math.sin(2 * Math.PI * count / nodes.length));
                             coordinates[1][id] = (float) (100 * Math.cos(2 * Math.PI * count / nodes.length));
                             count++;
-                            for (Edge e = w.getFirstAdjacentEdge(); e != null; e = w.getNextAdjacentEdge(e)) {
-                                final Node u = e.getOpposite(w);
+                            for (var e : w.adjacentEdges()) {
+                                N u = (N) e.getOpposite(w);
                                 if (!seen.contains(u)) {
                                     seen.add(u);
                                     stack.push(u);
@@ -141,8 +164,8 @@ public class FruchtermanReingoldLayout {
      * @param numberOfIterations
      * @return
      */
-    public NodeArray<APoint2D<?>> apply(int numberOfIterations) {
-        final NodeArray<APoint2D<?>> result = new NodeArray<>(graph);
+    public INodeArray<N, APoint2D<?>> apply(int numberOfIterations) {
+        final INodeArray<N, APoint2D<?>> result = graph.newNodeArray();
         try {
             apply(numberOfIterations, result, new ProgressSilent(), ProgramExecutorService.getNumberOfCoresToUse());
         } catch (CanceledException ignored) { // can't happen
@@ -156,7 +179,7 @@ public class FruchtermanReingoldLayout {
      * @param numberOfIterations
      * @param result
      */
-    public void apply(int numberOfIterations, NodeArray<APoint2D<?>> result) {
+    public void apply(int numberOfIterations, INodeArray<N, APoint2D<?>> result) {
         try {
             apply(numberOfIterations, result, new ProgressSilent(), ProgramExecutorService.getNumberOfCoresToUse());
         } catch (CanceledException ignored) { // can't happen
@@ -169,7 +192,7 @@ public class FruchtermanReingoldLayout {
      * @param numberOfIterations
      * @param result
      */
-    public void apply(int numberOfIterations, NodeArray<APoint2D<?>> result, ProgressListener progress, int numberOfThreads) throws CanceledException {
+    public void apply(int numberOfIterations, INodeArray<N, APoint2D<?>> result, ProgressListener progress, int numberOfThreads) throws CanceledException {
         progress.setMaximum(numberOfIterations);
         progress.setProgress(0);
 
@@ -191,7 +214,7 @@ public class FruchtermanReingoldLayout {
                     service.submit(() -> {
                         try {
                             for (int v = thread; v < nodes.length; v += threads) {
-                                result.setValue(nodes[v], new APoint2D<>(coordinates[0][v], coordinates[1][v]));
+                                result.put(nodes[v], new APoint2D<>(coordinates[0][v], coordinates[1][v]));
                             }
                         } finally {
                             countDownLatch.countDown();

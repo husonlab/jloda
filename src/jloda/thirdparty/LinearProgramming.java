@@ -116,7 +116,7 @@ public class LinearProgramming {
 
             // find entering column q
             // int q = bland();
-            int q= dantzig();
+            int q = dantzig();
             if (q == -1) break;  // optimal
 
             // find leaving row p

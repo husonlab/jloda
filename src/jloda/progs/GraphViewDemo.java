@@ -20,7 +20,11 @@
 
 package jloda.progs;
 
-import jloda.graph.*;
+import jloda.graph.Edge;
+import jloda.graph.Graph;
+import jloda.graph.Node;
+import jloda.graph.NodeArray;
+import jloda.graphs.algorithms.FruchtermanReingoldLayout;
 import jloda.swing.graphview.EdgeView;
 import jloda.swing.graphview.GraphView;
 import jloda.util.APoint2D;
@@ -84,7 +88,7 @@ public class GraphViewDemo {
         for (int i = 0; i < nodes.length; i++)
             graphView.setLabel(nodes[i], "Node " + i);
 
-        // draw all edges directed edges
+        // draw all adjacentEdges directed adjacentEdges
         for (Edge e = nodes[0].getFirstAdjacentEdge(); e != null; e = nodes[0].getNextAdjacentEdge(e)) {
             graphView.setDirection(e, EdgeView.DIRECTED);
         }
@@ -94,7 +98,7 @@ public class GraphViewDemo {
         final NodeArray<APoint2D<?>> coordinates = new NodeArray<>(graph);
         fruchtermanReingoldLayout.apply(1000, coordinates);
         for (Node v = graph.getFirstNode(); v != null; v = v.getNext()) {
-            graphView.setLocation(v, coordinates.get(v).getX(), coordinates.get(v).getY());
+            graphView.setLocation(v, coordinates.getValue(v).getX(), coordinates.getValue(v).getY());
             graphView.setHeight(v, 10);
             graphView.setWidth(v, 10);
         }

@@ -56,9 +56,9 @@ public interface ProgressListener extends AutoCloseable {
      * @return progress
      */
     long getProgress();
-    
+
     default void addObserver(ProgressObserver obs) {
-    	
+
     }
 
     void checkForCancel() throws CanceledException;
@@ -137,5 +137,5 @@ public interface ProgressListener extends AutoCloseable {
      * @return
      */
     boolean getPause();
-    
+
 }

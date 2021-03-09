@@ -609,7 +609,7 @@ public class ArgsOptions {
         else
             longKeys.add(longKey);
 
-        String defaultValueString = (defaultValue.size() == 0 ? "" : "Default value(s): '" + Basic.toString(defaultValue, "' '")+"'");
+        String defaultValueString = (defaultValue.size() == 0 ? "" : "Default value(s): '" + Basic.toString(defaultValue, "' '") + "'");
 
         if (!hide) {
             if (mandatory)

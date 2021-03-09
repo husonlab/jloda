@@ -2951,7 +2951,7 @@ public class Basic {
      * @return split string, trimmed
      */
     public static String[] split(String aLine, char splitChar) {
-        return split(aLine, splitChar, Integer.MAX_VALUE,false);
+        return split(aLine, splitChar, Integer.MAX_VALUE, false);
     }
 
     /**
@@ -2962,18 +2962,18 @@ public class Basic {
      * @return split string, trimmed
      */
     public static String[] split(String aLine, char splitChar, int maxTokens) {
-        return split(aLine,splitChar,maxTokens,false);
+        return split(aLine, splitChar, maxTokens, false);
     }
 
 
-        /**
-         * split string on given character. Note that results are subsequently trimmed
-         *
-         * @param aLine
-         * @param splitChar
-         * @return split string, trimmed
-         */
-    public static String[] split(String aLine, char splitChar, int maxTokens,boolean skipEmptyTokens) {
+    /**
+     * split string on given character. Note that results are subsequently trimmed
+     *
+     * @param aLine
+     * @param splitChar
+     * @return split string, trimmed
+     */
+    public static String[] split(String aLine, char splitChar, int maxTokens, boolean skipEmptyTokens) {
         aLine = aLine.trim();
         if (aLine.length() == 0 || maxTokens <= 0)
             return new String[0];
@@ -3006,7 +3006,7 @@ public class Basic {
         int pos = 0;
         for (; pos < length; pos++) {
             if (aLine.charAt(pos) == splitChar) {
-                if(!skipEmptyTokens || pos>prev+1) {
+                if (!skipEmptyTokens || pos > prev + 1) {
                     result[which++] = aLine.substring(prev, pos).trim();
                     prev = pos + 1;
                     if (which == count)
@@ -4064,7 +4064,7 @@ public class Basic {
         File[] array = rootDirectory.listFiles();
         if (array != null) {
             Arrays.sort(array);
-            final ArrayList<File> list=new ArrayList<>();
+            final ArrayList<File> list = new ArrayList<>();
             Collections.addAll(list, array);
             while (list.size() > 0) {
                 final File file = list.remove(0);
@@ -4313,13 +4313,13 @@ public class Basic {
         string = string.toLowerCase();
         int pos = string.lastIndexOf("k");
         if (pos != -1)
-            return 1000L * Long.parseLong(string.substring(0, pos));
+            return 1024L * Long.parseLong(string.substring(0, pos));
         pos = string.lastIndexOf("m");
         if (pos != -1)
-            return 1000000L * Long.parseLong(string.substring(0, pos));
+            return 1048576L * Long.parseLong(string.substring(0, pos));
         pos = string.lastIndexOf("g");
         if (pos != -1)
-            return 1000000000L * Long.parseLong(string.substring(0, pos));
+            return 1073741824L * Long.parseLong(string.substring(0, pos));
         return Long.parseLong(string);
     }
 
@@ -4372,11 +4372,11 @@ public class Basic {
         }
     }
 
-    public static String convertPercentEncoding (String uri) {
-        return uri.replace("%20"," ")
-                .replace("%5C","\\")
-                .replace("%7E","~")
-                .replace("%2F","/");
+    public static String convertPercentEncoding(String uri) {
+        return uri.replace("%20", " ")
+                .replace("%5C", "\\")
+                .replace("%7E", "~")
+                .replace("%2F", "/");
     }
 }
 

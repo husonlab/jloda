@@ -139,13 +139,14 @@ public class MashSketch {
                 }
             }
             {
+                if (sortedSet.contains(Long.MAX_VALUE)) {
+                    sortedSet.remove(Long.MAX_VALUE);
+                    System.err.printf("Warning: Computing sketch %s: Too few k-mers: %,d of %,d%n", sketch.getName(), sortedSet.size(), sketchSize);
+                }
                 sketch.hashValues = new long[sortedSet.size()];
                 int pos = 0;
                 for (Long value : sortedSet)
                     sketch.hashValues[pos++] = value;
-            }
-            if (sortedSet.size() < sketchSize) {
-                System.err.printf("Warning: Computing sketch %s: Too few k-mers: %,d of %,d%n", sketch.getName(), sortedSet.size(), sketchSize);
             }
             progress.incrementProgress();
         } catch (CanceledException ignored) {

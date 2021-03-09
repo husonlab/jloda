@@ -43,7 +43,7 @@ final public class NodeView extends ViewBase implements Cloneable {
     private int width = 2;
 
     private Color borderColor = null;
-    private NodeShape nodeShape = NodeShape.Oval;
+    private NodeShape nodeShape = NodeShape.None;
     //private byte imageLayout = NORTH;
     protected Point2D location = null;
     boolean fixedSize = true;
@@ -255,7 +255,7 @@ final public class NodeView extends ViewBase implements Cloneable {
      * Sets the node shape.
      *
      * @param a int
-     *  Better: use setNodeShape
+     *          Better: use setNodeShape
      */
     public void setShape(byte a) {
         nodeShape = NodeShape.values()[a];

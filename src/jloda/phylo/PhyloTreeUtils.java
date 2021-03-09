@@ -219,7 +219,7 @@ public class PhyloTreeUtils {
             return true;
         else {
             if (v != e.getSource())
-                return false; // only go DOWN special edges.
+                return false; // only go DOWN special adjacentEdges.
             Node w = e.getTarget();
             for (Edge f = w.getFirstInEdge(); f != null; f = w.getNextInEdge(f)) {
                 if (tree.isSpecial(f)) {
@@ -334,7 +334,7 @@ public class PhyloTreeUtils {
      * @return average distance to a leaf
      */
     public static double computeAverageDistanceToALeaf(PhyloTree tree, Node v) {
-        // assumes that all edges are oriented away from the root
+        // assumes that all adjacentEdges are oriented away from the root
         NodeSet seen = new NodeSet(tree);
         Pair<Double, Integer> pair = new Pair<>(0.0, 0);
         computeAverageDistanceToLeafRec(tree, v, null, 0, seen, pair);

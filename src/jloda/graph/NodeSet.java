@@ -19,16 +19,20 @@
  */
 package jloda.graph;
 
+import jloda.graphs.interfaces.INodeSet;
 import jloda.util.Basic;
 import jloda.util.IteratorAdapter;
 
-import java.util.*;
+import java.util.BitSet;
+import java.util.Collection;
+import java.util.Iterator;
+import java.util.NoSuchElementException;
 
 /**
  * NodeSet implements a set of nodes contained in a given graph
  * Daniel Huson, 2003
  */
-public class NodeSet extends GraphBase implements Set<Node> {
+public class NodeSet extends GraphBase implements INodeSet<Node> {
     private final BitSet bits;
 
     /**
@@ -226,7 +230,7 @@ public class NodeSet extends GraphBase implements Set<Node> {
     public Node[] toArray() {
         Node[] result = new Node[bits.cardinality()];
         int i = 0;
-        Iterator<Node> it = getOwner().nodeIterator();
+        Iterator<Node> it = getOwner().nodes().iterator();
         while (it.hasNext()) {
             Node v = it.next();
             if (contains(v))
@@ -240,7 +244,7 @@ public class NodeSet extends GraphBase implements Set<Node> {
      * Puts all nodes into set.
      */
     public void addAll() {
-        Iterator it = getOwner().nodeIterator();
+        Iterator it = getOwner().nodes().iterator();
         while (it.hasNext())
             add((Node) it.next());
     }

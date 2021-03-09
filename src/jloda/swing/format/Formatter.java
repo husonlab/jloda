@@ -21,7 +21,7 @@
 package jloda.swing.format;
 
 /**
- * format nodes and edges
+ * format nodes and adjacentEdges
  * Daniel Huson, 2.2007
  */
 
@@ -43,7 +43,7 @@ import java.awt.event.WindowEvent;
 import java.util.LinkedList;
 
 /**
- * format nodes and edges
+ * format nodes and adjacentEdges
  */
 public class Formatter implements IDirectableViewer {
     public static final String CONFIGURATOR_GEOMETRY = "ConfiguratorGeometry";

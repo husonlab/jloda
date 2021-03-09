@@ -155,9 +155,9 @@ public class LabelOverlapAvoider {
     }
 
     /**
-     * gets the set of all edges whose labels were permitted
+     * gets the set of all adjacentEdges whose labels were permitted
      *
-     * @return edges with visible labels
+     * @return adjacentEdges with visible labels
      */
     public boolean isVisible(Edge e) {
         return !isEnabled() || visibleEdgeLabels.contains(e);

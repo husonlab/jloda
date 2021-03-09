@@ -78,7 +78,7 @@ public class PeakMemoryUsageMonitor {
         if (available < 1024) {
             return String.format("%d of %dM", getInstance().peak, available);
         } else {
-            return Basic.removeTrailingZerosAfterDot(String.format("%.1f of %.1f", (double) getInstance().peak / 1024.0, (double) available / 1024.0))+"G";
+            return Basic.removeTrailingZerosAfterDot(String.format("%.1f of %.1f", (double) getInstance().peak / 1024.0, (double) available / 1024.0)) + "G";
         }
     }
 

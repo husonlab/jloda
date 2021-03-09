@@ -751,7 +751,7 @@ public class FormatterActions {
         };
         action.putValue(AbstractAction.NAME, "Random Colors");
         action.putValue(CRITICAL, Boolean.TRUE);
-        action.putValue(AbstractAction.SHORT_DESCRIPTION, "Randomly color nodes, edges and labels");
+        action.putValue(AbstractAction.SHORT_DESCRIPTION, "Randomly color nodes, adjacentEdges and labels");
         action.putValue(DEPENDS_ON_NODE_OR_EDGE, Boolean.TRUE);
         all.add(action);
         return randomColorActionAction = action;

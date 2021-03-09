@@ -33,8 +33,8 @@ public class PhyloSplitsGraphUtils {
      * Embeds the graph using the given cyclic ordering.
      *
      * @param ordering   the cyclic ordering.
-     * @param useWeights scale edges by their weights?
-     * @param noise      alter split-angles randomly by a small amount to prevent occlusion of edges.
+     * @param useWeights scale adjacentEdges by their weights?
+     * @param noise      alter split-angles randomly by a small amount to prevent occlusion of adjacentEdges.
      * @return node array of coordinates
      */
     public static NodeArray<APoint2D> embed(PhyloSplitsGraph graph, int[] ordering, boolean useWeights, boolean noise) {
@@ -182,7 +182,7 @@ public class PhyloSplitsGraphUtils {
      *
      * @param splits   the sorted splits
      * @param ordering the cyclic ordering
-     * @param noise    alter split-angles randomly by a small amount to prevent occlusion of edges
+     * @param noise    alter split-angles randomly by a small amount to prevent occlusion of adjacentEdges
      * @return direction vectors for each split
      */
     private static HashMap<Integer, Double> getDirectionVectors(PhyloSplitsGraph graph, HashMap<Integer, ArrayList<Node>> splits, Node[] ordering, boolean noise) {
@@ -194,7 +194,7 @@ public class PhyloSplitsGraphUtils {
         int currentSplit;
 
         for (int j = 0; j < graph.getNumberOfEdges(); j++) {
-            //We do a loop on the edges to keep the angles of the splits which have already been computed
+            //We do a loop on the adjacentEdges to keep the angles of the splits which have already been computed
             double angle;
             currentSplit = graph.getSplit(currentEdge);
             Integer splitId = currentSplit;
@@ -237,7 +237,7 @@ public class PhyloSplitsGraphUtils {
      *
      * @param dirs       the direction vectors for each split
      * @param ordering   the cyclic ordering
-     * @param useWeights scale edges by edge weights?
+     * @param useWeights scale adjacentEdges by edge weights?
      * @return node array of coordinates
      */
     public static NodeArray<APoint2D> computeCoords(PhyloSplitsGraph graph, HashMap<Integer, Double> dirs, Node[] ordering, boolean useWeights) {

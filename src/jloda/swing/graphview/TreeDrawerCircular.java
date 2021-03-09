@@ -31,7 +31,7 @@ import java.util.LinkedList;
 import java.util.Stack;
 
 /**
- * draws a tree using circle arc edges
+ * draws a tree using circle arc adjacentEdges
  * Daniel Huson, 1.2007
  */
 public class TreeDrawerCircular extends DefaultGraphDrawer implements IGraphDrawer {
@@ -142,7 +142,7 @@ public class TreeDrawerCircular extends DefaultGraphDrawer implements IGraphDraw
                     b = setAnglesRec(a, tree.getOpposite(v, f), f, leaves, angle);
 
                     // point towards the segment of the unit circle a...b:
-                    angle.set(f, Math.PI * (a + 1 + b) / leaves.size());
+                    angle.put(f, Math.PI * (a + 1 + b) / leaves.size());
                     a = b;
                 }
             }
@@ -156,7 +156,7 @@ public class TreeDrawerCircular extends DefaultGraphDrawer implements IGraphDraw
      * set the coordinates for all nodes and interior edge points
      *
      * @param root   root of tree
-     * @param angles assignment of angles to edges
+     * @param angles assignment of angles to adjacentEdges
      */
     private void setCoords(Node root, EdgeDoubleArray angles) {
         viewer.setLocation(root, new Point(0, 0));
@@ -192,7 +192,7 @@ public class TreeDrawerCircular extends DefaultGraphDrawer implements IGraphDraw
     }
 
     /**
-     * setup arc edges
+     * setup arc adjacentEdges
      */
     protected void addInternalPoints(EdgeDoubleArray angles) {
         final Stack<Node> stack = new Stack<>();
@@ -203,7 +203,7 @@ public class TreeDrawerCircular extends DefaultGraphDrawer implements IGraphDraw
         while (stack.size() > 0) {
             final Node v = stack.pop();
             final Point2D vPt = viewer.getLocation(v);
-            // add internal points to edges
+            // add internal points to adjacentEdges
             final double vAngle = (v.getInDegree() == 1 ? angles.get(v.getFirstInEdge()) : 0);
             for (Edge f = v.getFirstOutEdge(); f != null; f = v.getNextOutEdge(f)) {
                 Node w = f.getTarget();
@@ -278,11 +278,11 @@ public class TreeDrawerCircular extends DefaultGraphDrawer implements IGraphDraw
     }
 
     /**
-     * get all edges hit by mouse at (x,y)
+     * get all adjacentEdges hit by mouse at (x,y)
      *
      * @param x
      * @param y
-     * @return edges hits
+     * @return adjacentEdges hits
      */
     public EdgeSet getHitEdges(int x, int y) {
         return super.getHitEdges(x, y);
@@ -301,10 +301,10 @@ public class TreeDrawerCircular extends DefaultGraphDrawer implements IGraphDraw
     }
 
     /**
-     * get all edges contained in rect
+     * get all adjacentEdges contained in rect
      *
      * @param rect
-     * @return edges contained in rect
+     * @return adjacentEdges contained in rect
      */
     public EdgeSet getHitEdges(Rectangle rect) {
         return super.getHitEdges(rect);
@@ -314,14 +314,14 @@ public class TreeDrawerCircular extends DefaultGraphDrawer implements IGraphDraw
      * get all edge labels contained in rect
      *
      * @param rect
-     * @return edges contained in rect
+     * @return adjacentEdges contained in rect
      */
     public EdgeSet getHitEdgeLabels(Rectangle rect) {
         return super.getHitEdgeLabels(rect);
     }
 
     /**
-     * set the default label positions for nodes and edges
+     * set the default label positions for nodes and adjacentEdges
      *
      * @param resetAll
      */

@@ -1,7 +1,7 @@
 /*
- * MinimumSpanningTree.java Copyright (C) 2020. Daniel H. Huson
+ * MinimumSpanningTree.java Copyright (C) 2021. Daniel H. Huson
  *
- * (Some code written by other authors, as named in code.)
+ *  (Some files contain contributions from other authors, who are then mentioned separately.)
  *
  *  This program is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -15,11 +15,11 @@
  *
  *  You should have received a copy of the GNU General Public License
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
- *
  */
 
-package jloda.graph;
+package jloda.graphs.algorithms;
 
+import jloda.graphs.interfaces.*;
 import jloda.util.Pair;
 import jloda.util.ProgressListener;
 
@@ -41,32 +41,29 @@ public class MinimumSpanningTree {
      * @param progress
      * @return
      */
-    public static EdgeSet apply(Graph graph, Function<Edge, Number> weightFunction, ProgressListener progress) {
-        final ArrayList<Pair<Double, Edge>> edges = new ArrayList<>(graph.getNumberOfEdges());
-        for (Object obj : graph.edges()) {
-            Edge e = (Edge) obj;
+    public static <N extends INode, E extends IEdge> IEdgeSet<E> apply(IGraph<N, E> graph, Function<E, Number> weightFunction, ProgressListener progress) {
+        final ArrayList<Pair<Double, E>> edges = new ArrayList<>(graph.getNumberOfEdges());
+        for (var e : graph.edges()) {
             edges.add(new Pair<>(weightFunction.apply(e).doubleValue(), e));
         }
         edges.sort(Comparator.comparingDouble(Pair::getFirst));
 
-        final NodeArray<Integer> component = new NodeArray<>(graph);
+        final INodeIntegerArray<N> component = graph.newNodeIntArray();
         int count = 0;
-        for (Object obj : graph.getNodesAsSet()) {
-            Node v = (Node) obj;
+        for (var v : graph.nodes()) {
             component.put(v, ++count);
         }
 
-        final EdgeSet result = new EdgeSet(graph);
-        for (Pair<Double, Edge> pair : edges) {
-            final Edge e = pair.getSecond();
-            final int oldComponent = component.get(e.getSource());
-            final int newComponent = component.get(e.getTarget());
+        final IEdgeSet<E> result = graph.newEdgeSet();
+        for (Pair<Double, E> pair : edges) {
+            final E e = pair.getSecond();
+            final int oldComponent = component.getValue((N) e.getSource());
+            final int newComponent = component.getValue((N) e.getTarget());
 
             if (oldComponent != newComponent) {
                 result.add(e);
-                for (Object obj : graph.getNodesAsSet()) { // todo: should do this more efficiently
-                    Node v = (Node) obj;
-                    if (component.get(v) == oldComponent)
+                for (var v : graph.nodes()) {
+                    if (component.getValue(v) == oldComponent)
                         component.put(v, newComponent);
                 }
             }

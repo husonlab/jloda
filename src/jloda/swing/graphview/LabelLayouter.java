@@ -108,7 +108,7 @@ public class LabelLayouter {
 
 
     /**
-     * initial layout of node labels opposite the edges entering the node
+     * initial layout of node labels opposite the adjacentEdges entering the node
      *
      * @param trans
      * @param graphView

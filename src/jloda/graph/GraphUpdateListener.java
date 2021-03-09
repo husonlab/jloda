@@ -30,27 +30,36 @@ package jloda.graph;
  * Daniel Huson, 2003
  */
 public interface GraphUpdateListener {
-    /** A node has been created
-     *@param v the new node
+    /**
+     * A node has been created
+     *
+     * @param v the new node
      */
     void newNode(Node v);
 
-    /** A node is about to be deleted
-     *@param v the node that will be deleted
+    /**
+     * A node is about to be deleted
+     *
+     * @param v the node that will be deleted
      */
     void deleteNode(Node v);
 
-    /** An edge has been created
-     *@param e the new edge
+    /**
+     * An edge has been created
+     *
+     * @param e the new edge
      */
     void newEdge(Edge e);
 
-    /** An edge is about to be deleted
-     *@param e the edge that will be deleted
+    /**
+     * An edge is about to be deleted
+     *
+     * @param e the edge that will be deleted
      */
     void deleteEdge(Edge e);
 
-    /** The graph has changed.
+    /**
+     * The graph has changed.
      * This method is called after one of the above specific methods has be
      * called
      */
@@ -58,6 +67,7 @@ public interface GraphUpdateListener {
 
     /**
      * node label changed
+     *
      * @param v
      * @param newLabel
      */
@@ -65,6 +75,7 @@ public interface GraphUpdateListener {
 
     /**
      * edge label changed
+     *
      * @param e
      * @param newLabel
      */

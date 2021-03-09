@@ -20,12 +20,15 @@
 
 package jloda.graph;
 
+import jloda.graphs.interfaces.IEdge;
+import jloda.graphs.interfaces.INode;
+
 /**
  * Edge class used by Graph class
  *
  * @author Daniel Huson, 2003
  */
-public class Edge extends NodeEdge implements Comparable<Edge> {
+public class Edge extends NodeEdge implements Comparable<Edge>, IEdge {
     /**
      * insert before reference edge
      */
@@ -38,11 +41,11 @@ public class Edge extends NodeEdge implements Comparable<Edge> {
     private Node source;   //Source vertex
     private Node target;   //Target vertex
 
-    private Edge sNext;    //Next edge in list of edges incident with v
-    private Edge sPrev;    //Previous edge in list of edges incident with v
+    private Edge sNext;    //Next edge in list of adjacentEdges incident with v
+    private Edge sPrev;    //Previous edge in list of adjacentEdges incident with v
 
-    private Edge tNext;   //Next edge in list of edges incident with w
-    private Edge tPrev;   //Previous edge in list of edges incident with w
+    private Edge tNext;   //Next edge in list of adjacentEdges incident with w
+    private Edge tPrev;   //Previous edge in list of adjacentEdges incident with w
 
     /**
      * Construct a new edge from v to w.
@@ -56,7 +59,7 @@ public class Edge extends NodeEdge implements Comparable<Edge> {
     }
 
     /**
-     * construct a new edge from v to w and set its info object. The next and previous edges
+     * construct a new edge from v to w and set its info object. The next and previous adjacentEdges
      * are set to Edge.AFTER.
      *
      * @param G
@@ -69,7 +72,7 @@ public class Edge extends NodeEdge implements Comparable<Edge> {
     }
 
     /**
-     * constructs an edge from v to w, inserting it before or after the two given reference edges.
+     * constructs an edge from v to w, inserting it before or after the two given reference adjacentEdges.
      *
      * @param graph graph
      * @param v     source node
@@ -95,7 +98,7 @@ public class Edge extends NodeEdge implements Comparable<Edge> {
      *
      * @param G     The graph
      * @param id    The id of the edge
-     *              // [REMOVED] param prev0  The edge before this one in the list of all edges.
+     *              // [REMOVED] param prev0  The edge before this one in the list of all adjacentEdges.
      * @param v     Source vertex
      * @param e_v
      * @param dir_v
@@ -103,7 +106,7 @@ public class Edge extends NodeEdge implements Comparable<Edge> {
      * @param e_w
      * @param dir_w
      * @param obj   If e_v is null, then edge is inserted immediately after the last node in the list of
-     *              edges incident with v (or before the first node if dir_v = BEFORE). Likewise for e_w.
+     *              adjacentEdges incident with v (or before the first node if dir_v = BEFORE). Likewise for e_w.
      */
     void init(Graph G, int id, Node v, Edge e_v, int dir_v, Node w, Edge e_w, int dir_w, Object obj) throws NotOwnerException {
 
@@ -262,8 +265,8 @@ public class Edge extends NodeEdge implements Comparable<Edge> {
      * @param v Node
      * @return a Node the Opposite of the Node u
      */
-    public Node getOpposite(Node v) throws NotOwnerException {
-        checkOwner(v);
+    public Node getOpposite(INode v) throws NotOwnerException {
+        checkOwner((Node) v);
         if (v == source)
             return target;
         else if (v == target)
@@ -321,18 +324,18 @@ public class Edge extends NodeEdge implements Comparable<Edge> {
     }
 
     /**
-     * get next edge in list of all edges
+     * get next edge in list of all adjacentEdges
      *
-     * @return next edge in list of all edges
+     * @return next edge in list of all adjacentEdges
      */
     public Edge getNext() {
         return (Edge) next;
     }
 
     /**
-     * get previous edge in list of all edges
+     * get previous edge in list of all adjacentEdges
      *
-     * @return previous edge in list of all edges
+     * @return previous edge in list of all adjacentEdges
      */
     public Edge getPrev() {
         return (Edge) prev;
@@ -422,6 +425,15 @@ public class Edge extends NodeEdge implements Comparable<Edge> {
     public int hashCode() {
         return Integer.hashCode(getId());
     }
+
+    public String getLabel() {
+        return getOwner().getLabel(this);
+    }
+
+    public void setLabel(String label) {
+        getOwner().setLabel(this, label);
+    }
+
 }
 
 // EOF

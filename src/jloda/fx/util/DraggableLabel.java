@@ -20,6 +20,8 @@
 
 package jloda.fx.util;
 
+import javafx.beans.property.BooleanProperty;
+import javafx.scene.Cursor;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.text.Font;
 import javafx.scene.text.Text;
@@ -28,37 +30,48 @@ import javafx.scene.text.Text;
  * maintains a draggable label
  * Daniel Huson, 5.2018
  */
-public class DraggableLabel extends AnchorPane {
+public class DraggableLabel {
     private final Text text = new Text();
+    private final AnchorPane anchorPane;
 
     private double mouseX = 0;
     private double mouseY = 0;
 
+    private final BooleanProperty visible;
+
     /**
      * constructor
      */
-    public DraggableLabel() {
+    public DraggableLabel(AnchorPane anchorPane) {
+        this.anchorPane = (anchorPane != null ? anchorPane : new AnchorPane());
+
+        visible = text.visibleProperty();
+
         text.setFont(Font.font("Arial", 10));
 
         AnchorPane.setRightAnchor(text, 5.0);
         AnchorPane.setTopAnchor(text, 5.0);
-        getChildren().add(text);
+        this.anchorPane.getChildren().add(text);
 
         text.setOnMousePressed((e -> {
             mouseX = e.getScreenX();
             mouseY = e.getScreenY();
+            text.setCursor(Cursor.CLOSED_HAND);
             e.consume();
         }));
 
         text.setOnMouseDragged((e -> {
             double deltaX = e.getScreenX() - mouseX;
             double deltaY = e.getScreenY() - mouseY;
-            AnchorPane.setLeftAnchor(text, AnchorPane.getLeftAnchor(text) + deltaX);
-            AnchorPane.setBottomAnchor(text, AnchorPane.getBottomAnchor(text) - deltaY);
+            AnchorPane.setRightAnchor(text, AnchorPane.getRightAnchor(text) - deltaX);
+            AnchorPane.setTopAnchor(text, AnchorPane.getTopAnchor(text) + deltaY);
             mouseX = e.getScreenX();
             mouseY = e.getScreenY();
             e.consume();
         }));
+
+        text.setOnMouseReleased(e -> text.setCursor(Cursor.DEFAULT));
+
     }
 
     public String getText() {
@@ -71,5 +84,21 @@ public class DraggableLabel extends AnchorPane {
 
     public Text get() {
         return text;
+    }
+
+    public boolean getVisible() {
+        return visible.get();
+    }
+
+    public BooleanProperty visibleProperty() {
+        return visible;
+    }
+
+    public void setVisible(boolean visible) {
+        this.visible.set(visible);
+    }
+
+    public AnchorPane getAnchorPane() {
+        return anchorPane;
     }
 }

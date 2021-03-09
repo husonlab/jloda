@@ -26,27 +26,24 @@ package jloda.util;
  * @param <T> Daniel Huson, 3.2019
  */
 public class APoint2D<T> {
-    final private double x;
-    final private double y;
+    final private double[] xy;
     private T userData;
 
     public APoint2D(double x, double y) {
-        this.x = x;
-        this.y = y;
+        this.xy = new double[]{x, y};
     }
 
     public APoint2D(double x, double y, T userData) {
-        this.x = x;
-        this.y = y;
+        this.xy = new double[]{x, y};
         this.userData = userData;
     }
 
     public double getX() {
-        return x;
+        return xy[0];
     }
 
     public double getY() {
-        return y;
+        return xy[1];
     }
 
     public T getUserData() {
@@ -55,5 +52,9 @@ public class APoint2D<T> {
 
     public void setUserData(T userData) {
         this.userData = userData;
+    }
+
+    public double[] getValues() {
+        return xy;
     }
 }

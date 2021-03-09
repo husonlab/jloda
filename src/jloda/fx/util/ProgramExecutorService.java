@@ -44,7 +44,7 @@ public class ProgramExecutorService {
             instance = Executors.newCachedThreadPool();
         return instance;
     }
-    
+
     public static void setNumberOfCoresToUse(int numberOfCoresToUse) {
         ProgramExecutorService.numberOfCoresToUse = (numberOfCoresToUse > 0 ? numberOfCoresToUse : Runtime.getRuntime().availableProcessors());
         ProgramProperties.put("NumberOfCores", ProgramExecutorService.numberOfCoresToUse);

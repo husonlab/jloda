@@ -28,7 +28,7 @@ import javafx.collections.ObservableList;
 import jloda.graph.*;
 
 /**
- * provides observable list of nodes and edges, and label properties
+ * provides observable list of nodes and adjacentEdges, and label properties
  * Daniel Huson, 1.20020
  */
 public class GraphFX<G extends Graph> {
@@ -106,7 +106,7 @@ public class GraphFX<G extends Graph> {
                 @Override
                 public void nodeLabelChanged(Node v, String newLabel) {
                     try {
-                        StringProperty stringProperty = node2LabelProperty.get(v);
+                        StringProperty stringProperty = node2LabelProperty.getValue(v);
                         if (stringProperty != null) {
                             Platform.runLater(() -> stringProperty.set(newLabel));
                         }
@@ -117,7 +117,7 @@ public class GraphFX<G extends Graph> {
                 @Override
                 public void edgeLabelChanged(Edge e, String newLabel) {
                     try {
-                        StringProperty stringProperty = edge2LabelProperty.get(e);
+                        StringProperty stringProperty = edge2LabelProperty.getValue(e);
                         if (stringProperty != null) {
                             Platform.runLater(() -> stringProperty.set(newLabel));
                         }
@@ -145,7 +145,7 @@ public class GraphFX<G extends Graph> {
     }
 
     public StringProperty nodeLabelProperty(Node v) {
-        StringProperty stringProperty = node2LabelProperty.get(v);
+        StringProperty stringProperty = node2LabelProperty.getValue(v);
         if (stringProperty == null) {
             stringProperty = new SimpleStringProperty(graph.getLabel(v));
             node2LabelProperty.put(v, stringProperty);
@@ -154,7 +154,7 @@ public class GraphFX<G extends Graph> {
     }
 
     public StringProperty edgeLabelProperty(Edge e) {
-        StringProperty stringProperty = edge2LabelProperty.get(e);
+        StringProperty stringProperty = edge2LabelProperty.getValue(e);
         if (stringProperty == null) {
             stringProperty = new SimpleStringProperty(graph.getLabel(e));
             edge2LabelProperty.put(e, stringProperty);
