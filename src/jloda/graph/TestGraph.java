@@ -17,24 +17,24 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package jloda.graphs.bgraph;
+package jloda.graph;
 
-import jloda.graph.NotOwnerException;
+
 import jloda.util.IterationUtils;
 import junit.framework.TestCase;
 
 import java.util.ArrayList;
 
 /**
- * test basic features of BGraph and associated data structures
+ * test basic features of graph and associated data structures
  * Daniel Huson, 3.2021
  */
-public class TestBGraph extends TestCase {
+public class TestGraph extends TestCase {
 
     public void testAddNodesAndEdges() {
-        var nodes = new ArrayList<BGraph.Node>();
-        var edges = new ArrayList<BGraph.Edge>();
-        final BGraph graph = createGraph(nodes, edges);
+        var nodes = new ArrayList<Node>();
+        var edges = new ArrayList<Edge>();
+        final Graph graph = createGraph(nodes, edges);
 
         var nodeSet = graph.newNodeSet();
         nodeSet.addAll(IterationUtils.asList(graph.nodes()));
@@ -56,16 +56,16 @@ public class TestBGraph extends TestCase {
     }
 
     public void testRemoveNodesAndEdges() {
-        var nodes = new ArrayList<BGraph.Node>();
-        var edges = new ArrayList<BGraph.Edge>();
-        final BGraph graph = createGraph(nodes, edges);
+        var nodes = new ArrayList<Node>();
+        var edges = new ArrayList<Edge>();
+        final Graph graph = createGraph(nodes, edges);
 
 
-        BGraph.Node vGone = graph.getNode(4);
+        Node vGone = graph.findNodeById(4);
         graph.deleteNode(vGone);
         assertNull(vGone.getOwner());
 
-        BGraph.Edge eGone = graph.getEdge(13);
+        Edge eGone = graph.findEdgeById(13);
         graph.deleteEdge(eGone);
         assertNull(eGone.getOwner());
 
@@ -75,9 +75,9 @@ public class TestBGraph extends TestCase {
     }
 
     public void testNodeSetsEdgeSets() {
-        var nodes = new ArrayList<BGraph.Node>();
-        var edges = new ArrayList<BGraph.Edge>();
-        final BGraph graph = createGraph(nodes, edges);
+        var nodes = new ArrayList<Node>();
+        var edges = new ArrayList<Edge>();
+        final Graph graph = createGraph(nodes, edges);
 
         var nodeSet = graph.newNodeSet();
         nodeSet.addAll(IterationUtils.asList(graph.nodes()));
@@ -89,11 +89,11 @@ public class TestBGraph extends TestCase {
 
         assertEquals("edges", graph.getNumberOfEdges(), edgeSet.size());
 
-        BGraph.Node vGone = graph.getNode(4);
+        Node vGone = graph.findNodeById(4);
         graph.deleteNode(vGone);
         assertNull(vGone.getOwner());
 
-        BGraph.Edge eGone = graph.getEdge(13);
+        Edge eGone = graph.findEdgeById(13);
         graph.deleteEdge(eGone);
         assertNull(eGone.getOwner());
 
@@ -132,27 +132,27 @@ public class TestBGraph extends TestCase {
     }
 
     public void testNodeArraysEdgeArray() {
-        var nodes = new ArrayList<BGraph.Node>();
-        var edges = new ArrayList<BGraph.Edge>();
-        final BGraph graph = createGraph(nodes, edges);
+        var nodes = new ArrayList<Node>();
+        var edges = new ArrayList<Edge>();
+        final Graph graph = createGraph(nodes, edges);
 
-        BNodeArray<String> nodeArray = graph.newNodeArray();
+        NodeArray<String> nodeArray = graph.newNodeArray();
         for (var v : graph.nodes()) {
             nodeArray.put(v, v.getInfo().toString());
         }
         assertEquals("nodes", graph.getNumberOfNodes(), IterationUtils.count(nodeArray.values()));
 
-        BEdgeArray<String> edgeArray = graph.newEdgeArray();
+        EdgeArray<String> edgeArray = graph.newEdgeArray();
         for (var e : graph.edges()) {
             edgeArray.put(e, e.getInfo().toString());
         }
         assertEquals("edges", graph.getNumberOfEdges(), IterationUtils.count(edgeArray.values()));
 
-        BGraph.Node vGone = graph.getNode(4);
+        Node vGone = graph.findNodeById(4);
         graph.deleteNode(vGone);
         assertNull(vGone.getOwner());
 
-        BGraph.Edge eGone = graph.getEdge(13);
+        Edge eGone = graph.findEdgeById(13);
         graph.deleteEdge(eGone);
         assertNull(eGone.getOwner());
 
@@ -196,8 +196,8 @@ public class TestBGraph extends TestCase {
         }
     }
 
-    public static BGraph createGraph(ArrayList<BGraph.Node> nodes, ArrayList<BGraph.Edge> edges) {
-        final BGraph graph = new BGraph();
+    public static Graph createGraph(ArrayList<Node> nodes, ArrayList<Edge> edges) {
+        final Graph graph = new Graph();
         nodes.clear();
         for (int i = 0; i < 10; i++) {
             nodes.add(graph.newNode("V" + (i + 1)));

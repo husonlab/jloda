@@ -17,9 +17,12 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package jloda.graphs.io;
+package jloda.graph.io;
 
-import jloda.graphs.interfaces.*;
+import jloda.graph.EdgeSet;
+import jloda.graph.Graph;
+import jloda.graph.Node;
+import jloda.graph.NodeSet;
 import jloda.util.parse.NexusStreamParser;
 
 import java.io.IOException;
@@ -44,7 +47,7 @@ public class GML {
      * @param graphId
      * @throws IOException
      */
-    public static <N extends INode, E extends IEdge> void writeGML(IGraph<N, E> graph, Writer w, String comment, boolean directed, String label, int graphId, Map<String, INodeSet<N>> label2nodes, Map<String, IEdgeSet<E>> label2edges) throws IOException {
+    public static void writeGML(Graph graph, Writer w, String comment, boolean directed, String label, int graphId, Map<String, NodeSet> label2nodes, Map<String, EdgeSet> label2edges) throws IOException {
         w.write("graph [\n");
         if (comment != null)
             w.write("\tcomment \"" + comment + "\"\n");
@@ -94,7 +97,7 @@ public class GML {
         w.flush();
     }
 
-    public static <N extends INode, E extends IEdge> void readGML(Reader r, IEditableGraph<N, E> graph) throws IOException {
+    public static void readGML(Reader r, Graph graph) throws IOException {
         readGML(r, graph, new GMLInfo());
     }
 
@@ -103,7 +106,7 @@ public class GML {
      *
      * @param r
      */
-    public static <N extends INode, E extends IEdge> void readGML(Reader r, IEditableGraph<N, E> graph, GMLInfo info) throws IOException {
+    public static void readGML(Reader r, Graph graph, GMLInfo info) throws IOException {
         final NexusStreamParser np = new NexusStreamParser(r);
         np.setSquareBracketsSurroundComments(false);
 
@@ -125,7 +128,7 @@ public class GML {
             info.setLabel(NexusStreamParser.getQuotedString(np));
         }
 
-        Map<Integer, N> id2node = new HashMap<>();
+        Map<Integer, Node> id2node = new HashMap<>();
         while (np.peekMatchIgnoreCase("node")) {
             np.matchIgnoreCase("node [");
             np.matchIgnoreCase("id");

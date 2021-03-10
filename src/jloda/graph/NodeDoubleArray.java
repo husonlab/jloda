@@ -21,14 +21,12 @@
 package jloda.graph;
 
 
-import jloda.graphs.interfaces.INodeDoubleArray;
-
 /**
  * Node array
  * Daniel Huson, 2003
  */
 
-public class NodeDoubleArray extends NodeArray<Double> implements INodeDoubleArray<Node> {
+public class NodeDoubleArray extends NodeArray<Double> {
     private Double defaultValue;
 
     /**

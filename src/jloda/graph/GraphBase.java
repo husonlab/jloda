@@ -30,10 +30,10 @@ public class GraphBase {
     /**
      * Sets the owner.
      *
-     * @param G Graph
+     * @param graph Graph
      */
-    void setOwner(Graph G) {
-        owner = G;
+    void setOwner(Graph graph) {
+        owner = graph;
     }
 
     /**

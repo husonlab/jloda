@@ -17,9 +17,10 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package jloda.graphs.algorithms;
+package jloda.graph.algorithms;
 
-import jloda.graphs.interfaces.*;
+
+import jloda.graph.*;
 
 import java.util.LinkedList;
 import java.util.List;
@@ -42,11 +43,11 @@ public class Dijkstra {
      * @param sink
      * @return shortest path from source to sink
      */
-    public static <N extends INode, E extends IEdge> List<N> compute(final IGraph<N, E> graph, N source, N sink, Function<E, Number> weights) {
-        INodeArray<N, N> predecessor = graph.newNodeArray();
+    public static List<Node> compute(final Graph graph, Node source, Node sink, Function<Edge, Number> weights) {
+        NodeArray<Node> predecessor = graph.newNodeArray();
 
-        INodeDoubleArray<N> dist = graph.newNodeDoubleArray();
-        SortedSet<N> priorityQueue = newFullQueue(graph, dist);
+        var dist = graph.newNodeDoubleArray();
+        SortedSet<Node> priorityQueue = newFullQueue(graph, dist);
 
         // init:
         for (var v : graph.nodes()) {
@@ -58,14 +59,14 @@ public class Dijkstra {
         // main loop:
         while (!priorityQueue.isEmpty()) {
             int size = priorityQueue.size();
-            N u = priorityQueue.first();
+            Node u = priorityQueue.first();
             priorityQueue.remove(u);
             if (priorityQueue.size() != size - 1)
                 throw new RuntimeException("remove u=" + u + " failed: size=" + size);
 
             for (var e : u.outEdges()) {
-                double weight = weights.apply((E) e).doubleValue();
-                N v = (N) e.getOpposite(u);
+                double weight = weights.apply(e).doubleValue();
+                Node v = (Node) e.getOpposite(u);
                 if (dist.getValue(v) > dist.getValue(u) + weight) {
                     // priorty of v changes, so must re-and to queue:
                     priorityQueue.remove(v);
@@ -76,7 +77,7 @@ public class Dijkstra {
             }
         }
         System.err.println("done main loop");
-        final List<N> result = new LinkedList<>();
+        final List<Node> result = new LinkedList<>();
         var v = sink;
         while (v != source) {
             if (v == null)
@@ -98,8 +99,8 @@ public class Dijkstra {
      * @return full priority queue
      * @
      */
-    static public <N extends INode, E extends IEdge> SortedSet<N> newFullQueue(final IGraph<N, E> graph, final INodeDoubleArray<N> dist) {
-        SortedSet<N> queue = new TreeSet<>((v1, v2) -> {
+    static public SortedSet<Node> newFullQueue(final Graph graph, final NodeDoubleArray dist) {
+        SortedSet<Node> queue = new TreeSet<>((v1, v2) -> {
             double weight1 = dist.getValue(v1);
             double weight2 = dist.getValue(v2);
             //System.out.println("weight1 " + weight1 + " weight2 " + weight2);

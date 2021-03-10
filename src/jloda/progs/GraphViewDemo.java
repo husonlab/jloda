@@ -24,7 +24,7 @@ import jloda.graph.Edge;
 import jloda.graph.Graph;
 import jloda.graph.Node;
 import jloda.graph.NodeArray;
-import jloda.graphs.algorithms.FruchtermanReingoldLayout;
+import jloda.graph.algorithms.FruchtermanReingoldLayout;
 import jloda.swing.graphview.EdgeView;
 import jloda.swing.graphview.GraphView;
 import jloda.util.APoint2D;

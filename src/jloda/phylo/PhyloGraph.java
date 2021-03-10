@@ -34,12 +34,10 @@ import java.util.*;
  * @author Daniel Huson, 2005, 2018
  */
 public class PhyloGraph extends Graph {
-    final EdgeDoubleArray edgeWeights;
-    private final EdgeDoubleArray edgeConfidences;
+    private EdgeDoubleArray edgeWeights;
+    private EdgeDoubleArray edgeConfidences;
     final Map<Integer, Node> taxon2node;
     final NodeArray<List<Integer>> node2taxa;
-
-    public boolean edgeConfidencesSet = false; // use this to decide whether to output edge confidences
 
     // if you add anything here, make sure it gets added to copy, too!
 
@@ -49,9 +47,6 @@ public class PhyloGraph extends Graph {
      */
     public PhyloGraph() {
         super();
-        edgeWeights = new EdgeDoubleArray(this);
-        edgeConfidences = new EdgeDoubleArray(this);
-
         taxon2node = new HashMap<>();
         node2taxa = new NodeArray<>(this);
 
@@ -72,10 +67,6 @@ public class PhyloGraph extends Graph {
      */
     public void clear() {
         deleteAllNodes();
-        nodeLabels.clear();
-        edgeWeights.clear();
-        edgeLabels.clear();
-        edgeConfidences.clear();
         taxon2node.clear();
         node2taxa.clear();
     }
@@ -107,7 +98,6 @@ public class PhyloGraph extends Graph {
             oldEdge2NewEdge = new EdgeArray<>(src);
 
         super.copy(src, oldNode2NewNode, oldEdge2NewEdge);
-        edgeConfidencesSet = src.edgeConfidencesSet;
 
         setName(src.getName());
 
@@ -115,7 +105,9 @@ public class PhyloGraph extends Graph {
 
         for (Node v : src.nodes()) {
             final Node w = (oldNode2NewNode.getValue(v));
-            setLabel(w, src.nodeLabels.getValue(v));
+            setLabel(w, src.getLabel(v));
+            setInfo(w, src.getInfo(v));
+            setData(w, src.getData(v));
             for (Integer tax : src.getTaxa(v)) {
                 addTaxon(w, tax);
                 added.set(tax);
@@ -123,8 +115,10 @@ public class PhyloGraph extends Graph {
         }
         for (Edge e : src.edges()) {
             final Edge f = (oldEdge2NewEdge.getValue(e));
-            edgeWeights.put(f, src.edgeWeights.getValue(e));
+            setInfo(f, src.getInfo(f));
             setLabel(f, src.getLabel(e));
+            setData(f, src.getData(e));
+            setWeight(f, src.getWeight(e));
             edgeConfidences.put(f, src.edgeConfidences.getValue(e));
         }
 
@@ -146,20 +140,9 @@ public class PhyloGraph extends Graph {
                 System.err.println("Src: taxa mapped to null (" + nullTaxa.cardinality() + "): " + Basic.toString(nullTaxa));
             System.err.println("++++++++++");
         }
-
         return oldNode2NewNode;
     }
 
-
-    /**
-     * Sets the weight of an edge.
-     *
-     * @param e Edge
-     * @param d double
-     */
-    public void setWeight(Edge e, double d) {
-        edgeWeights.put(e, d);
-    }
 
     /**
      * Gets the weight of an edge.
@@ -168,12 +151,18 @@ public class PhyloGraph extends Graph {
      * @return edgeWeights double
      */
     public double getWeight(Edge e) {
-        if (edgeWeights.getValue(e) == null)
-            return 1;
+        if (edgeWeights == null)
+            return 1.0;
         else
-            return edgeWeights.getValue(e);
+            return edgeWeights.get(e);
     }
 
+    public void setWeight(Edge e, double wgt) {
+        if (edgeWeights == null) {
+            edgeWeights = new EdgeDoubleArray(this, 1.0);
+        }
+        edgeWeights.setValue(e, wgt);
+    }
 
     /**
      * Sets the confidence of an edge.
@@ -181,8 +170,12 @@ public class PhyloGraph extends Graph {
      * @param e Edge
      * @param d double
      */
-    public void setConfidence(Edge e, double d) {
-        edgeConfidencesSet = true;
+    public void setConfidence(Edge e, Double d) {
+        if (edgeConfidences == null) {
+            if (d == null)
+                return;
+            edgeConfidences = newEdgeDoubleArray();
+        }
         edgeConfidences.put(e, d);
     }
 
@@ -193,7 +186,7 @@ public class PhyloGraph extends Graph {
      * @return confidence
      */
     public double getConfidence(Edge e) {
-        if (edgeConfidences.getValue(e) == null)
+        if (edgeConfidences == null || edgeConfidences.getValue(e) == null)
             return 1;
         else
             return edgeConfidences.getValue(e);

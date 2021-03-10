@@ -22,11 +22,8 @@ module jloda {
     exports jloda.fx.window;
 
     exports jloda.graph;
-    exports jloda.graphs.io;
-    exports jloda.graphs.agraph;
-    exports jloda.graphs.bgraph;
-    exports jloda.graphs.interfaces;
-    exports jloda.graphs.algorithms;
+    exports jloda.graph.io;
+    exports jloda.graph.algorithms;
 
     exports jloda.phylo;
     exports jloda.progs;

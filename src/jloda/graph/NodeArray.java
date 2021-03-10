@@ -20,7 +20,6 @@
 
 package jloda.graph;
 
-import jloda.graphs.interfaces.INodeArray;
 import jloda.util.IterationUtils;
 
 import java.util.Arrays;
@@ -32,7 +31,7 @@ import java.util.NoSuchElementException;
  * Daniel Huson, 2003
  */
 
-public class NodeArray<T> extends GraphBase implements INodeArray<Node, T> {
+public class NodeArray<T> extends GraphBase implements Iterable<T> {
     private T[] data;
     private boolean isClear = true;
     private T defaultValue;
@@ -98,7 +97,6 @@ public class NodeArray<T> extends GraphBase implements INodeArray<Node, T> {
         put(v, obj);
     }
 
-    @Override
     public void put(Node v, T obj) {
         checkOwner(v);
 
@@ -157,12 +155,15 @@ public class NodeArray<T> extends GraphBase implements INodeArray<Node, T> {
         return result;
     }
 
+    public Iterator<T> iterator() {
+        return values().iterator();
+    }
+
     /**
      * get an iterator over all non-null values
      *
      * @return iterator
      */
-    @Override
     public Iterable<T> values() {
         return () -> IterationUtils.iteratorNonNullElements(new Iterator<T>() {
             int i = 0;
@@ -221,6 +222,8 @@ public class NodeArray<T> extends GraphBase implements INodeArray<Node, T> {
     public T getDefaultValue() {
         return defaultValue;
     }
+
+
 }
 
 // EOF

@@ -22,10 +22,13 @@
  *  Copyright (C) 2019 Mathieu Jacomy
  * Original implementation in Gephi by Mathieu Jacomy
  */
-package jloda.graphs.algorithms;
+package jloda.graph.algorithms;
 
 import jloda.fx.util.ProgramExecutorService;
-import jloda.graphs.interfaces.*;
+import jloda.graph.Graph;
+import jloda.graph.Node;
+import jloda.graph.NodeArray;
+import jloda.graph.NodeSet;
 import jloda.util.*;
 
 import java.util.BitSet;
@@ -40,7 +43,7 @@ import java.util.concurrent.Executors;
  * Original implementation in Gephi by Mathieu Jacomy
  * adapted by Daniel Huson, 5.2013, 2020
  */
-public class FruchtermanReingoldLayout<N extends INode, E extends IEdge> {
+public class FruchtermanReingoldLayout {
 
     private static final float SPEED_DIVISOR = 800;
     private static final float AREA_MULTIPLICATOR = 10000;
@@ -51,8 +54,8 @@ public class FruchtermanReingoldLayout<N extends INode, E extends IEdge> {
     private double speed;
 
     // data
-    private final IGraph<N, E> graph;
-    private final N[] nodes;
+    private final Graph graph;
+    private final Node[] nodes;
     private final int[][] edges;
     private final float[][] coordinates;
     private final float[][] forceDelta;
@@ -63,7 +66,7 @@ public class FruchtermanReingoldLayout<N extends INode, E extends IEdge> {
     /**
      * constructor. Do not change graph after calling the constructor
      */
-    public FruchtermanReingoldLayout(IGraph<N, E> graph) {
+    public FruchtermanReingoldLayout(Graph graph) {
         this(graph, null, null);
     }
 
@@ -72,7 +75,7 @@ public class FruchtermanReingoldLayout<N extends INode, E extends IEdge> {
      *
      * @param fixedNodes nodes not to be moved
      */
-    public FruchtermanReingoldLayout(IGraph<N, E> graph, INodeSet<N> fixedNodes) {
+    public FruchtermanReingoldLayout(Graph graph, NodeSet fixedNodes) {
         this(graph, fixedNodes, null);
     }
 
@@ -82,10 +85,10 @@ public class FruchtermanReingoldLayout<N extends INode, E extends IEdge> {
      * @param fixedNodes nodes not to be moved
      * @param node2start starting coordinates
      */
-    public FruchtermanReingoldLayout(IGraph<N, E> graph, INodeSet<N> fixedNodes, INodeArray<N, APoint2D<?>> node2start) {
+    public FruchtermanReingoldLayout(Graph graph, NodeSet fixedNodes, NodeArray<APoint2D<?>> node2start) {
         this.graph = graph;
         //noinspection unchecked
-        nodes = (N[]) new INode[graph.getNumberOfNodes()];
+        nodes = new Node[graph.getNumberOfNodes()];
         {
             int i = 0;
             for (var v : graph.nodes()) {
@@ -103,7 +106,7 @@ public class FruchtermanReingoldLayout<N extends INode, E extends IEdge> {
     /**
      * initialize
      */
-    private void initialize(INodeSet<N> fixedNodes, INodeArray<N, APoint2D<?>> node2start) {
+    private void initialize(NodeSet fixedNodes, NodeArray<APoint2D<?>> node2start) {
         var node2id = graph.newNodeIntArray();
         for (int v = 0; v < nodes.length; v++) {
             node2id.put(nodes[v], v);
@@ -113,8 +116,8 @@ public class FruchtermanReingoldLayout<N extends INode, E extends IEdge> {
         {
             int eId = 0;
             for (var e : graph.edges()) {
-                edges[0][eId] = node2id.getValue((N) e.getSource());
-                edges[1][eId] = node2id.getValue((N) e.getTarget());
+                edges[0][eId] = node2id.getValue(e.getSource());
+                edges[1][eId] = node2id.getValue(e.getTarget());
                 eId++;
             }
         }
@@ -127,21 +130,21 @@ public class FruchtermanReingoldLayout<N extends INode, E extends IEdge> {
                     coordinates[1][id] = 10 * (float) node2start.getValue(v).getY();
                 }
             } else {
-                final INodeSet<N> seen = graph.newNodeSet();
-                final Stack<N> stack = new Stack<>();
+                final NodeSet seen = graph.newNodeSet();
+                final Stack<Node> stack = new Stack<>();
                 int count = 0;
                 for (var v : graph.nodes()) {
                     if (!seen.contains(v)) {
                         seen.add(v);
                         stack.push(v);
                         while (stack.size() > 0) {
-                            final N w = stack.pop();
+                            final Node w = stack.pop();
                             final int id = node2id.getValue(w);
                             coordinates[0][id] = (float) (100 * Math.sin(2 * Math.PI * count / nodes.length));
                             coordinates[1][id] = (float) (100 * Math.cos(2 * Math.PI * count / nodes.length));
                             count++;
                             for (var e : w.adjacentEdges()) {
-                                N u = (N) e.getOpposite(w);
+                                Node u = e.getOpposite(w);
                                 if (!seen.contains(u)) {
                                     seen.add(u);
                                     stack.push(u);
@@ -164,8 +167,8 @@ public class FruchtermanReingoldLayout<N extends INode, E extends IEdge> {
      * @param numberOfIterations
      * @return
      */
-    public INodeArray<N, APoint2D<?>> apply(int numberOfIterations) {
-        final INodeArray<N, APoint2D<?>> result = graph.newNodeArray();
+    public NodeArray<APoint2D<?>> apply(int numberOfIterations) {
+        final NodeArray<APoint2D<?>> result = graph.newNodeArray();
         try {
             apply(numberOfIterations, result, new ProgressSilent(), ProgramExecutorService.getNumberOfCoresToUse());
         } catch (CanceledException ignored) { // can't happen
@@ -179,7 +182,7 @@ public class FruchtermanReingoldLayout<N extends INode, E extends IEdge> {
      * @param numberOfIterations
      * @param result
      */
-    public void apply(int numberOfIterations, INodeArray<N, APoint2D<?>> result) {
+    public void apply(int numberOfIterations, NodeArray<APoint2D<?>> result) {
         try {
             apply(numberOfIterations, result, new ProgressSilent(), ProgramExecutorService.getNumberOfCoresToUse());
         } catch (CanceledException ignored) { // can't happen
@@ -192,7 +195,7 @@ public class FruchtermanReingoldLayout<N extends INode, E extends IEdge> {
      * @param numberOfIterations
      * @param result
      */
-    public void apply(int numberOfIterations, INodeArray<N, APoint2D<?>> result, ProgressListener progress, int numberOfThreads) throws CanceledException {
+    public void apply(int numberOfIterations, NodeArray<APoint2D<?>> result, ProgressListener progress, int numberOfThreads) throws CanceledException {
         progress.setMaximum(numberOfIterations);
         progress.setProgress(0);
 

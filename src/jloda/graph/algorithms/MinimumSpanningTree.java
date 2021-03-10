@@ -17,9 +17,11 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package jloda.graphs.algorithms;
+package jloda.graph.algorithms;
 
-import jloda.graphs.interfaces.*;
+import jloda.graph.Edge;
+import jloda.graph.EdgeSet;
+import jloda.graph.Graph;
 import jloda.util.Pair;
 import jloda.util.ProgressListener;
 
@@ -41,24 +43,24 @@ public class MinimumSpanningTree {
      * @param progress
      * @return
      */
-    public static <N extends INode, E extends IEdge> IEdgeSet<E> apply(IGraph<N, E> graph, Function<E, Number> weightFunction, ProgressListener progress) {
-        final ArrayList<Pair<Double, E>> edges = new ArrayList<>(graph.getNumberOfEdges());
+    public static EdgeSet apply(Graph graph, Function<Edge, Number> weightFunction, ProgressListener progress) {
+        final ArrayList<Pair<Double, Edge>> edges = new ArrayList<>(graph.getNumberOfEdges());
         for (var e : graph.edges()) {
             edges.add(new Pair<>(weightFunction.apply(e).doubleValue(), e));
         }
         edges.sort(Comparator.comparingDouble(Pair::getFirst));
 
-        final INodeIntegerArray<N> component = graph.newNodeIntArray();
+        var component = graph.newNodeIntArray();
         int count = 0;
         for (var v : graph.nodes()) {
             component.put(v, ++count);
         }
 
-        final IEdgeSet<E> result = graph.newEdgeSet();
-        for (Pair<Double, E> pair : edges) {
-            final E e = pair.getSecond();
-            final int oldComponent = component.getValue((N) e.getSource());
-            final int newComponent = component.getValue((N) e.getTarget());
+        var result = graph.newEdgeSet();
+        for (Pair<Double, Edge> pair : edges) {
+            var e = pair.getSecond();
+            final int oldComponent = component.getValue(e.getSource());
+            final int newComponent = component.getValue(e.getTarget());
 
             if (oldComponent != newComponent) {
                 result.add(e);

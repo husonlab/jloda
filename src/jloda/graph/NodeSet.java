@@ -19,20 +19,16 @@
  */
 package jloda.graph;
 
-import jloda.graphs.interfaces.INodeSet;
 import jloda.util.Basic;
 import jloda.util.IteratorAdapter;
 
-import java.util.BitSet;
-import java.util.Collection;
-import java.util.Iterator;
-import java.util.NoSuchElementException;
+import java.util.*;
 
 /**
  * NodeSet implements a set of nodes contained in a given graph
  * Daniel Huson, 2003
  */
-public class NodeSet extends GraphBase implements INodeSet<Node> {
+public class NodeSet extends GraphBase implements Set<Node> {
     private final BitSet bits;
 
     /**
@@ -63,13 +59,7 @@ public class NodeSet extends GraphBase implements INodeSet<Node> {
      * @return a boolean value
      */
     public boolean contains(Object v) {
-        boolean result = false;
-        try {
-            result = bits.get(getOwner().getId((Node) v));
-        } catch (NotOwnerException ex) {
-            Basic.caught(ex);
-        }
-        return result;
+        return v instanceof Node && bits.get(((Node) v).getId());
     }
 
     /**
@@ -130,11 +120,9 @@ public class NodeSet extends GraphBase implements INodeSet<Node> {
      * @return true, if some element is new
      */
     public boolean addAll(final Iterable<? extends Node> collection) {
-        final Iterator<? extends Node> it = collection.iterator();
-
         boolean result = false;
-        while (it.hasNext()) {
-            if (add(it.next()))
+        for (var v : collection) {
+            if (add(v))
                 result = true;
         }
         return result;
@@ -147,7 +135,6 @@ public class NodeSet extends GraphBase implements INodeSet<Node> {
      * @return all contained?
      */
     public boolean containsAll(final Collection<?> collection) {
-
         for (Object o : collection) {
             if (!contains(o))
                 return false;
@@ -164,7 +151,7 @@ public class NodeSet extends GraphBase implements INodeSet<Node> {
     public boolean equals(Object obj) {
         if (obj instanceof Collection) {
             Collection collection = (Collection) obj;
-            return size() == collection.size() && containsAll(collection);
+            return size() == collection.size() && containsAll(collection) && collection.containsAll(this);
         } else
             return false;
     }
@@ -176,11 +163,9 @@ public class NodeSet extends GraphBase implements INodeSet<Node> {
      * @return true, if something actually removed
      */
     public boolean removeAll(final Collection<?> collection) {
-        Iterator it = collection.iterator();
-
         boolean result = false;
-        while (it.hasNext()) {
-            if (remove(it.next()))
+        for (var obj : collection) {
+            if (remove(obj))
                 result = true;
         }
         return result;
@@ -193,17 +178,16 @@ public class NodeSet extends GraphBase implements INodeSet<Node> {
      * @return true, if set changes
      */
     public boolean retainAll(final Collection<?> collection) {
-        if (collection == null)
-            return false;
-        boolean changed = (collection.size() != size() || !containsAll(collection));
-        NodeSet was = (NodeSet) this.clone();
+        final int old = bits.cardinality();
+        final BitSet newBits = new BitSet();
 
-        clear();
-        for (Object v : collection) {
-            if (v instanceof Node && was.contains(v))
-                add((Node) v);
+        for (Object obj : collection) {
+            if (obj instanceof Node) {
+                newBits.set(((Node) obj).getId());
+            }
         }
-        return changed;
+        bits.and(newBits);
+        return old != bits.cardinality();
     }
 
     /**
@@ -221,24 +205,6 @@ public class NodeSet extends GraphBase implements INodeSet<Node> {
     public boolean isEmpty() {
         return bits.isEmpty();
     }
-
-    /**
-     * return all contained nodes as objects
-     *
-     * @return contained nodes
-     */
-    public Node[] toArray() {
-        Node[] result = new Node[bits.cardinality()];
-        int i = 0;
-        Iterator<Node> it = getOwner().nodes().iterator();
-        while (it.hasNext()) {
-            Node v = it.next();
-            if (contains(v))
-                result[i++] = v;
-        }
-        return result;
-    }
-
 
     /**
      * Puts all nodes into set.
@@ -280,31 +246,22 @@ public class NodeSet extends GraphBase implements INodeSet<Node> {
     }
 
     /**
-     * returns the set as many objects as fit into the given array
-     *
-     * @param objects
-     * @return nodes in this set
+     * return all contained edges as array
      */
-    public Node[] toArray(Node[] objects) {
-        if (objects == null)
-            throw new NullPointerException();
-        int i = 0;
-        for (Node node : this) {
-            if (i == objects.length)
-                break;
-            objects[i++] = node;
-        }
-        return objects;
+    public Node[] toArray() {
+        return toArray(new Node[0]);
     }
 
     /**
-     * todo: is this correct???
+     * copy to array
      *
      * @param objects
      * @param <T>
      * @return
      */
     public <T> T[] toArray(T[] objects) {
+        if (objects.length < size())
+            objects = Arrays.copyOf(objects, size());
         int i = 0;
         for (Node node : this) {
             if (i == objects.length)

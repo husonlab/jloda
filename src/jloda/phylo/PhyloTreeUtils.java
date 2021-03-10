@@ -287,7 +287,7 @@ public class PhyloTreeUtils {
     public static boolean areSingleLabeledTreesWithSameTaxa(PhyloTree tree1, PhyloTree tree2) {
         Set<String> labels1 = new HashSet<>();
 
-        if (tree1.getSpecialEdges().size() > 0 || tree2.getSpecialEdges().size() > 0)
+        if (tree1.getNumberSpecialEdges() > 0 || tree2.getNumberSpecialEdges() > 0)
             return false;
 
         for (Node v = tree1.getFirstNode(); v != null; v = v.getNext()) {

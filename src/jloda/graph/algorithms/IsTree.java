@@ -17,35 +17,35 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package jloda.graphs.algorithms;
+package jloda.graph.algorithms;
 
 
-import jloda.graphs.interfaces.IEdge;
-import jloda.graphs.interfaces.IGraph;
-import jloda.graphs.interfaces.INode;
-import jloda.graphs.interfaces.INodeSet;
+import jloda.graph.Edge;
+import jloda.graph.Graph;
+import jloda.graph.Node;
+import jloda.graph.NodeSet;
 
 /**
  * is the graph a tree?
  */
 public class IsTree {
 
-    public static <N extends INode, E extends IEdge> boolean apply(IGraph<N, E> graph) {
+    public static boolean apply(Graph graph) {
         try {
             if (graph.getNumberOfNodes() > 0) {
-                final INodeSet<N> visited = graph.newNodeSet();
-                return !hasCycleRec(graph.nodes().iterator().next(), null, visited) && visited.size() == graph.getNumberOfNodes();
+                var visited = graph.newNodeSet();
+                return !hasCycleRec(graph.getFirstNode(), null, visited) && visited.size() == graph.getNumberOfNodes();
             }
         } catch (Exception ignored) {
         }
         return false;
     }
 
-    private static <N extends INode, E extends IEdge> boolean hasCycleRec(N v, E e, INodeSet<N> visited) {
+    private static boolean hasCycleRec(Node v, Edge e, NodeSet visited) {
         visited.add(v);
         for (var f : v.adjacentEdges()) {
             if (f != e) {
-                N w = (N) f.getOpposite(v);
+                Node w = f.getOpposite(v);
                 if (visited.contains(w) || hasCycleRec(w, f, visited))
                     return true;
             }

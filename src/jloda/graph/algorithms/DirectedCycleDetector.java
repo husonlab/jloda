@@ -17,7 +17,7 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package jloda.graphs.algorithms;
+package jloda.graph.algorithms;
 
 import jloda.graph.*;
 
@@ -30,7 +30,7 @@ import java.util.Stack;
  * Created by huson on 8/21/16.
  */
 public class DirectedCycleDetector {
-    private final Graph G;
+    private final Graph graph;
     private final NodeSet marked;
     private final NodeArray<Edge> edgeTo;
     private final NodeSet onStack;
@@ -39,13 +39,13 @@ public class DirectedCycleDetector {
     /**
      * constructor
      *
-     * @param G
+     * @param graph
      */
-    public DirectedCycleDetector(Graph G) {
-        this.G = G;
-        onStack = new NodeSet(G);
-        edgeTo = new NodeArray<>(G);
-        marked = new NodeSet(G);
+    public DirectedCycleDetector(Graph graph) {
+        this.graph = graph;
+        onStack = new NodeSet(graph);
+        edgeTo = new NodeArray<>(graph);
+        marked = new NodeSet(graph);
         cycle = new Stack<>();
     }
 
@@ -60,9 +60,9 @@ public class DirectedCycleDetector {
         marked.clear();
         cycle.clear();
 
-        for (Node v = G.getFirstNode(); v != null; v = G.getNextNode(v)) {
+        for (Node v = graph.getFirstNode(); v != null; v = graph.getNextNode(v)) {
             if (!marked.contains(v))
-                detectRec(G, v);
+                detectRec(graph, v);
         }
         return hasCycle();
     }

@@ -25,16 +25,12 @@
  */
 package jloda.graph;
 
-import jloda.graphs.interfaces.IEdgeSet;
-
-import java.util.BitSet;
-import java.util.Collection;
-import java.util.Iterator;
+import java.util.*;
 
 /**
- * EdgeSet implements a set of adjacentEdges contained in a given graph
+ * EdgeSet implements a set of edges contained in a given graph
  */
-public class EdgeSet extends GraphBase implements IEdgeSet<Edge> {
+public class EdgeSet extends GraphBase implements Iterable<Edge>, Set<Edge> {
     final BitSet bits;
 
     /**
@@ -65,7 +61,7 @@ public class EdgeSet extends GraphBase implements IEdgeSet<Edge> {
      * @return true, if new
      */
     public boolean add(Edge e) {
-        if (contains(e))
+        if (bits.get(e.getId()))
             return false;
         else {
             bits.set(e.getId(), true);
@@ -79,7 +75,7 @@ public class EdgeSet extends GraphBase implements IEdgeSet<Edge> {
      * @param e Edge
      */
     public boolean remove(Object e) {
-        if (e instanceof Edge && contains(e)) {
+        if (e instanceof Edge && bits.get(((Edge) e).getId())) {
             bits.set(((Edge) e).getId(), false);
             return true;
         } else
@@ -88,7 +84,7 @@ public class EdgeSet extends GraphBase implements IEdgeSet<Edge> {
     }
 
     /**
-     * adds all adjacentEdges in the given collection
+     * adds all edges in the given collection
      *
      * @param collection
      * @return true, if some element is new
@@ -105,11 +101,9 @@ public class EdgeSet extends GraphBase implements IEdgeSet<Edge> {
      * @return true, if some element is new
      */
     public boolean addAll(final Iterable<? extends Edge> collection) {
-        final Iterator<? extends Edge> it = collection.iterator();
-
         boolean result = false;
-        while (it.hasNext()) {
-            if (add(it.next()))
+        for (var e : collection) {
+            if (add(e))
                 result = true;
         }
         return result;
@@ -123,7 +117,6 @@ public class EdgeSet extends GraphBase implements IEdgeSet<Edge> {
      * @return all contained?
      */
     public boolean containsAll(Collection collection) {
-
         for (Object aCollection : collection) {
             if (!contains(aCollection))
                 return false;
@@ -132,17 +125,15 @@ public class EdgeSet extends GraphBase implements IEdgeSet<Edge> {
     }
 
     /**
-     * removes all adjacentEdges in the collection
+     * removes all edges in the collection
      *
      * @param collection
      * @return true, if something actually removed
      */
     public boolean removeAll(Collection collection) {
-        Iterator it = collection.iterator();
-
         boolean result = false;
-        while (it.hasNext()) {
-            if (remove(it.next()))
+        for (var obj : collection) {
+            if (remove(obj))
                 result = true;
         }
         return result;
@@ -168,7 +159,7 @@ public class EdgeSet extends GraphBase implements IEdgeSet<Edge> {
     }
 
     /**
-     * Delete all adjacentEdges from set.
+     * Delete all edges from set.
      */
     public void clear() {
         bits.clear();
@@ -184,31 +175,25 @@ public class EdgeSet extends GraphBase implements IEdgeSet<Edge> {
     }
 
     /**
-     * return all contained adjacentEdges as adjacentEdges
-     *
-     * @return contained adjacentEdges
+     * return all contained edges as array
      */
     public Edge[] toArray() {
-        Edge[] result = new Edge[bits.cardinality()];
-        int i = 0;
-        for (Edge e : getOwner().edges()) {
-            if (contains(e))
-                result[i++] = e;
-        }
-        return result;
+        return toArray(new Edge[0]);
     }
 
-    public <T> T[] toArray(T[] ts) {
+    public <T> T[] toArray(T[] objects) {
+        if (objects.length < size())
+            objects = Arrays.copyOf(objects, size());
         int i = 0;
         for (Edge e : getOwner().edges()) {
             if (contains(e))
-                ts[i++] = (T) e;
+                objects[i++] = (T) e;
         }
-        return ts;
+        return objects;
     }
 
     /**
-     * Puts all adjacentEdges into set.
+     * Puts all edges into set.
      */
     public void addAll() {
         for (Edge e : getOwner().edges()) {

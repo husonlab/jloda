@@ -87,7 +87,6 @@ public class PhyloSplitsGraph extends PhyloGraph {
             oldEdge2NewEdge = new EdgeArray<>(src);
 
         super.copy(src, oldNode2NewNode, oldEdge2NewEdge);
-        edgeConfidencesSet = src.edgeConfidencesSet;
 
         for (Node v : src.nodes()) {
             final Node w = (oldNode2NewNode.getValue(v));

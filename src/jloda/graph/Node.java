@@ -21,8 +21,6 @@
 package jloda.graph;
 
 
-import jloda.graphs.interfaces.INode;
-
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
@@ -34,12 +32,11 @@ import java.util.stream.StreamSupport;
  * Node class used by Graph class
  * Daniel Huson, 2003
  */
-public class Node extends NodeEdge implements Comparable<Node>, INode {
+public class Node extends NodeEdge implements Comparable<Node> {
     private Edge firstAdjacentEdge;
     private Edge lastAdjacentEdge;
     private int inDegree = 0;
     private int outDegree = 0;
-    private Object data = null;
 
     /**
      * construct a new node for the given graph. The information in the node is replaced with obj. The node
@@ -109,8 +106,6 @@ public class Node extends NodeEdge implements Comparable<Node>, INode {
             next.prev = prev;
         Graph G = getOwner();
         setOwner(null);
-        info = null;
-        data = null;
         G.fireGraphHasChanged();
     }
 
@@ -197,8 +192,7 @@ public class Node extends NodeEdge implements Comparable<Node>, INode {
         return lastAdjacentEdge;
     }
 
-    @Override
-    public boolean isAdjacent(INode v) {
+    public boolean isAdjacent(Node v) {
         for (var e : adjacentEdges()) {
             if (e.getOpposite(this) == v)
                 return true;
@@ -475,21 +469,6 @@ public class Node extends NodeEdge implements Comparable<Node>, INode {
     }
 
     /**
-     * is this node adjacent to w
-     *
-     * @param w
-     * @return adjacent
-     */
-    public boolean isAdjacent(Node w) throws NotOwnerException {
-        checkOwner(w);
-        for (Node v : adjacentNodes()) {
-            if (v == w)
-                return true;
-        }
-        return false;
-    }
-
-    /**
      * compares with another node of the same graph
      *
      * @param v
@@ -524,13 +503,6 @@ public class Node extends NodeEdge implements Comparable<Node>, INode {
         outDegree--;
     }
 
-    public Object getData() {
-        return data;
-    }
-
-    public void setData(Object data) {
-        this.data = data;
-    }
 
     public Iterable<Edge> outEdges() {
         return () -> new Iterator<>() {
@@ -661,6 +633,7 @@ public class Node extends NodeEdge implements Comparable<Node>, INode {
         };
     }
 
+
     public Stream<Node> parentsStream(boolean parallel) {
         return StreamSupport.stream(parents().spliterator(), parallel);
     }
@@ -708,6 +681,22 @@ public class Node extends NodeEdge implements Comparable<Node>, INode {
 
     public void setLabel(String label) {
         getOwner().setLabel(this, label);
+    }
+
+    public Object getInfo() {
+        return getOwner().getInfo(this);
+    }
+
+    public void setInfo(Object info) {
+        getOwner().setInfo(this, info);
+    }
+
+    public Object getData() {
+        return getOwner().getData(this);
+    }
+
+    public void setData(Object data) {
+        getOwner().setData(this, data);
     }
 }
 

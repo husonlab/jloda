@@ -27,7 +27,7 @@
 package jloda.swing.graphview;
 
 import jloda.graph.*;
-import jloda.graphs.algorithms.ConnectedComponents;
+import jloda.graph.algorithms.ConnectedComponents;
 import jloda.swing.export.ExportManager;
 import jloda.swing.util.BasicSwing;
 import jloda.swing.util.Cursors;

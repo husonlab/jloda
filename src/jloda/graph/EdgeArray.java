@@ -21,19 +21,19 @@
 package jloda.graph;
 
 
-import jloda.graphs.interfaces.IEdgeArray;
 import jloda.util.Basic;
 import jloda.util.IterationUtils;
 
 import java.util.Arrays;
 import java.util.Iterator;
+import java.util.NoSuchElementException;
 
 /**
  * Edge array
  * Daniel Huson 2004
  */
 
-public class EdgeArray<T> extends GraphBase implements IEdgeArray<Edge, T> {
+public class EdgeArray<T> extends GraphBase implements Iterable<T> {
     private T[] data;
     private boolean isClear = true;
     private T defaultValue;
@@ -86,7 +86,6 @@ public class EdgeArray<T> extends GraphBase implements IEdgeArray<Edge, T> {
      * @param e   Edge
      * @param obj Object
      */
-    @Override
     public void put(Edge e, T obj) {
         checkOwner(e);
         int id = e.getId();
@@ -155,8 +154,10 @@ public class EdgeArray<T> extends GraphBase implements IEdgeArray<Edge, T> {
         return isClear;
     }
 
+    public Iterator<T> iterator() {
+        return values().iterator();
+    }
 
-    @Override
     public Iterable<T> values() {
         return () -> IterationUtils.iteratorNonNullElements(new Iterator<T>() {
             int i = 0;
@@ -171,6 +172,44 @@ public class EdgeArray<T> extends GraphBase implements IEdgeArray<Edge, T> {
                 return data[i++];
             }
         });
+    }
+
+    /**
+     * get an iterator over all non-null values
+     *
+     * @return iterator
+     */
+    public Iterable<Node> keys() {
+        return () -> new Iterator<>() {
+            private Node v = getOwner().getFirstNode();
+
+            {
+                while (v != null) {
+                    if (v.getId() < data.length && data[v.getId()] != null)
+                        break;
+                    v = v.getNext();
+                }
+            }
+
+            @Override
+            public boolean hasNext() {
+                return v != null;
+            }
+
+            @Override
+            public Node next() {
+                if (v == null)
+                    throw new NoSuchElementException();
+                Node result = v;
+                v = v.getNext();
+                while (v != null) {
+                    if (v.getId() < data.length && data[v.getId()] != null)
+                        break;
+                    v = v.getNext();
+                }
+                return result;
+            }
+        };
     }
 
     public T getDefaultValue() {

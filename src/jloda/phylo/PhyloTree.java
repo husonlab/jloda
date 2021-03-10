@@ -510,7 +510,7 @@ public class PhyloTree extends PhyloSplitsGraph {
                                     setWeight(e, 0.000001);
                             } else {
                                 if (getWeight(e) > 0)
-                                    setWeight(e, 0);
+                                    setWeight(e, 0.0);
                             }
                         }
                     } catch (IllegalSelfEdgeException e1) {
@@ -583,7 +583,7 @@ public class PhyloTree extends PhyloSplitsGraph {
         } catch (IllegalSelfEdgeException e1) {
             Basic.caught(e1);
         }
-        if (edgeWeights.get(e) != Double.NEGATIVE_INFINITY && edgeWeights.get(f) != Double.NEGATIVE_INFINITY)
+        if (getWeight(e) != Double.NEGATIVE_INFINITY && getWeight(f) != Double.NEGATIVE_INFINITY)
             setWeight(g, getWeight(e) + getWeight(f));
         if (root == v)
             root = null;
@@ -702,8 +702,7 @@ public class PhyloTree extends PhyloSplitsGraph {
 
                             outs.write(label);
                             if (writeEdgeWeights) {
-                                if (getWeight(f) >= 0)
-                                    outs.write(":" + (float) (getWeight(f)));
+                                outs.write(":" + getWeight(f));
                                 if (writeEdgeLabels && getLabel(f) != null) {
                                     outs.write("[" + getLabelForWriting(f) + "]");
                                 }
@@ -719,8 +718,7 @@ public class PhyloTree extends PhyloSplitsGraph {
         }
 
         if (writeEdgeWeights && e != null) {
-            if (getWeight(e) >= 0)
-                outs.write(":" + (float) (getWeight(e)));
+            outs.write(":" + (getWeight(e)));
             if (writeEdgeLabels && getLabel(e) != null) {
                 outs.write("[" + getLabelForWriting(e) + "]");
             }
@@ -839,14 +837,14 @@ public class PhyloTree extends PhyloSplitsGraph {
                         if (!hasReticulateAcceptorEdge)
                             hasReticulateAcceptorEdge = true;
                         else {
-                            setWeight(e, 0);
+                            setWeight(e, 0.0);
                             System.err.println("Warning: node has more than one reticulate-acceptor edge, will only use first");
                         }
                 }
                 if (hasReticulateAcceptorEdge) {
                     for (Edge e : u.inEdges()) {
                         if (getWeight(e) == 0)
-                            setWeight(e, -1);
+                            setWeight(e, -1.0);
                     }
                 }
             }
@@ -1343,7 +1341,7 @@ public class PhyloTree extends PhyloSplitsGraph {
         boolean changed = false;
         for (Edge e : edges()) {
             if (getWeight(e) != 1) {
-                setWeight(e, 1);
+                setWeight(e, 1.0);
                 changed = true;
             }
         }

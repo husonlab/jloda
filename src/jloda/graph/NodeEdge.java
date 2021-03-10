@@ -25,14 +25,13 @@
 package jloda.graph;
 
 /**
- * NodeEdge: util class for both Node and Edge
+ * NodeEdge: base class for both Node and Edge
  * Daniel Huson, 2003
  */
 
-public class NodeEdge extends GraphBase {
+abstract class NodeEdge extends GraphBase {
     private final static int HIDDEN_MASK = (1 << 31);
     private final static int ID_MASK = ~HIDDEN_MASK;
-    Object info;
     private int id;
     NodeEdge prev;
     NodeEdge next;
@@ -46,14 +45,14 @@ public class NodeEdge extends GraphBase {
     /**
      * initialize
      *
-     * @param G    Graph
-     * @param prev NodeEdge
-     * @param next NodeEdge
-     * @param id   int
-     * @param info Object
+     * @param graph Graph
+     * @param prev  NodeEdge
+     * @param next  NodeEdge
+     * @param id    int
+     * @param info  Object
      */
-    void init(Graph G, NodeEdge prev, NodeEdge next, int id, Object info) {
-        setOwner(G);
+    void init(Graph graph, NodeEdge prev, NodeEdge next, int id, Object info) {
+        setOwner(graph);
         this.prev = prev;
         this.next = next;
         setId(id);
@@ -61,23 +60,7 @@ public class NodeEdge extends GraphBase {
             setInfo(info);
     }
 
-    /**
-     * Get the associated info object
-     *
-     * @return info object
-     */
-    public Object getInfo() {
-        return info;
-    }
-
-    /**
-     * Set  the info   object
-     *
-     * @param info info object
-     */
-    public void setInfo(Object info) {
-        this.info = info;
-    }
+    abstract void setInfo(Object info);
 
     /**
      * Get the hash code of this object

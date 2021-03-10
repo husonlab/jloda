@@ -21,7 +21,7 @@
 package jloda.swing.graphview;
 
 import jloda.graph.*;
-import jloda.graphs.algorithms.ConnectedComponents;
+import jloda.graph.algorithms.ConnectedComponents;
 import jloda.phylo.PhyloSplitsGraph;
 import jloda.phylo.PhyloTree;
 import jloda.swing.util.Geometry;

@@ -17,12 +17,10 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package jloda.graphs.algorithms;
+package jloda.graph.algorithms;
 
-import jloda.graphs.interfaces.IEdge;
-import jloda.graphs.interfaces.IGraph;
-import jloda.graphs.interfaces.INode;
-import jloda.graphs.interfaces.INodeSet;
+import jloda.graph.Graph;
+import jloda.graph.Node;
 
 import java.util.Set;
 
@@ -36,9 +34,9 @@ public class ConnectedComponents {
      *
      * @return connected components
      */
-    public static <N extends INode, E extends IEdge> int count(IGraph<N, E> graph) {
+    public static int count(Graph graph) {
         int result = 0;
-        INodeSet<N> used = graph.newNodeSet();
+        var used = graph.newNodeSet();
 
         for (var v : graph.nodes()) {
             if (!used.contains(v)) {
@@ -55,10 +53,10 @@ public class ConnectedComponents {
      * @param v
      * @param used
      */
-    public static <N extends INode> void collect(N v, Set<N> used) {
+    public static void collect(Node v, Set<Node> used) {
         used.add(v);
         for (var e : v.adjacentEdges()) {
-            N w = (N) e.getOpposite(v);
+            var w = e.getOpposite(v);
             if (!used.contains(w))
                 collect(w, used);
         }

@@ -21,13 +21,11 @@
 package jloda.graph;
 
 
-import jloda.graphs.interfaces.IEdgeIntegerArray;
-
 /**
  * edge float array
  * Daniel Huson, 2003
  */
-public class EdgeIntegerArray extends EdgeArray<Integer> implements IEdgeIntegerArray<Edge> {
+public class EdgeIntegerArray extends EdgeArray<Integer> {
     /**
      * Construct an edge array with default value null
      */

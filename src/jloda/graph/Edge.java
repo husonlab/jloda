@@ -20,23 +20,14 @@
 
 package jloda.graph;
 
-import jloda.graphs.interfaces.IEdge;
-import jloda.graphs.interfaces.INode;
-
 /**
- * Edge class used by Graph class
+ * Edge class used by graph class
  *
  * @author Daniel Huson, 2003
  */
-public class Edge extends NodeEdge implements Comparable<Edge>, IEdge {
-    /**
-     * insert before reference edge
-     */
-    final public static int AFTER = 1;
-    /**
-     * insert after reference edge
-     */
-    final public static int BEFORE = -1;
+public class Edge extends NodeEdge implements Comparable<Edge> {
+    final public static int BEFORE = -1; // insert before reference edge
+    final public static int AFTER = 1; // insert after reference edge
 
     private Node source;   //Source vertex
     private Node target;   //Target vertex
@@ -265,8 +256,8 @@ public class Edge extends NodeEdge implements Comparable<Edge>, IEdge {
      * @param v Node
      * @return a Node the Opposite of the Node u
      */
-    public Node getOpposite(INode v) throws NotOwnerException {
-        checkOwner((Node) v);
+    public Node getOpposite(Node v) throws NotOwnerException {
+        checkOwner(v);
         if (v == source)
             return target;
         else if (v == target)
@@ -319,7 +310,6 @@ public class Edge extends NodeEdge implements Comparable<Edge>, IEdge {
             tNext.setPrev(target, tPrev);
 
         setOwner(null);
-        info = null;
         graph.fireGraphHasChanged();
     }
 
@@ -434,6 +424,21 @@ public class Edge extends NodeEdge implements Comparable<Edge>, IEdge {
         getOwner().setLabel(this, label);
     }
 
+    public Object getInfo() {
+        return getOwner().getInfo(this);
+    }
+
+    public void setInfo(Object info) {
+        getOwner().setInfo(this, info);
+    }
+
+    public Object getData() {
+        return getOwner().getData(this);
+    }
+
+    public void setData(Object data) {
+        getOwner().setData(this, data);
+    }
 }
 
 // EOF

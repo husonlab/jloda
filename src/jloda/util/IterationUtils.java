@@ -21,6 +21,8 @@
 package jloda.util;
 
 import java.util.*;
+import java.util.stream.Stream;
+import java.util.stream.StreamSupport;
 
 /**
  * iteration utilities
@@ -129,5 +131,9 @@ public class IterationUtils {
             count++;
         }
         return count;
+    }
+
+    public static <T> Stream<T> asStream(Iterable<T> iterable) {
+        return StreamSupport.stream(iterable.spliterator(), false);
     }
 }

@@ -19,8 +19,6 @@
  */
 package jloda.graph;
 
-import jloda.graphs.interfaces.IEditableGraph;
-import jloda.graphs.interfaces.IGraph;
 import jloda.util.Basic;
 import jloda.util.IterationUtils;
 import jloda.util.IteratorAdapter;
@@ -40,9 +38,7 @@ import java.util.stream.StreamSupport;
  * Daniel Huson, 2002
  * <p/>
  */
-public class Graph extends GraphBase implements IGraph<Node, Edge>, IEditableGraph<Node, Edge> {
-    protected final NodeArray<String> nodeLabels;
-    protected final EdgeArray<String> edgeLabels;
+public class Graph extends GraphBase {
     private Node firstNode;
     private Node lastNode;
     private int numberNodes;
@@ -59,7 +55,14 @@ public class Graph extends GraphBase implements IGraph<Node, Edge>, IEditableGra
 
     private final List<GraphUpdateListener> graphUpdateListeners = new LinkedList<>();  //List of listeners that are fired when the graph changes.
 
-    final EdgeSet specialEdges;
+    private NodeArray<Object> nodeInfo;
+    private NodeArray<String> nodeLabel;
+    private NodeArray<Object> nodeData;
+
+    private EdgeArray<Object> edgeInfo;
+    private EdgeArray<String> edgeLabel;
+    private EdgeArray<Object> edgeData;
+    private EdgeSet specialEdges;
 
     private final List<WeakReference<NodeSet>> nodeSets = new LinkedList<>();
     // created node arrays are kept here. When an node is deleted, it's
@@ -78,9 +81,6 @@ public class Graph extends GraphBase implements IGraph<Node, Edge>, IEditableGra
      */
     public Graph() {
         setOwner(this);
-        specialEdges = new EdgeSet(this);
-        nodeLabels = new NodeArray<>(this);
-        edgeLabels = new EdgeArray<>(this);
     }
 
     /**
@@ -841,50 +841,6 @@ public class Graph extends GraphBase implements IGraph<Node, Edge>, IEditableGra
     }
 
     /**
-     * Get the info associated with node v.
-     *
-     * @param v node
-     * @return the info
-     */
-    public Object getInfo(Node v) {
-        checkOwner(v);
-        return v.getInfo();
-    }
-
-    /**
-     * set the info associated with node v.
-     *
-     * @param v   node
-     * @param obj the info object
-     */
-    public void setInfo(Node v, Object obj) {
-        checkOwner(v);
-        v.setInfo(obj);
-    }
-
-    /**
-     * Get the info associated with edge e.
-     *
-     * @param e edge
-     * @return the info
-     */
-    public Object getInfo(Edge e) {
-        checkOwner(e);
-        return e.getInfo();
-    }
-
-    /**
-     * set the info associated with edge e.
-     *
-     * @param e   edge
-     * @param obj the info object
-     */
-    public void setInfo(Edge e, Object obj) {
-        checkOwner(e);
-        e.setInfo(obj);
-    }
-
-    /**
      * Get an edge directed from one given node to another, if it exists.
      *
      * @param v source node
@@ -1030,6 +986,8 @@ public class Graph extends GraphBase implements IGraph<Node, Edge>, IEditableGra
             Node w = newNode();
             w.setId(v.getId());
             setInfo(w, src.getInfo(v));
+            setData(w, src.getData(v));
+            setLabel(w, src.getLabel(v));
             oldNode2newNode.put(v, w);
         }
         idsNodes = src.idsNodes;
@@ -1044,9 +1002,11 @@ public class Graph extends GraphBase implements IGraph<Node, Edge>, IEditableGra
             } catch (IllegalSelfEdgeException e1) {
                 Basic.caught(e1);
             }
-            if (src.isSpecial(e))
-                setSpecial(f, true);
             setInfo(f, src.getInfo(e));
+            setData(f, src.getData(e));
+            setLabel(f, src.getLabel(e));
+            setSpecial(f, src.isSpecial(e));
+
             oldEdge2newEdge.put(e, f);
         }
         idsEdges = src.idsEdges;
@@ -1117,46 +1077,169 @@ public class Graph extends GraphBase implements IGraph<Node, Edge>, IEditableGra
     }
 
     /**
-     * Sets the label of an edge.
+     * extract a subgraph
      *
-     * @param e   Edge
-     * @param lab String
+     * @param nodes use only these nodes, if not null
+     * @param edges use only these adjacentEdges, if not null
+     * @return a graph
      */
-    public void setLabel(Edge e, String lab) {
-        edgeLabels.put(e, lab);
-        fireEdgeLabelChanged(e, lab);
+    public Graph extract(Set<Node> nodes, Set<Edge> edges) {
+        final var tarGraph = new Graph();
 
-    }
+        var nodeId = 0;
+        NodeArray<Node> src2tarNode = newNodeArray();
+        for (var srcNode : (nodes != null ? nodes : nodes())) {
+            var tarNode = tarGraph.newNode(nodeId++);
+            src2tarNode.put(srcNode, tarNode);
+            tarNode.setLabel(srcNode.getLabel());
+            tarNode.setInfo(srcNode.getInfo());
+            tarNode.setData(srcNode.getData());
+        }
 
-    /**
-     * Gets the label of an edge.
-     *
-     * @param e Edge
-     * @return edgeLabels String
-     */
-    public String getLabel(Edge e) {
-        return edgeLabels.getValue(e);
+        var edgeId = 0;
+        for (var srcEdge : (edges != null ? edges : edges())) {
+            var tarA = src2tarNode.getValue(srcEdge.getSource());
+            var tarB = src2tarNode.getValue(srcEdge.getTarget());
+            if (tarA != null && tarB != null) {
+                var tarEdge = tarGraph.newEdge(tarA, tarB);
+                tarEdge.setInfo(srcEdge.getInfo());
+                tarEdge.setLabel(srcEdge.getLabel());
+                tarEdge.setData(tarEdge.getData());
+            }
+        }
+        return tarGraph;
     }
 
     /**
      * Sets the label of a node.
-     *
-     * @param v     Node
-     * @param label String
      */
     public void setLabel(Node v, String label) {
-        nodeLabels.setValue(v, label);
+        if (nodeLabel == null) {
+            if (label == null)
+                return;
+            nodeLabel = newNodeArray();
+        }
+        nodeLabel.setValue(v, label);
         fireNodeLabelChanged(v, label);
     }
 
     /**
      * Gets the taxon label of a node.
-     *
-     * @param v Node
-     * @return nodeLabels String
      */
     public String getLabel(Node v) {
-        return nodeLabels.getValue(v);
+        return nodeLabel == null ? null : nodeLabel.getValue(v);
+    }
+
+    /**
+     * Sets the label of an edge.
+     */
+    public void setLabel(Edge e, String label) {
+        if (edgeLabel == null) {
+            if (label == null)
+                return;
+            edgeLabel = newEdgeArray();
+        }
+        edgeLabel.put(e, label);
+        fireEdgeLabelChanged(e, label);
+
+    }
+
+    /**
+     * Gets the label of an edge.
+     */
+    public String getLabel(Edge e) {
+        return edgeLabel == null ? null : edgeLabel.getValue(e);
+    }
+
+    /**
+     * Sets the info of a node.
+     */
+    public void setInfo(Node v, Object info) {
+        if (nodeInfo == null) {
+            if (info == null)
+                return;
+            nodeInfo = newNodeArray();
+        }
+        nodeInfo.setValue(v, info);
+    }
+
+    /**
+     * Gets the info of a node.
+     */
+    public Object getInfo(Node v) {
+        return nodeInfo == null ? null : nodeInfo.getValue(v);
+    }
+
+    /**
+     * Sets the info of an edge.
+     */
+    public void setInfo(Edge e, Object info) {
+        if (edgeInfo == null) {
+            if (info == null)
+                return;
+            edgeInfo = newEdgeArray();
+        }
+        edgeInfo.put(e, info);
+    }
+
+    /**
+     * Gets the info of an edge.
+     */
+    public Object getInfo(Edge e) {
+        return edgeInfo == null ? null : edgeInfo.getValue(e);
+    }
+
+    /**
+     * Sets the data of a node.
+     *
+     * @param v    Node
+     * @param data String
+     */
+    public void setData(Node v, Object data) {
+        if (nodeData == null) {
+            if (data == null)
+                return;
+            nodeData = newNodeArray();
+        }
+        nodeData.setValue(v, data);
+    }
+
+    /**
+     * Gets the data of a node.
+     */
+    public Object getData(Node v) {
+        return nodeData == null ? null : nodeData.getValue(v);
+    }
+
+    /**
+     * Sets the data of an edge.
+     *
+     * @param e    Edge
+     * @param data String
+     */
+    public void setData(Edge e, Object data) {
+        if (edgeData == null) {
+            if (data == null)
+                return;
+            edgeData = newEdgeArray();
+        }
+        edgeData.put(e, data);
+    }
+
+    /**
+     * Gets the data of an edge.
+     */
+    public Object getData(Edge e) {
+        return edgeData == null ? null : edgeData.getValue(e);
+    }
+
+
+    public Iterable<String> nodeLabels() {
+        return nodeLabel != null ? nodeLabel.values() : Collections.emptySet();
+    }
+
+    public Iterable<String> edgeLabels() {
+        return edgeLabel != null ? edgeLabel.values() : Collections.emptySet();
     }
 
     /**
@@ -1361,7 +1444,7 @@ public class Graph extends GraphBase implements IGraph<Node, Edge>, IEditableGra
      * @return true, if marked as special
      */
     public boolean isSpecial(Edge e) {
-        return specialEdges.size() > 0 && specialEdges.contains(e);
+        return specialEdges != null && specialEdges.size() > 0 && specialEdges.contains(e);
     }
 
     /**
@@ -1371,28 +1454,31 @@ public class Graph extends GraphBase implements IGraph<Node, Edge>, IEditableGra
      * @param special
      */
     public void setSpecial(Edge e, boolean special) {
-        if (special && !specialEdges.contains(e))
+        if (specialEdges == null) {
+            if (!special)
+                return;
+            specialEdges = newEdgeSet();
+        }
+        if (special)
             specialEdges.add(e);
-        else if (!special)
+        else
             specialEdges.remove(e);
     }
 
     /**
-     * gets the number of special adjacentEdges
+     * gets the number of special edges
      *
-     * @return number of special adjacentEdges
+     * @return number of special edges
      */
     public int getNumberSpecialEdges() {
-        return specialEdges.size();
+        return specialEdges == null ? 0 : specialEdges.size();
     }
 
     /**
      * gets the set of special adjacentEdges
-     *
-     * @return special adjacentEdges
      */
-    public EdgeSet getSpecialEdges() {
-        return specialEdges;
+    public Iterable<Edge> specialEdges() {
+        return specialEdges != null ? specialEdges : Collections.emptySet();
     }
 
     /**
@@ -1659,14 +1745,14 @@ public class Graph extends GraphBase implements IGraph<Node, Edge>, IEditableGra
         this.name = name;
     }
 
-    public Node searchNodeId(int id) {
+    public Node findNodeById(int id) {
         for (Node v : nodes())
             if (v.getId() == id)
                 return v;
         return null;
     }
 
-    public Edge searchEdgeId(int id) {
+    public Edge findEdgeById(int id) {
         for (Edge e : edges())
             if (e.getId() == id)
                 return e;
@@ -1684,80 +1770,36 @@ public class Graph extends GraphBase implements IGraph<Node, Edge>, IEditableGra
         }
     }
 
-    @Override
     public NodeSet newNodeSet() {
         return new NodeSet(this);
     }
 
-    @Override
     public <T> NodeArray<T> newNodeArray() {
         return new NodeArray<>(this);
     }
 
-    @Override
     public NodeIntegerArray newNodeIntArray() {
         return new NodeIntegerArray(this);
     }
 
-    @Override
     public NodeDoubleArray newNodeDoubleArray() {
         return new NodeDoubleArray(this);
     }
 
-    @Override
     public EdgeSet newEdgeSet() {
         return new EdgeSet(this);
     }
 
-    @Override
     public <T> EdgeArray<T> newEdgeArray() {
         return new EdgeArray<>(this);
     }
 
-    @Override
     public EdgeIntegerArray newEdgeIntArray() {
         return new EdgeIntegerArray(this);
     }
 
-    @Override
     public EdgeDoubleArray newEdgeDoubleArray() {
         return new EdgeDoubleArray(this);
-    }
-
-    /**
-     * Gets an enumeration of all node labels.
-     */
-    public Iterable<String> getNodeLabels() {
-        return new Iterable<String>() {
-            @Override
-            public Iterator<String> iterator() {
-                return new Iterator<>() {
-                    Iterator<Node> it = nodes().iterator();
-                    Node next = nextWithLabel();
-
-                    @Override
-                    public boolean hasNext() {
-                        return next != null;
-                    }
-
-                    @Override
-                    public String next() {
-                        var label = next.getLabel();
-                        next = nextWithLabel();
-                        return label;
-                    }
-
-                    private Node nextWithLabel() {
-                        while (it.hasNext()) {
-                            Node v = it.next();
-                            if (v.getLabel() != null)
-                                return v;
-                        }
-                        return null;
-                    }
-                };
-            }
-        };
     }
 }
 

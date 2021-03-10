@@ -21,15 +21,12 @@
 package jloda.graph;
 
 
-import jloda.graphs.interfaces.INodeIntegerArray;
-
-
 /**
  * Node integer array
  * Daniel Huson, 2003
  */
 
-public class NodeIntegerArray extends NodeArray<Integer> implements INodeIntegerArray<Node> {
+public class NodeIntegerArray extends NodeArray<Integer> {
 
     /**
      * Construct a node array with default value null

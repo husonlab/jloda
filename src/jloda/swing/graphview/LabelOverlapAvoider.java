@@ -20,7 +20,8 @@
 
 package jloda.swing.graphview;
 
-import jloda.graph.*;
+import jloda.graph.Node;
+import jloda.graph.NodeSet;
 
 import java.awt.*;
 import java.awt.geom.Area;
@@ -37,7 +38,6 @@ public class LabelOverlapAvoider {
     private int historyA;  // first filled pos
     private int historyB; //first empty pos
     private final NodeSet visibleNodeLabels;
-    private final EdgeSet visibleEdgeLabels;
     private boolean enabled = false;
     Shape firstShape; // keep first shape to avoid wrap-around problem
 
@@ -50,7 +50,6 @@ public class LabelOverlapAvoider {
     public LabelOverlapAvoider(GraphView graphView, int length) {
         this.trans = graphView.trans;
         visibleNodeLabels = new NodeSet(graphView.getGraph());
-        visibleEdgeLabels = new EdgeSet(graphView.getGraph());
         history = new NodeView[length];
         historyA = 0;
         historyB = 0;
@@ -73,7 +72,7 @@ public class LabelOverlapAvoider {
      * @param vb nodeview or edgeview
      * @return true, if this label will not overlap the last couple drawn
      */
-    public boolean hasNoOverlapToPreviouslyDrawnLabels(NodeEdge v, ViewBase vb) {
+    public boolean hasNoOverlapToPreviouslyDrawnLabels(Node v, ViewBase vb) {
         if (!isEnabled())
             return true;
         if (!vb.isLabelVisible())
@@ -123,8 +122,6 @@ public class LabelOverlapAvoider {
 
         if (v instanceof Node)
             visibleNodeLabels.add((Node) v);
-        else if (v instanceof Edge)
-            visibleEdgeLabels.add((Edge) v);
         return true;
     }
 
@@ -152,15 +149,6 @@ public class LabelOverlapAvoider {
      */
     public boolean isVisible(Node v) {
         return !isEnabled() || visibleNodeLabels.contains(v);
-    }
-
-    /**
-     * gets the set of all adjacentEdges whose labels were permitted
-     *
-     * @return adjacentEdges with visible labels
-     */
-    public boolean isVisible(Edge e) {
-        return !isEnabled() || visibleEdgeLabels.contains(e);
     }
 
     /**

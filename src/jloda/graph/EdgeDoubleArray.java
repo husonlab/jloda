@@ -20,13 +20,11 @@
 
 package jloda.graph;
 
-import jloda.graphs.interfaces.IEdgeDoubleArray;
-
 /**
  * edge double array
  * Daniel Huson, 11.2017
  */
-public class EdgeDoubleArray extends EdgeArray<Double> implements IEdgeDoubleArray<Edge> {
+public class EdgeDoubleArray extends EdgeArray<Double> {
     /**
      * Construct an edge array with default value null
      */

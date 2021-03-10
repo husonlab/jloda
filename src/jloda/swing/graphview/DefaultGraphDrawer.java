@@ -197,7 +197,7 @@ public class DefaultGraphDrawer implements IGraphDrawer {
                 }
             }
 
-            for (Node v = graph.getFirstNode(); v != null; v = graph.getNextNode(v)) {
+            for (var v : graph.nodes()) {
                 if (!graphView.selectedNodes.contains(v)) {
                     final NodeView nv = graphView.getNV(v);
                     if (nv.getLineWidth() != stroke.getLineWidth()) {

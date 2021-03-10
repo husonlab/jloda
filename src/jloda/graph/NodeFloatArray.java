@@ -21,14 +21,12 @@
 package jloda.graph;
 
 
-import jloda.graphs.interfaces.INodeArray;
-
 /**
  * Node float array
  * Daniel Huson, 2003
  */
 
-public class NodeFloatArray extends NodeArray<Float> implements INodeArray<Node, Float> {
+public class NodeFloatArray extends NodeArray<Float> {
     /**
      * Construct a node array with default value null
      */
