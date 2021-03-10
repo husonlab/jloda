@@ -21,10 +21,7 @@
 package jloda.phylo;
 
 import jloda.graph.*;
-import jloda.util.Basic;
-import jloda.util.Pair;
-import jloda.util.ProgramProperties;
-import jloda.util.Single;
+import jloda.util.*;
 
 import java.io.*;
 import java.util.*;
@@ -52,7 +49,7 @@ public class PhyloTree extends PhyloSplitsGraph {
 
     private double weight = 1;
 
-    protected final NodeArray<List<Node>> node2GuideTreeChildren; // keep track of children in LSA tree in network
+    protected NodeArray<List<Node>> node2GuideTreeChildren; // keep track of children in LSA tree in network
 
     /**
      * Construct a new empty phylogenetic tree.
@@ -60,7 +57,6 @@ public class PhyloTree extends PhyloSplitsGraph {
     public PhyloTree() {
         super();
         cleanLabelsOnWrite = ProgramProperties.get("cleanTreeLabelsOnWrite", false);
-        node2GuideTreeChildren = new NodeArray<>(this);
     }
 
     /**
@@ -79,6 +75,7 @@ public class PhyloTree extends PhyloSplitsGraph {
     public void clear() {
         super.clear();
         setRoot(null);
+        node2GuideTreeChildren = null;
     }
 
     /**
@@ -88,25 +85,8 @@ public class PhyloTree extends PhyloSplitsGraph {
      * @return mapping of old nodes to new nodes
      */
     public NodeArray<Node> copy(PhyloTree src) {
-        NodeArray<Node> oldNode2NewNode = super.copy(src);
-
-        if (src.getRoot() != null) {
-            Node root = src.getRoot();
-            setRoot(oldNode2NewNode.getValue(root));
-        }
-        for (Node v = src.getFirstNode(); v != null; v = v.getNext()) {
-            List<Node> children = src.getNode2GuideTreeChildren().getValue(v);
-            if (children != null) {
-                List<Node> newChildren = new LinkedList<>();
-                for (Node w : children) {
-                    newChildren.add(oldNode2NewNode.getValue(w));
-                }
-                getNode2GuideTreeChildren().put(oldNode2NewNode.getValue(v), newChildren);
-            }
-        }
-
-        setName(src.getName());
-
+        NodeArray<Node> oldNode2NewNode = src.newNodeArray();
+        copy(src, oldNode2NewNode, null);
         return oldNode2NewNode;
     }
 
@@ -134,6 +114,7 @@ public class PhyloTree extends PhyloSplitsGraph {
                 getNode2GuideTreeChildren().put(oldNode2NewNode.getValue(v), newChildren);
             }
         }
+        setName(src.getName());
     }
 
     /**
@@ -268,7 +249,7 @@ public class PhyloTree extends PhyloSplitsGraph {
     }
 
     /**
-     * Read a tree in newick notation as unrooted tree
+     * Read a tree in Newick notation as unrooted tree
      *
      * @param r the reader
      */
@@ -1178,25 +1159,14 @@ public class PhyloTree extends PhyloSplitsGraph {
     }
 
     /**
-     * returns the number of nodes with outdegree 0
-     *
-     * @return number of out-degree 0 nodes
-     */
-    public int getNumberOfLeaves() {
-        int count = 0;
-        for (Node v = getFirstNode(); v != null; v = v.getNext())
-            if (v.getOutDegree() == 0)
-                count++;
-        return count;
-    }
-
-
-    /**
      * gets the node-2-guide-tree-children array
      *
      * @return array
      */
     public NodeArray<List<Node>> getNode2GuideTreeChildren() {
+        if (node2GuideTreeChildren == null)
+            node2GuideTreeChildren = newNodeArray();
+
         return node2GuideTreeChildren;
     }
 
@@ -1274,6 +1244,15 @@ public class PhyloTree extends PhyloSplitsGraph {
     }
 
     /**
+     * returns the number of nodes with outdegree 0
+     *
+     * @return number of out-degree 0 nodes
+     */
+    public int countLeaves() {
+        return IterationUtils.count(leaves());
+    }
+
+    /**
      * returns a new tree in which all adjacentEdges of length < min length have been contracted
      *
      * @param minLength
@@ -1288,12 +1267,12 @@ public class PhyloTree extends PhyloSplitsGraph {
      *
      * @return true, if anything contracted
      */
-    public boolean contractEdges(Set<Edge> edgesToContrat, Single<Boolean> selfEdgeEncountered) {
-        boolean hasContractedOne = edgesToContrat.size() > 0;
+    public boolean contractEdges(Set<Edge> edgesToContract, Single<Boolean> selfEdgeEncountered) {
+        boolean hasContractedOne = edgesToContract.size() > 0;
 
-        while (edgesToContrat.size() > 0) {
-            final Edge e = edgesToContrat.iterator().next();
-            edgesToContrat.remove(e);
+        while (edgesToContract.size() > 0) {
+            final Edge e = edgesToContract.iterator().next();
+            edgesToContract.remove(e);
 
             final Node v = e.getSource();
             final Node w = e.getTarget();
@@ -1301,9 +1280,9 @@ public class PhyloTree extends PhyloSplitsGraph {
             for (Edge f : v.adjacentEdges()) { // will remove e from edgesToContract here
                 if (f != e) {
                     final Node u = f.getOpposite(v);
-                    final boolean needsContracting = edgesToContrat.contains(f);
+                    final boolean needsContracting = edgesToContract.contains(f);
                     if (needsContracting)
-                        edgesToContrat.remove(f);
+                        edgesToContract.remove(f);
 
                     if (u != w) {
                         final Edge z;
@@ -1315,7 +1294,7 @@ public class PhyloTree extends PhyloSplitsGraph {
                         setConfidence(z, getConfidence(f));
                         setLabel(z, getLabel(z));
                         if (needsContracting) {
-                            edgesToContrat.add(z);
+                            edgesToContract.add(z);
                         }
                     } else if (selfEdgeEncountered != null)
                         selfEdgeEncountered.set(true);
@@ -1333,20 +1312,6 @@ public class PhyloTree extends PhyloSplitsGraph {
         return hasContractedOne;
     }
 
-
-    /**
-     * give all adjacentEdges unit weight
-     */
-    public boolean makeEdgesUnitWeight() {
-        boolean changed = false;
-        for (Edge e : edges()) {
-            if (getWeight(e) != 1) {
-                setWeight(e, 1.0);
-                changed = true;
-            }
-        }
-        return changed;
-    }
 
     /**
      * reticulation edge of positive length

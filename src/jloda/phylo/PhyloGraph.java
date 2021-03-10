@@ -22,8 +22,6 @@ package jloda.phylo;
 
 
 import jloda.graph.*;
-import jloda.util.Basic;
-import jloda.util.BitSetUtils;
 import jloda.util.EmptyIterator;
 
 import java.util.*;
@@ -66,9 +64,11 @@ public class PhyloGraph extends Graph {
      * Clears the graph.  All auxiliary arrays are cleared.
      */
     public void clear() {
-        deleteAllNodes();
+        super.clear();
         taxon2node.clear();
         node2taxa.clear();
+        edgeWeights = null;
+        edgeConfidences = null;
     }
 
     /**
@@ -79,7 +79,7 @@ public class PhyloGraph extends Graph {
      */
     public NodeArray<Node> copy(PhyloGraph src) {
         final NodeArray<Node> oldNode2NewNode = new NodeArray<>(src);
-        copy(src, oldNode2NewNode, new EdgeArray<>(src));
+        copy(src, oldNode2NewNode, null);
         return oldNode2NewNode;
     }
 
@@ -105,9 +105,6 @@ public class PhyloGraph extends Graph {
 
         for (Node v : src.nodes()) {
             final Node w = (oldNode2NewNode.getValue(v));
-            setLabel(w, src.getLabel(v));
-            setInfo(w, src.getInfo(v));
-            setData(w, src.getData(v));
             for (Integer tax : src.getTaxa(v)) {
                 addTaxon(w, tax);
                 added.set(tax);
@@ -115,30 +112,10 @@ public class PhyloGraph extends Graph {
         }
         for (Edge e : src.edges()) {
             final Edge f = (oldEdge2NewEdge.getValue(e));
-            setInfo(f, src.getInfo(f));
-            setLabel(f, src.getLabel(e));
-            setData(f, src.getData(e));
-            setWeight(f, src.getWeight(e));
-            edgeConfidences.put(f, src.edgeConfidences.getValue(e));
-        }
-
-        if (src.getNumberOfTaxa() != getNumberOfTaxa() || src.getNumberOfNodes() != getNumberOfNodes()) {
-            System.err.println("++++++++++ Copy problem:");
-            System.err.println("Src: " + src.getName());
-            System.err.println("Src size:  " + src.getNumberOfTaxa() + ": " + Basic.toString(BitSetUtils.asBitSet(src.taxon2node.keySet())));
-            System.err.println("src nodes: " + src.getNumberOfNodes());
-            System.err.println("Cpy: " + getName());
-            System.err.println("Cpy size:  " + getNumberOfTaxa() + ": " + Basic.toString(BitSetUtils.asBitSet(taxon2node.keySet())));
-            System.err.println("Cpy nodes: " + getNumberOfNodes());
-
-            final BitSet nullTaxa = new BitSet();
-            for (Integer taxon : src.taxon2node.keySet()) {
-                if (src.taxon2node.get(taxon) == null)
-                    nullTaxa.set(taxon);
-            }
-            if (nullTaxa.cardinality() > 0)
-                System.err.println("Src: taxa mapped to null (" + nullTaxa.cardinality() + "): " + Basic.toString(nullTaxa));
-            System.err.println("++++++++++");
+            if (src.edgeWeights != null)
+                setWeight(f, src.getWeight(e));
+            if (src.edgeConfidences != null)
+                setConfidence(f, src.getConfidence(e));
         }
         return oldNode2NewNode;
     }
@@ -349,29 +326,5 @@ public class PhyloGraph extends Graph {
         } catch (IllegalSelfEdgeException e1) {
             throw new RuntimeException(e1);
         }
-    }
-
-    /**
-     * scales all edge weights by the given factor
-     *
-     * @param factor
-     */
-    public void scaleEdgeWeights(float factor) {
-        for (Edge e = getFirstEdge(); e != null; e = getNextEdge(e)) {
-            setWeight(e, factor * getWeight(e));
-        }
-    }
-
-    /**
-     * Returns the number of nodes that have a label.
-     *
-     * @return count int
-     */
-    public int computeNumLabeledNodes() {
-        int count = 0;
-        for (Node v = getFirstNode(); v != null; v = getNextNode(v))
-            if (getLabel(v) != null)
-                count++;
-        return count;
     }
 }

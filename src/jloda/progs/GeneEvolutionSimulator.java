@@ -23,6 +23,7 @@ package jloda.progs;
 import jloda.graph.Edge;
 import jloda.graph.Node;
 import jloda.graph.NotOwnerException;
+import jloda.phylo.PhyloGraph;
 import jloda.phylo.PhyloTree;
 import jloda.swing.graphview.EdgeView;
 import jloda.swing.graphview.GraphViewListener;
@@ -90,7 +91,7 @@ public class GeneEvolutionSimulator {
             System.err.println("# Factor: " + factor + " N: " + initNumber + " pG; " + probGain + " pL: " + probLoss);
         }
         if (factor != 1.0)
-            tree.scaleEdgeWeights(factor);
+            scaleEdgeWeights(tree, factor);
 
         simulate(initNumber, probGain, probLoss, tree);
 
@@ -284,5 +285,18 @@ public class GeneEvolutionSimulator {
             }
         }
     }
+
+
+    /**
+     * scales all edge weights by the given factor
+     *
+     * @param factor
+     */
+    private static void scaleEdgeWeights(PhyloGraph graph, float factor) {
+        for (var e : graph.edges()) {
+            graph.setWeight(e, factor * graph.getWeight(e));
+        }
+    }
+
 
 }

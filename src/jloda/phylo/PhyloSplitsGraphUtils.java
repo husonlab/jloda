@@ -37,7 +37,7 @@ public class PhyloSplitsGraphUtils {
      * @param noise      alter split-angles randomly by a small amount to prevent occlusion of adjacentEdges.
      * @return node array of coordinates
      */
-    public static NodeArray<APoint2D> embed(PhyloSplitsGraph graph, int[] ordering, boolean useWeights, boolean noise) {
+    public static NodeArray<APoint2D<?>> embed(PhyloSplitsGraph graph, int[] ordering, boolean useWeights, boolean noise) {
         int ntax = ordering.length - 1;
 
         Node[] ordering_n = new Node[ntax];
@@ -48,7 +48,7 @@ public class PhyloSplitsGraphUtils {
 
         // get splits
         HashMap<Integer, ArrayList<Node>> splits = getSplits(graph, ordering_n);
-        for (Integer key : splits.keySet()) sortSplit(graph, ordering_n, splits.get(key));
+        for (Integer key : splits.keySet()) sortSplit(ordering_n, splits.get(key));
 
         HashMap<Integer, Double> dirs = getDirectionVectors(graph, splits, ordering_n, noise);
 
@@ -142,7 +142,7 @@ public class PhyloSplitsGraphUtils {
      * @param ordering the cyclic ordering
      * @param split    the split which has to be sorted
      */
-    private static void sortSplit(PhyloSplitsGraph graph, Node[] ordering, ArrayList<Node> split) {
+    private static void sortSplit(Node[] ordering, ArrayList<Node> split) {
 
         // convert Node[] to List in order to use List.indexOf(..)
         List<Node> orderingList = Arrays.asList(ordering);
@@ -240,8 +240,8 @@ public class PhyloSplitsGraphUtils {
      * @param useWeights scale adjacentEdges by edge weights?
      * @return node array of coordinates
      */
-    public static NodeArray<APoint2D> computeCoords(PhyloSplitsGraph graph, HashMap<Integer, Double> dirs, Node[] ordering, boolean useWeights) {
-        final NodeArray<APoint2D> coords = new NodeArray<>(graph);
+    public static NodeArray<APoint2D<?>> computeCoords(PhyloSplitsGraph graph, HashMap<Integer, Double> dirs, Node[] ordering, boolean useWeights) {
+        final NodeArray<APoint2D<?>> coords = new NodeArray<>(graph);
 
         /* stack for nodes which still have to be visited */
         final Stack<Node> toVisit = new Stack<>();
@@ -252,11 +252,11 @@ public class PhyloSplitsGraphUtils {
         /* collect already seen nodes */
         final ArrayList<Node> seen = new ArrayList<>();
         /* collect already computed nodes to check equals locations */
-        final HashMap<Node, APoint2D> locations = new HashMap<>();
+        final HashMap<Node, APoint2D<?>> locations = new HashMap<>();
         /* collect currently crossed split-ids */
         ArrayList<Integer> crossedSplits = new ArrayList<>();
         /* current node-location */
-        APoint2D currentPoint = new APoint2D(0, 0);
+        APoint2D<?> currentPoint = new APoint2D<>(0, 0);
 
         // init..
         toVisit.push(ordering[0]);
@@ -286,7 +286,7 @@ public class PhyloSplitsGraphUtils {
                 }
 
                 // set location, check equals locations
-                final APoint2D loc = new APoint2D(currentPoint.getX(), currentPoint.getY());
+                final APoint2D<?> loc = new APoint2D<>(currentPoint.getX(), currentPoint.getY());
                 // equals locations: append labels
                 if (locations.containsValue(loc)) {
                     Node twinNode;
@@ -348,14 +348,14 @@ public class PhyloSplitsGraphUtils {
      * @param dist  double
      * @return Point2D
      */
-    private static APoint2D translateByAngle(APoint2D apt, double alpha, double dist) {
+    private static APoint2D<?> translateByAngle(APoint2D<?> apt, double alpha, double dist) {
         double dx = dist * Math.cos(alpha);
         double dy = dist * Math.sin(alpha);
         if (Math.abs(dx) < 0.000000001)
             dx = 0;
         if (Math.abs(dy) < 0.000000001)
             dy = 0;
-        return new APoint2D(apt.getX() + dx, apt.getY() + dy);
+        return new APoint2D<>(apt.getX() + dx, apt.getY() + dy);
     }
 
 }

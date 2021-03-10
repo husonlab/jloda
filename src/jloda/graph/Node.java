@@ -96,17 +96,17 @@ public class Node extends NodeEdge implements Comparable<Node> {
      * delete this node from graph. Any incident adjacentEdges are deleted.
      */
     public void deleteNode() {
-        getOwner().fireDeleteNode(this);
-        getOwner().unregisterNode(this);
+        var graph = getOwner();
+        graph.fireDeleteNode(this);
+        graph.unregisterNode(this);
         while (firstAdjacentEdge != null)
             firstAdjacentEdge.deleteEdge();
         if (prev != null)
             prev.next = next;
         if (next != null)
             next.prev = prev;
-        Graph G = getOwner();
         setOwner(null);
-        G.fireGraphHasChanged();
+        graph.fireGraphHasChanged();
     }
 
     /**

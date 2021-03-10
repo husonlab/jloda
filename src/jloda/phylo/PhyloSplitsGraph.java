@@ -61,14 +61,8 @@ public class PhyloSplitsGraph extends PhyloGraph {
      * @return mapping of old nodes to new nodes
      */
     public NodeArray<Node> copy(PhyloSplitsGraph src) {
-        NodeArray<Node> oldNode2NewNode = super.copy(src);
-
-        setName(src.getName());
-        for (int i = 0; i < src.taxon2cycle.size(); i++) {
-            int c = src.getTaxon2Cycle(i + 1);
-            setTaxon2Cycle(i + 1, c);
-        }
-
+        NodeArray<Node> oldNode2NewNode = src.newNodeArray();
+        copy(src, oldNode2NewNode, null);
         return oldNode2NewNode;
     }
 
@@ -90,14 +84,10 @@ public class PhyloSplitsGraph extends PhyloGraph {
 
         for (Node v : src.nodes()) {
             final Node w = (oldNode2NewNode.getValue(v));
-            setLabel(w, src.getLabel(v));
             node2taxa.setValue(w, src.node2taxa.getValue(v));
         }
         for (Edge e : src.edges()) {
             final Edge f = (oldEdge2NewEdge.getValue(e));
-            setWeight(f, src.getWeight(e));
-            setLabel(f, src.getLabel(e));
-            setConfidence(f, src.getConfidence(e));
             setAngle(f, src.getAngle(e));
             setSplit(f, src.getSplit(e));
         }
@@ -106,6 +96,9 @@ public class PhyloSplitsGraph extends PhyloGraph {
             if (v != null)
                 addTaxon(oldNode2NewNode.getValue(v), i + 1);
         }
+
+        setName(src.getName());
+
         return oldNode2NewNode;
     }
 
@@ -176,19 +169,15 @@ public class PhyloSplitsGraph extends PhyloGraph {
 
             // determine all nodes on opposite end of separating adjacentEdges
             NodeSet opposites = new NodeSet(this);
-            Iterator it = separators.iterator();
-            while (it.hasNext()) {
-                Pair pair = (Pair) it.next();
-                opposites.add(getOpposite((Node) pair.getFirst(), (Edge) pair.getSecond()));
+            for (var pair : separators) {
+                opposites.add(getOpposite(pair.getFirst(), pair.getSecond()));
             }
 
             // reconnect adjacentEdges that are adjacent to opposite ends of separators:
 
-            it = separators.iterator();
-            while (it.hasNext()) {
-                Pair pair = (Pair) it.next();
-                Node v = (Node) pair.getFirst();
-                Edge e = (Edge) pair.getSecond();
+            for (var pair : separators) {
+                Node v = pair.getFirst();
+                Edge e = pair.getSecond();
                 Node w = getOpposite(v, e);
 
                 for (Edge f : w.adjacentEdges()) {
@@ -405,7 +394,7 @@ public class PhyloSplitsGraph extends PhyloGraph {
      *
      * @return number of splits
      */
-    public int getNumberOfSplits() {
+    public int countSplits() {
         BitSet seen = new BitSet();
         for (Edge e = getFirstEdge(); e != null; e = getNextEdge(e))
             seen.set(getSplit(e));

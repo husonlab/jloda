@@ -339,6 +339,7 @@ public class Graph extends GraphBase {
     public void deleteNode(Node v) {
         // note: firstNode and lastNode are set in unregisterNode
         v.deleteNode();
+
     }
 
     /**
@@ -386,6 +387,14 @@ public class Graph extends GraphBase {
      */
     public void clear() {
         deleteAllNodes();
+        nodeInfo = null;
+        nodeLabel = null;
+        nodeData = null;
+
+        edgeInfo = null;
+        edgeLabel = null;
+        edgeData = null;
+        specialEdges = null;
     }
 
     /**
@@ -959,12 +968,12 @@ public class Graph extends GraphBase {
     }
 
     /**
-     * copies one graph onto another
-     *
-     * @param src the source graph
+     * copies a graph
      */
-    public void copy(Graph src) {
-        copy(src, null, null);
+    public NodeArray<Node> copy(Graph src) {
+        NodeArray<Node> oldNode2newNode = newNodeArray();
+        copy(src, oldNode2newNode, null);
+        return oldNode2newNode;
     }
 
     /**
