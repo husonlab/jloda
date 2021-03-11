@@ -971,7 +971,7 @@ public class Graph extends GraphBase {
      * copies a graph
      */
     public NodeArray<Node> copy(Graph src) {
-        NodeArray<Node> oldNode2newNode = newNodeArray();
+        NodeArray<Node> oldNode2newNode = src.newNodeArray();
         copy(src, oldNode2newNode, null);
         return oldNode2newNode;
     }
@@ -987,11 +987,11 @@ public class Graph extends GraphBase {
         clear();
 
         if (oldNode2newNode == null)
-            oldNode2newNode = new NodeArray<>(src);
+            oldNode2newNode = src.newNodeArray();
         if (oldEdge2newEdge == null)
-            oldEdge2newEdge = new EdgeArray<>(src);
+            oldEdge2newEdge = src.newEdgeArray();
 
-        for (Node v = src.getFirstNode(); v != null; v = src.getNextNode(v)) {
+        for (var v : src.nodes()) {
             Node w = newNode();
             w.setId(v.getId());
             setInfo(w, src.getInfo(v));
@@ -1001,7 +1001,7 @@ public class Graph extends GraphBase {
         }
         idsNodes = src.idsNodes;
 
-        for (Edge e = src.getFirstEdge(); e != null; e = src.getNextEdge(e)) {
+        for (var e : src.edges()) {
             Node p = oldNode2newNode.get(src.getSource(e));
             Node q = oldNode2newNode.get(src.getTarget(e));
             Edge f = null;
