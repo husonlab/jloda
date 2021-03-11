@@ -469,7 +469,7 @@ public class NexusStreamParser extends NexusStreamTokenizer implements Closeable
         } finally {
             popPunctuationCharacters();
         }
-        if (result.toString().equals(""))
+        if (result.length() == 0)
             return null;
         return result.toString();
     }
@@ -574,7 +574,7 @@ public class NexusStreamParser extends NexusStreamTokenizer implements Closeable
         } catch (IOException ex) {
             throw new IOExceptionWithLineNumber(lineno(), ex);
         }
-        if (result.toString().equals(""))
+        if (result.length() == 0)
             return null;
         return result.toString().trim();
     }
@@ -687,8 +687,7 @@ public class NexusStreamParser extends NexusStreamTokenizer implements Closeable
         //String result = defaultValue;
         StringBuilder result = new StringBuilder();
 
-        NexusStreamParser s =
-                new NexusStreamParser(new StringReader(List2String(tokens)));
+        NexusStreamParser s = new NexusStreamParser(new StringReader(List2String(tokens)));
         tokens.clear();
 
         try {
@@ -714,9 +713,10 @@ public class NexusStreamParser extends NexusStreamTokenizer implements Closeable
         } catch (IOException ex) {
             throw new IOExceptionWithLineNumber(lineno(), ex);
         }
-        if (result.toString().equals(""))
-            result = new StringBuilder(defaultValue);
-        return result.toString();
+        if (result.length() == 0)
+            return defaultValue;
+        else
+            return result.toString();
     }
 
     /**
@@ -744,7 +744,7 @@ public class NexusStreamParser extends NexusStreamTokenizer implements Closeable
                 if (!found && s.peekMatchIgnoreCase(token)) {
                     s.matchIgnoreCase(token);
                     s.nextToken();
-                    result = s.toString();
+                    result = s.toString().toLowerCase();
                     found = true;
                     if (legalValues != null && !findIgnoreCase(legalValues, result))
                         throw new IOExceptionWithLineNumber(token + " '" + result + "': illegal value", lineno());
@@ -756,7 +756,7 @@ public class NexusStreamParser extends NexusStreamTokenizer implements Closeable
         } catch (IOException ex) {
             throw new IOExceptionWithLineNumber(lineno(), ex);
         }
-        return result == null ? null : result.toLowerCase();
+        return result;
     }
 
     /**
