@@ -102,16 +102,16 @@ public class PhyloTree extends PhyloSplitsGraph {
         // super.copy(src, oldNode2NewNode, oldEdge2NewEdge);
         if (src.getRoot() != null) {
             Node root = src.getRoot();
-            setRoot(oldNode2NewNode.getValue(root));
+            setRoot(oldNode2NewNode.get(root));
         }
         for (Node v = src.getFirstNode(); v != null; v = v.getNext()) {
-            List<Node> children = src.getNode2GuideTreeChildren().getValue(v);
+            List<Node> children = src.getNode2GuideTreeChildren().get(v);
             if (children != null) {
                 List<Node> newChildren = new LinkedList<>();
                 for (Node w : children) {
-                    newChildren.add(oldNode2NewNode.getValue(w));
+                    newChildren.add(oldNode2NewNode.get(w));
                 }
-                getNode2GuideTreeChildren().put(oldNode2NewNode.getValue(v), newChildren);
+                getNode2GuideTreeChildren().put(oldNode2NewNode.get(v), newChildren);
             }
         }
         setName(src.getName());
@@ -594,7 +594,7 @@ public class PhyloTree extends PhyloSplitsGraph {
 
     private int nodeNumber = 0;
     private int edgeNumber = 0;
-    private NodeIntegerArray node2reticulateNumber;  // global number of the reticulate node
+    private NodeIntArray node2reticulateNumber;  // global number of the reticulate node
     private int reticulateNodeNumber;
 
     /**
@@ -610,7 +610,7 @@ public class PhyloTree extends PhyloSplitsGraph {
         edgeNumber = 0;
         if (ALLOW_WRITE_RETICULATE) {
             // following two lines enable us to write cluster networks and reticulate networks in Newick format
-            node2reticulateNumber = new NodeIntegerArray(this);
+            node2reticulateNumber = new NodeIntArray(this);
             reticulateNodeNumber = 0;
         }
 
@@ -665,21 +665,21 @@ public class PhyloTree extends PhyloSplitsGraph {
                     boolean inEdgeHasWeight = (getWeight(f) > 0);
 
                     if (isSpecial(f)) {
-                        if (node2reticulateNumber.getValue(w) == 0) {
+                        if (node2reticulateNumber.get(w) == 0) {
                             node2reticulateNumber.set(w, ++reticulateNodeNumber);
                             final String label;
                             if (getLabel(w) != null)
-                                label = getLabelForWriting(w) + PhyloTreeUtils.makeReticulateNodeLabel(inEdgeHasWeight, node2reticulateNumber.getValue(w));
+                                label = getLabelForWriting(w) + PhyloTreeUtils.makeReticulateNodeLabel(inEdgeHasWeight, node2reticulateNumber.get(w));
                             else
-                                label = PhyloTreeUtils.makeReticulateNodeLabel(inEdgeHasWeight, node2reticulateNumber.getValue(w));
+                                label = PhyloTreeUtils.makeReticulateNodeLabel(inEdgeHasWeight, node2reticulateNumber.get(w));
 
                             writeRec(outs, w, f, writeEdgeWeights, writeEdgeLabels, nodeId2Number, edgeId2Number, label);
                         } else {
                             String label;
                             if (getLabel(w) != null)
-                                label = getLabelForWriting(w) + PhyloTreeUtils.makeReticulateNodeLabel(inEdgeHasWeight, node2reticulateNumber.getValue(w));
+                                label = getLabelForWriting(w) + PhyloTreeUtils.makeReticulateNodeLabel(inEdgeHasWeight, node2reticulateNumber.get(w));
                             else
-                                label = PhyloTreeUtils.makeReticulateNodeLabel(inEdgeHasWeight, node2reticulateNumber.getValue(w));
+                                label = PhyloTreeUtils.makeReticulateNodeLabel(inEdgeHasWeight, node2reticulateNumber.get(w));
 
                             outs.write(label);
                             if (writeEdgeWeights) {
@@ -926,8 +926,8 @@ public class PhyloTree extends PhyloSplitsGraph {
         setWeight(vu, weightToSource);
         setWeight(uw, weightToTarget);
         if (edgeLabels != null) {
-            edgeLabels.put(vu, edgeLabels.getValue(e));
-            edgeLabels.put(uw, edgeLabels.getValue(e));
+            edgeLabels.put(vu, edgeLabels.get(e));
+            edgeLabels.put(uw, edgeLabels.get(e));
         }
 
         deleteEdge(e);
@@ -947,8 +947,8 @@ public class PhyloTree extends PhyloSplitsGraph {
                 if (edgeLabels != null) {
                     String label = null;
                     for (Edge e = oldRoot.getFirstOutEdge(); e != null; e = oldRoot.getNextOutEdge(e)) {
-                        if (label == null && edgeLabels.getValue(e) != null)
-                            label = edgeLabels.getValue(e);
+                        if (label == null && edgeLabels.get(e) != null)
+                            label = edgeLabels.get(e);
                         edgeLabels.put(e, null);
                     }
                     final Edge e = delDivertex(oldRoot);
@@ -1063,7 +1063,7 @@ public class PhyloTree extends PhyloSplitsGraph {
             NodeArray<Node> oldNode2newNode = super.copy(src);
 
             if (getRoot() != null && oldNode2newNode != null) {
-                setRoot(oldNode2newNode.getValue(src.getRoot()));
+                setRoot(oldNode2newNode.get(src.getRoot()));
             }
 
             NodeSet toDelete = new NodeSet(this);
@@ -1087,7 +1087,7 @@ public class PhyloTree extends PhyloSplitsGraph {
      * @param toDelete
      */
     private void extractTreeRec(Node v, Edge e, NodeSet collapsedNodes, NodeArray<Node> oldNode2newNode, NodeSet toDelete) {
-        toDelete.remove(oldNode2newNode.getValue(v));
+        toDelete.remove(oldNode2newNode.get(v));
         if (!collapsedNodes.contains(v)) {
             for (Edge f = v.getFirstAdjacentEdge(); f != null; f = v.getNextAdjacentEdge(f)) {
                 if (f != e && PhyloTreeUtils.okToDescendDownThisEdge(this, f, v)) {
@@ -1196,7 +1196,7 @@ public class PhyloTree extends PhyloSplitsGraph {
      * @param pos
      */
     private int computeCycleRec(Node v, Edge e, int pos) {
-        final List<Integer> taxa = node2taxa.getValue(v);
+        final List<Integer> taxa = node2taxa.get(v);
         if (taxa != null) {
             for (Integer t : taxa) {
                 setTaxon2Cycle(t, ++pos);
@@ -1249,7 +1249,7 @@ public class PhyloTree extends PhyloSplitsGraph {
      * @return number of out-degree 0 nodes
      */
     public int countLeaves() {
-        return IterationUtils.count(leaves());
+        return IteratorUtils.count(leaves());
     }
 
     /**

@@ -98,7 +98,7 @@ public class GraphViewDemo {
         final NodeArray<APoint2D<?>> coordinates = new NodeArray<>(graph);
         fruchtermanReingoldLayout.apply(1000, coordinates);
         for (Node v = graph.getFirstNode(); v != null; v = v.getNext()) {
-            graphView.setLocation(v, coordinates.getValue(v).getX(), coordinates.getValue(v).getY());
+            graphView.setLocation(v, coordinates.get(v).getX(), coordinates.get(v).getY());
             graphView.setHeight(v, 10);
             graphView.setWidth(v, 10);
         }

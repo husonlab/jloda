@@ -106,7 +106,7 @@ public class GraphFX<G extends Graph> {
                 @Override
                 public void nodeLabelChanged(Node v, String newLabel) {
                     try {
-                        StringProperty stringProperty = node2LabelProperty.getValue(v);
+                        StringProperty stringProperty = node2LabelProperty.get(v);
                         if (stringProperty != null) {
                             Platform.runLater(() -> stringProperty.set(newLabel));
                         }
@@ -117,7 +117,7 @@ public class GraphFX<G extends Graph> {
                 @Override
                 public void edgeLabelChanged(Edge e, String newLabel) {
                     try {
-                        StringProperty stringProperty = edge2LabelProperty.getValue(e);
+                        StringProperty stringProperty = edge2LabelProperty.get(e);
                         if (stringProperty != null) {
                             Platform.runLater(() -> stringProperty.set(newLabel));
                         }
@@ -145,7 +145,7 @@ public class GraphFX<G extends Graph> {
     }
 
     public StringProperty nodeLabelProperty(Node v) {
-        StringProperty stringProperty = node2LabelProperty.getValue(v);
+        StringProperty stringProperty = node2LabelProperty.get(v);
         if (stringProperty == null) {
             stringProperty = new SimpleStringProperty(graph.getLabel(v));
             node2LabelProperty.put(v, stringProperty);
@@ -154,7 +154,7 @@ public class GraphFX<G extends Graph> {
     }
 
     public StringProperty edgeLabelProperty(Edge e) {
-        StringProperty stringProperty = edge2LabelProperty.getValue(e);
+        StringProperty stringProperty = edge2LabelProperty.get(e);
         if (stringProperty == null) {
             stringProperty = new SimpleStringProperty(graph.getLabel(e));
             edge2LabelProperty.put(e, stringProperty);

@@ -181,7 +181,7 @@ public class PhyloTreeView extends GraphView {
 
                 // translate in the computed direction by the given amount
                 setLocation(v,
-                        Geometry.translateByAngle(getLocation(root), angle.get(e), ((PhyloTree) G).getWeight(e)));
+                        Geometry.translateByAngle(getLocation(root), angle.getDouble(e), ((PhyloTree) G).getWeight(e)));
 
                 setCoordsRec(v, e, angle);
             }

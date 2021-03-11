@@ -50,8 +50,8 @@ public class NodeFloatArray extends NodeArray<Float> {
         super(src);
     }
 
-    public float get(Node v) {
-        final Float value = getValue(v);
+    public float getFloat(Node v) {
+        final Float value = get(v);
         if (value != null)
             return value;
         else
@@ -61,11 +61,6 @@ public class NodeFloatArray extends NodeArray<Float> {
 
     public void set(Node v, float value) {
         put(v, value);
-    }
-
-    @Override
-    public void put(Node v, Float value) {
-        setValue(v, value);
     }
 }
 

@@ -62,7 +62,6 @@ public class FruchtermanReingoldLayout {
 
     private final BitSet fixed;
 
-
     /**
      * constructor. Do not change graph after calling the constructor
      */
@@ -116,8 +115,8 @@ public class FruchtermanReingoldLayout {
         {
             int eId = 0;
             for (var e : graph.edges()) {
-                edges[0][eId] = node2id.getValue(e.getSource());
-                edges[1][eId] = node2id.getValue(e.getTarget());
+                edges[0][eId] = node2id.get(e.getSource());
+                edges[1][eId] = node2id.get(e.getTarget());
                 eId++;
             }
         }
@@ -125,9 +124,9 @@ public class FruchtermanReingoldLayout {
         if (graph.getNumberOfNodes() > 0) {
             if (node2start != null) {
                 for (var v : graph.nodes()) {
-                    final int id = node2id.getValue(v);
-                    coordinates[0][id] = 10 * (float) node2start.getValue(v).getX();
-                    coordinates[1][id] = 10 * (float) node2start.getValue(v).getY();
+                    final int id = node2id.get(v);
+                    coordinates[0][id] = (float) node2start.get(v).getX();
+                    coordinates[1][id] = (float) node2start.get(v).getY();
                 }
             } else {
                 final NodeSet seen = graph.newNodeSet();
@@ -139,7 +138,7 @@ public class FruchtermanReingoldLayout {
                         stack.push(v);
                         while (stack.size() > 0) {
                             final Node w = stack.pop();
-                            final int id = node2id.getValue(w);
+                            final int id = node2id.get(w);
                             coordinates[0][id] = (float) (100 * Math.sin(2 * Math.PI * count / nodes.length));
                             coordinates[1][id] = (float) (100 * Math.cos(2 * Math.PI * count / nodes.length));
                             count++;

@@ -26,19 +26,19 @@ package jloda.graph;
  * Daniel Huson, 2003
  */
 
-public class NodeIntegerArray extends NodeArray<Integer> {
+public class NodeIntArray extends NodeArray<Integer> {
 
     /**
      * Construct a node array with default value null
      */
-    public NodeIntegerArray(Graph g) {
+    public NodeIntArray(Graph g) {
         super(g);
     }
 
     /**
      * Construct a node array for the given graph and set the default value
      */
-    public NodeIntegerArray(Graph g, Integer defaultValue) {
+    public NodeIntArray(Graph g, Integer defaultValue) {
         super(g, defaultValue);
     }
 
@@ -47,7 +47,7 @@ public class NodeIntegerArray extends NodeArray<Integer> {
      *
      * @param src NodeArray
      */
-    public NodeIntegerArray(NodeArray<Integer> src) {
+    public NodeIntArray(NodeArray<Integer> src) {
         super(src);
     }
 
@@ -58,14 +58,13 @@ public class NodeIntegerArray extends NodeArray<Integer> {
      * @param v Node
      * @return value or 0
      */
-    public int get(Node v) {
-        final Integer value = getValue(v);
+    public int getInt(Node v) {
+        final Integer value = get(v);
         if (value != null)
             return value;
         else
             return getDefaultValue() != null ? getDefaultValue() : 0;
     }
-
 
     public void set(Node v, int value) {
         put(v, value);

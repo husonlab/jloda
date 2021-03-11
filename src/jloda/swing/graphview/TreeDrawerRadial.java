@@ -119,9 +119,9 @@ public class TreeDrawerRadial extends DefaultGraphDrawer implements IGraphDrawer
         if (v != null) {
             Edge e = v.getFirstAdjacentEdge();
             if (e != null) {
-                double alpha = angle.get(e);
+                double alpha = angle.getDouble(e);
                 for (Edge f = tree.getFirstEdge(); f != null; f = f.getNext()) {
-                    angle.put(f, angle.get(f) - alpha);
+                    angle.put(f, angle.getDouble(f) - alpha);
                 }
             }
         }
@@ -183,7 +183,7 @@ public class TreeDrawerRadial extends DefaultGraphDrawer implements IGraphDrawer
 
                 // translate in the computed direction by the given amount
                 treeView.setLocation(v,
-                        Geometry.translateByAngle(treeView.getLocation(root), angle.get(e),
+                        Geometry.translateByAngle(treeView.getLocation(root), angle.getDouble(e),
                                 tree.getWeight(e)));
                 setCoordsRec(v, e, angle);
             }

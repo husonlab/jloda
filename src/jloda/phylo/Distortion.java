@@ -22,7 +22,7 @@ package jloda.phylo;
 
 import jloda.graph.Edge;
 import jloda.graph.Node;
-import jloda.graph.NodeIntegerArray;
+import jloda.graph.NodeIntArray;
 
 import java.io.IOException;
 import java.util.BitSet;
@@ -55,8 +55,8 @@ public class Distortion {
             return 0;
         BitSet treeTaxa = new BitSet();
         // setup scoring map:
-        NodeIntegerArray scoreA = new NodeIntegerArray(tree); // optimal score for subtree labeled A at root
-        NodeIntegerArray scoreB = new NodeIntegerArray(tree); // optimal score for subtree labeled B at root
+        NodeIntArray scoreA = new NodeIntArray(tree); // optimal score for subtree labeled A at root
+        NodeIntArray scoreB = new NodeIntArray(tree); // optimal score for subtree labeled B at root
         for (Node v = tree.getFirstNode(); v != null; v = v.getNext()) {
             boolean hasA = false;
             boolean hasB = false;
@@ -106,7 +106,7 @@ public class Distortion {
         //System.out.println("initially:");
         //printScores(tree,scoreA,scoreB);
         computeScoreRec(root, null, scoreA, scoreB);
-        return Math.min(scoreA.getValue(root), scoreB.getValue(root)) - 1;
+        return Math.min(scoreA.get(root), scoreB.get(root)) - 1;
     }
 
     /**
@@ -117,7 +117,7 @@ public class Distortion {
      * @param scoreA
      * @param scoreB
      */
-    private static void computeScoreRec(Node v, Edge e, NodeIntegerArray scoreA, NodeIntegerArray scoreB) {
+    private static void computeScoreRec(Node v, Edge e, NodeIntArray scoreA, NodeIntArray scoreB) {
         //System.out.println("Entering with v="+v);
         //printScores(tree,scoreA,scoreB);
         boolean hasAMuchBetterThanB = false;
@@ -130,32 +130,32 @@ public class Distortion {
                 Node w = f.getOpposite(v);
                 if (w.getDegree() > 1)
                     computeScoreRec(w, f, scoreA, scoreB);
-                if (scoreA.getValue(w) <= scoreB.getValue(w) - 1) {
+                if (scoreA.get(w) <= scoreB.get(w) - 1) {
                     hasAMuchBetterThanB = true;
-                    countB += scoreA.getValue(w);
+                    countB += scoreA.get(w);
                 } else {
-                    countB += scoreB.getValue(w);
+                    countB += scoreB.get(w);
                 }
-                if (scoreB.getValue(w) <= scoreA.getValue(w) - 1) {
+                if (scoreB.get(w) <= scoreA.get(w) - 1) {
                     hasBMuchBetterThanA = true;
-                    countA += scoreB.getValue(w);
+                    countA += scoreB.get(w);
                 } else {
-                    countA += scoreA.getValue(w);
+                    countA += scoreA.get(w);
                 }
             }
         }
         // this might be a labeled internal node, treat it as an additional leaf node:
-        if (scoreA.getValue(v) <= scoreB.getValue(v) - 1) {
+        if (scoreA.get(v) <= scoreB.get(v) - 1) {
             hasAMuchBetterThanB = true;
-            countB += scoreA.getValue(v);
+            countB += scoreA.get(v);
         } else {
-            countB += scoreB.getValue(v);
+            countB += scoreB.get(v);
         }
-        if (scoreB.getValue(v) <= scoreA.getValue(v) - 1) {
+        if (scoreB.get(v) <= scoreA.get(v) - 1) {
             hasBMuchBetterThanA = true;
-            countA += scoreB.getValue(v);
+            countA += scoreB.get(v);
         } else {
-            countA += scoreA.getValue(v);
+            countA += scoreA.get(v);
         }
         // add 1 for change, if necessary:
         if (hasAMuchBetterThanB)
@@ -170,9 +170,9 @@ public class Distortion {
         //printScores(tree,scoreA,scoreB);
     }
 
-    static void printScores(PhyloTree tree, NodeIntegerArray scoreA, NodeIntegerArray scoreB) {
+    static void printScores(PhyloTree tree, NodeIntArray scoreA, NodeIntArray scoreB) {
         for (Node v = tree.getFirstNode(); v != null; v = v.getNext()) {
-            System.out.println("v=" + v + " scoreA=" + scoreA.getValue(v) + " scoreB=" + scoreB.getValue(v));
+            System.out.println("v=" + v + " scoreA=" + scoreA.get(v) + " scoreB=" + scoreB.get(v));
         }
     }
 }

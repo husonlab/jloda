@@ -20,7 +20,7 @@
 package jloda.graph;
 
 
-import jloda.util.IterationUtils;
+import jloda.util.IteratorUtils;
 import junit.framework.TestCase;
 
 import java.util.ArrayList;
@@ -37,14 +37,14 @@ public class TestGraph extends TestCase {
         final Graph graph = createGraph(nodes, edges);
 
         var nodeSet = graph.newNodeSet();
-        nodeSet.addAll(IterationUtils.asList(graph.nodes()));
+        nodeSet.addAll(IteratorUtils.asList(graph.nodes()));
 
         for (var v : graph.nodes()) {
             assertTrue(nodeSet.contains(v));
         }
 
         var edgeSet = graph.newEdgeSet();
-        edgeSet.addAll(IterationUtils.asList(graph.edges()));
+        edgeSet.addAll(IteratorUtils.asList(graph.edges()));
 
         for (var e : graph.edges()) {
             assertTrue(edgeSet.contains(e));
@@ -80,12 +80,12 @@ public class TestGraph extends TestCase {
         final Graph graph = createGraph(nodes, edges);
 
         var nodeSet = graph.newNodeSet();
-        nodeSet.addAll(IterationUtils.asList(graph.nodes()));
+        nodeSet.addAll(IteratorUtils.asList(graph.nodes()));
 
         assertEquals("nodes", graph.getNumberOfNodes(), nodeSet.size());
 
         var edgeSet = graph.newEdgeSet();
-        edgeSet.addAll(IterationUtils.asList(graph.edges()));
+        edgeSet.addAll(IteratorUtils.asList(graph.edges()));
 
         assertEquals("edges", graph.getNumberOfEdges(), edgeSet.size());
 
@@ -140,13 +140,13 @@ public class TestGraph extends TestCase {
         for (var v : graph.nodes()) {
             nodeArray.put(v, v.getInfo().toString());
         }
-        assertEquals("nodes", graph.getNumberOfNodes(), IterationUtils.count(nodeArray.values()));
+        assertEquals("nodes", graph.getNumberOfNodes(), IteratorUtils.count(nodeArray.values()));
 
         EdgeArray<String> edgeArray = graph.newEdgeArray();
         for (var e : graph.edges()) {
             edgeArray.put(e, e.getInfo().toString());
         }
-        assertEquals("edges", graph.getNumberOfEdges(), IterationUtils.count(edgeArray.values()));
+        assertEquals("edges", graph.getNumberOfEdges(), IteratorUtils.count(edgeArray.values()));
 
         Node vGone = graph.findNodeById(4);
         graph.deleteNode(vGone);
@@ -156,11 +156,11 @@ public class TestGraph extends TestCase {
         graph.deleteEdge(eGone);
         assertNull(eGone.getOwner());
 
-        assertEquals("nodes", graph.getNumberOfNodes(), IterationUtils.count(nodeArray.values()));
-        assertEquals("edges", graph.getNumberOfEdges(), IterationUtils.count(edgeArray.values()));
+        assertEquals("nodes", graph.getNumberOfNodes(), IteratorUtils.count(nodeArray.values()));
+        assertEquals("edges", graph.getNumberOfEdges(), IteratorUtils.count(edgeArray.values()));
 
         for (var v : graph.nodes()) {
-            assertEquals(v.getInfo(), nodeArray.getValue(v));
+            assertEquals(v.getInfo(), nodeArray.get(v));
         }
 
         for (var s : nodeArray.values()) {
@@ -170,7 +170,7 @@ public class TestGraph extends TestCase {
         {
             NotOwnerException exception = null;
             try {
-                nodeArray.getValue(vGone); // should throw exception
+                nodeArray.get(vGone); // should throw exception
             } catch (NotOwnerException ex) {
                 exception = ex;
             }
@@ -178,7 +178,7 @@ public class TestGraph extends TestCase {
         }
 
         for (var e : graph.edges()) {
-            assertEquals(e.getInfo(), edgeArray.getValue(e));
+            assertEquals(e.getInfo(), edgeArray.get(e));
         }
 
         for (var s : edgeArray.values()) {
@@ -188,7 +188,7 @@ public class TestGraph extends TestCase {
             NotOwnerException exception = null;
 
             try {
-                edgeArray.getValue(eGone);
+                edgeArray.get(eGone);
             } catch (NotOwnerException ex) {
                 exception = ex;
             }

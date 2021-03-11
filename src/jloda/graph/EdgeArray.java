@@ -22,18 +22,16 @@ package jloda.graph;
 
 
 import jloda.util.Basic;
-import jloda.util.IterationUtils;
+import jloda.util.IteratorUtils;
 
-import java.util.Arrays;
-import java.util.Iterator;
-import java.util.NoSuchElementException;
+import java.util.*;
 
 /**
  * Edge array
- * Daniel Huson 2004
+ * Daniel Huson 2004, 2021
  */
 
-public class EdgeArray<T> extends GraphBase implements Iterable<T> {
+public class EdgeArray<T> extends GraphBase implements Iterable<T>, Map<Edge, T> {
     private T[] data;
     private boolean isClear = true;
     private T defaultValue;
@@ -56,55 +54,43 @@ public class EdgeArray<T> extends GraphBase implements Iterable<T> {
     }
 
     /**
+     * Clear all entries.
+     */
+    public void clear() {
+        Arrays.fill(data, null);
+        isClear = true;
+    }
+
+    /**
      * Copy constructor.
      *
      * @param src EdgeArray
      */
     public EdgeArray(EdgeArray<T> src) {
         setOwner(src.getOwner());
-        getOwner().edges().forEach(e -> put(e, src.getValue(e)));
+        getOwner().edges().forEach(e -> put(e, src.get(e)));
         defaultValue = src.getDefaultValue();
     }
 
-    /**
-     * Get the entry for edge e.
-     *
-     * @param e Edge
-     * @return an object the entry for edge e
-     */
-    public T getValue(Edge e) {
-        checkOwner(e);
-        if (e.getId() < data.length && data[e.getId()] != null)
-            return data[e.getId()];
-        else
-            return defaultValue;
-    }
 
     /**
      * Set the entry for edge e to obj.
      *
-     * @param e   Edge
-     * @param obj Object
+     * @param a      Edge
+     * @param object Object
      */
-    public void put(Edge e, T obj) {
-        checkOwner(e);
-        int id = e.getId();
+    public T put(Edge a, T object) {
+        checkOwner(a);
+        int id = a.getId();
         if (id >= data.length) {
-            if (obj == null)
-                return; // nothing to do
-            grow(e.getId());
+            if (object == null)
+                return null; // nothing to do
+            grow(a.getId());
         }
-        data[id] = obj;
-        if (obj != null && isClear)
+        data[id] = object;
+        if (object != null && isClear)
             isClear = false;
-    }
-
-    public void setValue(Edge e, T obj) {
-        this.put(e, obj);
-    }
-
-    public void setAll(T obj) {
-        this.putAll(obj);
+        return object;
     }
 
     /**
@@ -125,97 +111,154 @@ public class EdgeArray<T> extends GraphBase implements Iterable<T> {
     }
 
     /**
-     * Set the entry for all edges.
-     *
-     * @param value Object
-     */
-    public void putAll(T value) {
-        clear();
-        if (value != null && getOwner().getNumberOfEdges() > 0) {
-            isClear = false;
-            getOwner().edges().forEach(e -> put(e, value));
-        }
-    }
-
-    /**
-     * Clear all entries.
-     */
-    public void clear() {
-        Arrays.fill(data, null);
-        isClear = true;
-    }
-
-    /**
-     * is clean, that is, has never been set since last erase
-     *
-     * @return true, if erase
+     * has not been set since last clear()?
      */
     public boolean isClear() {
         return isClear;
     }
 
     public Iterator<T> iterator() {
-        return values().iterator();
+        if (isClear())
+            return Collections.emptyIterator();
+        else
+            return IteratorUtils.iteratorNonNullElements(new Iterator<T>() {
+                int i = 0;
+
+                @Override
+                public boolean hasNext() {
+                    return i < data.length;
+                }
+
+                @Override
+                public T next() {
+                    return data[i++];
+                }
+            });
     }
 
-    public Iterable<T> values() {
-        return () -> IterationUtils.iteratorNonNullElements(new Iterator<T>() {
-            int i = 0;
-
-            @Override
-            public boolean hasNext() {
-                return i < data.length;
-            }
-
-            @Override
-            public T next() {
-                return data[i++];
-            }
-        });
-    }
 
     /**
-     * get an iterator over all non-null values
-     *
-     * @return iterator
+     * get all keys with non-null values
      */
-    public Iterable<Node> keys() {
-        return () -> new Iterator<>() {
-            private Node v = getOwner().getFirstNode();
+    public Iterable<Edge> keys() {
+        if (isClear())
+            return Collections::emptyIterator;
+        else
+            return () -> new Iterator<>() {
+                private Edge a = getOwner().getFirstEdge();
 
-            {
-                while (v != null) {
-                    if (v.getId() < data.length && data[v.getId()] != null)
-                        break;
-                    v = v.getNext();
+                {
+                    while (a != null) {
+                        if (a.getId() < data.length && data[a.getId()] != null)
+                            break;
+                        a = a.getNext();
+                    }
                 }
-            }
 
-            @Override
+                @Override
             public boolean hasNext() {
-                return v != null;
+                    return a != null;
             }
 
-            @Override
-            public Node next() {
-                if (v == null)
-                    throw new NoSuchElementException();
-                Node result = v;
-                v = v.getNext();
-                while (v != null) {
-                    if (v.getId() < data.length && data[v.getId()] != null)
-                        break;
-                    v = v.getNext();
+                @Override
+                public Edge next() {
+                    if (a == null)
+                        throw new NoSuchElementException();
+                    Edge result = a;
+                    a = a.getNext();
+                    while (a != null) {
+                        if (a.getId() < data.length && data[a.getId()] != null)
+                            break;
+                        a = a.getNext();
+                    }
+                    return result;
                 }
-                return result;
-            }
-        };
+            };
     }
 
     public T getDefaultValue() {
         return defaultValue;
     }
-}
+
+    @Override
+    public int size() {
+        return 0;
+    }
+
+    @Override
+    public boolean isEmpty() {
+        return false;
+    }
+
+    @Override
+    public T remove(Object key) {
+        if (key instanceof Edge) {
+            var a = (Edge) key;
+            T value = get(a);
+            put(a, null);
+            return value;
+        } else
+            return null;
+    }
+
+    @Override
+    public boolean containsKey(Object key) {
+        if (key instanceof Edge) {
+            return get((Edge) key) != null;
+        } else
+            return false;
+    }
+
+    @Override
+    public boolean containsValue(Object value) {
+        if (value != null) {
+            for (var a : this) {
+                if (a.equals(value))
+                    return true;
+            }
+        }
+        return false;
+    }
+
+    @Override
+    public T get(Object key) {
+        if (key instanceof Edge) {
+            var a = (Edge) key;
+            if (a.getId() < data.length && data[a.getId()] != null)
+                return data[a.getId()];
+            else
+                return defaultValue;
+
+        } else
+            return null;
+    }
+
+    @Override
+    public void putAll(Map<? extends Edge, ? extends T> map) {
+        for (var e : map.entrySet()) {
+            put(e.getKey(), e.getValue());
+        }
+    }
+
+    @Override
+    public Set<Edge> keySet() {
+        return IteratorUtils.asSet(keys());
+    }
+
+    @Override
+    public Set<Entry<Edge, T>> entrySet() {
+        Set<Map.Entry<Edge, T>> set = new HashSet<>();
+        for (var k : keys()) {
+            set.add(new jloda.util.Entry<>(k, get(k)));
+        }
+        return set;
+    }
+
+    @Override
+    public Collection<T> values() {
+        return IteratorUtils.asList(this);
+    }
+ }
 
 
 // EOF

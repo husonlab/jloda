@@ -103,30 +103,30 @@ public class JTableSearcher implements IObjectSearcher {
      * goto the first object
      */
     public boolean gotoFirst() {
-        current.set1(0);
-        current.set2(0);
+        current.setFirst(0);
+        current.setSecond(0);
         boolean tried; //  did we try a cell? If yes and the column has a non zero width, then we use it
         do {
             tried = false;
-            if (current.get2() < table.getModel().getColumnCount() - 1) {
-                current.set2(current.get2() + 1);
+            if (current.getSecond() < table.getModel().getColumnCount() - 1) {
+                current.setSecond(current.getSecond() + 1);
                 tried = true;
-            } else if (current.get1() < table.getModel().getRowCount() - 1) {
-                current.set1(current.get1() + 1);
-                current.set2(0);
+            } else if (current.getFirst() < table.getModel().getRowCount() - 1) {
+                current.setFirst(current.getFirst() + 1);
+                current.setSecond(0);
                 tried = true;
             }
             if (tried) {
                 TableColumnModel model = table.getColumnModel();
-                if (model.getColumn(current.get2()).getMaxWidth() > 0)
+                if (model.getColumn(current.getSecond()).getMaxWidth() > 0)
                     break;
             }
         }
         while (tried);
 
         if (!tried) {
-            current.set1(0);
-            current.set2(0);
+            current.setFirst(0);
+            current.setSecond(0);
         }
         return isCurrentSet();
     }
@@ -139,25 +139,25 @@ public class JTableSearcher implements IObjectSearcher {
             boolean tried; //  did we try a cell? If yes and the column has a non zero width, then we use it
             do {
                 tried = false;
-                if (current.get2() < table.getModel().getColumnCount() - 1) {
-                    current.set2(current.get2() + 1);
+                if (current.getSecond() < table.getModel().getColumnCount() - 1) {
+                    current.setSecond(current.getSecond() + 1);
                     tried = true;
-                } else if (current.get1() < table.getModel().getRowCount() - 1) {
-                    current.set1(current.get1() + 1);
-                    current.set2(0);
+                } else if (current.getFirst() < table.getModel().getRowCount() - 1) {
+                    current.setFirst(current.getFirst() + 1);
+                    current.setSecond(0);
                     tried = true;
                 }
                 if (tried) {
                     TableColumnModel model = table.getColumnModel();
-                    if (model.getColumn(current.get2()).getMaxWidth() > 0)
+                    if (model.getColumn(current.getSecond()).getMaxWidth() > 0)
                         break;
                 }
             }
             while (tried);
 
             if (!tried) {
-                current.set1(-1);
-                current.set2(-1);
+                current.setFirst(-1);
+                current.setSecond(-1);
             }
         } else
             gotoFirst();
@@ -168,8 +168,8 @@ public class JTableSearcher implements IObjectSearcher {
      * goto the last object
      */
     public boolean gotoLast() {
-        current.set1(table.getModel().getRowCount() - 1);
-        current.set2(table.getModel().getColumnCount() - 1);
+        current.setFirst(table.getModel().getRowCount() - 1);
+        current.setSecond(table.getModel().getColumnCount() - 1);
 
         return isCurrentSet();
     }
@@ -179,14 +179,14 @@ public class JTableSearcher implements IObjectSearcher {
      */
     public boolean gotoPrevious() {
         if (isCurrentSet()) {
-            if (current.get2() > 0)
-                current.set2(current.get2() - 1);
-            else if (current.get1() > 0) {
-                current.set1(current.get1() - 1);
-                current.set2(table.getModel().getColumnCount() - 1);
+            if (current.getSecond() > 0)
+                current.setSecond(current.getSecond() - 1);
+            else if (current.getFirst() > 0) {
+                current.setFirst(current.getFirst() - 1);
+                current.setSecond(table.getModel().getColumnCount() - 1);
             } else {
-                current.set1(-1);
-                current.set2(-1);
+                current.setFirst(-1);
+                current.setSecond(-1);
             }
         } else
             gotoLast();
@@ -199,7 +199,7 @@ public class JTableSearcher implements IObjectSearcher {
      * @return true, if selected
      */
     public boolean isCurrentSelected() {
-        return isCurrentSet() && table.isCellSelected(current.get1(), table.getSelectedColumn());
+        return isCurrentSet() && table.isCellSelected(current.getFirst(), table.getSelectedColumn());
     }
 
     /**
@@ -209,9 +209,9 @@ public class JTableSearcher implements IObjectSearcher {
      */
     public void setCurrentSelected(boolean select) {
         if (select)
-            toSelect.add(new Pair<>(current.get1(), current.get2()));
+            toSelect.add(new Pair<>(current.getFirst(), current.getSecond()));
         else
-            toDeselect.add(new Pair<>(current.get1(), current.get2()));
+            toDeselect.add(new Pair<>(current.getFirst(), current.getSecond()));
     }
 
     /**
@@ -236,7 +236,7 @@ public class JTableSearcher implements IObjectSearcher {
         if (!isCurrentSet())
             return null;
         else
-            return table.getModel().getValueAt(current.get1(), current.get2()).toString();
+            return table.getModel().getValueAt(current.getFirst(), current.getSecond()).toString();
     }
 
     /**
@@ -271,7 +271,7 @@ public class JTableSearcher implements IObjectSearcher {
      * @return true, if set
      */
     public boolean isCurrentSet() {
-        return current.get1() >= 0 && current.get1() < table.getModel().getRowCount() && current.get2() >= 0 && current.get2() < table.getModel().getColumnCount();
+        return current.getFirst() >= 0 && current.getFirst() < table.getModel().getRowCount() && current.getSecond() >= 0 && current.getSecond() < table.getModel().getColumnCount();
     }
 
     /**
@@ -280,19 +280,19 @@ public class JTableSearcher implements IObjectSearcher {
     public void updateView() {
 
         for (Pair<Integer, Integer> pair : toDeselect) {
-            if (table.isCellSelected(pair.get1(), pair.get2()))
-                table.changeSelection(pair.get1(), pair.get2(), true, false);
+            if (table.isCellSelected(pair.getFirst(), pair.getSecond()))
+                table.changeSelection(pair.getFirst(), pair.getSecond(), true, false);
         }
 
         for (Pair<Integer, Integer> pair : toSelect) {
-            if (!table.isCellSelected(pair.get1(), pair.get2())) {
-                table.changeSelection(pair.get1(), pair.get2(), true, false);
+            if (!table.isCellSelected(pair.getFirst(), pair.getSecond())) {
+                table.changeSelection(pair.getFirst(), pair.getSecond(), true, false);
             }
         }
 
         /*
         if (isCurrentSet()) {
-            Rectangle rect = table.getCellRect(current.get1(), current.get2(), true);
+            Rectangle rect = table.getCellRect(current.getFirst(), current.getSecond(), true);
             table.scrollRectToVisible(rect);
         }
         */

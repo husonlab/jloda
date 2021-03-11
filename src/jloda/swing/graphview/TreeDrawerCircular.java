@@ -162,7 +162,7 @@ public class TreeDrawerCircular extends DefaultGraphDrawer implements IGraphDraw
         viewer.setLocation(root, new Point(0, 0));
         for (Edge f = root.getFirstAdjacentEdge(); f != null; f = root.getNextAdjacentEdge(f)) {
             Node w = f.getOpposite(root);
-            viewer.setLocation(w, Geometry.translateByAngle(viewer.getLocation(root), angles.get(f),
+            viewer.setLocation(w, Geometry.translateByAngle(viewer.getLocation(root), angles.getDouble(f),
                     tree.getWeight(f)));
 
             setCoordsRec(viewer.getLocation(root), w, f, angles);
@@ -183,8 +183,8 @@ public class TreeDrawerCircular extends DefaultGraphDrawer implements IGraphDraw
         for (Edge f = v.getFirstAdjacentEdge(); f != null; f = v.getNextAdjacentEdge(f)) {
             if (f != e) {
                 Node w = f.getOpposite(v);
-                Point2D b = Geometry.rotateAbout(vp, angles.get(f) - angles.get(e), origin);
-                Point2D c = Geometry.translateByAngle(b, angles.get(f), tree.getWeight(f));
+                Point2D b = Geometry.rotateAbout(vp, angles.getDouble(f) - angles.getDouble(e), origin);
+                Point2D c = Geometry.translateByAngle(b, angles.getDouble(f), tree.getWeight(f));
                 viewer.setLocation(w, c);
                 setCoordsRec(origin, w, f, angles);
             }
@@ -204,12 +204,12 @@ public class TreeDrawerCircular extends DefaultGraphDrawer implements IGraphDraw
             final Node v = stack.pop();
             final Point2D vPt = viewer.getLocation(v);
             // add internal points to adjacentEdges
-            final double vAngle = (v.getInDegree() == 1 ? angles.get(v.getFirstInEdge()) : 0);
+            final double vAngle = (v.getInDegree() == 1 ? angles.getDouble(v.getFirstInEdge()) : 0);
             for (Edge f = v.getFirstOutEdge(); f != null; f = v.getNextOutEdge(f)) {
                 Node w = f.getTarget();
                 if (!tree.isSpecial(f) || tree.getWeight(f) == 1) {
                     viewer.getEV(f).setShape(EdgeView.ARC_LINE_EDGE);
-                    double wAngle = (w.getInDegree() == 1 ? angles.get(w.getFirstInEdge()) : 0);
+                    double wAngle = (w.getInDegree() == 1 ? angles.getDouble(w.getFirstInEdge()) : 0);
                     java.util.List<Point2D> list = new LinkedList<>();
                     list.add(originPt);
                     Point2D aPt = Geometry.rotate(vPt, wAngle - vAngle);
@@ -217,7 +217,7 @@ public class TreeDrawerCircular extends DefaultGraphDrawer implements IGraphDraw
                     viewer.setInternalPoints(f, list);
                 } else if (tree.isSpecial(f)) {
                     viewer.getEV(f).setShape(EdgeView.QUAD_EDGE);
-                    double wAngle = (w.getInDegree() == 1 ? angles.get(w.getFirstInEdge()) : 0);
+                    double wAngle = (w.getInDegree() == 1 ? angles.getDouble(w.getFirstInEdge()) : 0);
                     java.util.List<Point2D> list = new LinkedList<>();
                     Point2D aPt = Geometry.rotate(vPt, wAngle - vAngle);
                     list.add(aPt);

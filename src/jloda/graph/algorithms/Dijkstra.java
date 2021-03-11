@@ -67,10 +67,10 @@ public class Dijkstra {
             for (var e : u.outEdges()) {
                 double weight = weights.apply(e).doubleValue();
                 Node v = (Node) e.getOpposite(u);
-                if (dist.getValue(v) > dist.getValue(u) + weight) {
+                if (dist.get(v) > dist.get(u) + weight) {
                     // priorty of v changes, so must re-and to queue:
                     priorityQueue.remove(v);
-                    dist.put(v, dist.getValue(u) + weight);
+                    dist.put(v, dist.get(u) + weight);
                     priorityQueue.add(v);
                     predecessor.put(v, u);
                 }
@@ -85,7 +85,7 @@ public class Dijkstra {
             System.err.println("v: " + v);
             if (v != sink)
                 result.add(0, v);
-            v = predecessor.getValue(v);
+            v = predecessor.get(v);
         }
         System.err.println("# Dijkstra: " + result.size());
         return result;
@@ -101,8 +101,8 @@ public class Dijkstra {
      */
     static public SortedSet<Node> newFullQueue(final Graph graph, final NodeDoubleArray dist) {
         SortedSet<Node> queue = new TreeSet<>((v1, v2) -> {
-            double weight1 = dist.getValue(v1);
-            double weight2 = dist.getValue(v2);
+            double weight1 = dist.get(v1);
+            double weight2 = dist.get(v2);
             //System.out.println("weight1 " + weight1 + " weight2 " + weight2);
             //System.out.println("graph.getId(v1) " + graph.getId(v1) + " graph.getId(v2) " + graph.getId(v2));
             if (weight1 < weight2)

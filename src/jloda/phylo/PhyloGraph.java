@@ -50,7 +50,7 @@ public class PhyloGraph extends Graph {
 
         addGraphUpdateListener(new GraphUpdateAdapter() {
             public void deleteNode(Node v) {
-                List<Integer> list = node2taxa.getValue(v);
+                List<Integer> list = node2taxa.get(v);
                 if (list != null) {
                     for (Integer t : list) {
                         taxon2node.put(t, null);
@@ -104,14 +104,14 @@ public class PhyloGraph extends Graph {
         BitSet added = new BitSet();
 
         for (Node v : src.nodes()) {
-            final Node w = (oldNode2NewNode.getValue(v));
+            final Node w = (oldNode2NewNode.get(v));
             for (Integer tax : src.getTaxa(v)) {
                 addTaxon(w, tax);
                 added.set(tax);
             }
         }
         for (Edge e : src.edges()) {
-            final Edge f = (oldEdge2NewEdge.getValue(e));
+            final Edge f = (oldEdge2NewEdge.get(e));
             if (src.edgeWeights != null)
                 setWeight(f, src.getWeight(e));
             if (src.edgeConfidences != null)
@@ -131,14 +131,14 @@ public class PhyloGraph extends Graph {
         if (edgeWeights == null)
             return 1.0;
         else
-            return edgeWeights.get(e);
+            return edgeWeights.getDouble(e);
     }
 
     public void setWeight(Edge e, double wgt) {
         if (edgeWeights == null) {
             edgeWeights = new EdgeDoubleArray(this, 1.0);
         }
-        edgeWeights.setValue(e, wgt);
+        edgeWeights.put(e, wgt);
     }
 
     /**
@@ -163,10 +163,10 @@ public class PhyloGraph extends Graph {
      * @return confidence
      */
     public double getConfidence(Edge e) {
-        if (edgeConfidences == null || edgeConfidences.getValue(e) == null)
+        if (edgeConfidences == null || edgeConfidences.get(e) == null)
             return 1;
         else
-            return edgeConfidences.getValue(e);
+            return edgeConfidences.get(e);
     }
 
 
@@ -194,7 +194,7 @@ public class PhyloGraph extends Graph {
     }
 
     public int getNumberOfTaxa(Node v) {
-        final List<Integer> list = node2taxa.getValue(v);
+        final List<Integer> list = node2taxa.get(v);
         return list == null ? 0 : list.size();
     }
 
@@ -206,7 +206,7 @@ public class PhyloGraph extends Graph {
      */
     public void addTaxon(Node v, int taxId) {
         taxon2node.put(taxId, v);
-        List<Integer> list = node2taxa.getValue(v);
+        List<Integer> list = node2taxa.get(v);
         if (list == null) {
             list = new ArrayList<>();
             list.add(taxId);
@@ -223,7 +223,7 @@ public class PhyloGraph extends Graph {
      * @param v the node
      */
     public void clearTaxa(Node v) {
-        final List<Integer> list = node2taxa.getValue(v);
+        final List<Integer> list = node2taxa.get(v);
         if (list != null) {
             for (int t : list) {
                 if (taxon2node.get(t) == v)
@@ -241,10 +241,10 @@ public class PhyloGraph extends Graph {
      */
     public Iterable<Integer> getTaxa(Node v) {
         return () -> {
-            if (node2taxa.getValue(v) == null)
+            if (node2taxa.get(v) == null)
                 return new EmptyIterator<>();
             else
-                return node2taxa.getValue(v).iterator();
+                return node2taxa.get(v).iterator();
         };
     }
 
@@ -265,7 +265,7 @@ public class PhyloGraph extends Graph {
         if (taxonId > 0 && taxonId < taxon2node.size()) {
             taxon2node.put(taxonId, null);
             for (Node v : nodes()) {
-                List<Integer> list = node2taxa.getValue(v);
+                List<Integer> list = node2taxa.get(v);
                 if (list != null && list.contains(taxonId)) {
                     list.remove((Integer) taxonId);
                     if (list.size() == 0)
@@ -311,16 +311,16 @@ public class PhyloGraph extends Graph {
         NodeArray<Node> old2new = new NodeArray<>(graph);
         for (Node v : graph.nodes()) {
             Node w = newNode();
-            old2new.setValue(v, w);
+            old2new.put(v, w);
             setLabel(w, graph.getLabel(v));
 
         }
         try {
             for (Edge e : edges()) {
-                Edge f = newEdge(old2new.getValue(e.getSource()), old2new.getValue(e.getTarget()));
+                Edge f = newEdge(old2new.get(e.getSource()), old2new.get(e.getTarget()));
                 setLabel(f, graph.getLabel(e));
                 setWeight(f, graph.getWeight(e));
-                if (graph.edgeConfidences.getValue(e) != null)
+                if (graph.edgeConfidences.get(e) != null)
                     setConfidence(f, graph.getConfidence(e));
             }
         } catch (IllegalSelfEdgeException e1) {

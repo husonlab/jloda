@@ -1618,13 +1618,13 @@ public class GraphView extends JPanel implements Printable, Scrollable, INodeEdg
      * @return the NodeView
      */
     public NodeView getNV(Node v) {
-        if (nodeViews.getValue(v) == null) {
+        if (nodeViews.get(v) == null) {
             NodeView nv = new NodeView(defaultNodeView);
             nodeViews.put(v, nv);
             if (nv.getLocation() == null)
                 nv.setLocation(trans.getRandomVisibleLocation());
         }
-        return nodeViews.getValue(v);
+        return nodeViews.get(v);
     }
 
     /**
@@ -1634,11 +1634,11 @@ public class GraphView extends JPanel implements Printable, Scrollable, INodeEdg
      * @return the EdgeView
      */
     public EdgeView getEV(Edge e) {
-        if (edgeViews.getValue(e) == null) {
+        if (edgeViews.get(e) == null) {
             EdgeView ev = new EdgeView(defaultEdgeView);
             edgeViews.put(e, ev);
         }
-        return edgeViews.getValue(e);
+        return edgeViews.get(e);
     }
 
     /**
@@ -1965,20 +1965,20 @@ public class GraphView extends JPanel implements Printable, Scrollable, INodeEdg
                 // repulsive forces
 
                 for (Node v = G.getFirstNode(); v != null; v = G.getNextNode(v)) {
-                    double xv = xPos.getValue(v);
-                    double yv = yPos.getValue(v);
+                    double xv = xPos.get(v);
+                    double yv = yPos.get(v);
 
                     for (Node u = G.getFirstNode(); u != null; u = G.getNextNode(u)) {
                         if (u == v)
                             continue;
-                        double xDist = xv - xPos.getValue(u);
-                        double yDist = yv - yPos.getValue(u);
+                        double xDist = xv - xPos.get(u);
+                        double yDist = yv - yPos.get(u);
                         double dist = xDist * xDist + yDist * yDist;
                         if (dist < 1e-3)
                             dist = 1e-3;
                         double repulse = k * k / dist;
-                        xDispl.put(v, xDispl.getValue(v) + repulse * xDist);
-                        yDispl.put(v, yDispl.getValue(v) + repulse * yDist);
+                        xDispl.put(v, xDispl.get(v) + repulse * xDist);
+                        yDispl.put(v, yDispl.get(v) + repulse * yDist);
                     }
 
                     for (Edge e = G.getFirstEdge(); e != null; e = G.getNextEdge(e)) {
@@ -1986,14 +1986,14 @@ public class GraphView extends JPanel implements Printable, Scrollable, INodeEdg
                         final Node b = G.getTarget(e);
                         if (a == v || b == v)
                             continue;
-                        double xDist = xv - (xPos.getValue(a) + xPos.getValue(b)) / 2;
-                        double yDist = yv - (yPos.getValue(a) + yPos.getValue(b)) / 2;
+                        double xDist = xv - (xPos.get(a) + xPos.get(b)) / 2;
+                        double yDist = yv - (yPos.get(a) + yPos.get(b)) / 2;
                         double dist = xDist * xDist + yDist * yDist;
                         if (dist < 1e-3)
                             dist = 1e-3;
                         double repulse = k * k / dist;
-                        xDispl.put(v, xDispl.getValue(v) + repulse * xDist);
-                        yDispl.put(v, yDispl.getValue(v) + repulse * yDist);
+                        xDispl.put(v, xDispl.get(v) + repulse * xDist);
+                        yDispl.put(v, yDispl.get(v) + repulse * yDist);
                     }
                 }
 
@@ -2003,38 +2003,38 @@ public class GraphView extends JPanel implements Printable, Scrollable, INodeEdg
                     final Node u = G.getSource(e);
                     final Node v = G.getTarget(e);
 
-                    double xDist = xPos.getValue(v) - xPos.getValue(u);
-                    double yDist = yPos.getValue(v) - yPos.getValue(u);
+                    double xDist = xPos.get(v) - xPos.get(u);
+                    double yDist = yPos.get(v) - yPos.get(u);
 
                     double dist = Math.sqrt(xDist * xDist + yDist * yDist);
 
                     dist /= ((G.getDegree(u) + G.getDegree(v)) / 16.0);
 
-                    xDispl.put(v, xDispl.getValue(v) - xDist * dist / k);
-                    yDispl.put(v, yDispl.getValue(v) - yDist * dist / k);
-                    xDispl.put(u, xDispl.getValue(u) + xDist * dist / k);
-                    yDispl.put(u, yDispl.getValue(u) + yDist * dist / k);
+                    xDispl.put(v, xDispl.get(v) - xDist * dist / k);
+                    yDispl.put(v, yDispl.get(v) - yDist * dist / k);
+                    xDispl.put(u, xDispl.get(u) + xDist * dist / k);
+                    yDispl.put(u, yDispl.get(u) + yDist * dist / k);
                 }
 
                 // preventions
 
                 for (Node v = G.getFirstNode(); v != null; v = G.getNextNode(v)) {
-                    double xd = xDispl.getValue(v);
-                    double yd = yDispl.getValue(v);
+                    double xd = xDispl.get(v);
+                    double yd = yDispl.get(v);
 
                     final double dist = Math.sqrt(xd * xd + yd * yd);
 
                     xd = tx * xd / dist;
                     yd = ty * yd / dist;
 
-                    xPos.put(v, xPos.getValue(v) + xd);
-                    yPos.put(v, yPos.getValue(v) + yd);
+                    xPos.put(v, xPos.get(v) + xd);
+                    yPos.put(v, yPos.get(v) + yd);
                 }
             }
 
             // set node positions
             for (Node v = G.getFirstNode(); v != null; v = G.getNextNode(v)) {
-                setLocation(v, xPos.getValue(v), yPos.getValue(v));
+                setLocation(v, xPos.get(v), yPos.get(v));
             }
         } catch (Exception ex) {
             Basic.caught(ex);
@@ -2193,10 +2193,10 @@ public class GraphView extends JPanel implements Printable, Scrollable, INodeEdg
 /*
         JScrollBar hScrollBar = getScrollPane().getHorizontalScrollBar();
         int x = trans.getLeftMargin() - 100;
-        hScrollBar.setValue(x);
+        hScrollBar.put(x);
         JScrollBar vScrollBar = getScrollPane().getVerticalScrollBar();
         int y = trans.getTopMargin() - 100;
-        vScrollBar.setValue(y);
+        vScrollBar.put(y);
         getScrollPane().getViewport().setViewPosition(new Point(x, y));
         */
         //revalidate();

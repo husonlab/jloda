@@ -150,7 +150,7 @@ public class FastAFileIterator implements IFastAIterator, Closeable {
     public Pair<String, String> next(String firstWordInHeader) {
         while (hasNext()) {
             Pair<String, String> pair = next();
-            if (Basic.getFirstWord(Basic.swallowLeadingGreaterSign(pair.get1())).equals(firstWordInHeader))
+            if (Basic.getFirstWord(Basic.swallowLeadingGreaterSign(pair.getFirst())).equals(firstWordInHeader))
                 return pair;
         }
         return null;

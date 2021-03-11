@@ -20,7 +20,15 @@
 
 package jloda.util;
 
-public class Triplet<T1, T2, T3> implements Comparable<Triplet<T1, T2, T3>> {
+import java.util.Arrays;
+import java.util.Iterator;
+import java.util.Objects;
+
+/**
+ * triplet
+ * Daniel Huson, 2015
+ */
+public class Triplet<T1, T2, T3> implements Comparable<Triplet<T1, T2, T3>>, Iterable<Object> {
     private T1 first;
     private T2 second;
     private T3 third;
@@ -58,11 +66,6 @@ public class Triplet<T1, T2, T3> implements Comparable<Triplet<T1, T2, T3>> {
         this.third = third;
     }
 
-    @Override
-    public int hashCode() {
-        return first.hashCode() + second.hashCode() + third.hashCode();
-    }
-
     public String toString() {
         return first + ", " + second + ", " + third;
     }
@@ -77,34 +80,6 @@ public class Triplet<T1, T2, T3> implements Comparable<Triplet<T1, T2, T3>> {
             return value;
         else
             return ((Comparable<T3>) this.getThird()).compareTo(p.getThird());
-    }
-
-    public boolean equals(Object other) {
-        boolean good = false;
-        if (other instanceof Triplet) {
-            Triplet p = (Triplet) other;
-            if (first == null) {
-                good = (p.first == null);
-            } else {
-                good = first.equals(p.first);
-            }
-            if (good) {
-                if (second == null) {
-                    good = (p.second == null);
-                } else {
-                    good = second.equals(p.second);
-                }
-            }
-            if (good) {
-                if (third == null) {
-                    good = (p.third == null);
-                } else {
-                    good = third.equals(p.third);
-                }
-            }
-
-        }
-        return good;
     }
 
     /**
@@ -137,15 +112,21 @@ public class Triplet<T1, T2, T3> implements Comparable<Triplet<T1, T2, T3>> {
         return new Triplet<>(getFirst(), getSecond(), getThird());
     }
 
-    public T1 get1() {
-        return first;
+    @Override
+    public Iterator<Object> iterator() {
+        return IteratorUtils.iteratorNonNullElements(Arrays.asList(first, second, third).iterator());
     }
 
-    public T2 get2() {
-        return second;
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Triplet<?, ?, ?> triplet = (Triplet<?, ?, ?>) o;
+        return Objects.equals(first, triplet.first) && Objects.equals(second, triplet.second) && Objects.equals(third, triplet.third);
     }
 
-    public T3 get3() {
-        return third;
+    @Override
+    public int hashCode() {
+        return Objects.hash(first, second, third);
     }
 }

@@ -86,8 +86,8 @@ public class DirectedCycleDetector {
                 detectRec(G, w);
             } else if (onStack.contains(w)) {
                 cycle.push(e);
-                for (Node x = v; x != w; x = edgeTo.getValue(x).getSource())
-                    cycle.push(edgeTo.getValue(x));
+                for (Node x = v; x != w; x = edgeTo.get(x).getSource())
+                    cycle.push(edgeTo.get(x));
             }
         }
         onStack.remove(v);

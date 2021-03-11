@@ -208,7 +208,7 @@ public class MessageWindow {
         JScrollPane scrollP = new JScrollPane(textArea);
 
         // ((JTextArea) comp).addPropertyChangeListener(action);
-        // textArea.setToolTipText((String) action.getValue(AbstractAction.SHORT_DESCRIPTION));
+        // textArea.setToolTipText((String) action.get(AbstractAction.SHORT_DESCRIPTION));
         panel.add(scrollP, constraints);
 
         return panel;

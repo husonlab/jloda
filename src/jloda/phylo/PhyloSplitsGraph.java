@@ -31,7 +31,7 @@ import java.util.*;
  * Daniel Huson, 1.2018
  */
 public class PhyloSplitsGraph extends PhyloGraph {
-    final EdgeIntegerArray splits;
+    final EdgeIntArray splits;
     protected final EdgeDoubleArray edgeAngles;
     final Vector<Integer> taxon2cycle;
 
@@ -40,7 +40,7 @@ public class PhyloSplitsGraph extends PhyloGraph {
      */
     public PhyloSplitsGraph() {
         super();
-        splits = new EdgeIntegerArray(this);
+        splits = new EdgeIntArray(this);
         edgeAngles = new EdgeDoubleArray(this);
         taxon2cycle = new Vector<>();
     }
@@ -83,18 +83,18 @@ public class PhyloSplitsGraph extends PhyloGraph {
         super.copy(src, oldNode2NewNode, oldEdge2NewEdge);
 
         for (Node v : src.nodes()) {
-            final Node w = (oldNode2NewNode.getValue(v));
-            node2taxa.setValue(w, src.node2taxa.getValue(v));
+            final Node w = (oldNode2NewNode.get(v));
+            node2taxa.put(w, src.node2taxa.get(v));
         }
         for (Edge e : src.edges()) {
-            final Edge f = (oldEdge2NewEdge.getValue(e));
+            final Edge f = (oldEdge2NewEdge.get(e));
             setAngle(f, src.getAngle(e));
             setSplit(f, src.getSplit(e));
         }
         for (int i = 0; i < src.taxon2node.size(); i++) {
             Node v = src.getTaxon2Node(i + 1);
             if (v != null)
-                addTaxon(oldNode2NewNode.getValue(v), i + 1);
+                addTaxon(oldNode2NewNode.get(v), i + 1);
         }
 
         setName(src.getName());
@@ -110,10 +110,10 @@ public class PhyloSplitsGraph extends PhyloGraph {
     public Integer[] getSplitIds() {
         final Set<Integer> ids = new TreeSet<>();
         for (Edge e : edges()) {
-            if (splits.getValue(e) == null)
+            if (splits.get(e) == null)
                 System.err.println("Split id is null!!!");
             else
-                ids.add(splits.getValue(e));
+                ids.add(splits.get(e));
         }
         return ids.toArray(new Integer[0]);
     }
@@ -135,9 +135,9 @@ public class PhyloSplitsGraph extends PhyloGraph {
      * @return the split-id of the given edge
      */
     public int getSplit(Edge e) {
-        if (splits.getValue(e) == null)
+        if (splits.get(e) == null)
             return 0;
-        return splits.getValue(e);
+        return splits.get(e);
     }
 
 
@@ -297,7 +297,7 @@ public class PhyloSplitsGraph extends PhyloGraph {
      * @param labels
      */
     private void labelNodesBySequencesRec(Node v, BitSet used, Map split2chars, char[] firstChars, NodeArray<String> labels) {
-        if (labels.getValue(v) == null) {
+        if (labels.get(v) == null) {
             BitSet flips = new BitSet();
             for (int s = used.nextSetBit(1); s >= 0; s = used.nextSetBit(s + 1)) {
                 if (s > 0)
@@ -311,7 +311,7 @@ public class PhyloSplitsGraph extends PhyloGraph {
                 else
                     label.append("1");
             }
-            labels.setValue(v, label.toString());
+            labels.put(v, label.toString());
             for (Edge e : v.adjacentEdges()) {
                 int s = getSplit(e);
                 if (!used.get(s)) {
@@ -340,10 +340,10 @@ public class PhyloSplitsGraph extends PhyloGraph {
      * @return angle
      */
     public double getAngle(Edge e) {
-        if (edgeAngles.getValue(e) == null)
+        if (edgeAngles.get(e) == null)
             return 0;
         else
-            return edgeAngles.getValue(e);
+            return edgeAngles.get(e);
     }
 
     /**

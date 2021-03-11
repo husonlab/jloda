@@ -20,49 +20,37 @@
 
 package jloda.graph;
 
-import jloda.util.IterationUtils;
 
-import java.util.Arrays;
-import java.util.Iterator;
-import java.util.NoSuchElementException;
+import jloda.util.Basic;
+import jloda.util.IteratorUtils;
+
+import java.util.*;
 
 /**
  * Node array
- * Daniel Huson, 2003
+ * Daniel Huson 2004, 2021
  */
 
-public class NodeArray<T> extends GraphBase implements Iterable<T> {
+public class NodeArray<T> extends GraphBase implements Iterable<T>, Map<Node, T> {
     private T[] data;
     private boolean isClear = true;
     private T defaultValue;
 
     /**
-     * Construct a node array with default value null
+     * Construct an node array with default value null
      */
     public NodeArray(Graph g) {
         setOwner(g);
         data = (T[]) new Object[g.getMaxNodeId() + 1];
         g.registerNodeArray(this);
-        defaultValue = null;
     }
 
     /**
-     * Construct a node array for the given graph and set the default value
+     * Construct an node array for the given graph and set the default value
      */
     public NodeArray(Graph g, T defaultValue) {
         this(g);
         this.defaultValue = defaultValue;
-    }
-
-    /**
-     * Copy constructor.
-     *
-     * @param src NodeArray
-     */
-    public NodeArray(NodeArray<T> src) {
-        this(src.getOwner());
-        getOwner().nodeStream().forEach(v -> setValue(v, src.getValue(v)));
-        defaultValue = src.getDefaultValue();
     }
 
     /**
@@ -74,40 +62,34 @@ public class NodeArray<T> extends GraphBase implements Iterable<T> {
     }
 
     /**
-     * Get the entry for node v or the default object
+     * Copy constructor.
      *
-     * @param v Node
-     * @return an Object the entry for node v
+     * @param src NodeArray
      */
-    public T getValue(Node v) {
-        checkOwner(v);
-        if (v.getId() < data.length && data[v.getId()] != null)
-            return data[v.getId()];
-        else
-            return defaultValue;
+    public NodeArray(NodeArray<T> src) {
+        setOwner(src.getOwner());
+        getOwner().nodes().forEach(e -> put(e, src.get(e)));
+        defaultValue = src.getDefaultValue();
     }
 
     /**
-     * Set the entry for node v to obj.
+     * Set the entry for node e to obj.
      *
-     * @param v   Node
-     * @param obj Object
+     * @param a      Node
+     * @param object Object
      */
-    public void setValue(Node v, T obj) {
-        put(v, obj);
-    }
-
-    public void put(Node v, T obj) {
-        checkOwner(v);
-
-        if (v.getId() >= data.length) {
-            if (obj == null)
-                return;
-            grow(v.getId());
+    public T put(Node a, T object) {
+        checkOwner(a);
+        int id = a.getId();
+        if (id >= data.length) {
+            if (object == null)
+                return null; // nothing to do
+            grow(a.getId());
         }
-        data[v.getId()] = obj;
-        if (obj != null && isClear)
+        data[id] = object;
+        if (object != null && isClear)
             isClear = false;
+        return object;
     }
 
     /**
@@ -115,10 +97,11 @@ public class NodeArray<T> extends GraphBase implements Iterable<T> {
      *
      * @param n index to be included in array
      */
-    synchronized private void grow(int n) {
+    private void grow(int n) {
         int newSize = Math.max(1, 2 * data.length);
-        while (newSize <= n)
+        while (newSize <= n && 2L * newSize < (long) Basic.MAX_ARRAY_SIZE) {
             newSize *= 2;
+        }
         if (newSize > data.length) {
             T[] newData = (T[]) new Object[newSize];
             System.arraycopy(data, 0, newData, 0, data.length);
@@ -127,103 +110,166 @@ public class NodeArray<T> extends GraphBase implements Iterable<T> {
     }
 
     /**
-     * Set the entry for all nodes to obj.
+     * Set the entry for all nodes.
      *
-     * @param obj Object
+     * @param value Object
      */
-    public void setAll(T obj) {
-        getOwner().nodeStream().forEach(v -> setValue(v, obj));
+    public void putAll(T value) {
+        clear();
+        if (value != null && getOwner().getNumberOfNodes() > 0) {
+            getOwner().nodes().forEach(e -> put(e, value));
+        }
     }
 
     /**
-     * is array erase, that is, has nothing been set
-     *
-     * @return true, if erase
+     * has not been set since last clear()?
      */
     public boolean isClear() {
         return isClear;
     }
 
-    /**
-     * create a clone
-     *
-     * @return clone
-     */
-    public Object clone() {
-        final NodeArray<T> result = new NodeArray<>(getOwner());
-        getOwner().nodeStream().forEach(v -> result.setValue(v, getValue(v)));
-        return result;
-    }
-
     public Iterator<T> iterator() {
-        return values().iterator();
-    }
+        if (isClear())
+            return Collections.emptyIterator();
+        else
+            return IteratorUtils.iteratorNonNullElements(new Iterator<T>() {
+                int i = 0;
 
-    /**
-     * get an iterator over all non-null values
-     *
-     * @return iterator
-     */
-    public Iterable<T> values() {
-        return () -> IterationUtils.iteratorNonNullElements(new Iterator<T>() {
-            int i = 0;
+                @Override
+                public boolean hasNext() {
+                    return i < data.length;
+                }
 
-            @Override
-            public boolean hasNext() {
-                return i < data.length;
-            }
-
-            @Override
-            public T next() {
-                return data[i++];
+                @Override
+                public T next() {
+                    return data[i++];
             }
         });
     }
 
 
     /**
-     * get an iterator over all non-null values
-     *
-     * @return iterator
+     * get all keys with non-null values
      */
     public Iterable<Node> keys() {
-        return () -> new Iterator<>() {
-            private Node v = getOwner().getFirstNode();
+        if (isClear())
+            return Collections::emptyIterator;
+        else
+            return () -> new Iterator<>() {
+                private Node a = getOwner().getFirstNode();
 
-            {
-                while (v != null) {
-                    if (v.getId() < data.length && data[v.getId()] != null)
-                        break;
-                    v = v.getNext();
+                {
+                    while (a != null) {
+                        if (a.getId() < data.length && data[a.getId()] != null)
+                            break;
+                        a = a.getNext();
+                    }
                 }
-            }
 
-            @Override
-            public boolean hasNext() {
-                return v != null;
-            }
-
-            @Override
-            public Node next() {
-                if (v == null)
-                    throw new NoSuchElementException();
-                Node result = v;
-                v = v.getNext();
-                while (v != null) {
-                    if (v.getId() < data.length && data[v.getId()] != null)
-                        break;
-                    v = v.getNext();
+                @Override
+                public boolean hasNext() {
+                    return a != null;
                 }
-                return result;
-            }
-        };
+
+                @Override
+                public Node next() {
+                    if (a == null)
+                        throw new NoSuchElementException();
+                    Node result = a;
+                    a = a.getNext();
+                    while (a != null) {
+                        if (a.getId() < data.length && data[a.getId()] != null)
+                            break;
+                        a = a.getNext();
+                    }
+                    return result;
+                }
+            };
     }
 
     public T getDefaultValue() {
         return defaultValue;
     }
 
+    @Override
+    public int size() {
+        return 0;
+    }
 
+    @Override
+    public boolean isEmpty() {
+        return false;
+    }
+
+    @Override
+    public T remove(Object key) {
+        if (key instanceof Node) {
+            var a = (Node) key;
+            T value = get(a);
+            put(a, null);
+            return value;
+        } else
+            return null;
+    }
+
+    @Override
+    public boolean containsKey(Object key) {
+        if (key instanceof Node) {
+            return get(key) != null;
+        } else
+            return false;
+    }
+
+    @Override
+    public boolean containsValue(Object value) {
+        if (value != null) {
+            for (var a : this) {
+                if (a.equals(value))
+                    return true;
+            }
+        }
+        return false;
+    }
+
+    @Override
+    public T get(Object key) {
+        if (key instanceof Node) {
+            var a = (Node) key;
+            checkOwner(a);
+            if (a.getId() < data.length && data[a.getId()] != null)
+                return data[a.getId()];
+            else
+                return defaultValue;
+        } else
+            return null;
+    }
+
+    @Override
+    public void putAll(Map<? extends Node, ? extends T> map) {
+        for (var a : map.entrySet()) {
+            put(a.getKey(), a.getValue());
+        }
+    }
+
+    @Override
+    public Set<Node> keySet() {
+        return IteratorUtils.asSet(keys());
+    }
+
+    @Override
+    public Set<Entry<Node, T>> entrySet() {
+        Set<Map.Entry<Node, T>> set = new HashSet<>();
+        for (var k : keys()) {
+            set.add(new jloda.util.Entry<>(k, get(k)));
+        }
+        return set;
+    }
+
+    @Override
+    public Collection<T> values() {
+        return IteratorUtils.asList(this);
+    }
 }
+
 
 // EOF

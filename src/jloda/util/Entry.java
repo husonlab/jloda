@@ -29,7 +29,7 @@ import java.util.Objects;
  * @param <K>
  * @param <V>
  */
-public class Entry<K, V> {
+public class Entry<K, V> implements Map.Entry<K, V> {
     private final K key;
     private V value;
 

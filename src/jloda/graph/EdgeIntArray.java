@@ -25,18 +25,18 @@ package jloda.graph;
  * edge float array
  * Daniel Huson, 2003
  */
-public class EdgeIntegerArray extends EdgeArray<Integer> {
+public class EdgeIntArray extends EdgeArray<Integer> {
     /**
      * Construct an edge array with default value null
      */
-    public EdgeIntegerArray(Graph g) {
+    public EdgeIntArray(Graph g) {
         super(g);
     }
 
     /**
      * Construct an edge array for the given graph and set the default value
      */
-    public EdgeIntegerArray(Graph g, Integer defaultValue) {
+    public EdgeIntArray(Graph g, Integer defaultValue) {
         super(g, defaultValue);
     }
 
@@ -45,7 +45,7 @@ public class EdgeIntegerArray extends EdgeArray<Integer> {
      *
      * @param src EdgeArray
      */
-    public EdgeIntegerArray(EdgeArray<Integer> src) {
+    public EdgeIntArray(EdgeArray<Integer> src) {
         super(src);
     }
 
@@ -56,8 +56,8 @@ public class EdgeIntegerArray extends EdgeArray<Integer> {
      * @param e
      * @return integer or 0
      */
-    public int get(Edge e) {
-        final Integer value = getValue(e);
+    public int getInt(Edge e) {
+        final Integer value = get(e);
         if (value != null)
             return value;
         else
@@ -74,7 +74,7 @@ public class EdgeIntegerArray extends EdgeArray<Integer> {
      * @param e
      */
     public void increment(Edge e) {
-        set(e, get(e) + 1);
+        set(e, getInt(e) + 1);
     }
 
     /**
@@ -83,7 +83,7 @@ public class EdgeIntegerArray extends EdgeArray<Integer> {
      * @param e
      */
     public void increment(Edge e, int value) {
-        set(e, get(e) + value);
+        set(e, getInt(e) + value);
     }
 
     /**
@@ -92,7 +92,7 @@ public class EdgeIntegerArray extends EdgeArray<Integer> {
      * @param e
      */
     public void decrement(Edge e) {
-        set(e, get(e) - 1);
+        set(e, getInt(e) - 1);
     }
 
     /**
@@ -101,7 +101,7 @@ public class EdgeIntegerArray extends EdgeArray<Integer> {
      * @param e
      */
     public void decrement(Edge e, int value) {
-        set(e, get(e) - value);
+        set(e, getInt(e) - value);
     }
 }
 

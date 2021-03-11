@@ -29,7 +29,7 @@ package jloda.progs;
 
 import jloda.graph.Edge;
 import jloda.graph.Node;
-import jloda.graph.NodeIntegerArray;
+import jloda.graph.NodeIntArray;
 import jloda.graph.NotOwnerException;
 import jloda.phylo.PhyloSplitsGraph;
 import jloda.swing.graphview.GraphViewListener;
@@ -129,7 +129,7 @@ public class CoverDigraph {
         Arrays.sort(genes, new BitSetComparator());
         graph = new PhyloSplitsGraph();
         Node[] gene2node = new Node[genes.length];
-        NodeIntegerArray node2covered = new NodeIntegerArray(graph);
+        NodeIntArray node2covered = new NodeIntArray(graph);
 
 
         for (int i = 0; i < genes.length; i++) {
@@ -161,7 +161,7 @@ public class CoverDigraph {
                 for (int j = i - 1; j >= 0; j--) {
                     Node w = gene2node[j];
 
-                    if (node2covered.getValue(w) < i + 1) // doesn't cover a node between v and w
+                    if (node2covered.get(w) < i + 1) // doesn't cover a node between v and w
                     {
                         if (BitSetComparator.isSubset(genes[i].taxa, genes[j].taxa)) {
                             graph.newEdge(w, v);
@@ -180,9 +180,9 @@ public class CoverDigraph {
      * @param v
      * @param node2covered
      */
-    private void markAllCoveringNodesRec(int id, Node v, NodeIntegerArray node2covered)
+    private void markAllCoveringNodesRec(int id, Node v, NodeIntArray node2covered)
             throws NotOwnerException {
-        if (node2covered.getValue(v) >= id)
+        if (node2covered.get(v) >= id)
             return;
 
         node2covered.set(v, id);
@@ -190,7 +190,7 @@ public class CoverDigraph {
         for (Edge e = graph.getFirstAdjacentEdge(v); e != null; e = graph.getNextAdjacentEdge(e, v))
             if (graph.getTarget(e) == v) {
                 Node w = graph.getOpposite(v, e);
-                if (node2covered.getValue(w) < id) {
+                if (node2covered.get(w) < id) {
                     markAllCoveringNodesRec(id, w, node2covered);
                 }
             }

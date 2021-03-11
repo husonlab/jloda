@@ -20,8 +20,8 @@
 package jloda.graph;
 
 import jloda.util.Basic;
-import jloda.util.IterationUtils;
 import jloda.util.IteratorAdapter;
+import jloda.util.IteratorUtils;
 
 import java.lang.ref.WeakReference;
 import java.util.*;
@@ -1002,8 +1002,8 @@ public class Graph extends GraphBase {
         idsNodes = src.idsNodes;
 
         for (Edge e = src.getFirstEdge(); e != null; e = src.getNextEdge(e)) {
-            Node p = oldNode2newNode.getValue(src.getSource(e));
-            Node q = oldNode2newNode.getValue(src.getTarget(e));
+            Node p = oldNode2newNode.get(src.getSource(e));
+            Node q = oldNode2newNode.get(src.getTarget(e));
             Edge f = null;
             try {
                 f = newEdge(p, q);
@@ -1022,10 +1022,10 @@ public class Graph extends GraphBase {
 
         // change all adjacencies to reflect order in old graph:
         for (Node v = src.getFirstNode(); v != null; v = src.getNextNode(v)) {
-            Node w = oldNode2newNode.getValue(v);
+            Node w = oldNode2newNode.get(v);
             List<Edge> newOrder = new LinkedList<>();
             for (Edge e = v.getFirstAdjacentEdge(); e != null; e = v.getNextAdjacentEdge(e)) {
-                newOrder.add(oldEdge2newEdge.getValue(e));
+                newOrder.add(oldEdge2newEdge.get(e));
             }
             w.rearrangeAdjacentEdges(newOrder);
         }
@@ -1107,8 +1107,8 @@ public class Graph extends GraphBase {
 
         var edgeId = 0;
         for (var srcEdge : (edges != null ? edges : edges())) {
-            var tarA = src2tarNode.getValue(srcEdge.getSource());
-            var tarB = src2tarNode.getValue(srcEdge.getTarget());
+            var tarA = src2tarNode.get(srcEdge.getSource());
+            var tarB = src2tarNode.get(srcEdge.getTarget());
             if (tarA != null && tarB != null) {
                 var tarEdge = tarGraph.newEdge(tarA, tarB);
                 tarEdge.setInfo(srcEdge.getInfo());
@@ -1128,7 +1128,7 @@ public class Graph extends GraphBase {
                 return;
             nodeLabel = newNodeArray();
         }
-        nodeLabel.setValue(v, label);
+        nodeLabel.put(v, label);
         fireNodeLabelChanged(v, label);
     }
 
@@ -1136,7 +1136,7 @@ public class Graph extends GraphBase {
      * Gets the taxon label of a node.
      */
     public String getLabel(Node v) {
-        return nodeLabel == null ? null : nodeLabel.getValue(v);
+        return nodeLabel == null ? null : nodeLabel.get(v);
     }
 
     /**
@@ -1157,7 +1157,7 @@ public class Graph extends GraphBase {
      * Gets the label of an edge.
      */
     public String getLabel(Edge e) {
-        return edgeLabel == null ? null : edgeLabel.getValue(e);
+        return edgeLabel == null ? null : edgeLabel.get(e);
     }
 
     /**
@@ -1169,14 +1169,14 @@ public class Graph extends GraphBase {
                 return;
             nodeInfo = newNodeArray();
         }
-        nodeInfo.setValue(v, info);
+        nodeInfo.put(v, info);
     }
 
     /**
      * Gets the info of a node.
      */
     public Object getInfo(Node v) {
-        return nodeInfo == null ? null : nodeInfo.getValue(v);
+        return nodeInfo == null ? null : nodeInfo.get(v);
     }
 
     /**
@@ -1195,7 +1195,7 @@ public class Graph extends GraphBase {
      * Gets the info of an edge.
      */
     public Object getInfo(Edge e) {
-        return edgeInfo == null ? null : edgeInfo.getValue(e);
+        return edgeInfo == null ? null : edgeInfo.get(e);
     }
 
     /**
@@ -1210,14 +1210,14 @@ public class Graph extends GraphBase {
                 return;
             nodeData = newNodeArray();
         }
-        nodeData.setValue(v, data);
+        nodeData.put(v, data);
     }
 
     /**
      * Gets the data of a node.
      */
     public Object getData(Node v) {
-        return nodeData == null ? null : nodeData.getValue(v);
+        return nodeData == null ? null : nodeData.get(v);
     }
 
     /**
@@ -1239,7 +1239,7 @@ public class Graph extends GraphBase {
      * Gets the data of an edge.
      */
     public Object getData(Edge e) {
-        return edgeData == null ? null : edgeData.getValue(e);
+        return edgeData == null ? null : edgeData.get(e);
     }
 
 
@@ -1546,7 +1546,7 @@ public class Graph extends GraphBase {
      * @return node set of nodes
      */
     public Set<Node> getNodesAsSet() {
-        return IterationUtils.asSet(nodes());
+        return IteratorUtils.asSet(nodes());
     }
 
     /**
@@ -1605,7 +1605,7 @@ public class Graph extends GraphBase {
      * @return edge set of adjacentEdges
      */
     public Set<Edge> getEdgesAsSet() {
-        return IterationUtils.asSet(edges());
+        return IteratorUtils.asSet(edges());
     }
 
     /**
@@ -1787,8 +1787,8 @@ public class Graph extends GraphBase {
         return new NodeArray<>(this);
     }
 
-    public NodeIntegerArray newNodeIntArray() {
-        return new NodeIntegerArray(this);
+    public NodeIntArray newNodeIntArray() {
+        return new NodeIntArray(this);
     }
 
     public NodeDoubleArray newNodeDoubleArray() {
@@ -1803,8 +1803,8 @@ public class Graph extends GraphBase {
         return new EdgeArray<>(this);
     }
 
-    public EdgeIntegerArray newEdgeIntArray() {
-        return new EdgeIntegerArray(this);
+    public EdgeIntArray newEdgeIntArray() {
+        return new EdgeIntArray(this);
     }
 
     public EdgeDoubleArray newEdgeDoubleArray() {

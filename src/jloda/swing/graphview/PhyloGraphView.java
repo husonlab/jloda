@@ -481,9 +481,9 @@ public class PhyloGraphView extends GraphView {
                 if (v != null) {
                     Edge e = v.getFirstAdjacentEdge();
                     if (e != null) {
-                        double alpha = angle.get(e);
+                        double alpha = angle.getDouble(e);
                         for (Edge f = getGraph().getFirstEdge(); f != null; f = f.getNext()) {
-                            angle.put(f, angle.get(f) - alpha);
+                            angle.put(f, angle.getDouble(f) - alpha);
                         }
                     }
                 }
@@ -553,7 +553,7 @@ public class PhyloGraphView extends GraphView {
                 Node v = G.getOpposite(root, e);
 
                 // translate in the computed direction by the given amount
-                setLocation(v, Geometry.translateByAngle(getLocation(root), angle.get(e), ((PhyloTree) G).getWeight(e)));
+                setLocation(v, Geometry.translateByAngle(getLocation(root), angle.getDouble(e), ((PhyloTree) G).getWeight(e)));
 
                 setCoordsRec(v, e, angle);
             }

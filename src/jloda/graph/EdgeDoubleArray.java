@@ -54,8 +54,8 @@ public class EdgeDoubleArray extends EdgeArray<Double> {
      * @param e Edge
      * @return double or 0
      */
-    public double get(Edge e) {
-        final Double value = getValue(e);
+    public double getDouble(Edge e) {
+        final Double value = get(e);
         if (value != null)
             return value;
         else

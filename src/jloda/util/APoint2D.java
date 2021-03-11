@@ -57,4 +57,8 @@ public class APoint2D<T> {
     public double[] getValues() {
         return xy;
     }
+
+    public String toString() {
+        return String.format("(%.3f,%.3f)%s", getX(), getY(), getUserData() == null ? "" : ": " + getUserData());
+    }
 }

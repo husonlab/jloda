@@ -28,8 +28,7 @@ import java.util.stream.StreamSupport;
  * iteration utilities
  * Daniel Huson, 3.2019
  */
-public class IterationUtils {
-
+public class IteratorUtils {
     /**
      * join multiple iterables into one
      *
@@ -82,13 +81,13 @@ public class IterationUtils {
         return list;
     }
 
-    public static <T> Set<T> asSet(Iterable<T> iteratable) {
+    public static <T> Set<T> asSet(Iterable<T> iterable) {
         final HashSet<T> set = new HashSet<>();
-        return asSet(iteratable, set);
+        return asSet(iterable, set);
     }
 
-    public static <T> Set<T> asSet(Iterable<T> iteratable, Set<T> set) {
-        for (T value : iteratable) {
+    public static <T> Set<T> asSet(Iterable<T> iterable, Set<T> set) {
+        for (T value : iterable) {
             set.add(value);
         }
         return set;
@@ -135,5 +134,63 @@ public class IterationUtils {
 
     public static <T> Stream<T> asStream(Iterable<T> iterable) {
         return StreamSupport.stream(iterable.spliterator(), false);
+    }
+
+    /**
+     * iterable over first elements
+     *
+     * @param src
+     * @param <P>
+     * @param <Q>
+     * @return iterable over all first elements
+     */
+    public static <P, Q> Iterable<P> firstValues(final Iterable<Pair<P, Q>> src) {
+        return () -> new Iterator<>() {
+            private final Iterator<Pair<P, Q>> it = src.iterator();
+
+            @Override
+            public boolean hasNext() {
+                return it.hasNext();
+            }
+
+            @Override
+            public P next() {
+                return it.next().getFirst();
+            }
+
+            @Override
+            public void remove() {
+                it.remove();
+            }
+        };
+    }
+
+    /**
+     * iterable over second elements
+     *
+     * @param src
+     * @param <P>
+     * @param <Q>
+     * @return iterable over all second elements
+     */
+    public static <P, Q> Iterable<Q> secondValues(final Iterable<Pair<P, Q>> src) {
+        return () -> new Iterator<>() {
+            private final Iterator<Pair<P, Q>> it = src.iterator();
+
+            @Override
+            public boolean hasNext() {
+                return it.hasNext();
+            }
+
+            @Override
+            public Q next() {
+                return it.next().getSecond();
+            }
+
+            @Override
+            public void remove() {
+                it.remove();
+            }
+        };
     }
 }

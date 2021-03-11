@@ -49,8 +49,8 @@ public class EdgeFloatArray extends EdgeArray<Float> {
     }
 
 
-    public float get(Edge e) {
-        final Float value = getValue(e);
+    public float getFloat(Edge e) {
+        final Float value = get(e);
         if (value != null)
             return value;
         else

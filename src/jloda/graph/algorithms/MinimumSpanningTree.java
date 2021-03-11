@@ -59,13 +59,13 @@ public class MinimumSpanningTree {
         var result = graph.newEdgeSet();
         for (Pair<Double, Edge> pair : edges) {
             var e = pair.getSecond();
-            final int oldComponent = component.getValue(e.getSource());
-            final int newComponent = component.getValue(e.getTarget());
+            final int oldComponent = component.get(e.getSource());
+            final int newComponent = component.get(e.getTarget());
 
             if (oldComponent != newComponent) {
                 result.add(e);
                 for (var v : graph.nodes()) {
-                    if (component.getValue(v) == oldComponent)
+                    if (component.get(v) == oldComponent)
                         component.put(v, newComponent);
                 }
             }

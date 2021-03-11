@@ -50,7 +50,7 @@ public class NodeDoubleArray extends NodeArray<Double> {
      */
     public NodeDoubleArray(NodeArray<Double> src) {
         this(src.getOwner());
-        getOwner().nodeStream().forEach(e -> put(e, src.getValue(e)));
+        getOwner().nodeStream().forEach(e -> put(e, src.get(e)));
         defaultValue = src.getDefaultValue();
     }
 
@@ -60,8 +60,8 @@ public class NodeDoubleArray extends NodeArray<Double> {
      * @param v Node
      * @return value or 0
      */
-    public double get(Node v) {
-        final Double value = getValue(v);
+    public double getDouble(Node v) {
+        final Double value = get(v);
         if (value != null)
             return value;
         else

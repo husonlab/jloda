@@ -313,13 +313,13 @@ public class ArgsOptions {
     public String getCommand(Command... pairs) throws UsageException {
         final String[] legalValues = new String[pairs.length];
         for (int i = 0; i < pairs.length; i++) {
-            legalValues[i] = pairs[i].get1();
+            legalValues[i] = pairs[i].getFirst();
         }
         usage.add(" Command " + Basic.toString(legalValues, " | "));
 
         for (final Pair<String, String> pair : pairs) {
-            if (pair.get2() != null)
-                usage.add("\t" + pair.get1() + ": " + pair.get2());
+            if (pair.getSecond() != null)
+                usage.add("\t" + pair.getFirst() + ": " + pair.getSecond());
         }
 
         final String command;
@@ -746,7 +746,7 @@ public class ArgsOptions {
         dialog.setSize(600, 150);
         dialog.setVisible(true);
 
-        if ((Integer) pane.getValue() == JOptionPane.CANCEL_OPTION)
+        if ((Integer) pane.get() == JOptionPane.CANCEL_OPTION)
             throw new CanceledException();
 
         String result = pane.getInputValue().toString();

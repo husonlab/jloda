@@ -20,6 +20,7 @@
 
 package jloda.util;
 
+import java.util.Arrays;
 import java.util.Comparator;
 import java.util.Iterator;
 
@@ -58,36 +59,43 @@ public class Pair<S, T> implements Comparable<Pair<S, T>>, Comparator<Pair<S, T>
         this.second = second;
     }
 
+
+    @Deprecated
     public int getFirstInt() {
         return ((Integer) first);
     }
 
+    @Deprecated
     public int getSecondInt() {
         return ((Integer) second);
     }
 
+    @Deprecated
     public double getFirstDouble() {
         return ((Double) first);
     }
 
+    @Deprecated
     public long getFirstLong() {
         return ((Long) first);
     }
 
-
+    @Deprecated
     public long getSecondLong() {
         return (Long) second;
     }
 
+    @Deprecated
     public double getSecondDouble() {
         return ((Double) second);
     }
 
+    @Deprecated
     public float getFirstFloat() {
         return ((Float) first);
     }
 
-
+    @Deprecated
     public float getSecondFloat() {
         return ((Float) second);
     }
@@ -179,105 +187,12 @@ public class Pair<S, T> implements Comparable<Pair<S, T>>, Comparator<Pair<S, T>
         this.second = second;
     }
 
-    public S get1() {
-        return first;
-    }
-
-    public T get2() {
-        return second;
-    }
-
-    public void set1(S first) {
-        this.first = first;
-    }
-
-    public void set2(T second) {
-        this.second = second;
-    }
-
     public boolean contains(Object x) {
         return x.equals(first) || x.equals(second);
     }
 
-    /**
-     * iterable over first elements
-     *
-     * @param src
-     * @param <P>
-     * @param <Q>
-     * @return iterable over all first elements
-     */
-    public static <P, Q> Iterable<P> firstValues(final Iterable<Pair<P, Q>> src) {
-        return () -> new Iterator<>() {
-            private final Iterator<Pair<P, Q>> it = src.iterator();
-
-            @Override
-            public boolean hasNext() {
-                return it.hasNext();
-            }
-
-            @Override
-            public P next() {
-                return it.next().getFirst();
-            }
-
-            @Override
-            public void remove() {
-                it.remove();
-            }
-        };
-    }
-
-    /**
-     * iterable over second elements
-     *
-     * @param src
-     * @param <P>
-     * @param <Q>
-     * @return iterable over all second elements
-     */
-    public static <P, Q> Iterable<Q> secondValues(final Iterable<Pair<P, Q>> src) {
-        return () -> new Iterator<>() {
-            private final Iterator<Pair<P, Q>> it = src.iterator();
-
-            @Override
-            public boolean hasNext() {
-                return it.hasNext();
-            }
-
-            @Override
-            public Q next() {
-                return it.next().getSecond();
-            }
-
-            @Override
-            public void remove() {
-                it.remove();
-            }
-        };
-    }
-
     @Override
     public Iterator<Object> iterator() {
-        return new Iterator<>() {
-            private int count = 0;
-
-            @Override
-            public boolean hasNext() {
-                return count < 2;
-            }
-
-            @Override
-            public Object next() {
-                if (count == 0) {
-                    count++;
-                    return getFirst();
-                } else if (count == 1) {
-                    count++;
-                    return getSecond();
-                } else
-                    return null;
-            }
-        };
+        return IteratorUtils.iteratorNonNullElements(Arrays.asList(first, second).iterator());
     }
 }
