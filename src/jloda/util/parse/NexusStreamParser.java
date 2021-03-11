@@ -721,7 +721,7 @@ public class NexusStreamParser extends NexusStreamTokenizer implements Closeable
 
     /**
      * Searches for an occurrence of `token value', where value is a
-     * string occuring in legalValues, returning value, if found, or
+     * string occurring in legalValues, returning value, if found, or
      * a default value, if token does not occur
      *
      * @param tokens       the list of tokens
@@ -744,10 +744,16 @@ public class NexusStreamParser extends NexusStreamTokenizer implements Closeable
                 if (!found && s.peekMatchIgnoreCase(token)) {
                     s.matchIgnoreCase(token);
                     s.nextToken();
-                    result = s.toString().toLowerCase();
+                    result = s.toString();
                     found = true;
-                    if (legalValues != null && !findIgnoreCase(legalValues, result))
-                        throw new IOExceptionWithLineNumber(token + " '" + result + "': illegal value", lineno());
+                    if (legalValues != null) {
+                        var legalTokens = legalValues.split("\\s+");
+                        var which = Basic.getIndexIgnoreCase(result, legalTokens);
+                        if (which == -1)
+                            throw new IOExceptionWithLineNumber(token + " '" + result + "': illegal value", lineno());
+                        else
+                            result = legalTokens[which];
+                    }
                 } else {
                     if (s.nextToken() != NexusStreamParser.TT_EOF)
                         tokens.add(s.toString());
@@ -761,13 +767,12 @@ public class NexusStreamParser extends NexusStreamTokenizer implements Closeable
 
     /**
      * Searches for an occurrence of `token value', where value is a
-     * character occuring in legalValues, returning value, if found, or
+     * character occurring in legalValues, returning value, if found, or
      * a default value, if token does not occur
      *
      * @param tokens       the list of tokens
      * @param token        the token to look for
-     * @param legalValues  if not null, string containing all legal values of the
-     *                     character
+     * @param legalValues  if not null, string containing all legal values of the character
      * @param defaultValue the return value, if token not found
      * @return the value
      */
@@ -790,8 +795,14 @@ public class NexusStreamParser extends NexusStreamTokenizer implements Closeable
                         throw new IOExceptionWithLineNumber(token + " '" + result + "': char expected", lineno());
                     result = str.charAt(0);
                     found = true;
-                    if (legalValues != null && legalValues.indexOf(result) == -1)
-                        throw new IOExceptionWithLineNumber(token + " '" + result + "': illegal value", lineno());
+                    if (legalValues != null) {
+                        int pos = legalValues.toLowerCase().indexOf(Character.toLowerCase(result));
+                        if (pos == -1)
+                            throw new IOExceptionWithLineNumber(token + " '" + result + "': illegal value", lineno());
+                        else
+                            result = legalValues.charAt(pos);
+
+                    }
                 } else {
                     if (s.nextToken() != NexusStreamParser.TT_EOF)
                         tokens.add(s.toString());

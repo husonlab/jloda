@@ -1090,33 +1090,29 @@ public class Graph extends GraphBase {
      *
      * @param nodes use only these nodes, if not null
      * @param edges use only these adjacentEdges, if not null
-     * @return a graph
+     * @return src to target map
      */
-    public Graph extract(Set<Node> nodes, Set<Edge> edges) {
-        final var tarGraph = new Graph();
-
-        var nodeId = 0;
-        NodeArray<Node> src2tarNode = newNodeArray();
-        for (var srcNode : (nodes != null ? nodes : nodes())) {
-            var tarNode = tarGraph.newNode(nodeId++);
+    public static NodeArray<Node> extract(Graph src, Set<Node> nodes, Set<Edge> edges, Graph tar) {
+        NodeArray<Node> src2tarNode = src.newNodeArray();
+        for (var srcNode : (nodes != null ? nodes : src.nodes())) {
+            var tarNode = tar.newNode();
             src2tarNode.put(srcNode, tarNode);
             tarNode.setLabel(srcNode.getLabel());
             tarNode.setInfo(srcNode.getInfo());
             tarNode.setData(srcNode.getData());
         }
 
-        var edgeId = 0;
-        for (var srcEdge : (edges != null ? edges : edges())) {
+        for (var srcEdge : (edges != null ? edges : src.edges())) {
             var tarA = src2tarNode.get(srcEdge.getSource());
             var tarB = src2tarNode.get(srcEdge.getTarget());
             if (tarA != null && tarB != null) {
-                var tarEdge = tarGraph.newEdge(tarA, tarB);
+                var tarEdge = tar.newEdge(tarA, tarB);
                 tarEdge.setInfo(srcEdge.getInfo());
                 tarEdge.setLabel(srcEdge.getLabel());
                 tarEdge.setData(tarEdge.getData());
             }
         }
-        return tarGraph;
+        return src2tarNode;
     }
 
     /**
