@@ -1210,17 +1210,14 @@ public class PhyloTree extends PhyloSplitsGraph {
     }
 
     /**
-     * /**
-     * iterates over leaves
-     *
-     * @return leaves
+     * iterates over all nodes of degree 1
      */
     public Iterable<Node> leaves() {
         return () -> new Iterator<>() {
             private Node v = getFirstNode();
 
             {
-                while (v != null && v.getOutDegree() > 0) {
+                while (v != null && v.getDegree() > 1) {
                     v = v.getNext();
                 }
             }
@@ -1234,8 +1231,12 @@ public class PhyloTree extends PhyloSplitsGraph {
             public Node next() {
                 final Node result = v;
                 {
-                    while (v != null && v.getOutDegree() > 0) {
-                        v = v.getNext();
+                    v = v.getNext();
+                    while (v != null) {
+                        if (v.getDegree() == 1)
+                            break;
+                        else
+                            v = v.getNext();
                     }
                 }
                 return result;
@@ -1244,9 +1245,7 @@ public class PhyloTree extends PhyloSplitsGraph {
     }
 
     /**
-     * returns the number of nodes with outdegree 0
-     *
-     * @return number of out-degree 0 nodes
+     * counts all nodes of degree 1
      */
     public int countLeaves() {
         return IteratorUtils.count(leaves());
