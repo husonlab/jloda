@@ -756,7 +756,7 @@ public class NexusStreamParser extends NexusStreamTokenizer implements Closeable
         } catch (IOException ex) {
             throw new IOExceptionWithLineNumber(lineno(), ex);
         }
-        return result.toLowerCase();
+        return result == null ? null : result.toLowerCase();
     }
 
     /**
