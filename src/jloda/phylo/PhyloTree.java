@@ -1313,13 +1313,16 @@ public class PhyloTree extends PhyloSplitsGraph {
 
 
     /**
-     * reticulation edge of positive length
-     *
-     * @param e
-     * @return true if transfer edge
+     * gets max distance from this node to any leaf
+     * @param v
+     * @return depth
      */
-    public boolean isTransferEdge(Edge e) {
-        return isSpecial(e) && getWeight(e) == -1;
+    public static int getDepth(Node v) {
+             var max=v.outEdgesStream(true).mapToInt(e->getDepth(e.getTarget())+1).max();
+            if(max.isPresent())
+                return max.getAsInt();
+            else
+                return 0;
     }
 }
 

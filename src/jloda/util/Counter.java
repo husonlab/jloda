@@ -81,6 +81,18 @@ public class Counter {
         }
     }
 
+    public long getAndIncrement() {
+        synchronized (this) {
+            return  value++;
+        }
+    }
+
+    public long incrementAndGet() {
+        synchronized (this) {
+            return  ++value;
+        }
+    }
+
     /**
      * increment by value, not synchronized
      *
