@@ -1787,6 +1787,10 @@ public class Graph extends GraphBase {
         return new NodeIntArray(this);
     }
 
+    public NodeFloatArray newNodeFloatArray() {
+        return new NodeFloatArray(this);
+    }
+
     public NodeDoubleArray newNodeDoubleArray() {
         return new NodeDoubleArray(this);
     }
@@ -1801,6 +1805,10 @@ public class Graph extends GraphBase {
 
     public EdgeIntArray newEdgeIntArray() {
         return new EdgeIntArray(this);
+    }
+
+    public EdgeFloatArray newEdgeFloatArray() {
+        return new EdgeFloatArray(this);
     }
 
     public EdgeDoubleArray newEdgeDoubleArray() {
