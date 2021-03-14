@@ -74,6 +74,10 @@ public class IteratorUtils {
         return asList(iterable, new ArrayList<>());
     }
 
+    public static <T> T[] asArray(Iterable<T> iterable) {
+        return asList(iterable, new ArrayList<>()).toArray((T[]) new Object[0]);
+    }
+
     public static <T> List<T> asList(Iterable<T> iterable, List<T> list) {
         for (T value : iterable) {
             list.add(value);

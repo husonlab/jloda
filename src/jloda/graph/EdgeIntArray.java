@@ -34,13 +34,6 @@ public class EdgeIntArray extends EdgeArray<Integer> {
     }
 
     /**
-     * Construct an edge array for the given graph and set the default value
-     */
-    public EdgeIntArray(Graph g, Integer defaultValue) {
-        super(g, defaultValue);
-    }
-
-    /**
      * Copy constructor.
      *
      * @param src EdgeArray
@@ -57,11 +50,8 @@ public class EdgeIntArray extends EdgeArray<Integer> {
      * @return integer or 0
      */
     public int getInt(Edge e) {
-        final Integer value = get(e);
-        if (value != null)
-            return value;
-        else
-            return getDefaultValue() != null ? getDefaultValue() : 0;
+        var value = get(e);
+        return value != null ? value : 0;
     }
 
     public void set(Edge e, int value) {

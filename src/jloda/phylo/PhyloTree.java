@@ -1318,11 +1318,22 @@ public class PhyloTree extends PhyloSplitsGraph {
      * @return depth
      */
     public static int getDepth(Node v) {
-             var max=v.outEdgesStream(true).mapToInt(e->getDepth(e.getTarget())+1).max();
-            if(max.isPresent())
-                return max.getAsInt();
-            else
-                return 0;
+        var max = v.outEdgesStream(true).mapToInt(e -> getDepth(e.getTarget()) + 1).max();
+        if (max.isPresent())
+            return max.getAsInt();
+        else
+            return 0;
+    }
+
+
+    /**
+     * reticulation edge of positive length
+     *
+     * @param e
+     * @return true if transfer edge
+     */
+    public boolean isTransferEdge(Edge e) {
+        return isSpecial(e) && getWeight(e) == -1;
     }
 }
 

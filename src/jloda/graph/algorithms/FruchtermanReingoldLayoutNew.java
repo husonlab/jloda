@@ -35,6 +35,7 @@ import java.util.LinkedList;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.function.Function;
 
 /**
  * implements the Fruchterman-Reingold graph layout algorithm
@@ -59,7 +60,7 @@ public class FruchtermanReingoldLayoutNew {
     private final NodeArray<float[]> forceDelta;
 
     // optional data
-    private EdgeArray<? extends Number> weights;
+    private Function<Edge, ? extends Number> weights;
     private NodeArray<APoint2D<?>> initialNodePositions;
     private NodeSet fixedNodes;
 
@@ -173,7 +174,7 @@ public class FruchtermanReingoldLayoutNew {
                                     if (weights != null) {
                                         var e = v1.getCommonEdge(v2);
                                         if (e != null)
-                                            k1 = weights.get(e).floatValue();
+                                            k1 = weights.apply(e).floatValue();
                                         else
                                             k1 = k;
                                     } else
@@ -210,7 +211,7 @@ public class FruchtermanReingoldLayoutNew {
                                 float dy = coordinates.get(v1)[1] - coordinates.get(v2)[1];
                                 float dist = (float) Math.sqrt(dx * dx + dy * dy);
                                 if (dist > 0) {
-                                    var k1 = (weights == null ? k : weights.get(e).floatValue());
+                                    var k1 = (weights == null ? k : weights.apply(e).floatValue());
 
                                     float attractiveF = dist * dist / k1;
                                     forceDelta.get(v1)[0] -= dx / dist * attractiveF;
@@ -301,7 +302,7 @@ public class FruchtermanReingoldLayoutNew {
         }
     }
 
-    public EdgeArray<? extends Number> getWeights() {
+    public Function<Edge, ? extends Number> getWeights() {
         return weights;
     }
 
@@ -310,7 +311,7 @@ public class FruchtermanReingoldLayoutNew {
      *
      * @param weights
      */
-    public void setWeights(EdgeArray<? extends Number> weights) {
+    public void setWeights(Function<Edge, ? extends Number> weights) {
         this.weights = weights;
     }
 

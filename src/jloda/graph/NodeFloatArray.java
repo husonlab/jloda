@@ -35,13 +35,6 @@ public class NodeFloatArray extends NodeArray<Float> {
     }
 
     /**
-     * Construct a node array for the given graph and set the default value
-     */
-    public NodeFloatArray(Graph g, Float defaultValue) {
-        super(g, defaultValue);
-    }
-
-    /**
      * Copy constructor.
      *
      * @param src NodeArray
@@ -52,11 +45,7 @@ public class NodeFloatArray extends NodeArray<Float> {
 
     public float getFloat(Node v) {
         final Float value = get(v);
-        if (value != null)
-            return value;
-        else
-            return getDefaultValue() != null ? getDefaultValue() : 0f;
-
+        return value != null ? value : 0f;
     }
 
     public void set(Node v, float value) {

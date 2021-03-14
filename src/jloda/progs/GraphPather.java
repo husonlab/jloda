@@ -117,8 +117,8 @@ public class GraphPather {
 
         System.err.println("Selecting adjacentEdges:");
 
-        NodeArray<Node> other = new NodeArray<>(graph);
-        NodeArray<Integer> degree = new NodeArray<>(graph, 0);
+        NodeArray<Node> other = graph.newNodeArray();
+        NodeIntArray degree = graph.newNodeIntArray();
 
         EdgeSet selected = new EdgeSet(graph);
 
@@ -126,27 +126,27 @@ public class GraphPather {
             Node v = e.getSource();
             Node w = e.getTarget();
 
-            if (degree.get(v) == 0 && degree.get(w) == 0) {
+            if (degree.getInt(v) == 0 && degree.getInt(w) == 0) {
                 selected.add(e);
                 degree.put(v, 1);
                 degree.put(w, 1);
                 other.put(v, w);
                 other.put(w, v);
-            } else if (degree.get(v) == 0 && degree.get(w) == 1) {
+            } else if (degree.getInt(v) == 0 && degree.getInt(w) == 1) {
                 selected.add(e);
                 degree.put(v, 1);
                 degree.put(w, 2);
                 Node u = other.get(w);
                 other.put(u, v);
                 other.put(v, u);
-            } else if (degree.get(v) == 1 && degree.get(w) == 0) {
+            } else if (degree.getInt(v) == 1 && degree.getInt(w) == 0) {
                 selected.add(e);
                 degree.put(v, 2);
                 degree.put(w, 1);
                 Node u = other.get(v);
                 other.put(u, w);
                 other.put(w, u);
-            } else if (degree.get(v) == 1 && degree.get(w) == 1 && other.get(v) != w) {
+            } else if (degree.getInt(v) == 1 && degree.getInt(w) == 1 && other.get(v) != w) {
                 selected.add(e);
                 degree.put(v, 2);
                 degree.put(w, 2);

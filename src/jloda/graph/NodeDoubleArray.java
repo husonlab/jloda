@@ -27,20 +27,12 @@ package jloda.graph;
  */
 
 public class NodeDoubleArray extends NodeArray<Double> {
-    private Double defaultValue;
 
     /**
      * Construct a node array with default value null
      */
     public NodeDoubleArray(Graph g) {
         super(g);
-    }
-
-    /**
-     * Construct a node array for the given graph and set the default value
-     */
-    public NodeDoubleArray(Graph g, Double defaultValue) {
-        super(g, defaultValue);
     }
 
     /**
@@ -51,7 +43,6 @@ public class NodeDoubleArray extends NodeArray<Double> {
     public NodeDoubleArray(NodeArray<Double> src) {
         this(src.getOwner());
         getOwner().nodeStream().forEach(e -> put(e, src.get(e)));
-        defaultValue = src.getDefaultValue();
     }
 
     /**
@@ -62,17 +53,8 @@ public class NodeDoubleArray extends NodeArray<Double> {
      */
     public double getDouble(Node v) {
         final Double value = get(v);
-        if (value != null)
-            return value;
-        else
-            return defaultValue != null ? defaultValue : 0.0;
+        return value != null ? value : 0.0;
     }
-
-    @Override
-    public Double getDefaultValue() {
-        return defaultValue;
-    }
-
 }
 
 // EOF

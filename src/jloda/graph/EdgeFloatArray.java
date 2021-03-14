@@ -33,13 +33,6 @@ public class EdgeFloatArray extends EdgeArray<Float> {
     }
 
     /**
-     * Construct an edge array for the given graph and set the default value
-     */
-    public EdgeFloatArray(Graph g, Float defaultValue) {
-        super(g, defaultValue);
-    }
-
-    /**
      * Copy constructor.
      *
      * @param src EdgeArray
@@ -50,12 +43,8 @@ public class EdgeFloatArray extends EdgeArray<Float> {
 
 
     public float getFloat(Edge e) {
-        final Float value = get(e);
-        if (value != null)
-            return value;
-        else
-            return getDefaultValue() != null ? getDefaultValue() : 0f;
-
+        var value = get(e);
+        return value != null ? value : 0f;
     }
 
     public void set(Edge e, float value) {

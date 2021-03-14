@@ -36,13 +36,6 @@ public class NodeIntArray extends NodeArray<Integer> {
     }
 
     /**
-     * Construct a node array for the given graph and set the default value
-     */
-    public NodeIntArray(Graph g, Integer defaultValue) {
-        super(g, defaultValue);
-    }
-
-    /**
      * Copy constructor.
      *
      * @param src NodeArray
@@ -60,10 +53,7 @@ public class NodeIntArray extends NodeArray<Integer> {
      */
     public int getInt(Node v) {
         final Integer value = get(v);
-        if (value != null)
-            return value;
-        else
-            return getDefaultValue() != null ? getDefaultValue() : 0;
+        return value != null ? value : 0;
     }
 
     public void set(Node v, int value) {

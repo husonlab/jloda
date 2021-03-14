@@ -33,13 +33,6 @@ public class EdgeDoubleArray extends EdgeArray<Double> {
     }
 
     /**
-     * Construct an edge array for the given graph and set the default value
-     */
-    public EdgeDoubleArray(Graph g, Double defaultValue) {
-        super(g, defaultValue);
-    }
-
-    /**
      * Copy constructor.
      *
      * @param src EdgeArray
@@ -55,11 +48,8 @@ public class EdgeDoubleArray extends EdgeArray<Double> {
      * @return double or 0
      */
     public double getDouble(Edge e) {
-        final Double value = get(e);
-        if (value != null)
-            return value;
-        else
-            return getDefaultValue() != null ? getDefaultValue() : 0.0;
+        var value = get(e);
+        return value != null ? value : 0.0;
     }
 }
 

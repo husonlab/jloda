@@ -136,7 +136,7 @@ public class PhyloGraph extends Graph {
 
     public void setWeight(Edge e, double wgt) {
         if (edgeWeights == null) {
-            edgeWeights = new EdgeDoubleArray(this, 1.0);
+            edgeWeights = new EdgeDoubleArray(this);
         }
         edgeWeights.put(e, wgt);
     }

@@ -1764,17 +1764,6 @@ public class Graph extends GraphBase {
         return null;
     }
 
-    public void resetIdsDoNotUse() {
-        idsNodes = 0;
-        for (var v : nodes()) {
-            v.setId(++idsNodes);
-        }
-        idsEdges = 0;
-        for (var v : nodes()) {
-            v.setId(++idsEdges);
-        }
-    }
-
     public NodeSet newNodeSet() {
         return new NodeSet(this);
     }

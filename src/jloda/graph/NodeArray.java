@@ -25,16 +25,16 @@ import jloda.util.Basic;
 import jloda.util.IteratorUtils;
 
 import java.util.*;
+import java.util.function.Function;
 
 /**
  * Node array
  * Daniel Huson 2004, 2021
  */
 
-public class NodeArray<T> extends GraphBase implements Iterable<T>, Map<Node, T> {
+public class NodeArray<T> extends GraphBase implements Iterable<T>, Map<Node, T>, Function<Node, T> {
     private T[] data;
-    private boolean isClear = true;
-    private T defaultValue;
+    private int size = 0;
 
     /**
      * Construct an node array with default value null
@@ -46,19 +46,11 @@ public class NodeArray<T> extends GraphBase implements Iterable<T>, Map<Node, T>
     }
 
     /**
-     * Construct an node array for the given graph and set the default value
-     */
-    public NodeArray(Graph g, T defaultValue) {
-        this(g);
-        this.defaultValue = defaultValue;
-    }
-
-    /**
      * Clear all entries.
      */
     public void clear() {
         Arrays.fill(data, null);
-        isClear = true;
+        size = 0;
     }
 
     /**
@@ -69,7 +61,7 @@ public class NodeArray<T> extends GraphBase implements Iterable<T>, Map<Node, T>
     public NodeArray(NodeArray<T> src) {
         setOwner(src.getOwner());
         getOwner().nodes().forEach(e -> put(e, src.get(e)));
-        defaultValue = src.getDefaultValue();
+        size = src.size();
     }
 
     /**
@@ -86,9 +78,17 @@ public class NodeArray<T> extends GraphBase implements Iterable<T>, Map<Node, T>
                 return null; // nothing to do
             grow(a.getId());
         }
-        data[id] = object;
-        if (object != null && isClear)
-            isClear = false;
+        if (data[id] == null) {
+            if (object != null) {
+                data[id] = object;
+                size++;
+            }
+        } else if (data[id] != null) {
+            data[id] = object;
+            if (object == null) {
+                size--;
+            }
+        }
         return object;
     }
 
@@ -121,15 +121,8 @@ public class NodeArray<T> extends GraphBase implements Iterable<T>, Map<Node, T>
         }
     }
 
-    /**
-     * has not been set since last clear()?
-     */
-    public boolean isClear() {
-        return isClear;
-    }
-
     public Iterator<T> iterator() {
-        if (isClear())
+        if (isEmpty())
             return Collections.emptyIterator();
         else
             return IteratorUtils.iteratorNonNullElements(new Iterator<T>() {
@@ -152,7 +145,7 @@ public class NodeArray<T> extends GraphBase implements Iterable<T>, Map<Node, T>
      * get all keys with non-null values
      */
     public Iterable<Node> keys() {
-        if (isClear())
+        if (isEmpty())
             return Collections::emptyIterator;
         else
             return () -> new Iterator<>() {
@@ -187,18 +180,14 @@ public class NodeArray<T> extends GraphBase implements Iterable<T>, Map<Node, T>
             };
     }
 
-    public T getDefaultValue() {
-        return defaultValue;
-    }
-
     @Override
     public int size() {
-        return 0;
+        return size;
     }
 
     @Override
     public boolean isEmpty() {
-        return false;
+        return size == 0;
     }
 
     @Override
@@ -239,7 +228,7 @@ public class NodeArray<T> extends GraphBase implements Iterable<T>, Map<Node, T>
             if (a.getId() < data.length && data[a.getId()] != null)
                 return data[a.getId()];
             else
-                return defaultValue;
+                return null;
         } else
             return null;
     }
@@ -268,6 +257,11 @@ public class NodeArray<T> extends GraphBase implements Iterable<T>, Map<Node, T>
     @Override
     public Collection<T> values() {
         return IteratorUtils.asList(this);
+    }
+
+    @Override
+    public T apply(Node node) {
+        return get(node);
     }
 }
 
