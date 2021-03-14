@@ -243,10 +243,10 @@ public class Graph extends GraphBase {
     }
 
     /**
-     * Constructs a new edge between nodes v and w. The edge is inserted into the list of adjacentEdges incident with
-     * v and the list of adjacentEdges incident with w. The place it is inserted into these list for adjacentEdges
+     * Constructs a new edge between nodes v and w. The edge is inserted into the list of edges incident with
+     * v and the list of edges incident with w. The place it is inserted into these list for edges
      * incident with v is determined by e_v and dir_v: if dir_v = Edge.AFTER then it is inserted after
-     * e_v in the list, otherwise it is inserted before e_v. Likewise for the list of adjacentEdges incident with w.
+     * e_v in the list, otherwise it is inserted before e_v. Likewise for the list of edges incident with w.
      * <p/>
      * The info is set using the obj.
      *
@@ -265,10 +265,10 @@ public class Graph extends GraphBase {
     }
 
     /**
-     * Adds a  edge to the graph. The edge is inserted into the list of adjacentEdges incident with
-     * v and the list of adjacentEdges incident with w. The place it is inserted into these list for adjacentEdges
+     * Adds a  edge to the graph. The edge is inserted into the list of edges incident with
+     * v and the list of edges incident with w. The place it is inserted into these list for edges
      * incident with v is determined by e_v and dir_v: if dir_v = Edge.AFTER then it is inserted after
-     * e_v in the list, otherwise it is inserted before e_v. Likewise for the list of adjacentEdges incident with w.
+     * e_v in the list, otherwise it is inserted before e_v. Likewise for the list of edges incident with w.
      * <p/>
      * The info is set using the obj.
      *
@@ -364,7 +364,7 @@ public class Graph extends GraphBase {
     }
 
     /**
-     * Deletes all adjacentEdges.
+     * Deletes all edges.
      */
     public void deleteAllEdges() {
         while (firstEdge != null)
@@ -453,7 +453,7 @@ public class Graph extends GraphBase {
     }
 
     /**
-     * move the edge to the front of the list of adjacentEdges
+     * move the edge to the front of the list of edges
      *
      * @param e
      */
@@ -475,7 +475,7 @@ public class Graph extends GraphBase {
     }
 
     /**
-     * move the edge to the back of the list of adjacentEdges
+     * move the edge to the back of the list of edges
      *
      * @param e
      */
@@ -697,9 +697,9 @@ public class Graph extends GraphBase {
     }
 
     /**
-     * Get number of adjacentEdges.
+     * Get number of edges.
      *
-     * @return the number of adjacentEdges
+     * @return the number of edges
      */
     public int getNumberOfEdges() {
         return numberEdges - numberOfEdgesThatAreHidden;
@@ -763,7 +763,7 @@ public class Graph extends GraphBase {
     }
 
     /**
-     * Get an iterator over all adjacentEdges, including hidden ones
+     * Get an iterator over all edges, including hidden ones
      *
      * @return edge iterator
      */
@@ -977,7 +977,7 @@ public class Graph extends GraphBase {
     }
 
     /**
-     * Copies one graph onto another. Maintains the ids of nodes and adjacentEdges
+     * Copies one graph onto another. Maintains the ids of nodes and edges
      *
      * @param src             the source graph
      * @param oldNode2newNode if not null, returns map: old node id onto new node id
@@ -1032,7 +1032,7 @@ public class Graph extends GraphBase {
     }
 
     /**
-     * Copies one graph onto another. Maintains the ids of nodes and adjacentEdges
+     * Copies one graph onto another. Maintains the ids of nodes and edges
      *
      * @param src             the source graph
      * @param srcNodes        the nodes of the source graph to be copied
@@ -1089,7 +1089,7 @@ public class Graph extends GraphBase {
      * extract a subgraph
      *
      * @param nodes use only these nodes, if not null
-     * @param edges use only these adjacentEdges, if not null
+     * @param edges use only these edges, if not null
      * @return src to target map
      */
     public static NodeArray<Node> extract(Graph src, Set<Node> nodes, Set<Edge> edges, Graph tar) {
@@ -1480,7 +1480,7 @@ public class Graph extends GraphBase {
     }
 
     /**
-     * gets the set of special adjacentEdges
+     * gets the set of special edges
      */
     public Iterable<Edge> specialEdges() {
         return specialEdges != null ? specialEdges : Collections.emptySet();
@@ -1541,24 +1541,24 @@ public class Graph extends GraphBase {
      *
      * @return node set of nodes
      */
-    public Set<Node> getNodesAsSet() {
-        return IteratorUtils.asSet(nodes());
+    public List<Node> getNodesAsList() {
+        return IteratorUtils.asList(nodes());
     }
 
     /**
-     * iterable over all adjacentEdges
+     * iterable over all edges
      *
-     * @return iterable over all adjacentEdges
+     * @return iterable over all edges
      */
     public Iterable<Edge> edges() {
         return edges(null);
     }
 
     /**
-     * iterable over all adjacentEdges after given edge prev
+     * iterable over all edges after given edge prev
      *
-     * @param afterMe the previous edge, after which the iteration starts. If null, iterates over all adjacentEdges
-     * @return iterable over all adjacentEdges
+     * @param afterMe the previous edge, after which the iteration starts. If null, iterates over all edges
+     * @return iterable over all edges
      */
     public Iterable<Edge> edges(Edge afterMe) {
         return () -> new Iterator<>() {
@@ -1596,12 +1596,12 @@ public class Graph extends GraphBase {
     }
 
     /**
-     * gets all adjacentEdges as a new set
+     * gets all edges as a new set
      *
-     * @return edge set of adjacentEdges
+     * @return edge set of edges
      */
-    public Set<Edge> getEdgesAsSet() {
-        return IteratorUtils.asSet(edges());
+    public List<Edge> getEdgesAsList() {
+        return IteratorUtils.asList(edges());
     }
 
     /**
@@ -1730,13 +1730,13 @@ public class Graph extends GraphBase {
     }
 
     /**
-     * compute the current set of all leaves
+     * computes the set of all nodes with outdegree 0
      *
      * @return all leaves
      */
     public NodeSet computeSetOfLeaves() {
-        NodeSet nodes = new NodeSet(this);
-        for (Node v = getFirstNode(); v != null; v = getNextNode(v))
+        var nodes = newNodeSet();
+        for (var v : nodes())
             if (v.getOutDegree() == 0)
                 nodes.add(v);
         return nodes;

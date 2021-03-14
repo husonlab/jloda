@@ -156,7 +156,7 @@ public class EdgeLabelSearcher implements IObjectSearcher<Edge> {
     public void selectAll(boolean select) {
         Platform.runLater(() -> {
             if (select)
-                edgeSelectionModel.selectItems(graph.getEdgesAsSet());
+                edgeSelectionModel.selectItems(graph.getEdgesAsList());
             else
                 edgeSelectionModel.clearSelection();
         });

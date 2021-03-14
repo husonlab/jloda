@@ -186,7 +186,7 @@ public class GraphSearcher implements IObjectSearcher<Node> {
     public void selectAll(boolean select) {
         runInFXApplicationThread(() -> {
             if (select)
-                nodeSelection.selectItems(graph.getNodesAsSet());
+                nodeSelection.selectItems(graph.getNodesAsList());
             else
                 nodeSelection.clearSelection();
         });

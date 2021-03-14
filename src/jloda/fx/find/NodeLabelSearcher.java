@@ -156,7 +156,7 @@ public class NodeLabelSearcher implements IObjectSearcher<Node> {
     public void selectAll(boolean select) {
         Platform.runLater(() -> {
             if (select)
-                nodeSelectionModel.selectItems(graph.getNodesAsSet());
+                nodeSelectionModel.selectItems(graph.getNodesAsList());
             else
                 nodeSelectionModel.clearSelection();
         });
