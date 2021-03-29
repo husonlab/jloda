@@ -118,13 +118,6 @@ public class Graph extends GraphBase {
         return v;
     }
 
-    /**
-     * Adds a node to the graph. The information in the node is replaced with obj. The node
-     * is added to the end of the list of nodes.
-     *
-     * @param info the info object
-     * @param v    the new node
-     */
     void registerNewNode(Object info, Node v) {
         v.init(this, lastNode, null, ++idsNodes, info);
         if (firstNode == null)
@@ -205,7 +198,7 @@ public class Graph extends GraphBase {
     }
 
     /**
-     * Constructs a new edge between nodes v and w. This edge is not added to the graph.
+     * Constructs a new edge between nodes v and w.
      *
      * @param v source node
      * @param w target node
@@ -216,7 +209,7 @@ public class Graph extends GraphBase {
     }
 
     /**
-     * Constructs a new edge between nodes v and w and sets its info to obj. This edge is not added to the graph.
+     * Constructs a new edge between nodes v and w and sets its info to obj.
      *
      * @param v   source node
      * @param w   target node
@@ -228,7 +221,7 @@ public class Graph extends GraphBase {
     }
 
     /**
-     * Constructs a new edge between nodes v and w and sets its info to obj. This edge is not added to the graph.
+     * Constructs a new edge between nodes v and w and sets its info to obj.
      *
      * @param v   source node
      * @param w   target node
@@ -247,8 +240,6 @@ public class Graph extends GraphBase {
      * v and the list of edges incident with w. The place it is inserted into these list for edges
      * incident with v is determined by e_v and dir_v: if dir_v = Edge.AFTER then it is inserted after
      * e_v in the list, otherwise it is inserted before e_v. Likewise for the list of edges incident with w.
-     * <p/>
-     * The info is set using the obj.
      *
      * @param v     source node
      * @param e_v   reference edge incident to v
@@ -259,8 +250,7 @@ public class Graph extends GraphBase {
      * @param obj   the info object
      * @return a new edge
      */
-    public Edge newEdge(Node v, Edge e_v, Node w, Edge e_w,
-                        int dir_v, int dir_w, Object obj) throws IllegalSelfEdgeException {
+    public Edge newEdge(Node v, Edge e_v, Node w, Edge e_w, int dir_v, int dir_w, Object obj) throws IllegalSelfEdgeException {
         return new Edge(this, v, e_v, w, e_w, dir_v, dir_w, obj);
     }
 
@@ -269,8 +259,6 @@ public class Graph extends GraphBase {
      * v and the list of edges incident with w. The place it is inserted into these list for edges
      * incident with v is determined by e_v and dir_v: if dir_v = Edge.AFTER then it is inserted after
      * e_v in the list, otherwise it is inserted before e_v. Likewise for the list of edges incident with w.
-     * <p/>
-     * The info is set using the obj.
      *
      * @param v     source
      * @param e_v   reference source edge
@@ -1802,6 +1790,24 @@ public class Graph extends GraphBase {
 
     public EdgeDoubleArray newEdgeDoubleArray() {
         return new EdgeDoubleArray(this);
+    }
+
+    public int computeConnectedComponents(NodeIntArray components) {
+        components.clear();
+        var count=0;
+        for(var v:nodes()) {
+            if(components.get(v)==null) {
+                final Stack<Node> stack=new Stack<>();
+                stack.push(v);
+                while(stack.size()>0) {
+                    v=stack.pop();
+                    components.put(v,count);
+                    stack.addAll(IteratorUtils.asList(v.adjacentNodes()));
+                }
+                count++;
+            }
+        }
+        return count;
     }
 }
 

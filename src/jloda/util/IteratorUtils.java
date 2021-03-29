@@ -197,4 +197,18 @@ public class IteratorUtils {
             }
         };
     }
+
+    public static <T> Iterator<T> reverseIterator(ArrayList<T> list) {
+        return new Iterator<>() {
+            private int pos=list.size();
+            @Override
+            public boolean hasNext() {
+                return pos>0;
+            }
+            @Override
+            public T next() {
+                return list.get(--pos);
+             }
+        };
+    }
 }

@@ -19,10 +19,10 @@
 
 package jloda.util;
 
-import javafx.geometry.BoundingBox;
 import javafx.geometry.Bounds;
 import jloda.graph.NodeArray;
 
+import java.util.Collection;
 import java.util.function.Function;
 
 /**
@@ -30,11 +30,11 @@ import java.util.function.Function;
  * Daniel Huson, 3.2021
  */
 public class BBoxUtils {
-    public static void fitToBox(NodeArray<APoint2D<?>> points, Bounds tar) {
-        var src = computeBBox(points);
+    public static <T> void fitToBox(NodeArray<APoint2D<? extends T>> points, double[] tar) {
+        var src = computeBBox(points.values());
 
-        Function<Double, Double> mapX = x -> (x - src.getMinX()) / (src.getWidth()) * tar.getWidth() + tar.getMinX();
-        Function<Double, Double> mapY = y -> (y - src.getMinY()) / (src.getHeight()) * tar.getHeight() + tar.getMinY();
+        Function<Double, Double> mapX = x -> (x - src[0]) / (src[2]-src[0]) * (tar[2]-tar[0]) + tar[0];
+        Function<Double, Double> mapY = y -> (y - src[1]) / (src[3]-src[1]) * (tar[3]-tar[1]) + tar[1];
 
         for (var v : points.keys()) {
             var point = points.get(v);
@@ -45,20 +45,20 @@ public class BBoxUtils {
     /**
      * computes the bounding box of all locations
      *
-     * @param node2location
+     * @param points
      * @return bounding box
      */
-    private static Bounds computeBBox(NodeArray<APoint2D<?>> node2location) {
+    public static <T> double[] computeBBox(Collection<APoint2D<? extends T>> points) {
         double minX = Double.MAX_VALUE;
         double maxX = Double.MIN_VALUE;
         double minY = Double.MAX_VALUE;
         double maxY = Double.MIN_VALUE;
-        for (var point : node2location.values()) {
+        for (var point : points) {
             minX = Math.min(minX, point.getX());
             maxX = Math.max(maxX, point.getX());
             minY = Math.min(minY, point.getY());
             maxY = Math.max(maxY, point.getY());
         }
-        return new BoundingBox(minX, minY, maxX - minX, maxY - minY);
+        return new double[]{minX, minY, maxX, maxY};
     }
 }

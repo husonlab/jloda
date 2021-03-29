@@ -31,7 +31,9 @@ import jloda.util.CanceledException;
 import jloda.util.ProgressListener;
 import jloda.util.ProgressSilent;
 
+import java.util.ArrayList;
 import java.util.LinkedList;
+import java.util.List;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -109,7 +111,7 @@ public class FruchtermanReingoldLayoutNew {
                     while (queue.size() > 0) {
                         final Node w = queue.removeFirst();
                         var arg = (float) ((2 * Math.PI * count) / nNodes);
-                        coordinates.put(w, new float[]{(float) (100 * Math.sin(arg)), (float) (100 * Math.cos(arg))});
+                        coordinates.put(w, new float[]{(float) (  5000*Math.sin(arg)), (float) ( 5000* Math.cos(arg))});
                         count++;
                         for (var e : w.adjacentEdges()) {
                             Node u = e.getOpposite(w);
@@ -152,16 +154,58 @@ public class FruchtermanReingoldLayoutNew {
 
     private void iterate(ExecutorService service, ProgressListener progress) throws CanceledException {
         float maxDisplace = (float) (Math.sqrt(AREA_MULTIPLICATOR * optionArea) / 10f);
-        float k = (float) Math.sqrt((AREA_MULTIPLICATOR * optionArea) / (1f + graph.getNumberOfNodes()));
+        final float k;
+        if(weights==null)
+            k = (float) Math.sqrt((AREA_MULTIPLICATOR * optionArea) / (1f + graph.getNumberOfNodes()));
+        else {
+            var max=0.0f;
+            for(var e:graph.edges()) {
+                max=Math.max(max,weights.apply(e).floatValue());
+            }
+            k=max;
+        }
+
+        for(var v:graph.nodes()) {
+            forceDelta.get(v)[0]=0;
+            forceDelta.get(v)[1]=0;
+        }
 
         // repulsion
         {
+            QuadTree quadTree;
+            {
+                var list = new ArrayList<APoint2D<?>>();
+                for (var w : graph.nodes()) {
+                    var coords = coordinates.get(w);
+                    list.add(new APoint2D<>(coords[0], coords[1], w));
+                }
+                quadTree = new QuadTree(list);
+            }
+
+            Function<Node, Iterable<Node>> getNeighbors=v->{
+                var list=new ArrayList<APoint2D<?>>();
+
+                var part=0.0;
+                do{
+                    part+=0.1;
+                    quadTree.search(part*quadTree.getArea().getWidth(),part*quadTree.getArea().getHeight(),
+                            new APoint2D<>(coordinates.get(v)[0],coordinates.get(v)[1]),list);
+                    //System.err.println(part+" -> "+neighborPoints.size());
+                }
+                while(part<1.0 && list.size()<5);
+                var neighbors=new ArrayList<Node>(list.size());
+                for(var point:list) {
+                    neighbors.add((Node)point.getUserData());
+                }
+                return neighbors;
+            };
+
             var countdownLatch = new CountDownLatch(graph.getNumberOfNodes());
             for (var v1 : graph.nodes()) {
                 var c1 = coordinates.get(v1);
                 service.submit(() -> {
                     try {
-                        for (var v2 : graph.nodes()) {
+                        for (var v2 : getNeighbors.apply(v1)) {
                             if (v1 != v2) {
                                 var c2 = coordinates.get(v2);
 
@@ -256,49 +300,36 @@ public class FruchtermanReingoldLayoutNew {
             progress.checkForCancel();
         }
 
-        // speed
-        {
-            var countdownLatch = new CountDownLatch(graph.getNumberOfNodes());
-
-            for (var v : graph.nodes()) {
-                service.submit(() -> {
-                            try {
-                                forceDelta.get(v)[0] *= optionSpeed / SPEED_DIVISOR;
-                                forceDelta.get(v)[1] *= optionSpeed / SPEED_DIVISOR;
-                            } finally {
-                                countdownLatch.countDown();
-                            }
-                        }
-                );
-            }
-            try {
-                countdownLatch.await();
-            } catch (InterruptedException ignored) {
-            }
-        }
-
 
         // apply the forces:
         {
             var countdownLatch = new CountDownLatch(graph.getNumberOfNodes());
 
+            var maxDist=maxDisplace * ((float) optionSpeed / SPEED_DIVISOR);
+
             for (var v : graph.nodes()) {
-                try {
-                    if (fixedNodes == null || !fixedNodes.contains(v)) {
-                        var dx = forceDelta.get(v)[0];
-                        var dy = forceDelta.get(v)[1];
-                        float dist = (float) Math.sqrt(dx * dx + dy * dy);
-                        if (dist > 0) {
-                            float limitedDist = Math.min(maxDisplace * ((float) optionSpeed / SPEED_DIVISOR), dist);
-                            coordinates.get(v)[0] += dx / dist * limitedDist;
-                            coordinates.get(v)[1] += dy / dist * limitedDist;
+                service.submit(() -> {
+                    try {
+                        if (fixedNodes == null || !fixedNodes.contains(v)) {
+                            var dx = forceDelta.get(v)[0] * optionSpeed / SPEED_DIVISOR;
+                            var dy = forceDelta.get(v)[1] * optionSpeed / SPEED_DIVISOR;
+                            float dist = (float) Math.sqrt(dx * dx + dy * dy);
+                            if (dist > 0) {
+                                float limitedDist = Math.min(maxDist, dist);
+                                coordinates.get(v)[0] += dx / dist * limitedDist;
+                                coordinates.get(v)[1] += dy / dist * limitedDist;
+                            }
                         }
+                    } finally {
+                        countdownLatch.countDown();
                     }
-                } finally {
-                    countdownLatch.countDown();
-                }
+                });
             }
-            progress.checkForCancel();
+                try {
+                    countdownLatch.await();
+                } catch (InterruptedException ignored) {
+                }
+                progress.checkForCancel();
         }
     }
 

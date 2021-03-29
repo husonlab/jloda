@@ -185,86 +185,6 @@ final public class EdgeView extends ViewBase implements Cloneable { //, IEdgeVie
      *
      * @param gc Graphics
      * @param vp Point in device coordinates
-     * @param wp Point in device coordiantes
-     */
-    public void draw2(Graphics2D gc, Point vp, Point wp, Transform trans, boolean hilited) {
-        if (getLineWidth() == 0)
-            return;
-
-        if (fgColor != null) {
-            if (hilited) {// draw edge highlighting first
-                if (fgColor.equals(ProgramProperties.SELECTION_COLOR))
-                    gc.setColor(Color.ORANGE);
-                else
-                    gc.setColor(ProgramProperties.SELECTION_COLOR);
-                if (shape == STRAIGHT_EDGE || getInternalPoints() == null || getInternalPoints().size() == 0) {
-                    gc.drawLine(vp.x - 1, vp.y - 1, wp.x - 1, wp.y - 1);
-                    gc.drawLine(vp.x - 1, vp.y + 1, wp.x - 1, wp.y + 1);
-                    gc.drawLine(vp.x + 1, vp.y - 1, wp.x + 1, wp.y - 1);
-                    gc.drawLine(vp.x + 1, vp.y + 1, wp.x + 1, wp.y + 1);
-
-                } else // some internal points are given
-                {
-                    Point prev = vp;
-                    for (Point2D aptWorld : getInternalPoints()) {
-                        final Point apt = trans.w2d(aptWorld);
-// if(shape==GraphView.poly_edge)
-                        gc.drawLine(prev.x - 1, prev.y - 1, apt.x - 1, apt.y - 1);
-                        gc.drawLine(prev.x - 1, prev.y + 1, apt.x - 1, apt.y + 1);
-                        gc.drawLine(prev.x + 1, prev.y - 1, apt.x + 1, apt.y - 1);
-                        gc.drawLine(prev.x + 1, prev.y + 1, apt.x + 1, apt.y + 1);
-
-                        prev = apt;
-                    }
-                    gc.drawLine(prev.x - 1, prev.y - 1, wp.x - 1, wp.y - 1);
-                    gc.drawLine(prev.x - 1, prev.y + 1, wp.x - 1, wp.y + 1);
-                    gc.drawLine(prev.x + 1, prev.y - 1, wp.x + 1, wp.y - 1);
-                    gc.drawLine(prev.x + 1, prev.y + 1, wp.x + 1, wp.y + 1);
-                }
-            }
-
-            // now draw un-highlighted edge:
-            if (enabled)
-                gc.setColor(fgColor);
-            else
-                gc.setColor(DISABLED_COLOR);
-
-            Point vp1 = null;
-            final Point wp1;
-
-            if (shape == STRAIGHT_EDGE || getInternalPoints() == null || getInternalPoints().size() == 0) {
-                vp1 = wp;
-                wp1 = vp;
-
-                gc.drawLine(vp.x, vp.y, wp.x, wp.y);
-            } else // some internal points are given
-            {
-                Point prev = vp;
-                for (Point2D point2D : getInternalPoints()) {
-                    final Point apt = trans.w2d(point2D);
-                    if (vp1 == null)
-                        vp1 = apt;
-
-                    gc.drawLine(prev.x, prev.y, apt.x, apt.y);
-                    prev = apt;
-                }
-                wp1 = prev;
-                gc.drawLine(prev.x, prev.y, wp.x, wp.y);
-            }
-
-            if (direction == DIRECTED ||
-                    direction == BIDIRECTED)
-                drawArrowHead(gc, wp1, wp);
-            else if (direction == RDIRECTED)
-                drawArrowHead(gc, vp1, vp);
-        }
-    }
-
-    /**
-     * Draw the edge given device coordinates.
-     *
-     * @param gc Graphics
-     * @param vp Point in device coordinates
      * @param wp Point in device coordinates
      */
     public void draw(Graphics2D gc, Point vp, Point wp, Transform trans, boolean hilited) {
@@ -322,10 +242,10 @@ final public class EdgeView extends ViewBase implements Cloneable { //, IEdgeVie
                 gc.setStroke(stroke);
             } else if (shape == ARC_LINE_EDGE && getInternalPoints().size() == 2) {
                 // node vp is start of arc, first internal point is center of circle, second is end of arc, second is joined to wp by straight line
-                Iterator it = getInternalPoints().iterator();
-                Point center = trans.w2d((Point2D) it.next());
+                Iterator<Point2D> it = getInternalPoints().iterator();
+                Point center = trans.w2d(it.next());
                 Point arcStart = (Point) vp.clone();
-                Point arcEnd = trans.w2d((Point2D) it.next());
+                Point arcEnd = trans.w2d(it.next());
                 Point lineStart = (Point) arcEnd.clone();
                 // flip along h-axis:
                 arcStart.y = center.y - (arcStart.y - center.y);

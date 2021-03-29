@@ -89,7 +89,6 @@ public class Edge extends NodeEdge implements Comparable<Edge> {
      *
      * @param G     The graph
      * @param id    The id of the edge
-     *              // [REMOVED] param prev0  The edge before this one in the list of all adjacentEdges.
      * @param v     Source vertex
      * @param e_v
      * @param dir_v
@@ -185,13 +184,6 @@ public class Edge extends NodeEdge implements Comparable<Edge> {
         }
     }
 
-
-    /**
-     * set the next Edge of the current edge
-     *
-     * @param v Node
-     * @param f Edge is the next edge of e
-     */
     void setNext(Node v, Edge f) throws NotOwnerException {
         checkOwner(v);
         if (f != null)
@@ -202,12 +194,6 @@ public class Edge extends NodeEdge implements Comparable<Edge> {
             this.tNext = f;
     }
 
-    /**
-     * set the previous edge of the current edge
-     *
-     * @param v Node
-     * @param f Edge is the previous edge of e
-     */
     void setPrev(Node v, Edge f) throws NotOwnerException {
         checkOwner(v);
         if (f != null)

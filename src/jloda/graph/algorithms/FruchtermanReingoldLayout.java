@@ -31,6 +31,7 @@ import jloda.graph.NodeArray;
 import jloda.graph.NodeSet;
 import jloda.util.*;
 
+import java.util.Arrays;
 import java.util.BitSet;
 import java.util.Stack;
 import java.util.concurrent.CountDownLatch;
@@ -243,6 +244,9 @@ public class FruchtermanReingoldLayout {
         float maxDisplace = (float) (Math.sqrt(AREA_MULTIPLICATOR * area) / 10f);
         float k = (float) Math.sqrt((AREA_MULTIPLICATOR * area) / (1f + nodes.length));
 
+        Arrays.fill(forceDelta[0], 0);
+        Arrays.fill(forceDelta[1], 0);
+
         // repulsion
         {
             final int threads = Math.min(numberOfThreads, nodes.length);
@@ -317,7 +321,7 @@ public class FruchtermanReingoldLayout {
         }
 
         // gravity
-        if (true) {
+        if (gravity>0) {
             final int threads = Math.min(numberOfThreads, nodes.length);
             final CountDownLatch countDownLatch = new CountDownLatch(threads);
 
@@ -344,32 +348,6 @@ public class FruchtermanReingoldLayout {
             progress.checkForCancel();
         }
 
-        // speed
-        {
-            final int threads = Math.min(numberOfThreads, nodes.length);
-            final CountDownLatch countDownLatch = new CountDownLatch(threads);
-
-            for (int t = 0; t < threads; t++) {
-                final int thread = t;
-                service.submit(() -> {
-                    try {
-                        for (int v = thread; v < nodes.length; v += threads) {
-                            forceDelta[0][v] *= speed / SPEED_DIVISOR;
-                            forceDelta[1][v] *= speed / SPEED_DIVISOR;
-                        }
-                    } finally {
-                        countDownLatch.countDown();
-                    }
-                });
-            }
-            try {
-                countDownLatch.await();
-            } catch (InterruptedException e) {
-                Basic.caught(e);
-            }
-            progress.checkForCancel();
-        }
-
 
         // apply the forces:
         {
@@ -381,8 +359,8 @@ public class FruchtermanReingoldLayout {
                 service.submit(() -> {
                     try {
                         for (int v = thread; v < nodes.length; v += threads) {
-                            float xDist = forceDelta[0][v];
-                            float yDist = forceDelta[1][v];
+                            double xDist = forceDelta[0][v]* speed / SPEED_DIVISOR;
+                            double yDist = forceDelta[1][v]* speed / SPEED_DIVISOR;
                             float dist = (float) Math.sqrt(xDist * xDist + yDist * yDist);
                             if (dist > 0 && !fixed.get(v)) {
                                 float limitedDist = Math.min(maxDisplace * ((float) speed / SPEED_DIVISOR), dist);

@@ -255,7 +255,7 @@ final public class NodeView extends ViewBase implements Cloneable {
      * Sets the node shape.
      *
      * @param a int
-     *          Better: use setNodeShape
+     * Better: use setNodeShape
      */
     public void setShape(byte a) {
         nodeShape = NodeShape.values()[a];

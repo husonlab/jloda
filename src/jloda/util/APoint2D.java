@@ -82,4 +82,8 @@ public class APoint2D<T> {
     public String toString() {
         return String.format("(%.3f,%.3f)%s", getX(), getY(), getUserData() == null ? "" : ": " + getUserData());
     }
+
+    public double distance(APoint2D<?> other) {
+        return Math.sqrt((x-other.x)*(x-other.x)+(y-other.y)*(y-other.y));
+    }
 }
