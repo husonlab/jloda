@@ -19,7 +19,7 @@
 
 package jloda.util;
 
-import javafx.geometry.Bounds;
+import javafx.geometry.BoundingBox;
 import jloda.graph.NodeArray;
 
 import java.util.Collection;
@@ -35,6 +35,18 @@ public class BBoxUtils {
 
         Function<Double, Double> mapX = x -> (x - src[0]) / (src[2]-src[0]) * (tar[2]-tar[0]) + tar[0];
         Function<Double, Double> mapY = y -> (y - src[1]) / (src[3]-src[1]) * (tar[3]-tar[1]) + tar[1];
+
+        for (var v : points.keys()) {
+            var point = points.get(v);
+            points.put(v, new APoint2D<>(mapX.apply(point.getX()), mapY.apply(point.getY()), point.getUserData()));
+        }
+    }
+
+    public static <T> void fitToBox(NodeArray<APoint2D<? extends T>> points, BoundingBox boundingBox) {
+        var src = computeBBox(points.values());
+
+        Function<Double, Double> mapX = x -> (x - src[0]) / (src[2]-src[0]) * boundingBox.getWidth() + boundingBox.getMinX();
+        Function<Double, Double> mapY = y -> (y - src[1]) / (src[3]-src[1]) * boundingBox.getHeight()+ boundingBox.getMinY();
 
         for (var v : points.keys()) {
             var point = points.get(v);

@@ -1,5 +1,5 @@
 /*
- * MagnifierUtil.java Copyright (C) 2020. Daniel H. Huson
+ * MagnifierUtil.java Copyright (C) 2021. Daniel H. Huson
  *
  * (Some code written by other authors, as named in code.)
  *

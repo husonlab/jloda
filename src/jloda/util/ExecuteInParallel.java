@@ -1,5 +1,5 @@
 /*
- *  RunInParallel.java Copyright (C) 2020 Daniel H. Huson
+ *  RunInParallel.java Copyright (C) 2021 Daniel H. Huson
  *
  *  (Some files contain contributions from other authors, who are then mentioned separately.)
  *
@@ -81,31 +81,37 @@ public class ExecuteInParallel {
      * run a collection of jobs
      */
     public static <S, T> void apply(Collection<S> jobs, ConsumerWithException<S> computation, int numberOfCores, ProgressListener progress) throws Exception {
-        final Single<Exception> exception = new Single<>();
-
-        final ExecutorService service = Executors.newFixedThreadPool(numberOfCores);
-        try {
-            progress.setMaximum(jobs.size());
-            progress.setProgress(0);
-            jobs.forEach(job -> service.submit(() -> {
-                if (exception.isNull()) {
-                    try {
-                        computation.accept(job);
-                        progress.incrementProgress();
-                    } catch (Exception e) {
-                        exception.setIfCurrentValueIsNull(e);
+        progress.setMaximum(jobs.size());
+        progress.setProgress(0);
+        if(jobs.size()==1)
+            computation.accept(jobs.iterator().next());
+        else if(jobs.size()>1) {
+            final Single<Exception> exception = new Single<>();
+            final ExecutorService service = Executors.newFixedThreadPool(Math.max(1, numberOfCores));
+            try {
+                 jobs.forEach(job -> service.submit(() -> {
+                    if (exception.isNull()) {
+                        try {
+                            computation.accept(job);
+                            synchronized (progress) {
+                                progress.incrementProgress();
+                            }
+                        } catch (Exception e) {
+                            exception.setIfCurrentValueIsNull(e);
+                        }
                     }
-                }
-            }));
-            service.shutdown();
-            service.awaitTermination(1000, TimeUnit.DAYS);
-        } catch (Exception e) {
-            exception.setIfCurrentValueIsNull(e);
-        } finally {
-            service.shutdownNow();
+                }));
+                service.shutdown();
+                service.awaitTermination(1000, TimeUnit.DAYS);
+            } catch (Exception e) {
+                exception.setIfCurrentValueIsNull(e);
+            } finally {
+                service.shutdownNow();
+            }
+            if (exception.isNotNull())
+                throw exception.get();
         }
-        if (exception.isNotNull())
-            throw exception.get();
+        progress.reportTaskCompleted();
     }
 
     public interface FunctionWithException<S, T> {

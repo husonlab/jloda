@@ -1,5 +1,5 @@
 /*
- * Graph.java Copyright (C) 2020. Daniel H. Huson
+ * Graph.java Copyright (C) 2021. Daniel H. Huson
  *
  * (Some code written by other authors, as named in code.)
  *
@@ -1074,36 +1074,6 @@ public class Graph extends GraphBase {
     }
 
     /**
-     * extract a subgraph
-     *
-     * @param nodes use only these nodes, if not null
-     * @param edges use only these edges, if not null
-     * @return src to target map
-     */
-    public static NodeArray<Node> extract(Graph src, Set<Node> nodes, Set<Edge> edges, Graph tar) {
-        NodeArray<Node> src2tarNode = src.newNodeArray();
-        for (var srcNode : (nodes != null ? nodes : src.nodes())) {
-            var tarNode = tar.newNode();
-            src2tarNode.put(srcNode, tarNode);
-            tarNode.setLabel(srcNode.getLabel());
-            tarNode.setInfo(srcNode.getInfo());
-            tarNode.setData(srcNode.getData());
-        }
-
-        for (var srcEdge : (edges != null ? edges : src.edges())) {
-            var tarA = src2tarNode.get(srcEdge.getSource());
-            var tarB = src2tarNode.get(srcEdge.getTarget());
-            if (tarA != null && tarB != null) {
-                var tarEdge = tar.newEdge(tarA, tarB);
-                tarEdge.setInfo(srcEdge.getInfo());
-                tarEdge.setLabel(srcEdge.getLabel());
-                tarEdge.setData(tarEdge.getData());
-            }
-        }
-        return src2tarNode;
-    }
-
-    /**
      * Sets the label of a node.
      */
     public void setLabel(Node v, String label) {
@@ -1802,12 +1772,108 @@ public class Graph extends GraphBase {
                 while(stack.size()>0) {
                     v=stack.pop();
                     components.put(v,count);
-                    stack.addAll(IteratorUtils.asList(v.adjacentNodes()));
+                    for(var u:v.adjacentNodes()) {
+                        if(components.get(u)==null)
+                            stack.add(u);
+                    }
                 }
                 count++;
             }
         }
         return count;
+    }
+
+    /**
+     * extractSubGraph a subgraph
+     *
+     * @param nodes use only these nodes, if not null
+     * @param edges use only these edges, if not null
+     * @return src to target map
+     */
+    public NodeArray<Node> extractSubGraph(Set<Node> nodes, Set<Edge> edges, Graph tar) {
+        NodeArray<Node> src2tarNode = newNodeArray();
+        for (var srcNode : (nodes != null ? nodes : nodes())) {
+            var tarNode = tar.newNode();
+            src2tarNode.put(srcNode, tarNode);
+            tarNode.setLabel(srcNode.getLabel());
+            tarNode.setInfo(srcNode.getInfo());
+            tarNode.setData(srcNode.getData());
+        }
+
+        for (var srcEdge : (edges != null ? edges : edges())) {
+            var tarA = src2tarNode.get(srcEdge.getSource());
+            var tarB = src2tarNode.get(srcEdge.getTarget());
+            if (tarA != null && tarB != null) {
+                var tarEdge = tar.newEdge(tarA, tarB);
+                tarEdge.setInfo(srcEdge.getInfo());
+                tarEdge.setLabel(srcEdge.getLabel());
+                tarEdge.setData(tarEdge.getData());
+            }
+        }
+        return src2tarNode;
+    }
+
+
+    /**
+     * extractSubGraph all sub graphs
+     * @return the list of all sub graphs
+     */
+    public ArrayList<Graph> extractAllSubGraphs() {
+        var subGraphs=new ArrayList<Graph>();
+        var component=newNodeIntArray();
+        var count=computeConnectedComponents(component);
+        if(count==1)
+            subGraphs.add(this);
+        else {
+            var nodes=new ArrayList<Set<Node>>();
+            for(int i=0;i<count;i++) {
+                subGraphs.add(new Graph());
+                nodes.add(new HashSet<>());
+            }
+            for(var v:nodes()) {
+                nodes.get(component.get(v)).add(v);
+            }
+            for(int c=0;c<count;c++){
+                extractSubGraph(nodes.get(c),null,subGraphs.get(c));
+            }
+        }
+        return subGraphs;
+    }
+
+    public boolean isSimple () {
+        // delete parallel edges:
+        var sortedEdges = getEdgesAsList();
+        sortedEdges.sort(Comparator.comparingInt(a -> Math.max(a.getSource().getId(), a.getTarget().getId())));
+        sortedEdges.sort(Comparator.comparingInt(a -> Math.min(a.getSource().getId(), a.getTarget().getId())));
+        Edge prev = null;
+        for (var e : sortedEdges) {
+            if (prev != null && (e.getSource() == prev.getSource() && e.getTarget() == prev.getTarget() || e.getSource() == prev.getTarget() && e.getTarget() == prev.getSource())) {
+                    return false;
+            }
+            prev=e;
+        }
+        return true;
+
+    }
+
+    /**
+     * contract an edge
+     * @param e to be contracted
+     * @return remaining node
+     */
+    public Node contract(Edge e) {
+        var s=e.getSource();
+        var t=e.getTarget();
+        for(var f:s.adjacentEdges()) {
+            if(f!=e) {
+                var g = f.getTarget()==s?newEdge(f.getSource(), t):newEdge(t, f.getTarget());
+                g.setData(f.getData());
+                g.setInfo(f.getInfo());
+                g.setLabel(f.getLabel());
+            }
+        }
+        deleteNode(s);
+        return t;
     }
 }
 

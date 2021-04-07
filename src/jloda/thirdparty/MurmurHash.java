@@ -1,5 +1,5 @@
 /*
- * MurmurHash.java Copyright (C) 2020. Algorithms in Bioinformatics, University of Tuebingen
+ * MurmurHash.java Copyright (C) 2021. Algorithms in Bioinformatics, University of Tuebingen
  *
  *  This program is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -16,7 +16,7 @@
  */
 
 /*
- * MurmurHash.java Copyright (C) 2020. Daniel H. Huson
+ * MurmurHash.java Copyright (C) 2021. Daniel H. Huson
  *
  *  (Some files contain contributions from other authors, who are then mentioned separately.)
  *

@@ -1,5 +1,5 @@
 /*
- * Node.java Copyright (C) 2020. Daniel H. Huson
+ * Node.java Copyright (C) 2021. Daniel H. Huson
  *
  * (Some code written by other authors, as named in code.)
  *
@@ -199,6 +199,21 @@ public class Node extends NodeEdge implements Comparable<Node> {
         }
         return false;
     }
+
+
+    public boolean isDoubleAdjacent(Node v) {
+        var foundOne=false;
+        for (var e : adjacentEdges()) {
+            if (e.getOpposite(this) == v) {
+                if(!foundOne)
+                    foundOne=true;
+                else
+                    return true;
+            }
+        }
+        return false;
+    }
+
 
     /**
      * get next adjacent edge

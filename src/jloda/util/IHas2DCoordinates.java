@@ -18,7 +18,7 @@
  */
 
 /*
- *  SystemOutNoClose.java Copyright (C) 2021 Daniel H. Huson
+ *  IHasX.java Copyright (C) 2021. Daniel H. Huson
  *
  *  (Some files contain contributions from other authors, who are then mentioned separately.)
  *
@@ -36,21 +36,13 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package jloda.fx.util;
-
-import java.io.PrintStream;
+package jloda.util;
 
 /**
- * print stream that ignores close method
- * Daniel Huson, 7.2020
+ * has x and y coordinate
+ * Daniel Huson, 3.2021
  */
-public class PrintStreamNoClose extends PrintStream {
-    public PrintStreamNoClose(PrintStream ps) {
-        super(ps);
-    }
-
-    @Override
-    public void close() {
-        // don't close
-    }
+public interface IHas2DCoordinates {
+    double getX();
+    double getY();
 }

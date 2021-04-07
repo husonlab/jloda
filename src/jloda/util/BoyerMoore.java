@@ -1,5 +1,5 @@
 /*
- * BoyerMoore.java Copyright (C) 2020. Algorithms in Bioinformatics, University of Tuebingen
+ * BoyerMoore.java Copyright (C) 2021. Algorithms in Bioinformatics, University of Tuebingen
  *
  *  This program is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -16,7 +16,7 @@
  */
 
 /*
- * BoyerMoore.java Copyright (C) 2020. Daniel H. Huson
+ * BoyerMoore.java Copyright (C) 2021. Daniel H. Huson
  *
  * (Some code written by other authors, as named in code.)
  *
