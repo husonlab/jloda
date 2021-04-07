@@ -1841,29 +1841,45 @@ public class Graph extends GraphBase {
     }
 
     public boolean isSimple () {
-        // delete parallel edges:
         var sortedEdges = getEdgesAsList();
         sortedEdges.sort(Comparator.comparingInt(a -> Math.max(a.getSource().getId(), a.getTarget().getId())));
         sortedEdges.sort(Comparator.comparingInt(a -> Math.min(a.getSource().getId(), a.getTarget().getId())));
         Edge prev = null;
         for (var e : sortedEdges) {
             if (prev != null && (e.getSource() == prev.getSource() && e.getTarget() == prev.getTarget() || e.getSource() == prev.getTarget() && e.getTarget() == prev.getSource())) {
-                    return false;
+                return false;
             }
-            prev=e;
+            prev = e;
         }
         return true;
+    }
 
+    public boolean isConnected() {
+        if (getNumberOfNodes() == 0)
+            return true;
+        var visited = newNodeSet();
+        var stack = new Stack<Node>();
+        stack.push(getFirstNode());
+        while (stack.size() > 0) {
+            var v = stack.pop();
+            visited.add(v);
+            for (var w : v.adjacentNodes()) {
+                if (!visited.contains(w))
+                    stack.push(w);
+            }
+        }
+        return visited.size() == getNumberOfNodes();
     }
 
     /**
      * contract an edge
+     *
      * @param e to be contracted
      * @return remaining node
      */
     public Node contract(Edge e) {
-        var s=e.getSource();
-        var t=e.getTarget();
+        var s = e.getSource();
+        var t = e.getTarget();
         for(var f:s.adjacentEdges()) {
             if(f!=e) {
                 var g = f.getTarget()==s?newEdge(f.getSource(), t):newEdge(t, f.getTarget());
@@ -1875,6 +1891,8 @@ public class Graph extends GraphBase {
         deleteNode(s);
         return t;
     }
+
+
 }
 
 // EOF
