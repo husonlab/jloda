@@ -26,9 +26,11 @@ import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.geometry.BoundingBox;
 import javafx.geometry.Bounds;
+import javafx.geometry.Orientation;
 import javafx.geometry.Point2D;
 import javafx.scene.Group;
 import javafx.scene.Node;
+import javafx.scene.control.ScrollBar;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.layout.StackPane;
 
@@ -213,8 +215,7 @@ public class ZoomableScrollPane extends ScrollPane {
     }
 
     public void setAllowZoom(boolean allowZoom) {
-        if (isAllowZoom())
-            this.allowZoom.set(allowZoom);
+        this.allowZoom.set(allowZoom);
     }
 
     public void zoomBy(double zoomFactorX, double zoomFactorY) {
@@ -286,5 +287,27 @@ public class ZoomableScrollPane extends ScrollPane {
 
     public void setMouseScrollZoomFactor(double mouseScrollZoomFactor) {
         this.mouseScrollZoomFactor = mouseScrollZoomFactor;
+    }
+
+    public ScrollBar getHorizontalScrollBar() {
+        for (var node : lookupAll(".scroll-bar")) {
+            if (node instanceof ScrollBar) {
+                var scrollBar = (ScrollBar) node;
+                if (scrollBar.getOrientation() == Orientation.HORIZONTAL)
+                    return scrollBar;
+            }
+        }
+        return null;
+    }
+
+    public ScrollBar getVerticalScrollBar() {
+        for (var node : lookupAll(".scroll-bar")) {
+            if (node instanceof ScrollBar) {
+                var scrollBar = (ScrollBar) node;
+                if (scrollBar.getOrientation() == Orientation.VERTICAL)
+                    return scrollBar;
+            }
+        }
+        return null;
     }
 }

@@ -28,7 +28,7 @@ public class GeometryUtilsFX {
     private final static double DEG_TO_RAD_FACTOR = Math.PI / 180.0;
 
     /**
-     * Computes the angle of a two-dimensional vector.
+     * Computes the angle of a two-dimensional vector in degree
      */
     public static double computeAngle(Point2D p) {
         if (p.getX() != 0) {

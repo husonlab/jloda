@@ -665,7 +665,7 @@ public class PhyloTree extends PhyloSplitsGraph {
                     boolean inEdgeHasWeight = (getWeight(f) > 0);
 
                     if (isSpecial(f)) {
-                        if (node2reticulateNumber.get(w) == 0) {
+                        if (node2reticulateNumber.get(w) == null) {
                             node2reticulateNumber.set(w, ++reticulateNodeNumber);
                             final String label;
                             if (getLabel(w) != null)

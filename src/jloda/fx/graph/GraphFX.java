@@ -27,6 +27,8 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import jloda.graph.*;
 
+import java.util.concurrent.atomic.AtomicBoolean;
+
 /**
  * provides observable list of nodes and adjacentEdges, and label properties
  * Daniel Huson, 1.20020
@@ -44,6 +46,8 @@ public class GraphFX<G extends Graph> {
 
     private NodeArray<StringProperty> node2LabelProperty;
     private EdgeArray<StringProperty> edge2LabelProperty;
+
+    private final AtomicBoolean updatingProperties = new AtomicBoolean(false);
 
     public GraphFX() {
     }
@@ -168,6 +172,18 @@ public class GraphFX<G extends Graph> {
 
     public ReadOnlyBooleanProperty emptyProperty() {
         return empty;
+    }
+
+    public boolean isUpdatingProperties() {
+        return updatingProperties.get();
+    }
+
+    public void setUpdatingProperties(boolean updating) {
+        updatingProperties.set(updating);
+    }
+
+    public boolean isNotUpdatingPropertiesAndSet() {
+        return updatingProperties.compareAndSet(false, true);
     }
 }
 
