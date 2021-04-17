@@ -1238,8 +1238,7 @@ public class NexusStreamParser extends NexusStreamTokenizer implements Closeable
     }
 
     /**
-     * Peeks at the next token and attempts to match it to any of the tokens
-     * present in str
+     * Attempts to match the next token to any of the tokens present in s
      *
      * @param s a string of tokens
      */
