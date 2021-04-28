@@ -50,6 +50,7 @@ module jloda {
     opens jloda.resources.icons;
     opens jloda.resources.icons.sun;
     opens jloda.resources.icons.dialog;
+    opens jloda.resources.css;
 
     exports jloda;
     exports jloda.swing.window;

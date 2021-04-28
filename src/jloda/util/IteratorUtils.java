@@ -70,31 +70,41 @@ public class IteratorUtils {
         };
     }
 
-    public static <T> List<T> asList(Iterable<T> iterable) {
-        return asList(iterable, new ArrayList<>());
-    }
-
+    @SuppressWarnings("unchecked")
     public static <T> T[] asArray(Iterable<T> iterable) {
-        return asList(iterable, new ArrayList<>()).toArray((T[]) new Object[0]);
+        return asList(iterable).toArray((T[]) new Object[0]);
     }
 
-    public static <T> List<T> asList(Iterable<T> iterable, List<T> list) {
-        for (T value : iterable) {
-            list.add(value);
+    @SafeVarargs
+    public static <T> List<T> asList(Iterable<T> a, Iterable<T>... additional) {
+        var result = new ArrayList<T>();
+        for (T value : a) {
+            result.add(value);
         }
-        return list;
-    }
-
-    public static <T> Set<T> asSet(Iterable<T> iterable) {
-        final HashSet<T> set = new HashSet<>();
-        return asSet(iterable, set);
-    }
-
-    public static <T> Set<T> asSet(Iterable<T> iterable, Set<T> set) {
-        for (T value : iterable) {
-            set.add(value);
+        for (var iterable : additional) {
+            if (iterable != null) {
+                for (T value : iterable) {
+                    result.add(value);
+                }
+            }
         }
-        return set;
+        return result;
+    }
+
+    @SafeVarargs
+    public static <T> Set<T> asSet(Iterable<T> a, Iterable<T>... additional) {
+        var result = new HashSet<T>();
+        for (T value : a) {
+            result.add(value);
+        }
+        for (var iterable : additional) {
+            if (iterable != null) {
+                for (T value : iterable) {
+                    result.add(value);
+                }
+            }
+        }
+        return result;
     }
 
     public static <T> Iterator<T> iteratorNonNullElements(Iterator<T> it) {
@@ -128,9 +138,7 @@ public class IteratorUtils {
     public static <T> int count(Iterable<T> iterable) {
         int count = 0;
 
-        var it = iterable.iterator();
-        while (it.hasNext()) {
-            it.next();
+        for (T t : iterable) {
             count++;
         }
         return count;

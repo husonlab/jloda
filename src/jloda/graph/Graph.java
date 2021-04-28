@@ -1784,13 +1784,13 @@ public class Graph extends GraphBase {
     }
 
     /**
-     * extractSubGraph a subgraph
+     * extract a subgraph
      *
      * @param nodes use only these nodes, if not null
      * @param edges use only these edges, if not null
      * @return src to target map
      */
-    public NodeArray<Node> extractSubGraph(Set<Node> nodes, Set<Edge> edges, Graph tar) {
+    public NodeArray<Node> extract(Set<Node> nodes, Set<Edge> edges, Graph tar) {
         NodeArray<Node> src2tarNode = newNodeArray();
         for (var srcNode : (nodes != null ? nodes : nodes())) {
             var tarNode = tar.newNode();
@@ -1815,7 +1815,8 @@ public class Graph extends GraphBase {
 
 
     /**
-     * extractSubGraph all sub graphs
+     * extract all sub graphs
+     *
      * @return the list of all sub graphs
      */
     public ArrayList<Graph> extractAllSubGraphs() {
@@ -1834,7 +1835,7 @@ public class Graph extends GraphBase {
                 nodes.get(component.get(v)).add(v);
             }
             for(int c=0;c<count;c++){
-                extractSubGraph(nodes.get(c),null,subGraphs.get(c));
+                extract(nodes.get(c), null, subGraphs.get(c));
             }
         }
         return subGraphs;

@@ -27,15 +27,18 @@ import javafx.beans.binding.IntegerBinding;
 import javafx.beans.property.LongProperty;
 import javafx.beans.property.ReadOnlyLongProperty;
 import javafx.beans.property.SimpleLongProperty;
+import javafx.beans.value.ChangeListener;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.collections.ObservableSet;
 import javafx.stage.Stage;
 import jloda.fx.util.ClosingLastDocument;
+import jloda.util.IteratorUtils;
 import jloda.util.ProgramProperties;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -232,5 +235,25 @@ public class MainWindowManager {
 
     public IntegerBinding sizeProperty() {
         return Bindings.size(mainWindows);
+    }
+
+    public static ChangeListener<Boolean> getUseDarkThemeListener(IMainWindow mainWindow) {
+        return (v, o, n) -> {
+            ProgramProperties.put("UseDarkTheme", n);
+            for (var win : IteratorUtils.asSet(Collections.singletonList(mainWindow), MainWindowManager.getInstance().getMainWindows())) {
+                win.getStage().getScene().getStylesheets().remove("jloda/resources/css/mondena_dark.css");
+                if (n)
+                    win.getStage().getScene().getStylesheets().add("jloda/resources/css/mondena_dark.css");
+                for (var aux : MainWindowManager.getInstance().getAuxiliaryWindows(win)) {
+                    aux.getScene().getStylesheets().remove("jloda/resources/css/mondena_dark.css");
+                    if (n)
+                        aux.getScene().getStylesheets().add("jloda/resources/css/mondena_dark.css");
+                }
+            }
+        };
+    }
+
+    public static boolean isUseDarkTheme() {
+        return ProgramProperties.get("UseDarkTheme", false);
     }
 }
