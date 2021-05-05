@@ -350,12 +350,10 @@ public class ResourceManager {
         return classLoadersAndRoots;
     }
 
-    public static void addResourceRoot(Class clazzForClassLoader, String rootPath) {
-        classLoadersAndRoots.add(0, new Pair<>(clazzForClassLoader, rootPath));
-    }
-
-    public static void addResourceRoot(Class clazzInResourceRoot) {
-        classLoadersAndRoots.add(0, new Pair<>(clazzInResourceRoot, clazzInResourceRoot.getPackageName()));
+    public static void insertResourceRoot(Class clazzInResourceRoot) {
+        var pair=new Pair<>(clazzInResourceRoot, clazzInResourceRoot.getPackageName());
+        if(!classLoadersAndRoots.contains(pair))
+            classLoadersAndRoots.add(0, pair);
     }
 }
 

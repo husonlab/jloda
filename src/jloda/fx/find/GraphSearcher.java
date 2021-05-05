@@ -159,7 +159,7 @@ public class GraphSearcher implements IObjectSearcher<Node> {
 
     @Override
     public ReadOnlyBooleanProperty isSelectionFindable() {
-        return new SimpleBooleanProperty(false);
+        return new SimpleBooleanProperty(true);
     }
 
     @Override

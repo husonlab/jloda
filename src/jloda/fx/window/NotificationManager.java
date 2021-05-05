@@ -214,7 +214,8 @@ public class NotificationManager {
 
                 final BorderPane mainPanel = new BorderPane();
                 {
-                    mainPanel.setBackground(new Background(new BackgroundFill(javafx.scene.paint.Color.WHITE.deriveColor(1, 1, 1, 0.8), null, null)));
+                    var backgroundColor=(ProgramProperties.get("UseDarkTheme",false)?Color.BLACK:Color.WHITE).deriveColor(1, 1, 1, 0.8);
+                        mainPanel.setBackground(new Background(new BackgroundFill(backgroundColor, null, null)));
                     mainPanel.setEffect(new DropShadow(3, Color.BLACK));
                     mainPanel.setMinHeight(notificationHeight);
                     mainPanel.setMaxHeight(notificationHeight);

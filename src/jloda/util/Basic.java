@@ -1825,6 +1825,11 @@ public class Basic {
                 }
             }
         } catch (Exception ex) {
+            if(string.equalsIgnoreCase("-inf"))
+                return Integer.MIN_VALUE;
+            else if(string.equalsIgnoreCase("inf"))
+                return Integer.MAX_VALUE;
+
         }
         return 0;
     }
@@ -1838,7 +1843,7 @@ public class Basic {
     public static long parseLong(String string) {
         try {
             if (string != null) {
-                int start = 0;
+                 int start = 0;
                 while (start < string.length()) {
                     int ch = string.charAt(start);
                     if (Character.isDigit(ch) || ch == '+' || ch == '-')
@@ -1854,6 +1859,11 @@ public class Basic {
                 }
             }
         } catch (Exception ex) {
+            if(string.equalsIgnoreCase("-inf"))
+                return Long.MIN_VALUE;
+            else if(string.equalsIgnoreCase("inf"))
+                return Long.MAX_VALUE;
+
         }
         return 0;
     }
@@ -1884,6 +1894,10 @@ public class Basic {
                 }
             }
         } catch (Exception ex) {
+            if(string.equalsIgnoreCase("-inf"))
+                return Float.NEGATIVE_INFINITY;
+            else if(string.equalsIgnoreCase("inf"))
+                return Float.POSITIVE_INFINITY;
         }
         return 0;
     }
@@ -1914,6 +1928,11 @@ public class Basic {
                 }
             }
         } catch (Exception ex) {
+            if(string.equalsIgnoreCase("-inf"))
+                return Double.NEGATIVE_INFINITY;
+            else if(string.equalsIgnoreCase("inf"))
+                return Double.POSITIVE_INFINITY;
+
         }
         return 0;
     }

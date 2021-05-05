@@ -217,7 +217,7 @@ public class MainWindowManager {
     }
 
     public ArrayList<Stage> getAuxiliaryWindows(IMainWindow mainWindow) {
-        return mainWindows2AdditionalWindows.get(mainWindow);
+        return mainWindows2AdditionalWindows.computeIfAbsent(mainWindow, k -> new ArrayList<>());
     }
 
     public IMainWindow getLastFocusedMainWindow() {
