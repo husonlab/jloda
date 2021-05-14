@@ -60,7 +60,8 @@ public class NodeArray<T> extends GraphBase implements Iterable<T>, Map<Node, T>
      */
     public NodeArray(NodeArray<T> src) {
         setOwner(src.getOwner());
-        getOwner().nodes().forEach(e -> put(e, src.get(e)));
+        data = (T[]) new Object[src.data.length];
+        System.arraycopy(src.data, 0, data, 0, data.length);
         size = src.size();
     }
 

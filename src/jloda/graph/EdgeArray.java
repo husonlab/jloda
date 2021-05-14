@@ -60,7 +60,8 @@ public class EdgeArray<T> extends GraphBase implements Iterable<T>, Map<Edge, T>
      */
     public EdgeArray(EdgeArray<T> src) {
         setOwner(src.getOwner());
-        getOwner().edges().forEach(e -> put(e, src.get(e)));
+        data = (T[]) new Object[src.data.length];
+        System.arraycopy(src.data, 0, data, 0, data.length);
         size = src.size;
     }
 
