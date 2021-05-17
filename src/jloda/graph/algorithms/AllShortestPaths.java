@@ -41,7 +41,7 @@ public class AllShortestPaths {
     }
 
     public AllShortestPaths(Graph graph, Function<Edge, ? extends Number> weights) {
-        final int n = graph.getNumberOfNodes();
+        final var n = graph.getNumberOfNodes();
         node2index = graph.newNodeIntArray();
         var nodes = new Node[n];
         {
@@ -54,15 +54,15 @@ public class AllShortestPaths {
         path = new Edge[n][n];
         distances = new double[n][n];
 
-        for (int s = 0; s < n; s++) {
-            for (int t = 0; t < n; t++) {
+        for (var s = 0; s < n; s++) {
+            for (var t = 0; t < n; t++) {
                 if (s != t)
                     distances[s][t] = Double.MAX_VALUE;
             }
         }
 
-        for (int s = 0; s < n; s++) {
-            for (int t = 0; t < n; t++) {
+        for (var s = 0; s < n; s++) {
+            for (var t = 0; t < n; t++) {
                 if (s != t) {
                     var e = nodes[s].getCommonEdge(nodes[t]);
                     if (e != null) {
@@ -72,10 +72,10 @@ public class AllShortestPaths {
                 }
             }
         }
-        for (int i = 0; i < n; i++)
-            for (int s = 0; s < n; s++)
+        for (var i = 0; i < n; i++)
+            for (var s = 0; s < n; s++)
                 if (path[s][i] != null)
-                    for (int t = 0; t < n; t++)
+                    for (var t = 0; t < n; t++)
                         if (s != t)
                             if (distances[s][t] > distances[s][i] + distances[i][t]) {
                                 path[s][t] = path[s][i];

@@ -44,7 +44,7 @@ public class MinimumSpanningTree {
      * @return
      */
     public static EdgeSet apply(Graph graph, Function<Edge, Number> weightFunction, ProgressListener progress) {
-        final ArrayList<Pair<Double, Edge>> edges = new ArrayList<>(graph.getNumberOfEdges());
+        final var edges = new ArrayList<Pair<Double, Edge>>(graph.getNumberOfEdges());
         for (var e : graph.edges()) {
             edges.add(new Pair<>(weightFunction.apply(e).doubleValue(), e));
         }

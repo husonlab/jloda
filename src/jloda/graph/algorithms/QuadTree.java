@@ -169,7 +169,8 @@ private int size;
     }
    public static class Region {
     public enum Quadrant {SW, NW, NE, SE}
-        private final float xmin;
+
+       private final float xmin;
         private final float ymin;
         private final float xmax;
         private final float ymax;

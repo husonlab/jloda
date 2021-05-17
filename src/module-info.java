@@ -24,6 +24,7 @@ module jloda {
     exports jloda.graph;
     exports jloda.graph.io;
     exports jloda.graph.algorithms;
+    exports jloda.graph.fmm;
 
     exports jloda.phylo;
     exports jloda.progs;

@@ -25,7 +25,7 @@ package jloda.util;
  *
  * @param <T> Daniel Huson, 3.2019
  */
-public class APoint2D<T> implements IHas2DCoordinates {
+public class APoint2D<T> {
     private double x;
     private double y;
     private T userData;
@@ -38,17 +38,6 @@ public class APoint2D<T> implements IHas2DCoordinates {
     public APoint2D(double x, double y, T userData) {
         this.x = x;
         this.y = y;
-        this.userData = userData;
-    }
-
-    public APoint2D(IHas2DCoordinates p) {
-        this.x = p.getX();
-        this.y = p.getY();
-    }
-
-    public APoint2D(IHas2DCoordinates p, T userData) {
-        this.x = p.getX();
-        this.y = p.getY();
         this.userData = userData;
     }
 

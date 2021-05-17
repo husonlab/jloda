@@ -35,7 +35,7 @@ public class ConnectedComponents {
      * @return connected components
      */
     public static int count(Graph graph) {
-        int result = 0;
+        var result = 0;
         var used = graph.newNodeSet();
 
         for (var v : graph.nodes()) {

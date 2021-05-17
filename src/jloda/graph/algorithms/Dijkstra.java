@@ -22,7 +22,7 @@ package jloda.graph.algorithms;
 
 import jloda.graph.*;
 
-import java.util.LinkedList;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.SortedSet;
 import java.util.TreeSet;
@@ -47,7 +47,7 @@ public class Dijkstra {
         NodeArray<Node> predecessor = graph.newNodeArray();
 
         var dist = graph.newNodeDoubleArray();
-        SortedSet<Node> priorityQueue = newFullQueue(graph, dist);
+        var priorityQueue = newFullQueue(graph, dist);
 
         // init:
         for (var v : graph.nodes()) {
@@ -58,15 +58,15 @@ public class Dijkstra {
 
         // main loop:
         while (!priorityQueue.isEmpty()) {
-            int size = priorityQueue.size();
-            Node u = priorityQueue.first();
+            var size = priorityQueue.size();
+            var u = priorityQueue.first();
             priorityQueue.remove(u);
             if (priorityQueue.size() != size - 1)
                 throw new RuntimeException("remove u=" + u + " failed: size=" + size);
 
             for (var e : u.outEdges()) {
-                double weight = weights.apply(e).doubleValue();
-                Node v = (Node) e.getOpposite(u);
+                var weight = weights.apply(e).doubleValue();
+                var v = e.getOpposite(u);
                 if (dist.get(v) > dist.get(u) + weight) {
                     // priorty of v changes, so must re-and to queue:
                     priorityQueue.remove(v);
@@ -77,7 +77,7 @@ public class Dijkstra {
             }
         }
         System.err.println("done main loop");
-        final List<Node> result = new LinkedList<>();
+        var result = new ArrayList<Node>();
         var v = sink;
         while (v != source) {
             if (v == null)
@@ -100,9 +100,9 @@ public class Dijkstra {
      * @
      */
     static public SortedSet<Node> newFullQueue(final Graph graph, final NodeDoubleArray dist) {
-        SortedSet<Node> queue = new TreeSet<>((v1, v2) -> {
-            double weight1 = dist.get(v1);
-            double weight2 = dist.get(v2);
+        var queue = new TreeSet<Node>((v1, v2) -> {
+            var weight1 = dist.get(v1);
+            var weight2 = dist.get(v2);
             //System.out.println("weight1 " + weight1 + " weight2 " + weight2);
             //System.out.println("graph.getId(v1) " + graph.getId(v1) + " graph.getId(v2) " + graph.getId(v2));
             if (weight1 < weight2)
@@ -115,6 +115,4 @@ public class Dijkstra {
             queue.add(v);
         return queue;
     }
-
-
 }

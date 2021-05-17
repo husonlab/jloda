@@ -36,6 +36,10 @@ public class DirectedCycleDetector {
     private final NodeSet onStack;
     private final Stack<Edge> cycle;
 
+    public static boolean apply(Graph graph) {
+        return (new DirectedCycleDetector(graph).hasCycle());
+    }
+
     /**
      * constructor
      *
@@ -60,9 +64,9 @@ public class DirectedCycleDetector {
         marked.clear();
         cycle.clear();
 
-        for (Node v = graph.getFirstNode(); v != null; v = graph.getNextNode(v)) {
+        for (var v : graph.nodes()) {
             if (!marked.contains(v))
-                detectRec(graph, v);
+                detectRec(v);
         }
         return hasCycle();
     }
@@ -70,20 +74,19 @@ public class DirectedCycleDetector {
     /**
      * recursively does the work
      *
-     * @param G
      * @param v
      */
-    private void detectRec(Graph G, Node v) {
+    private void detectRec(Node v) {
         onStack.add(v);
         marked.add(v);
 
-        for (Edge e = v.getFirstOutEdge(); e != null; e = v.getNextOutEdge(e)) {
-            final Node w = e.getTarget();
+        for (var e : v.outEdges()) {
+            var w = e.getTarget();
             if (this.hasCycle())
                 return;
             else if (!marked.contains(w)) {
                 edgeTo.put(w, e);
-                detectRec(G, w);
+                detectRec(w);
             } else if (onStack.contains(w)) {
                 cycle.push(e);
                 for (Node x = v; x != w; x = edgeTo.get(x).getSource())

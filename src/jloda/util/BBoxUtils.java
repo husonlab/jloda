@@ -60,7 +60,7 @@ public class BBoxUtils {
      * @param points
      * @return bounding box
      */
-    public static <T> double[] computeBBox(Collection<? extends IHas2DCoordinates> points) {
+    public static <T> double[] computeBBox(Collection<? extends APoint2D<?>> points) {
         double minX = Double.MAX_VALUE;
         double maxX = Double.MIN_VALUE;
         double minY = Double.MAX_VALUE;
