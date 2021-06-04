@@ -88,16 +88,16 @@ public class FruchtermanReingoldLayout {
     public FruchtermanReingoldLayout(Graph graph, NodeSet fixedNodes, NodeArray<APoint2D<?>> node2start) {
         this.graph = graph;
         //noinspection unchecked
-        nodes = new Node[graph.getNumberOfNodes()];
+        nodes = new Node[graph.getMaxNodeId()];
         {
             int i = 0;
             for (var v : graph.nodes()) {
                 nodes[i++] = v;
             }
         }
-        edges = new int[2][graph.getNumberOfEdges()];
-        coordinates = new float[2][nodes.length];
-        forceDelta = new float[2][nodes.length];
+        edges = new int[2][graph.getMaxEdgeId()];
+        coordinates = new float[2][graph.getMaxNodeId()];
+        forceDelta = new float[2][graph.getMaxNodeId()];
         fixed = new BitSet();
 
         initialize(fixedNodes, node2start);

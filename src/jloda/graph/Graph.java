@@ -43,13 +43,13 @@ public class Graph extends GraphBase {
     private Node lastNode;
     private int numberNodes;
     private int numberOfNodesThatAreHidden;
-    private int idsNodes; // number of ids assigned to nodes
+    private int maxNodeId; // max id assigned to any node
 
     private Edge firstEdge;
     protected Edge lastEdge;
     private int numberEdges;
     private int numberOfEdgesThatAreHidden;
-    private int idsEdges; // number of ids assigned to adjacentEdges
+    private int maxEdgeId; // max id assigned to any edge
 
     private boolean ignoreGraphHasChanged = false; // set this when we are deleting a whole graph
 
@@ -114,12 +114,12 @@ public class Graph extends GraphBase {
     public Node newNode(Object info, int recycledId) {
         final Node v = new Node(this, info);
         v.setId(recycledId);
-        idsNodes--; // count back down
+        maxNodeId--; // count back down
         return v;
     }
 
     void registerNewNode(Object info, Node v) {
-        v.init(this, lastNode, null, ++idsNodes, info);
+        v.init(this, lastNode, null, ++maxNodeId, info);
         if (firstNode == null)
             firstNode = v;
         if (lastNode != null)
@@ -164,7 +164,7 @@ public class Graph extends GraphBase {
 
 
     /**
-     * sets the hidden state of a edge. Hidden adjacentEdges are not returned by edge iterators
+     * sets the hidden state of a edge. Hidden edges are not returned by edge iterators
      *
      * @param e
      * @param hide
@@ -231,7 +231,7 @@ public class Graph extends GraphBase {
     public Edge newEdge(Node v, Node w, Object obj, int recycledId) throws IllegalSelfEdgeException {
         final Edge e = new Edge(this, v, w, obj);
         e.setId(recycledId);
-        idsEdges--;
+        maxEdgeId--;
         return e;
     }
 
@@ -276,7 +276,7 @@ public class Graph extends GraphBase {
         v.incrementOutDegree();
         w.incrementInDegree();
 
-        e.init(this, ++idsEdges, v, e_v, dir_v, w, e_w, dir_w, obj);
+        e.init(this, ++maxEdgeId, v, e_v, dir_v, w, e_w, dir_w, obj);
         if (firstEdge == null)
             firstEdge = e;
         if (lastEdge != null)
@@ -316,7 +316,7 @@ public class Graph extends GraphBase {
             lastEdge = (Edge) e.prev;
         numberEdges--;
         if (numberEdges == 0)
-            idsEdges = 0;
+            maxEdgeId = 0;
     }
 
     /**
@@ -348,7 +348,7 @@ public class Graph extends GraphBase {
             lastNode = (Node) v.prev;
         numberNodes--;
         if (numberNodes == 0)
-            idsNodes = 0;
+            maxNodeId = 0;
     }
 
     /**
@@ -386,10 +386,10 @@ public class Graph extends GraphBase {
     }
 
     /**
-     * Change the order of adjacentEdges adjacent to a node.
+     * Change the order of edges adjacent to a node.
      *
      * @param v        the node in question.
-     * @param newOrder the desired sequence of adjacentEdges.
+     * @param newOrder the desired sequence of edges.
      */
     public void rearrangeAdjacentEdges(Node v, List<Edge> newOrder) {
         checkOwner(v);
@@ -987,7 +987,7 @@ public class Graph extends GraphBase {
             setLabel(w, src.getLabel(v));
             oldNode2newNode.put(v, w);
         }
-        idsNodes = src.idsNodes;
+        maxNodeId = src.maxNodeId;
 
         for (var e : src.edges()) {
             Node p = oldNode2newNode.get(src.getSource(e));
@@ -1006,7 +1006,7 @@ public class Graph extends GraphBase {
 
             oldEdge2newEdge.put(e, f);
         }
-        idsEdges = src.idsEdges;
+        maxEdgeId = src.maxEdgeId;
 
         // change all adjacencies to reflect order in old graph:
         for (Node v = src.getFirstNode(); v != null; v = src.getNextNode(v)) {
@@ -1387,8 +1387,8 @@ public class Graph extends GraphBase {
      *
      * @return max node id
      */
-    int getMaxNodeId() {
-        return idsNodes;
+    public int getMaxNodeId() {
+        return maxNodeId;
     }
 
     /**
@@ -1396,8 +1396,8 @@ public class Graph extends GraphBase {
      *
      * @return max edge id
      */
-    int getMaxEdgeId() {
-        return idsEdges;
+    public int getMaxEdgeId() {
+        return maxEdgeId;
     }
 
     /**
@@ -1522,6 +1522,11 @@ public class Graph extends GraphBase {
         return () -> new Iterator<>() {
             Edge e = (afterMe == null ? getFirstEdge() : afterMe.getNext());
 
+            {
+                while (e != null && e.isHidden())
+                    e = e.getNext();
+            }
+
             @Override
             public boolean hasNext() {
                 return e != null;
@@ -1531,6 +1536,9 @@ public class Graph extends GraphBase {
             public Edge next() {
                 Edge result = e;
                 e = e.getNext();
+                while (e != null && e.isHidden()) {
+                    e = e.getNext();
+                }
                 return result;
             }
         };
@@ -1790,44 +1798,64 @@ public class Graph extends GraphBase {
      * @param edges use only these edges, if not null
      * @return src to target map
      */
-    public NodeArray<Node> extract(Set<Node> nodes, Set<Edge> edges, Graph tar) {
+    public NodeArray<Node> extract(Collection<Node> nodes, Collection<Edge> edges, Graph tarGraph) {
         NodeArray<Node> src2tarNode = newNodeArray();
+        extract(nodes, edges, tarGraph, src2tarNode, null);
+        return src2tarNode;
+    }
+
+
+    /**
+     * extract a subgraph
+     */
+    public void extract(Collection<Node> nodes, Collection<Edge> edges, Graph tarGraph, NodeArray<Node> src2tarNode, EdgeArray<Edge> src2tarEdge) {
+        if (src2tarNode == null)
+            src2tarNode = newNodeArray();
         for (var srcNode : (nodes != null ? nodes : nodes())) {
-            var tarNode = tar.newNode();
-            src2tarNode.put(srcNode, tarNode);
+            var tarNode = tarGraph.newNode();
             tarNode.setLabel(srcNode.getLabel());
             tarNode.setInfo(srcNode.getInfo());
             tarNode.setData(srcNode.getData());
+            src2tarNode.put(srcNode, tarNode);
         }
 
         for (var srcEdge : (edges != null ? edges : edges())) {
             var tarA = src2tarNode.get(srcEdge.getSource());
             var tarB = src2tarNode.get(srcEdge.getTarget());
             if (tarA != null && tarB != null) {
-                var tarEdge = tar.newEdge(tarA, tarB);
+                var tarEdge = tarGraph.newEdge(tarA, tarB);
                 tarEdge.setInfo(srcEdge.getInfo());
                 tarEdge.setLabel(srcEdge.getLabel());
                 tarEdge.setData(tarEdge.getData());
+                if (src2tarEdge != null)
+                    src2tarEdge.put(srcEdge, tarEdge);
             }
         }
-        return src2tarNode;
     }
-
 
     /**
      * extract all sub graphs
      *
      * @return the list of all sub graphs
      */
-    public ArrayList<Graph> extractAllSubGraphs() {
-        var subGraphs=new ArrayList<Graph>();
-        var component=newNodeIntArray();
-        var count=computeConnectedComponents(component);
-        if(count==1)
+    public ArrayList<Graph> extractAllConnectedComponents() {
+        return extractAllConnectedComponents(newNodeArray());
+    }
+
+    /**
+     * extract all sub graphs
+     *
+     * @return the list of all sub graphs
+     */
+    public ArrayList<Graph> extractAllConnectedComponents(NodeArray<Node> src2tar) {
+        var subGraphs = new ArrayList<Graph>();
+        var component = newNodeIntArray();
+        var count = computeConnectedComponents(component);
+        if (count == 1)
             subGraphs.add(this);
         else {
-            var nodes=new ArrayList<Set<Node>>();
-            for(int i=0;i<count;i++) {
+            var nodes = new ArrayList<Set<Node>>();
+            for (int i = 0; i < count; i++) {
                 subGraphs.add(new Graph());
                 nodes.add(new HashSet<>());
             }
@@ -1835,7 +1863,7 @@ public class Graph extends GraphBase {
                 nodes.get(component.get(v)).add(v);
             }
             for(int c=0;c<count;c++){
-                extract(nodes.get(c), null, subGraphs.get(c));
+                src2tar.putAll(extract(nodes.get(c), null, subGraphs.get(c)));
             }
         }
         return subGraphs;
@@ -1892,8 +1920,6 @@ public class Graph extends GraphBase {
         deleteNode(s);
         return t;
     }
-
-
 }
 
 // EOF

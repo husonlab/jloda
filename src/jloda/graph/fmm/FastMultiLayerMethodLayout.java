@@ -74,6 +74,9 @@ public class FastMultiLayerMethodLayout {
             return DRect.computeBBox(nodeAttributes.values());
 
         } else if (graph.getNumberOfNodes() == 2) {
+            if (options == null)
+                options = new FastMultiLayerMethodOptions();
+
             result.accept(graph.getFirstNode(), new DPoint(0, 0));
             double weight = options.getUnitEdgeLength();
             if (graph.getNumberOfEdges() == 1)
@@ -759,9 +762,9 @@ public class FastMultiLayerMethodLayout {
      * a rectangle
      */
     public interface Rectangle {
-        double getX();
+        double getMinX();
 
-        double getY();
+        double getMinY();
 
         double getWidth();
 
