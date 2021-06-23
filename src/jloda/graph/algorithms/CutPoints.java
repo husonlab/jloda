@@ -30,6 +30,7 @@ import java.util.function.Function;
 /**
  * computes all cut points in a graph
  * Daniel Huson, 6.2021
+ * See https://cp-algorithms.com/graph/cutpoints.html
  */
 public class CutPoints {
     public static NodeSet apply(Graph graph) {
@@ -44,7 +45,7 @@ public class CutPoints {
         var result = graph.newNodeSet();
 
         for (var v : graph.nodes()) {
-            if (useNode.apply(v))
+            if (tin.get(v) == null && useNode.apply(v))
                 dfs(v, null, timer, tin, low, useNode, result);
         }
         return result;
