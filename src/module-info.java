@@ -7,7 +7,6 @@ module jloda {
     requires transitive java.desktop;
 
     requires VectorGraphics2D;
-    requires junit;
 
     exports jloda.fx.dialog;
     exports jloda.fx.colorscale;
