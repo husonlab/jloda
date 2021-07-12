@@ -2530,7 +2530,7 @@ public class Basic {
     }
 
     public static boolean fileExistsAndIsNonEmpty(File file) {
-        return file.exists() && !file.isDirectory() && file.length() > 0;
+        return file!=null && file.exists() && !file.isDirectory() && file.length() > 0;
     }
 
     public static void checkFileReadableNonEmpty(String fileName) throws IOException {
@@ -3296,17 +3296,20 @@ public class Basic {
      * @throws IOException if an error occurs while resolving the files' canonical names
      */
     public static File getRelativeFile(File target, File base) throws IOException {
-        String[] baseComponents = base.getCanonicalPath().split(Pattern.quote(File.separator));
-        String[] targetComponents = target.getCanonicalPath().split(Pattern.quote(File.separator));
+        if(target.equals(base))
+            return new File(".");
+
+        var baseComponents = base.getPath().split(Pattern.quote(File.separator));
+        var targetComponents = target.getPath().split(Pattern.quote(File.separator));
 
         // skip common components
-        int index = 0;
+        var index = 0;
         for (; index < targetComponents.length && index < baseComponents.length; ++index) {
             if (!targetComponents[index].equals(baseComponents[index]))
                 break;
         }
 
-        StringBuilder result = new StringBuilder();
+        var result = new StringBuilder();
         if (index != baseComponents.length) {
             // backtrack to base directory
             for (int i = index; i < baseComponents.length; ++i)
@@ -4078,18 +4081,18 @@ public class Basic {
      * get all files listed below the given root directory
      */
     public static ArrayList<File> getAllFilesInDirectory(File rootDirectory, boolean recursively, String... fileExtensions) {
-        final ArrayList<File> result = new ArrayList<>();
+        final var result = new ArrayList<File>();
 
-        File[] array = rootDirectory.listFiles();
+        var array = rootDirectory.listFiles();
         if (array != null) {
             Arrays.sort(array);
-            final ArrayList<File> list = new ArrayList<>();
+            final var list = new ArrayList<File>();
             Collections.addAll(list, array);
             while (list.size() > 0) {
                 final File file = list.remove(0);
                 if (file.isDirectory()) {
                     if (recursively) {
-                        final File[] below = file.listFiles();
+                        final var below = file.listFiles();
                         if (below != null) {
                             Arrays.sort(below);
                             Collections.addAll(list, below);
@@ -4098,7 +4101,7 @@ public class Basic {
                 } else if (fileExtensions.length == 0)
                     result.add(file);
                 else {
-                    for (String extension : fileExtensions) {
+                    for (var extension : fileExtensions) {
                         if (file.getName().endsWith(extension)) {
                             result.add(file);
                             break;
