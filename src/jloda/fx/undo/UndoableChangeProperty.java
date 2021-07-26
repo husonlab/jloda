@@ -64,4 +64,14 @@ public class UndoableChangeProperty<T> extends UndoableRedoableCommand {
         if (updater != null)
             updater.accept(newValue);
     }
+
+    @Override
+    public boolean isUndoable() {
+        return oldValue != null;
+    }
+
+    @Override
+    public boolean isRedoable() {
+        return newValue != null;
+    }
 }

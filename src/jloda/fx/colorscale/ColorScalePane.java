@@ -71,7 +71,7 @@ public class ColorScalePane extends Pane {
      * @param colors
      */
     public void setColorScale(String title, double leftValue, double rightValue, boolean reverse, ObservableList<Color> colors) {
-        setTitleText(title + ":");
+        setTitleText(title != null ? title + ":" : "");
         setLeftText(Basic.removeTrailingZerosAfterDot(String.format("%,.2f", leftValue)));
         setRightText(Basic.removeTrailingZerosAfterDot(String.format("%,.2f", rightValue)));
 
@@ -97,7 +97,7 @@ public class ColorScalePane extends Pane {
      * @param colors
      */
     public void setColorScale(String title, ObservableList<Color> colors, double opacityFactor) {
-        setTitleText(title + ":");
+        setTitleText(title != null ? title + ":" : "");
         setLeftText("");
         setRightText("");
 
