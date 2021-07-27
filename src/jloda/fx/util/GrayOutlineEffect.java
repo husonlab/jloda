@@ -1,5 +1,5 @@
 /*
- * SelectionEffectGray.java Copyright (C) 2021. Daniel H. Huson
+ * SelectionEffect.java Copyright (C) 2021. Daniel H. Huson
  *
  * (Some code written by other authors, as named in code.)
  *
@@ -20,25 +20,24 @@
 
 package jloda.fx.util;
 
+import javafx.scene.effect.BlurType;
 import javafx.scene.effect.DropShadow;
 import javafx.scene.paint.Color;
 
 /**
- * effect used to indicate selection
- * Daniel Huson, 11.2017
+ * gray outline
+ * Daniel Huson, 7.2021
  */
-public class SelectionEffectGray extends DropShadow {
-    private static SelectionEffectGray instance;
+public class GrayOutlineEffect extends DropShadow {
+    private static GrayOutlineEffect instance;
 
-    public static SelectionEffectGray getInstance() {
+    public static GrayOutlineEffect getInstance() {
         if (instance == null)
-            instance = new SelectionEffectGray();
+            instance = new GrayOutlineEffect();
         return instance;
     }
 
-    private SelectionEffectGray() {
-        setColor(Color.LIGHTGRAY);
-        setRadius(3);
-        setSpread(1);
+    private GrayOutlineEffect() {
+        super(BlurType.THREE_PASS_BOX, Color.GRAY, 1, 1, 0, 0);
     }
 }

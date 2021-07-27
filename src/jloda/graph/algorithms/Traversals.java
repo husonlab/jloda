@@ -146,6 +146,28 @@ public class Traversals {
     }
 
     /**
+     * performs a pre-order traversal of a connected component, applying the method to all nodes
+     *
+     * @param v      a node in the component
+     * @param ok     only visit nodes for which this evaluates to true
+     * @param method method to be applied
+     */
+    public static void preOrderComponentTraversal(Node v, Function<Node, Boolean> ok, Consumer<Node> method) {
+        var visited = v.getOwner().newNodeSet();
+        Function<Node, Boolean> check = w -> {
+            if (!ok.apply(w) || visited.contains(w))
+                return false;
+            else {
+                visited.add(w);
+                return true;
+            }
+        };
+        if (check.apply(v)) {
+            preOrderGraphTraversalRec(v, check, method);
+        }
+    }
+
+    /**
      * performs a post-order graph traversal, applying the method to all nodes
      *
      * @param graph  the graph
@@ -165,6 +187,28 @@ public class Traversals {
             if (check.apply(v)) {
                 postOrderGraphTraversalRec(v, check, method);
             }
+        }
+    }
+
+    /**
+     * performs a post-order traversal of a connected component, applying the method to all nodes
+     *
+     * @param v      a node in the component
+     * @param ok     only visit nodes for which this evaluates to true
+     * @param method method to be applied
+     */
+    public static void postOrderComponentTraversal(Node v, Function<Node, Boolean> ok, Consumer<Node> method) {
+        var visited = v.getOwner().newNodeSet();
+        Function<Node, Boolean> check = w -> {
+            if (!ok.apply(w) || visited.contains(w))
+                return false;
+            else {
+                visited.add(w);
+                return true;
+            }
+        };
+        if (check.apply(v)) {
+            postOrderGraphTraversalRec(v, check, method);
         }
     }
 

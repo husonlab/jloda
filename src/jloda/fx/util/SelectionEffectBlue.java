@@ -20,6 +20,7 @@
 
 package jloda.fx.util;
 
+import javafx.scene.effect.BlurType;
 import javafx.scene.effect.DropShadow;
 import javafx.scene.paint.Color;
 
@@ -37,8 +38,6 @@ public class SelectionEffectBlue extends DropShadow {
     }
 
     private SelectionEffectBlue() {
-        setColor(Color.LIGHTBLUE);
-        setRadius(3);
-        setSpread(1);
+        super(BlurType.THREE_PASS_BOX, Color.LIGHTBLUE, 3, 1, 0, 0);
     }
 }
