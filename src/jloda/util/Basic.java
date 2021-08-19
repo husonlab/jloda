@@ -3405,28 +3405,23 @@ public class Basic {
 
     /**
      * return list in reverse order
-     *
-     * @param list
-     * @return list in reverse order
      */
     public static <T> ArrayList<T> reverse(Collection<T> list) {
-        final ArrayList<T> source = new ArrayList<>(list);
-        final ArrayList<T> target = new ArrayList<>(list.size());
-        for (int i = source.size() - 1; i >= 0; i--)
+        var source = new ArrayList<T>(list);
+        var target = new ArrayList<T>(list.size());
+        for (var i = source.size() - 1; i >= 0; i--)
             target.add(source.get(i));
         return target;
     }
 
     /**
      * reverses an array list in place
-     *
-     * @param list
      */
     public static <T> void reverseInPlace(ArrayList<T> list) {
-        final int top = list.size() / 2;
-        final int size1 = list.size() - 1;
-        for (int i = 0; i < top; i++) {
-            T tmp = list.get(i);
+        final var top = list.size() / 2;
+        final var size1 = list.size() - 1;
+        for (var i = 0; i < top; i++) {
+            var tmp = list.get(i);
             list.set(i, list.get(size1 - i));
             list.set(size1 - i, tmp);
         }
@@ -3434,10 +3429,6 @@ public class Basic {
 
     /**
      * gets the rank of a value in a list
-     *
-     * @param list
-     * @param value
-     * @return rank or -1
      */
     public static <T> int getRank(List<T> list, T value) {
         return list.indexOf(value);
@@ -3445,10 +3436,6 @@ public class Basic {
 
     /**
      * gets the rank of a value in an array
-     *
-     * @param list
-     * @param value
-     * @return rank or -1
      */
     public static <T> int getRank(T[] list, T value) {
         for (int i = 0; i < list.length; i++) {

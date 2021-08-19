@@ -41,6 +41,7 @@ import java.io.IOException;
 public class ColorScalePane extends Pane {
     public static final Font font = new Font("Arial", 12);
     private final ColorScalePaneController controller;
+    private final Parent root;
 
     private double mouseX = 0;
     private double mouseY = 0;
@@ -52,7 +53,7 @@ public class ColorScalePane extends Pane {
      */
     public ColorScalePane() {
         final ExtendedFXMLLoader<ColorScalePaneController> extendedFXMLLoader = new ExtendedFXMLLoader<>(this.getClass());
-        final Parent root = extendedFXMLLoader.getRoot();
+        root = extendedFXMLLoader.getRoot();
         controller = extendedFXMLLoader.getController();
         getChildren().add(root);
 
@@ -63,71 +64,70 @@ public class ColorScalePane extends Pane {
 
     /**
      * set the color scale for an ordinal scale
-     *
-     * @param title
-     * @param leftValue
-     * @param rightValue
-     * @param reverse
-     * @param colors
      */
     public void setColorScale(String title, double leftValue, double rightValue, boolean reverse, ObservableList<Color> colors) {
-        setTitleText(title != null ? title + ":" : "");
-        setLeftText(Basic.removeTrailingZerosAfterDot(String.format("%,.2f", leftValue)));
-        setRightText(Basic.removeTrailingZerosAfterDot(String.format("%,.2f", rightValue)));
+        if (colors.size() > 0) {
+            getChildren().setAll(root);
+            setTitleText(title != null ? title + ":" : "");
+            setLeftText(Basic.removeTrailingZerosAfterDot(String.format("%,.2f", leftValue)));
+            setRightText(Basic.removeTrailingZerosAfterDot(String.format("%,.2f", rightValue)));
 
-        final Canvas canvas = controller.getCanvas();
-        final GraphicsContext gc = canvas.getGraphicsContext2D();
-        gc.clearRect(0, 0, canvas.getWidth(), canvas.getHeight());
+            final Canvas canvas = controller.getCanvas();
+            final GraphicsContext gc = canvas.getGraphicsContext2D();
+            gc.clearRect(0, 0, canvas.getWidth(), canvas.getHeight());
 
-        final double factor = colors.size() / canvas.getWidth();
+            final double factor = colors.size() / canvas.getWidth();
 
-        for (int x = 0; x < canvas.getWidth(); x++) {
-            final Color color = colors.get(Math.max(0, Math.min(colors.size() - 1, (int) Math.round(factor * (reverse ? canvas.getWidth() - x : x)))));
-            gc.setFill(color);
-            gc.setStroke(color);
-            gc.fillRect(x, 0, 1, canvas.getHeight());
-            gc.strokeRect(x, 0, 1, canvas.getHeight());
-        }
+            for (int x = 0; x < canvas.getWidth(); x++) {
+                final Color color = colors.get(Math.max(0, Math.min(colors.size() - 1, (int) Math.round(factor * (reverse ? canvas.getWidth() - x : x)))));
+                gc.setFill(color);
+                gc.setStroke(color);
+                gc.fillRect(x, 0, 1, canvas.getHeight());
+                gc.strokeRect(x, 0, 1, canvas.getHeight());
+            }
+        } else
+            getChildren().remove(root);
     }
 
     /**
      * set the color scale for a nominal scale
-     *
-     * @param title
-     * @param colors
      */
     public void setColorScale(String title, ObservableList<Color> colors, double opacityFactor) {
-        setTitleText(title != null ? title + ":" : "");
-        setLeftText("");
-        setRightText("");
+        if (colors.size() > 0) {
+            getChildren().setAll(root);
+            setTitleText(title != null ? title + ":" : "");
+            setLeftText("");
+            setRightText("");
 
-        final Canvas canvas = controller.getCanvas();
-        final GraphicsContext gc = canvas.getGraphicsContext2D();
-        gc.clearRect(0, 0, canvas.getWidth(), canvas.getHeight());
+            final Canvas canvas = controller.getCanvas();
+            final GraphicsContext gc = canvas.getGraphicsContext2D();
+            gc.clearRect(0, 0, canvas.getWidth(), canvas.getHeight());
 
-        final double dx = Math.sqrt(canvas.getHeight() * canvas.getWidth() / colors.size());
-        final int cols = (int) (canvas.getWidth() / dx);
-        int rows = (int) (canvas.getHeight() / dx);
-        final double dy;
-        if (rows * cols < colors.size()) { // need an extra row
-            rows++;
-            dy = ((rows - 1.0) / rows) * dx;
-        } else
-            dy = dx;
+            final double dx = Math.sqrt(canvas.getHeight() * canvas.getWidth() / colors.size());
+            final int cols = (int) (canvas.getWidth() / dx);
+            int rows = (int) (canvas.getHeight() / dx);
+            final double dy;
+            if (rows * cols < colors.size()) { // need an extra row
+                rows++;
+                dy = ((rows - 1.0) / rows) * dx;
+            } else
+                dy = dx;
 
-        int count = 0;
-        doubleLoop:
-        for (int y = 0; y < rows; y++) {
-            for (int x = 0; x < cols; x++) {
-                if (count == colors.size())
-                    break doubleLoop;
-                final Color color = colors.get(count++).deriveColor(1, 1, 1, opacityFactor);
-                gc.setFill(color);
-                gc.setStroke(color);
-                gc.fillRect(x * dx, y * dy, dx, dy);
-                gc.strokeRect(x * dx, y * dy, dx, dy);
+            int count = 0;
+            doubleLoop:
+            for (int y = 0; y < rows; y++) {
+                for (int x = 0; x < cols; x++) {
+                    if (count == colors.size())
+                        break doubleLoop;
+                    final Color color = colors.get(count++).deriveColor(1, 1, 1, opacityFactor);
+                    gc.setFill(color);
+                    gc.setStroke(color);
+                    gc.fillRect(x * dx, y * dy, dx, dy);
+                    gc.strokeRect(x * dx, y * dy, dx, dy);
+                }
             }
-        }
+        } else
+            getChildren().remove(root);
     }
 
     public String getTitleText() {
