@@ -1,7 +1,7 @@
 /*
- * FlowView.java Copyright (C) 2021. Daniel H. Huson
+ *  Copyright (C) 2018. Daniel H. Huson
  *
- * (Some code written by other authors, as named in code.)
+ *  (Some files contain contributions from other authors, who are then mentioned separately.)
  *
  *  This program is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -15,355 +15,193 @@
  *
  *  You should have received a copy of the GNU General Public License
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
- *
  */
 
 package jloda.fx.control;
 
 import javafx.application.Platform;
+import javafx.beans.InvalidationListener;
+import javafx.beans.binding.Bindings;
 import javafx.beans.property.*;
-import javafx.beans.value.ChangeListener;
 import javafx.collections.FXCollections;
-import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
-import javafx.collections.ObservableMap;
 import javafx.geometry.Orientation;
 import javafx.scene.Node;
 import javafx.scene.control.ListCell;
 import javafx.scene.control.ListView;
-import javafx.scene.control.MultipleSelectionModel;
-import javafx.scene.input.KeyCode;
 import javafx.scene.layout.Background;
 import javafx.scene.layout.BackgroundFill;
 import javafx.scene.layout.FlowPane;
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
 
-import java.io.Closeable;
 import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Map;
-import java.util.concurrent.ExecutorService;
+import java.util.ConcurrentModificationException;
+import java.util.List;
+import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
+import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.function.Function;
 
 /**
- * simple implementation of a flow view
- * Uses virtualization
- * Also allows background production of nodes. This is useful if computing a node for an item takes time
- * Daniel Huson, 4.2019
+ * simple virtualized flow view based on list view
+ * @param <T>
+ *     Daniel Huson, 8.2021
  */
-public class FlowView<T> extends Pane implements Closeable {
-    private final ObservableList<T> items = FXCollections.observableArrayList();
-    private final ObservableMap<T, Node> item2node = FXCollections.observableHashMap();
-    private final Function<T, Node> nodeProducer;
-    private final ObservableList<T> nodeProducerQueue = FXCollections.observableArrayList();
+public class FlowView<T> extends Pane {
+	private final ObservableList<T> items= FXCollections.observableArrayList();
+	private final IntegerProperty size=new SimpleIntegerProperty(0);
+	private final Function<T,Double> widthSupplier;
 
-    private final IntegerProperty blockSize = new SimpleIntegerProperty(60);
-    private final DoubleProperty Vgap = new SimpleDoubleProperty(0);
-    private final DoubleProperty Hgap = new SimpleDoubleProperty(0);
+	private final ListView<List<T>> listView=new ListView<>();
+	private final DoubleProperty Vgap = new SimpleDoubleProperty(0);
+	private final DoubleProperty Hgap = new SimpleDoubleProperty(0);
 
-    private final Background emptyBackground = new Background(new BackgroundFill(Color.TRANSPARENT, null, null));
+	private final static Background emptyBackground = new Background(new BackgroundFill(Color.TRANSPARENT, null, null));
 
-    private final ListView<ArrayList<T>> listView;
+	private final Executor executor= Executors.newSingleThreadExecutor();
+	private final AtomicBoolean isCollectingUpdates =new AtomicBoolean(false);
 
-    private final IntegerProperty size = new SimpleIntegerProperty(0);
+	/**
+	 * construct a flow view
+	 * @param nodeSupplier supplies nodes for items on demand
+	 * @param widthSupplier supplies widths for items on demand
+	 */
+	public FlowView(Function<T, Node> nodeSupplier, Function<T,Double> widthSupplier) {
+		this.widthSupplier=widthSupplier;
 
-    private MultipleSelectionModel<T> selectionModel;
-    private final ChangeListener<T> selectedItemListener;
+		size.bind(Bindings.size(items));
 
-    private final BooleanProperty scrollToSelection = new SimpleBooleanProperty(false);
+		listView.prefWidthProperty().bind(widthProperty());
+		listView.prefHeightProperty().bind(heightProperty());
+		listView.setOrientation(Orientation.VERTICAL);
 
-    private final BooleanProperty precomputeSnapshots = new SimpleBooleanProperty(false);
-    private ListChangeListener<T> listChangeListener;
-    private ExecutorService executorService;
+		getChildren().add(listView);
+		listView.setSelectionModel(new EmptyMultipleSelectionModel<>());
+		listView.setFocusTraversable(false);
 
-    /**
-     * constructor
-     *
-     * @param nodeProducer
-     */
-    public FlowView(final Function<T, Node> nodeProducer) {
-        listView = new ListView<>();
-        listView.setOrientation(Orientation.VERTICAL);
-        listView.prefWidthProperty().bind(widthProperty());
-        listView.prefHeightProperty().bind(heightProperty());
-        getChildren().add(listView);
-        listView.setSelectionModel(new EmptyMultipleSelectionModel<>());
-        listView.setOnKeyReleased((e) -> {
-        });
-        listView.setOnKeyPressed((e) -> {
-            if (selectionModel != null) {
-                if (e.getCode() == KeyCode.LEFT) {
-                    if (selectionModel.getSelectedIndex() == -1)
-                        selectionModel.selectLast();
-                    else if (selectionModel.getSelectedIndex() > 0)
-                        selectionModel.selectPrevious();
-                } else if (e.getCode() == KeyCode.RIGHT) {
-                    if (selectionModel.getSelectedIndex() == -1)
-                        selectionModel.selectFirst();
-                    else if (selectionModel.getSelectedIndex() < size())
-                        selectionModel.selectNext();
-                } else if (e.getCode() == KeyCode.UP) {
-                    if (selectionModel.getSelectedIndex() <= getBlockSize())
-                        selectionModel.selectFirst();
-                    else
-                        selectionModel.clearAndSelect(selectionModel.getSelectedIndex() - getBlockSize());
-                } else if (e.getCode() == KeyCode.DOWN) {
-                    if (selectionModel.getSelectedIndex() >= size() - getBlockSize())
-                        selectionModel.selectLast();
-                    else
-                        selectionModel.clearAndSelect(selectionModel.getSelectedIndex() + getBlockSize());
-                }
-                e.consume();
-            }
-        });
-        listView.setFocusTraversable(false);
+		listView.setCellFactory(v -> new ListCell<>() {
+			{
+				setStyle(String.format("-fx-padding: %.1fpx 2px 0px 2px;",0.25*getVgap()));
+			}
+			@Override
+			protected void updateItem(List<T> block, boolean empty) {
+				super.updateItem(block, empty);
+				super.setBackground(emptyBackground);
+				if (empty || block == null) {
+					setText(null);
+					setGraphic(null);
+				} else {
+					final var flowPane = new FlowPane();
+					flowPane.setHgap(getHgap());
+					flowPane.setBackground(emptyBackground);
 
-        listView.setCellFactory(v -> new ListCell<>() {
-            {
-                setStyle(String.format("-fx-padding: %.0fpx %.0fpx %.0fpx %.0fpx;", 0.5 * getVgap(), getHgap(), 0.5 * getVgap(), getHgap()));
-            }
+					flowPane.setOnKeyPressed((e) -> {
+					});
+					flowPane.setOnKeyReleased((e) -> {
+					});
 
-            @Override
-            protected void updateItem(ArrayList<T> block, boolean empty) {
-                super.updateItem(block, empty);
-                super.setBackground(emptyBackground);
-                if (empty || block == null) {
-                    setText(null);
-                    setGraphic(null);
-                } else {
-                    final FlowPane flowPane = new FlowPane();
-                    flowPane.setOnKeyPressed((e) -> {
-                    });
-                    flowPane.setOnKeyReleased((e) -> {
-                    });
+					for (var item : block) {
+						flowPane.getChildren().add(nodeSupplier.apply(item));
+					}
+					flowPane.setUserData(block);
+					setGraphic(flowPane);
+				}
+			}
+		});
 
-                    flowPane.setHgap(getHgap());
-                    flowPane.setVgap(getVgap());
-                    flowPane.setBackground(emptyBackground);
-                    for (T item : block) {
-                        if (!item2node.containsKey(item)) {
-                            final Node snapshot = nodeProducer.apply(item);
-                            item2node.put(item, snapshot);
-                            flowPane.getChildren().add(snapshot);
-                        } else
-                            flowPane.getChildren().add(item2node.get(item));
-                    }
-                    flowPane.setUserData(block);
-                    setGraphic(flowPane);
-                }
-            }
-        });
+		InvalidationListener invalidationListener=  c->{
+			if(isCollectingUpdates.compareAndSet(false,true)) {
+				executor.execute(()->{
+					try {
+						Thread.sleep(200);
+					} catch (InterruptedException ignored) {
+					}
+					finally {
+						update();
+						isCollectingUpdates.set(false);
+					}
+				});
+			}
+		};
+		items.addListener(invalidationListener);
+		widthProperty().addListener(invalidationListener);
+	}
 
-        this.nodeProducer = nodeProducer;
+	public void update() {
+		var row=new ArrayList<T>();
+		var width=5d;
 
-        items.addListener((ListChangeListener<T>) (c) -> {
-            boolean mustRelayoutAll = false;
-            while (c.next()) {
-                if (c.wasPermutated() || c.wasReplaced()) {
-                    mustRelayoutAll = true;
-                } else if (c.wasRemoved()) {
-                    item2node.keySet().removeAll(c.getRemoved());
-                    mustRelayoutAll = true;
-                } else if (c.wasAdded()) {
-                    if (nodeProducer != null)
-                        nodeProducerQueue.addAll(c.getAddedSubList());
-                    if (!mustRelayoutAll)
-                        recomputeBlocks(c.getAddedSubList(), false);
-                }
-            }
-            if (mustRelayoutAll) { // todo: need to improve this
-                listView.getItems().clear();
-                recomputeBlocks(items, true);
-            }
-            size.set(items.size());
-        });
+		Platform.runLater(()-> listView.getItems().clear());
 
-        blockSize.addListener((c, o, n) -> recomputeBlocks(items, true));
+		try {
+			for (T item : items) {
+				var itemWidth = widthSupplier.apply(item);
+				if(itemWidth==-1.0) { // item to be placed on line of its own
+					if (row.size() > 0) {
+						var finalRow = row;
+						Platform.runLater(() -> listView.getItems().add(finalRow));
+					}
+						Platform.runLater(() -> listView.getItems().add(List.of(item)));
+						row = new ArrayList<>();
+						width = 5d;
+				}
+				else {
+					if (row.size() > 0 && width + getHgap() + 5 + itemWidth >= listView.getWidth() - 20) {
+						var finalRow = row;
+						Platform.runLater(() -> listView.getItems().add(finalRow));
+						row = new ArrayList<>();
+						width = 5d;
+					}
+					row.add(item);
+					width += getHgap() + 5 + itemWidth;
+				}
+			}
+			if (row.size() > 0) {
+				var finalRow = row;
+				Platform.runLater(() -> listView.getItems().add(finalRow));
+			}
+		}
+		catch(ConcurrentModificationException ignored) {}
+	}
 
-        precomputeSnapshots.addListener((c, o, n) -> precomputeSnapshots(n));
+	public int size() {
+		return size.get();
+	}
 
-        selectedItemListener = (c, o, n) -> {
-            if (n != null && isScrollToSelection()) { // doesn't work very well
-                final Node node = item2node.get(n);
-                if (node != null) {
-                    final Node subFlowPaneContainingNode = node.getParent();
-                    if (subFlowPaneContainingNode == null)
-                        System.err.println("parentOfNode==null");
+	public ReadOnlyIntegerProperty sizeProperty() {
+		return size;
+	}
 
-                    if (subFlowPaneContainingNode != null && subFlowPaneContainingNode.getUserData() instanceof ArrayList) {
-                        final ArrayList<T> block = (ArrayList<T>) subFlowPaneContainingNode.getUserData();
-                        listView.scrollTo(block);
-                    }
-                }
-            }
-        };
+	public ObservableList<T> getItems() {
+		return items;
+	}
 
-        setSelectionModel(new AnotherMultipleSelectionModel<>());
-    }
+	public double getVgap() {
+		return Vgap.get();
+	}
 
-    /**
-     * recompute the blocks
-     */
-    private void recomputeBlocks(Collection<? extends T> items, boolean clear) {
-        if (clear) {
-            listView.getItems().clear();
-        }
+	public DoubleProperty vgapProperty() {
+		return Vgap;
+	}
 
-        ArrayList<T> block = new ArrayList<>(getBlockSize());
-        for (T item : items) {
-            block.add(item);
-            if (block.size() == getBlockSize()) {
-                listView.getItems().add(block);
-                block = new ArrayList<>(getBlockSize());
-            }
-        }
-        if (block.size() > 0)
-            listView.getItems().add(block);
-    }
+	public void setVgap(double vgap) {
+		this.Vgap.set(vgap);
+	}
 
-    private void precomputeSnapshots(boolean precompute) {
-        if (precompute) {
-            if (executorService == null) {
-                executorService = Executors.newSingleThreadExecutor();
-                listChangeListener = (e) -> {
-                    while (e.next()) {
-                        if (e.wasAdded()) {
-                            for (T item : e.getAddedSubList()) {
-                                if (!executorService.isShutdown()) {
-                                    executorService.submit(() -> {
-                                        try {
-                                            Thread.sleep(50);
-                                        } catch (InterruptedException ex) {
-                                            return; // if tab is closed, this is where we exit the loop
-                                        }
-                                        if (isPrecomputeSnapshots()) {
-                                            Platform.runLater(() ->
-                                            {
-                                                synchronized (item2node) {
-                                                    if (!item2node.containsKey(item)) {
-                                                        final Node snapshot = nodeProducer.apply(item);
-                                                        item2node.put(item, snapshot);
-                                                    }
-                                                }
-                                            });
-                                        }
-                                    });
-                                }
-                            }
-                        }
-                    }
-                };
-            }
-            nodeProducerQueue.addListener(listChangeListener);
-        }
-    }
+	public double getHgap() {
+		return Hgap.get();
+	}
 
-    /**
-     * close the flow view. Shuts down the background thread, if used
-     */
-    public void close() {
-        if (executorService != null)
-            executorService.shutdownNow();
-        setSelectionModel(null);
-    }
+	public DoubleProperty hgapProperty() {
+		return Hgap;
+	}
 
-    public ObservableList<T> getItems() {
-        return items;
-    }
+	public void setHgap(double hgap) {
+		this.Hgap.set(hgap);
+	}
 
-    public Map<T, Node> getItemNodeMap() {
-        return new ReadOnlyMapWrapper<>(item2node);
-    }
-
-    public int getBlockSize() {
-        return blockSize.get();
-    }
-
-    public IntegerProperty blockSizeProperty() {
-        return blockSize;
-    }
-
-    public void setBlockSize(int blockSize) {
-        this.blockSize.set(blockSize);
-    }
-
-    public double getVgap() {
-        return Vgap.get();
-    }
-
-    public DoubleProperty vgapProperty() {
-        return Vgap;
-    }
-
-    public void setVgap(double vgap) {
-        this.Vgap.set(vgap);
-    }
-
-    public double getHgap() {
-        return Hgap.get();
-    }
-
-    public DoubleProperty hgapProperty() {
-        return Hgap;
-    }
-
-    public void setHgap(double hgap) {
-        this.Hgap.set(hgap);
-    }
-
-    public Node getNode(T item) {
-        return item2node.get(item);
-    }
-
-    public int size() {
-        return size.get();
-    }
-
-    public ReadOnlyIntegerProperty sizeProperty() {
-        return size;
-    }
-
-    public MultipleSelectionModel<T> getSelectionModel() {
-        return selectionModel;
-    }
-
-    public void setSelectionModel(MultipleSelectionModel<T> selectionModel) {
-        if (this.selectionModel != null) {
-            this.selectionModel.selectedItemProperty().removeListener(selectedItemListener);
-        }
-        this.selectionModel = selectionModel;
-        if (selectionModel != null)
-            this.selectionModel.selectedItemProperty().addListener(selectedItemListener);
-    }
-
-    public boolean isScrollToSelection() {
-        return scrollToSelection.get();
-    }
-
-    /**
-     * scroll to selection? Doesn't work well when block size is so big that flow pane wraps around
-     *
-     * @return
-     */
-    public BooleanProperty scrollToSelectionProperty() {
-        return scrollToSelection;
-    }
-
-    public void setScrollToSelection(boolean scrollToSelection) {
-        this.scrollToSelection.set(scrollToSelection);
-    }
-
-    public boolean isPrecomputeSnapshots() {
-        return precomputeSnapshots.get();
-    }
-
-    public BooleanProperty precomputeSnapshotsProperty() {
-        return precomputeSnapshots;
-    }
-
-    public void setPrecomputeSnapshots(boolean precomputeSnapshots) {
-        this.precomputeSnapshots.set(precomputeSnapshots);
-    }
+	public ListView<List<T>> getListView() {
+		return listView;
+	}
 }

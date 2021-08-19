@@ -20,6 +20,7 @@
 package jloda.graph;
 
 import jloda.util.Basic;
+import jloda.util.INamed;
 import jloda.util.IteratorAdapter;
 import jloda.util.IteratorUtils;
 
@@ -38,12 +39,14 @@ import java.util.stream.StreamSupport;
  * Daniel Huson, 2002
  * <p/>
  */
-public class Graph extends GraphBase {
+public class Graph extends GraphBase implements INamed {
     private Node firstNode;
     private Node lastNode;
     private int numberNodes;
     private int numberOfNodesThatAreHidden;
     private int maxNodeId; // max id assigned to any node
+
+    private String name;
 
     private Edge firstEdge;
     protected Edge lastEdge;
@@ -74,7 +77,6 @@ public class Graph extends GraphBase {
     private final List<WeakReference<EdgeArray<?>>> edgeArrays = new LinkedList<>();
     // keep track of edge sets
     private final List<WeakReference<EdgeSet>> edgeSets = new LinkedList<>();
-    private String name;
 
     /**
      * Constructs a new empty graph.
@@ -1848,15 +1850,16 @@ public class Graph extends GraphBase {
      * @return the list of all sub graphs
      */
     public ArrayList<Graph> extractAllConnectedComponents(NodeArray<Node> src2tar) {
-        var subGraphs = new ArrayList<Graph>();
         var component = newNodeIntArray();
+
         var count = computeConnectedComponents(component);
-        if (count == 1)
-            subGraphs.add(this);
-        else {
-            var nodes = new ArrayList<Set<Node>>();
+        var subGraphs = new ArrayList<Graph>(count);
+        var nodes = new ArrayList<Set<Node>>(count);
+
             for (int i = 0; i < count; i++) {
-                subGraphs.add(new Graph());
+                var subGraph=new Graph();
+                subGraph.setName(String.valueOf(i+1));
+                subGraphs.add(subGraph);
                 nodes.add(new HashSet<>());
             }
             for(var v:nodes()) {
@@ -1865,7 +1868,6 @@ public class Graph extends GraphBase {
             for(int c=0;c<count;c++){
                 src2tar.putAll(extract(nodes.get(c), null, subGraphs.get(c)));
             }
-        }
         return subGraphs;
     }
 
@@ -1920,6 +1922,8 @@ public class Graph extends GraphBase {
         deleteNode(s);
         return t;
     }
+
+
 }
 
 // EOF

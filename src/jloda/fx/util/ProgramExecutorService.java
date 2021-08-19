@@ -35,7 +35,7 @@ public class ProgramExecutorService {
     private static int numberOfCoresToUse = ProgramProperties.get("NumberOfCores", 8); //  number of threads to use by a parallel algorithm
 
     /**
-     * get the program wide executor service
+     * get the program-wide executor service
      *
      * @return executor service
      */
