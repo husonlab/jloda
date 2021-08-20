@@ -21,9 +21,6 @@
 package jloda.fx.control;
 
 import javafx.scene.control.TextField;
-import javafx.scene.layout.Background;
-import javafx.scene.layout.BackgroundFill;
-import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 
 /**
@@ -41,13 +38,16 @@ public class CopyableLabel extends TextField {
 
         this.setEditable(false);
         this.setFocusTraversable(false);
-        this.setBackground(new Background(new BackgroundFill(Color.TRANSPARENT, null, null)));
+        setStyle("-fx-background-color: transparent;");
+
+        this.focusedProperty().addListener((v, o, n) -> {
+            if (!n)
+                this.deselect();
+        });
     }
 
     /**
      * constructor
-     *
-     * @param text
      */
     public CopyableLabel(String text) {
         this();

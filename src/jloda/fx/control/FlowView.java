@@ -68,7 +68,7 @@ public class FlowView<T> extends Pane {
 	 * @param widthSupplier supplies widths for items on demand
 	 */
 	public FlowView(Function<T, Node> nodeSupplier, Function<T,Double> widthSupplier) {
-		this.widthSupplier=widthSupplier;
+		this.widthSupplier = widthSupplier;
 
 		size.bind(Bindings.size(items));
 
@@ -76,14 +76,17 @@ public class FlowView<T> extends Pane {
 		listView.prefHeightProperty().bind(heightProperty());
 		listView.setOrientation(Orientation.VERTICAL);
 
+		listView.setStyle("-fx-background-color: transparent;");
+
 		getChildren().add(listView);
 		listView.setSelectionModel(new EmptyMultipleSelectionModel<>());
 		listView.setFocusTraversable(false);
 
 		listView.setCellFactory(v -> new ListCell<>() {
 			{
-				setStyle(String.format("-fx-padding: %.1fpx 2px 0px 2px;",0.25*getVgap()));
+				setStyle(String.format("-fx-padding: %.1fpx 2px 0px 2px; -fx-background-color: transparent;", 0.25 * getVgap()));
 			}
+
 			@Override
 			protected void updateItem(List<T> block, boolean empty) {
 				super.updateItem(block, empty);
