@@ -46,7 +46,7 @@ public class NodeIntArray extends NodeArray<Integer> {
 
 
     /**
-     * Get the entry for node v or the default object
+     * Get the entry for node v or 0
      *
      * @param v Node
      * @return value or 0
@@ -58,6 +58,42 @@ public class NodeIntArray extends NodeArray<Integer> {
 
     public void set(Node v, int value) {
         put(v, value);
+    }
+
+    /**
+     * increase the count by one.
+     *
+     * @param v
+     */
+    public void increment(Node v) {
+        set(v, getInt(v) + 1);
+    }
+
+    /**
+     * increase the count by the given value
+     *
+     * @param v
+     */
+    public void increment(Node v, int value) {
+        set(v, getInt(v) + value);
+    }
+
+    /**
+     * decrease the count by one.
+     *
+     * @param v
+     */
+    public void decrement(Node v) {
+        set(v, getInt(v) - 1);
+    }
+
+    /**
+     * decrease the count by the given value
+     *
+     * @param v
+     */
+    public void decrement(Node v, int value) {
+        set(v, getInt(v) - value);
     }
 }
 

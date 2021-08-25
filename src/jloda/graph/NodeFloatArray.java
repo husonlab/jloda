@@ -36,8 +36,6 @@ public class NodeFloatArray extends NodeArray<Float> {
 
     /**
      * Copy constructor.
-     *
-     * @param src NodeArray
      */
     public NodeFloatArray(NodeArray<Float> src) {
         super(src);
