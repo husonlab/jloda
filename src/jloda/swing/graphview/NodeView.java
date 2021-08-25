@@ -55,7 +55,7 @@ final public class NodeView extends ViewBase implements Cloneable {
     public static final byte TRIANGLE_NODE = 3;
     public static final byte DIAMOND_NODE = 4;
 
-    // do not changer order of first 5 items for backward compatiblity
+    // do not change order of first 5 items for backward compatiblity
 
 
     private NodeImage image = null;
