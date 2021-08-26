@@ -213,8 +213,8 @@ public class PhyloGraph extends Graph {
             node2taxa.put(v, list);
         } else if (!list.contains(taxId))
             list.add(taxId);
-        else
-            System.err.println("Already contained");
+        //else
+        //    System.err.println("Already contained");
     }
 
     /**
