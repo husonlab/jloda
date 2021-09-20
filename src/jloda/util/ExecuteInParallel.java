@@ -20,6 +20,7 @@
 package jloda.util;
 
 import java.util.Collection;
+import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
@@ -40,7 +41,8 @@ public class ExecuteInParallel {
      * run a collection of jobs and collect the results
      */
     public static <S, T> void apply(Collection<S> jobs, FunctionWithException<S, Collection<T>> computation, Collection<T> results, int numberOfCores, ProgressListener progress) throws Exception {
-        final Single<Exception> exception = new Single<>();
+		final Single<Exception> exception = new Single<>();
+		final ConcurrentLinkedQueue<T> queue = new ConcurrentLinkedQueue<>();
 
         final ExecutorService service = Executors.newFixedThreadPool(numberOfCores);
         try {
@@ -49,11 +51,8 @@ public class ExecuteInParallel {
             jobs.forEach(job -> service.submit(() -> {
                 if (exception.isNull()) {
                     try {
-                        final Collection<T> result = computation.apply(job);
-                        synchronized (service) {
-                            results.addAll(result);
-                        }
-                        progress.incrementProgress();
+						queue.addAll(computation.apply(job));
+						progress.incrementProgress();
                     } catch (Exception e) {
                         exception.setIfCurrentValueIsNull(e);
                     }
@@ -68,9 +67,11 @@ public class ExecuteInParallel {
         }
         if (exception.isNotNull())
             throw exception.get();
+		results.addAll(queue);
     }
 
-    /**
+
+	/**
      * run a collection of jobs
      */
     public static <S, T> void apply(Collection<S> jobs, ConsumerWithException<S> computation, int numberOfCores) throws Exception {

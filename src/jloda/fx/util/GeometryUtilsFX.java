@@ -109,25 +109,36 @@ public class GeometryUtilsFX {
         return DEG_TO_RAD_FACTOR * deg;
     }
 
-    /**
-     * Rotates a point by angle alpha around a second point
-     */
-    public static Point2D rotateAbout(Point2D src, double alpha, Point2D anchor) {
-        Point2D tar = new Point2D(src.getX() - anchor.getX(), src.getY() - anchor.getY());
-        tar = rotate(tar, alpha);
-        tar = new Point2D(tar.getX() + anchor.getX(), tar.getY() + anchor.getY());
-        return tar;
-    }
+	/**
+	 * Rotates a point by angle alpha around a second point
+	 */
+	public static Point2D rotateAbout(Point2D src, double alpha, Point2D anchor) {
+		Point2D tar = new Point2D(src.getX() - anchor.getX(), src.getY() - anchor.getY());
+		tar = rotate(tar, alpha);
+		tar = new Point2D(tar.getX() + anchor.getX(), tar.getY() + anchor.getY());
+		return tar;
+	}
 
-    /**
-     * Translate a point in the direction specified by an angle.
-     */
-    public static Point2D translateByAngle(Point2D apt, double alpha, double dist) {
-        double dx = dist * Math.cos(DEG_TO_RAD_FACTOR * alpha);
-        double dy = dist * Math.sin(DEG_TO_RAD_FACTOR * alpha);
-        if (Math.abs(dx) < 0.000001)
-            dx = 0;
-        if (Math.abs(dy) < 0.000001)
+	/**
+	 * Rotates a point by angle alpha around a second point
+	 */
+	public static Point2D rotateAbout(double srcX, double srcY, double alpha, double anchorX, double anchorY) {
+		Point2D tar = new Point2D(srcX - anchorX, srcY - anchorY);
+		tar = rotate(tar, alpha);
+		tar = new Point2D(tar.getX() + anchorX, tar.getY() + anchorY);
+		return tar;
+	}
+
+
+	/**
+	 * Translate a point in the direction specified by an angle.
+	 */
+	public static Point2D translateByAngle(Point2D apt, double alpha, double dist) {
+		double dx = dist * Math.cos(DEG_TO_RAD_FACTOR * alpha);
+		double dy = dist * Math.sin(DEG_TO_RAD_FACTOR * alpha);
+		if (Math.abs(dx) < 0.000001)
+			dx = 0;
+		if (Math.abs(dy) < 0.000001)
             dy = 0;
         return new Point2D(apt.getX() + dx, apt.getY() + dy);
     }

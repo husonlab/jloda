@@ -37,7 +37,7 @@ public class AllShortestPaths {
     private final double[][] distances;
 
     public AllShortestPaths(Graph graph) {
-        this(graph, null);
+        this(graph, e -> 1.0);
     }
 
     public AllShortestPaths(Graph graph, Function<Edge, ? extends Number> weights) {
@@ -67,7 +67,7 @@ public class AllShortestPaths {
                     var e = nodes[s].getCommonEdge(nodes[t]);
                     if (e != null) {
                         path[s][t] = e;
-                        distances[s][t] = weights != null ? weights.apply(e).doubleValue() : 1.0;
+                        distances[s][t] = weights.apply(e).doubleValue();
                     }
                 }
             }
