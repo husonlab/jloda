@@ -45,29 +45,30 @@ import java.util.function.Function;
 
 /**
  * simple virtualized flow view based on list view
- * @param <T>
- *     Daniel Huson, 8.2021
+ *
+ * @param <T> Daniel Huson, 8.2021
  */
 public class FlowView<T> extends Pane {
-	private final ObservableList<T> items= FXCollections.observableArrayList();
-	private final IntegerProperty size=new SimpleIntegerProperty(0);
-	private final Function<T,Double> widthSupplier;
+	private final ObservableList<T> items = FXCollections.observableArrayList();
+	private final IntegerProperty size = new SimpleIntegerProperty(0);
+	private final Function<T, Double> widthSupplier;
 
-	private final ListView<List<T>> listView=new ListView<>();
+	private final ListView<List<T>> listView = new ListView<>();
 	private final DoubleProperty Vgap = new SimpleDoubleProperty(0);
 	private final DoubleProperty Hgap = new SimpleDoubleProperty(0);
 
 	private final static Background emptyBackground = new Background(new BackgroundFill(Color.TRANSPARENT, null, null));
 
-	private final Executor executor= Executors.newSingleThreadExecutor();
-	private final AtomicBoolean isCollectingUpdates =new AtomicBoolean(false);
+	private final Executor executor = Executors.newSingleThreadExecutor();
+	private final AtomicBoolean isCollectingUpdates = new AtomicBoolean(false);
 
 	/**
 	 * construct a flow view
-	 * @param nodeSupplier supplies nodes for items on demand
+	 *
+	 * @param nodeSupplier  supplies nodes for items on demand
 	 * @param widthSupplier supplies widths for items on demand
 	 */
-	public FlowView(Function<T, Node> nodeSupplier, Function<T,Double> widthSupplier) {
+	public FlowView(Function<T, Node> nodeSupplier, Function<T, Double> widthSupplier) {
 		this.widthSupplier = widthSupplier;
 
 		size.bind(Bindings.size(items));
@@ -113,14 +114,13 @@ public class FlowView<T> extends Pane {
 			}
 		});
 
-		InvalidationListener invalidationListener=  c->{
-			if(isCollectingUpdates.compareAndSet(false,true)) {
-				executor.execute(()->{
+		InvalidationListener invalidationListener = c -> {
+			if (isCollectingUpdates.compareAndSet(false, true)) {
+				executor.execute(() -> {
 					try {
 						Thread.sleep(200);
 					} catch (InterruptedException ignored) {
-					}
-					finally {
+					} finally {
 						update();
 						isCollectingUpdates.set(false);
 					}
@@ -131,28 +131,27 @@ public class FlowView<T> extends Pane {
 		widthProperty().addListener(invalidationListener);
 	}
 
-	public void update() {
-		var row=new ArrayList<T>();
-		var width=5d;
+	public synchronized void update() {
+		var row = new ArrayList<T>();
+		var width = 5d;
 
-		Platform.runLater(()-> listView.getItems().clear());
+		Platform.runLater(() -> listView.getItems().clear());
 
 		try {
 			for (T item : items) {
 				var itemWidth = widthSupplier.apply(item);
-				if(itemWidth==-1.0) { // item to be placed on line of its own
+				if (itemWidth == -1.0) { // item to be placed on line of its own
 					if (row.size() > 0) {
-						var finalRow = row;
-						Platform.runLater(() -> listView.getItems().add(finalRow));
-					}
-						Platform.runLater(() -> listView.getItems().add(List.of(item)));
+						var rowRef = row;
+						Platform.runLater(() -> listView.getItems().add(rowRef));
 						row = new ArrayList<>();
-						width = 5d;
-				}
-				else {
+					}
+					Platform.runLater(() -> listView.getItems().add(List.of(item)));
+					width = 5d;
+				} else {
 					if (row.size() > 0 && width + getHgap() + 5 + itemWidth >= listView.getWidth() - 20) {
-						var finalRow = row;
-						Platform.runLater(() -> listView.getItems().add(finalRow));
+						var rowRef = row;
+						Platform.runLater(() -> listView.getItems().add(rowRef));
 						row = new ArrayList<>();
 						width = 5d;
 					}
@@ -161,11 +160,11 @@ public class FlowView<T> extends Pane {
 				}
 			}
 			if (row.size() > 0) {
-				var finalRow = row;
-				Platform.runLater(() -> listView.getItems().add(finalRow));
+				var rowRef = row;
+				Platform.runLater(() -> listView.getItems().add(rowRef));
 			}
+		} catch (ConcurrentModificationException ignored) {
 		}
-		catch(ConcurrentModificationException ignored) {}
 	}
 
 	public int size() {
