@@ -146,7 +146,10 @@ public class FlowView<T> extends Pane {
 						Platform.runLater(() -> listView.getItems().add(rowRef));
 						row = new ArrayList<>();
 					}
-					Platform.runLater(() -> listView.getItems().add(List.of(item)));
+					Platform.runLater(() -> {
+						if (item != null)
+							listView.getItems().add(List.of(item));
+					});
 					width = 5d;
 				} else {
 					if (row.size() > 0 && width + getHgap() + 5 + itemWidth >= listView.getWidth() - 20) {
