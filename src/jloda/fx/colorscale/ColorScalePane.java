@@ -92,7 +92,7 @@ public class ColorScalePane extends Pane {
     /**
      * set the color scale for a nominal scale
      */
-    public void setColorScale(String title, ObservableList<Color> colors, double opacityFactor) {
+    public void setColorScale(String title, ObservableList<Color> colors, double opacity) {
         if (colors.size() > 0) {
             getChildren().setAll(root);
             setTitleText(title != null ? title + ":" : "");
@@ -119,7 +119,7 @@ public class ColorScalePane extends Pane {
                 for (int x = 0; x < cols; x++) {
                     if (count == colors.size())
                         break doubleLoop;
-                    final Color color = colors.get(count++).deriveColor(1, 1, 1, opacityFactor);
+                    final Color color = colors.get(count++).deriveColor(1, 1, 1, opacity);
                     gc.setFill(color);
                     gc.setStroke(color);
                     gc.fillRect(x * dx, y * dy, dx, dy);

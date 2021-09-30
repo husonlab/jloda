@@ -82,19 +82,10 @@ public class PhyloSplitsGraph extends PhyloGraph {
 
         super.copy(src, oldNode2NewNode, oldEdge2NewEdge);
 
-        for (Node v : src.nodes()) {
-            final Node w = (oldNode2NewNode.get(v));
-            node2taxa.put(w, src.node2taxa.get(v));
-        }
-        for (Edge e : src.edges()) {
-            final Edge f = (oldEdge2NewEdge.get(e));
+        for (var e : src.edges()) {
+            var f = (oldEdge2NewEdge.get(e));
             setAngle(f, src.getAngle(e));
             setSplit(f, src.getSplit(e));
-        }
-        for (int i = 0; i < src.taxon2node.size(); i++) {
-            Node v = src.getTaxon2Node(i + 1);
-            if (v != null)
-                addTaxon(oldNode2NewNode.get(v), i + 1);
         }
 
         setName(src.getName());
@@ -367,8 +358,8 @@ public class PhyloSplitsGraph extends PhyloGraph {
      * @return cyclic ordering of taxa
      */
     public int[] getCycle() {
-        int[] cycle = new int[taxon2node.size() + 1];
-        for (int t = 1; t <= taxon2node.size(); t++)
+        int[] cycle = new int[getNumberOfTaxa() + 1];
+        for (int t = 1; t <= getNumberOfTaxa(); t++)
             cycle[getTaxon2Cycle(t)] = t;
         return cycle;
     }

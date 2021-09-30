@@ -1190,19 +1190,12 @@ public class PhyloTree extends PhyloSplitsGraph {
 
     /**
      * recursively compute a cycle
-     *
-     * @param v
-     * @param e
-     * @param pos
      */
     private int computeCycleRec(Node v, Edge e, int pos) {
-        final List<Integer> taxa = node2taxa.get(v);
-        if (taxa != null) {
-            for (Integer t : taxa) {
-                setTaxon2Cycle(t, ++pos);
-            }
+        for (Integer t : getTaxa(v)) {
+            setTaxon2Cycle(t, ++pos);
         }
-        for (Edge f = v.getFirstAdjacentEdge(); f != null; f = v.getNextAdjacentEdge(f)) {
+        for (var f : v.adjacentEdges()) {
             if (f != e && PhyloTreeUtils.okToDescendDownThisEdge(this, f, v))
                 pos = computeCycleRec(f.getOpposite(v), f, pos);
         }

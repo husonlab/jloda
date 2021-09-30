@@ -121,8 +121,8 @@ public class SplittableTabPane extends Pane {
                         if (tab instanceof Closeable) {
                             try {
                                 ((Closeable) tab).close();
-                            } catch (IOException e) {
-                                Basic.caught(e);
+                            } catch (IOException ex) {
+                                Basic.caught(ex);
                             }
                         }
                     }
@@ -132,7 +132,7 @@ public class SplittableTabPane extends Pane {
             size.set(tabs.size());
         });
 
-        rootSplitPane.getItems().addListener((InvalidationListener) (e) -> {
+        rootSplitPane.getItems().addListener((InvalidationListener) e -> {
             if (rootSplitPane.getItems().size() == 0) {
                 Platform.runLater(() -> {
                     TabPane target = createTabPane();
@@ -222,6 +222,49 @@ public class SplittableTabPane extends Pane {
         }
     }
 
+
+    /**
+     * show a tab to the right of a reference tab
+     *
+     * @param reference reference tab
+     * @param tab       the tab to show on the right
+     */
+    public void showRight(Tab reference, Tab tab) {
+        var refTabPane = reference.getTabPane();
+        var toShowTabPane = tab.getTabPane();
+        if (refTabPane == toShowTabPane) {
+            split(Orientation.HORIZONTAL, tab, refTabPane);
+        }
+    }
+
+    /**
+     * show a tab the below of a reference tab
+     *
+     * @param reference reference tab
+     * @param tab       the tab to show below
+     */
+    public void showBelow(Tab reference, Tab tab) {
+        var refTabPane = reference.getTabPane();
+        var toShowTabPane = tab.getTabPane();
+        if (refTabPane == toShowTabPane) {
+            split(Orientation.VERTICAL, tab, refTabPane);
+        }
+    }
+
+    public Tab findTab(String name) {
+        for (var tab : getTabs()) {
+            if (tab.getText().equals(name))
+                return tab;
+            if (tab.getGraphic() instanceof Label) {
+                var text = ((Label) tab.getGraphic()).getText();
+                if (text.equals(name))
+                    return tab;
+            }
+        }
+        return null;
+    }
+
+
     private void moveTab(Tab tab, TabPane oldTabPane, TabPane newTabPane) {
         moveTab(tab, oldTabPane, newTabPane, -1);
     }
@@ -231,7 +274,7 @@ public class SplittableTabPane extends Pane {
      *
      * @param tab
      * @param oldTabPane if not null, removed from here
-     * @param newTabPane if not null, added to here
+     * @param newTabPane if not null, added to here, otherwise removed
      * @param index      index to add at, or -1
      */
     private void moveTab(Tab tab, TabPane oldTabPane, TabPane newTabPane, int index) {
@@ -297,7 +340,6 @@ public class SplittableTabPane extends Pane {
             tabPane2ParentSplitPane.put(newTabPane, parentSplitPane);
             moveTab(tab, tabPane, newTabPane);
         } else { // change of orientation, create new split pane
-
             final SplitPane splitPane = new SplitPane();
             splitPane.setOrientation(orientation);
             final IntegerProperty splitPaneSize = new SimpleIntegerProperty();
@@ -414,7 +456,7 @@ public class SplittableTabPane extends Pane {
 
         if (tab.isClosable()) {
             final MenuItem close = new MenuItem("Close");
-            close.setOnAction((e) -> {
+            close.setOnAction(e -> {
                 if (tab.isClosable())
                     tabs.remove(tab);
             });
@@ -422,7 +464,7 @@ public class SplittableTabPane extends Pane {
             menuItems.add(close);
 
             final MenuItem closeOthers = new MenuItem("Close Others");
-            closeOthers.setOnAction((e) -> {
+            closeOthers.setOnAction(e -> {
                 for (Tab aTab : tabPane.getTabs()) {
                     if (aTab != tab && aTab.isClosable())
                         Platform.runLater(() -> tabs.remove(aTab));
@@ -432,7 +474,7 @@ public class SplittableTabPane extends Pane {
             menuItems.add(closeOthers);
 
             final MenuItem closeAll = new MenuItem("Close All");
-            closeAll.setOnAction((e) -> {
+            closeAll.setOnAction(e -> {
                 for (Tab aTab : tabPane.getTabs()) {
                     if (aTab.isClosable())
                         Platform.runLater(() -> tabs.remove(aTab));
@@ -442,17 +484,20 @@ public class SplittableTabPane extends Pane {
             menuItems.add(closeAll);
 
             tab.setClosable(true);
-            tab.setOnCloseRequest((e) -> close.getOnAction().handle(null));
+            tab.setOnCloseRequest(e -> close.getOnAction().handle(null));
             menuItems.add(new SeparatorMenuItem());
-        }
+        } else
+            tab.setOnCloseRequest(e -> {
+            });
+
 
         if (isAllowUndock()) {
             final MenuItem redock = new MenuItem("Redock");
-            redock.setOnAction((e) -> moveTab(tab, null, getFocusedTabPane()));
+            redock.setOnAction(e -> moveTab(tab, null, getFocusedTabPane()));
             // we don't show the redock menu item because the undocked window doesn't have a tab
 
             final MenuItem undock = new MenuItem("Undock");
-            undock.setOnAction((e) -> {
+            undock.setOnAction(e -> {
                 final double x = tabPane.localToScreen(0, 0).getX();
                 final double y = tabPane.localToScreen(0, 0).getY();
                 moveTab(tab, tabPane, null);
@@ -471,26 +516,26 @@ public class SplittableTabPane extends Pane {
         }
 
         final MenuItem splitVertically = new MenuItem("Split Vertically");
-        splitVertically.setOnAction((e) -> split(Orientation.HORIZONTAL, tab, tabPane));
+        splitVertically.setOnAction(e -> split(Orientation.HORIZONTAL, tab, tabPane));
         splitVertically.disableProperty().bind(Bindings.size(tabPane.getTabs()).lessThan(2));
         menuItems.add(splitVertically);
 
         final MenuItem splitHorizontally = new MenuItem("Split Horizontally");
-        splitHorizontally.setOnAction((e) -> split(Orientation.VERTICAL, tab, tabPane));
+        splitHorizontally.setOnAction(e -> split(Orientation.VERTICAL, tab, tabPane));
         splitHorizontally.disableProperty().bind(Bindings.size(tabPane.getTabs()).lessThan(2));
         menuItems.add(splitHorizontally);
 
         menuItems.add(new SeparatorMenuItem());
 
         final MenuItem moveToOpposite = new MenuItem("Move to Opposite");
-        moveToOpposite.setOnAction((e) -> moveToOpposite(tab, tab.getTabPane()));
+        moveToOpposite.setOnAction(e -> moveToOpposite(tab, tab.getTabPane()));
         moveToOpposite.disableProperty().bind(Bindings.size(tabPane.getTabs()).lessThan(1));
         menuItems.add(moveToOpposite);
 
         menuItems.add(new SeparatorMenuItem());
 
         final MenuItem changeSplitOrientation = new MenuItem("Change Split Orientation");
-        changeSplitOrientation.setOnAction((e) -> splitPane.setOrientation(splitPane.getOrientation() == Orientation.VERTICAL ? Orientation.HORIZONTAL : Orientation.VERTICAL));
+        changeSplitOrientation.setOnAction(e -> splitPane.setOrientation(splitPane.getOrientation() == Orientation.VERTICAL ? Orientation.HORIZONTAL : Orientation.VERTICAL));
         menuItems.add(changeSplitOrientation);
 
         final ArrayList<MenuItem> existingItems;
@@ -513,9 +558,6 @@ public class SplittableTabPane extends Pane {
 
     /**
      * find the first occurrence of a menu item with the given text
-     *
-     * @param text
-     * @param menuItems
      * @return index or -1
      */
     private static int findMenuItem(String text, Collection<MenuItem> menuItems) {

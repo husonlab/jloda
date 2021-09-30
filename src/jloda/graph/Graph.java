@@ -114,7 +114,7 @@ public class Graph extends GraphBase implements INamed {
      * @return
      */
     public Node newNode(Object info, int recycledId) {
-        final Node v = new Node(this, info);
+        var v = new Node(this, info);
         v.setId(recycledId);
         maxNodeId--; // count back down
         return v;
@@ -133,8 +133,8 @@ public class Graph extends GraphBase implements INamed {
     /**
      * sets the hidden state of a node. Hidden nodes are not returned by node iterators
      *
-     * @param v
-     * @param hide
+     * @param v    node
+     * @param hide hidden state
      * @return true, if hidden state changed
      */
     public boolean setHidden(Node v, boolean hide) {
@@ -156,8 +156,6 @@ public class Graph extends GraphBase implements INamed {
 
     /**
      * returns hidden state of a node
-     *
-     * @param v
      * @return true, if hidden
      */
     public boolean isHidden(Node v) {
@@ -168,8 +166,8 @@ public class Graph extends GraphBase implements INamed {
     /**
      * sets the hidden state of a edge. Hidden edges are not returned by edge iterators
      *
-     * @param e
-     * @param hide
+     * @param e edge
+     * @param hide hidden state
      * @return true, if hidden state changed
      */
     public boolean setHidden(Edge e, boolean hide) {
@@ -192,7 +190,7 @@ public class Graph extends GraphBase implements INamed {
     /**
      * returns hidden state of a edge
      *
-     * @param e
+     * @param e edge
      * @return true, if hidden
      */
     public boolean isHidden(Edge e) {
@@ -301,7 +299,7 @@ public class Graph extends GraphBase implements INamed {
     /**
      * called from edge when being deleted
      *
-     * @param e
+     * @param e edge
      */
     void unregisterEdge(Edge e) {
         checkOwner(e);
@@ -335,7 +333,7 @@ public class Graph extends GraphBase implements INamed {
     /**
      * called from node when being deleted
      *
-     * @param v
+     * @param v node
      */
     void unregisterNode(Node v) {
         checkOwner(v);
@@ -401,7 +399,7 @@ public class Graph extends GraphBase implements INamed {
     /**
      * move the node to the front of the list of nodes
      *
-     * @param v
+     * @param v node
      */
     public void moveToFront(Node v) {
         if (v != null && v != firstNode) {
@@ -423,7 +421,7 @@ public class Graph extends GraphBase implements INamed {
     /**
      * move the node to the back of the list of nodes
      *
-     * @param v
+     * @param v node
      */
     public void moveToBack(Node v) {
         if (v != null && v != lastNode) {
@@ -445,7 +443,7 @@ public class Graph extends GraphBase implements INamed {
     /**
      * move the edge to the front of the list of edges
      *
-     * @param e
+     * @param e edge
      */
     public void moveToFront(Edge e) {
         if (e != null && e != firstEdge) {
@@ -467,7 +465,7 @@ public class Graph extends GraphBase implements INamed {
     /**
      * move the edge to the back of the list of edges
      *
-     * @param e
+     * @param e edge
      */
     public void moveToBack(Edge e) {
         if (e != null && e != lastEdge) {
@@ -763,7 +761,7 @@ public class Graph extends GraphBase implements INamed {
 
             protected Edge findNext() throws NoSuchElementException {
                 if (e != null) {
-                    final Edge result = e;
+                    final var result = e;
                     checkOwner(e);
                     e = (Edge) result.next;
                     return result;
@@ -785,7 +783,7 @@ public class Graph extends GraphBase implements INamed {
 
             protected Node findNext() throws NoSuchElementException {
                 if (v != null) {
-                    final Node result = v;
+                    final var result = v;
                     v = (Node) v.next;
                     return result;
                 } else {
@@ -830,10 +828,10 @@ public class Graph extends GraphBase implements INamed {
         StringBuilder buf = new StringBuilder("Graph:\n");
         buf.append("Nodes: ").append(getNumberOfNodes()).append("\n");
 
-        for (Node v = getFirstNode(); v != null; v = getNextNode(v))
+        for (var v : nodes())
             buf.append(v.toString()).append("\n");
         buf.append("Edges: ").append(getNumberOfEdges()).append("\n");
-        for (Edge e = getFirstEdge(); e != null; e = getNextEdge(e))
+        for (var e : edges())
             buf.append(e.toString()).append("\n");
 
         return buf.toString();
@@ -896,8 +894,8 @@ public class Graph extends GraphBase implements INamed {
     /**
      * fires the node label changed event
      *
-     * @param v
-     * @param label
+     * @param v node
+     * @param label label
      */
     protected void fireNodeLabelChanged(Node v, String label) {
         checkOwner(v);
@@ -934,8 +932,8 @@ public class Graph extends GraphBase implements INamed {
     /**
      * fires the edge label changed event
      *
-     * @param e
-     * @param label
+     * @param e edge
+     * @param label label
      */
     protected void fireEdgeLabelChanged(Edge e, String label) {
         checkOwner(e);
@@ -992,8 +990,8 @@ public class Graph extends GraphBase implements INamed {
         maxNodeId = src.maxNodeId;
 
         for (var e : src.edges()) {
-            Node p = oldNode2newNode.get(src.getSource(e));
-            Node q = oldNode2newNode.get(src.getTarget(e));
+            var p = oldNode2newNode.get(src.getSource(e));
+            var q = oldNode2newNode.get(src.getTarget(e));
             Edge f = null;
             try {
                 f = newEdge(p, q);
@@ -1011,10 +1009,10 @@ public class Graph extends GraphBase implements INamed {
         maxEdgeId = src.maxEdgeId;
 
         // change all adjacencies to reflect order in old graph:
-        for (Node v = src.getFirstNode(); v != null; v = src.getNextNode(v)) {
-            Node w = oldNode2newNode.get(v);
-            List<Edge> newOrder = new LinkedList<>();
-            for (Edge e = v.getFirstAdjacentEdge(); e != null; e = v.getNextAdjacentEdge(e)) {
+        for (var v : src.nodes()) {
+            var w = oldNode2newNode.get(v);
+            var newOrder = new ArrayList<Edge>(v.getDegree());
+            for (var e : v.adjacentEdges()) {
                 newOrder.add(oldEdge2newEdge.get(e));
             }
             w.rearrangeAdjacentEdges(newOrder);
@@ -1037,9 +1035,9 @@ public class Graph extends GraphBase implements INamed {
         if (oldEdge2newEdge == null)
             oldEdge2newEdge = new HashMap<>();
 
-        final Set<Edge> edges = new HashSet<>();// don't used an edge set here in multi-thread use
+        final var edges = new HashSet<Edge>();// don't used an edge set here in multi-thread use
 
-        for (Node v : srcNodes) {
+        for (var v : srcNodes) {
             Node w = newNode();
             w.setId(v.getId());
             setInfo(w, src.getInfo(v));
@@ -1048,9 +1046,9 @@ public class Graph extends GraphBase implements INamed {
                 edges.add(e);
         }
 
-        for (Edge e : edges) {
-            final Node p = oldNode2newNode.get(e.getSource());
-            final Node q = oldNode2newNode.get(e.getTarget());
+        for (var e : edges) {
+            final var p = oldNode2newNode.get(e.getSource());
+            final var q = oldNode2newNode.get(e.getTarget());
             Edge f = null;
             try {
                 f = newEdge(p, q);
@@ -1065,9 +1063,9 @@ public class Graph extends GraphBase implements INamed {
         }
 
         // change all adjacencies to reflect order in old graph:
-        for (Node v : srcNodes) {
-            final Node w = oldNode2newNode.get(v);
-            final List<Edge> newOrder = new LinkedList<>();
+        for (var v : srcNodes) {
+            final var w = oldNode2newNode.get(v);
+            final var newOrder = new ArrayList<Edge>(v.getDegree());
             for (Edge e : v.adjacentEdges()) {
                 newOrder.add(oldEdge2newEdge.get(e));
             }
@@ -1219,19 +1217,18 @@ public class Graph extends GraphBase implements INamed {
     }
 
     /**
-     * called from constructor of NodeAssociation to register with graph
+     * called from constructor of node array to register with graph
      *
-     * @param array
+     * @param array node array
      */
     void registerNodeArray(NodeArray<?> array) {
         synchronized (nodeArrays) {
-            final List<WeakReference> toDelete = new LinkedList<>();
-            for (WeakReference<NodeArray<?>> ref : nodeArrays) {
+            final var toDelete = new LinkedList<WeakReference<NodeArray<?>>>();
+            for (var ref : nodeArrays) {
                 if (ref.get() == null)
                     toDelete.add(ref); // reference is dead
             }
-            if (toDelete.size() > 0)
-                nodeArrays.removeAll(toDelete);
+            nodeArrays.removeAll(toDelete);
             nodeArrays.add(new WeakReference<>(array));
         }
     }
@@ -1239,13 +1236,13 @@ public class Graph extends GraphBase implements INamed {
     /**
      * called from deleteNode to clean all array entries for the node
      *
-     * @param v
+     * @param v node
      */
     void deleteNodeFromArrays(Node v) {
         checkOwner(v);
         synchronized (nodeArrays) {
-            List<WeakReference> toDelete = new LinkedList<>();
-            for (WeakReference<NodeArray<?>> ref : nodeArrays) {
+            var toDelete = new LinkedList<WeakReference<NodeArray<?>>>();
+            for (var ref : nodeArrays) {
                 NodeArray<?> as = ref.get();
                 if (as == null)
                     toDelete.add(ref); // reference is dead
@@ -1253,26 +1250,23 @@ public class Graph extends GraphBase implements INamed {
                     as.put(v, null);
                 }
             }
-            for (WeakReference ref : toDelete) {
-                nodeArrays.remove(ref);
-            }
+            nodeArrays.removeAll(toDelete);
         }
     }
 
     /**
      * called from constructor of NodeSet to register with graph
      *
-     * @param set
+     * @param set node set
      */
     void registerNodeSet(NodeSet set) {
         synchronized (nodeSets) {
-            final List<WeakReference> toDelete = new LinkedList<>();
-            for (WeakReference<NodeSet> ref : nodeSets) {
+            final var toDelete = new LinkedList<WeakReference<NodeSet>>();
+            for (var ref : nodeSets) {
                 if (ref.get() == null)
                     toDelete.add(ref); // reference is dead
             }
-            if (toDelete.size() > 0)
-                nodeSets.removeAll(toDelete);
+            nodeSets.removeAll(toDelete);
             nodeSets.add(new WeakReference<>(set));
         }
     }
@@ -1280,13 +1274,13 @@ public class Graph extends GraphBase implements INamed {
     /**
      * called from deleteNode to clean all array entries for the node
      *
-     * @param v
+     * @param v node
      */
     private void deleteNodeFromSets(Node v) {
         checkOwner(v);
         synchronized (nodeSets) {
-            final List<WeakReference> toDelete = new LinkedList<>();
-            for (WeakReference<NodeSet> ref : nodeSets) {
+            final var toDelete = new LinkedList<WeakReference<NodeSet>>();
+            for (var ref : nodeSets) {
                 if (ref != null) {
                     final NodeSet set = ref.get();
                     if (set == null)
@@ -1296,9 +1290,7 @@ public class Graph extends GraphBase implements INamed {
                     }
                 }
             }
-            for (WeakReference ref : toDelete) {
-                nodeSets.remove(ref);
-            }
+            nodeSets.removeAll(toDelete);
         }
     }
 
@@ -1309,54 +1301,50 @@ public class Graph extends GraphBase implements INamed {
      */
     void registerEdgeArray(EdgeArray<?> array) {
         synchronized (edgeArrays) {
-            final List<WeakReference> toDelete = new LinkedList<>();
-            for (WeakReference<EdgeArray<?>> ref : edgeArrays) {
+            final var toDelete = new LinkedList<WeakReference<EdgeArray<?>>>();
+            for (var ref : edgeArrays) {
                 if (ref.get() == null)
                     toDelete.add(ref); // reference is dead
             }
-            if (toDelete.size() > 0)
-                edgeArrays.removeAll(toDelete);
+            edgeArrays.removeAll(toDelete);
+            edgeArrays.add(new WeakReference<>(array));
         }
-        edgeArrays.add(new WeakReference<>(array));
     }
 
     /**
      * called from deleteEdge to clean all array entries for the edge
      *
-     * @param edge
+     * @param e edge
      */
-    void deleteEdgeFromArrays(Edge edge) {
-        checkOwner(edge);
+    void deleteEdgeFromArrays(Edge e) {
+        checkOwner(e);
         synchronized (edgeArrays) {
-            List<WeakReference> toDelete = new LinkedList<>();
-            for (WeakReference<EdgeArray<?>> ref : edgeArrays) {
+            var toDelete = new LinkedList<WeakReference<EdgeArray<?>>>();
+            for (var ref : edgeArrays) {
                 EdgeArray<?> as = ref.get();
                 if (as == null)
                     toDelete.add(ref); // reference is dead
                 else {
-                    as.put(edge, null);
+                    as.put(e, null);
                 }
             }
-            for (WeakReference ref : toDelete) {
-                edgeArrays.remove(ref);
-            }
+            edgeArrays.removeAll(toDelete);
         }
     }
 
     /**
      * called from constructor of EdgeSet to register with graph
      *
-     * @param set
+     * @param set edge set
      */
     void registerEdgeSet(EdgeSet set) {
         synchronized (edgeSets) {
-            final List<WeakReference> toDelete = new LinkedList<>();
-            for (WeakReference<EdgeSet> ref : edgeSets) {
+            final var toDelete = new LinkedList<WeakReference<EdgeSet>>();
+            for (var ref : edgeSets) {
                 if (ref.get() == null)
                     toDelete.add(ref); // reference is dead
             }
-            if (toDelete.size() > 0)
-                edgeSets.removeAll(toDelete);
+            edgeSets.removeAll(toDelete);
             edgeSets.add(new WeakReference<>(set));
         }
     }
@@ -1364,23 +1352,21 @@ public class Graph extends GraphBase implements INamed {
     /**
      * called from deleteEdge to clean all array entries for the edge
      *
-     * @param e
+     * @param e edge
      */
     void deleteEdgeFromSets(Edge e) {
         checkOwner(e);
         synchronized (edgeSets) {
-            List<WeakReference> toDelete = new LinkedList<>();
-            for (WeakReference<EdgeSet> ref : edgeSets) {
-                EdgeSet set = ref.get();
+            var toDelete = new LinkedList<WeakReference<EdgeSet>>();
+            for (var ref : edgeSets) {
+                var set = ref.get();
                 if (set == null)
                     toDelete.add(ref); // reference is dead
                 else {
                     set.remove(e);
                 }
             }
-            for (WeakReference ref : toDelete) {
-                edgeSets.remove(ref);
-            }
+            edgeSets.removeAll(toDelete);
         }
     }
 
@@ -1405,7 +1391,7 @@ public class Graph extends GraphBase implements INamed {
     /**
      * is this a special edge?
      *
-     * @param e
+     * @param e edge
      * @return true, if marked as special
      */
     public boolean isSpecial(Edge e) {
@@ -1415,8 +1401,8 @@ public class Graph extends GraphBase implements INamed {
     /**
      * mark as special or not
      *
-     * @param e
-     * @param special
+     * @param e edge
+     * @param special is special
      */
     public void setSpecial(Edge e, boolean special) {
         if (specialEdges == null) {
@@ -1449,7 +1435,7 @@ public class Graph extends GraphBase implements INamed {
     /**
      * get the non-special-edge connected component containing v
      *
-     * @param v
+     * @param v node
      * @return component
      */
     public NodeSet getSpecialComponent(Node v) {
@@ -1645,12 +1631,12 @@ public class Graph extends GraphBase implements INamed {
     /**
      * get the unhidden subset
      *
-     * @param nodes
-     * @return
+     * @param nodes node to look at
+     * @return unhidden subset
      */
     public NodeSet getUnhiddenSubset(Collection<Node> nodes) {
-        NodeSet unhidden = new NodeSet(this);
-        for (Node v : nodes) {
+        var unhidden = new NodeSet(this);
+        for (var v : nodes) {
             if (!v.isHidden())
                 unhidden.add(v);
         }
@@ -1658,14 +1644,14 @@ public class Graph extends GraphBase implements INamed {
     }
 
     /**
-     * reorders nodes in graph. These nodes are put at the front of the list of nodes
+     * reorders nodes in graph.
      *
-     * @param nodes
+     * @param nodes  these nodes are put at the front of the list of nodes
      */
     public void reorderNodes(List<Node> nodes) {
-        final List<Node> newOrder = new ArrayList<>(numberNodes + numberOfNodesThatAreHidden);
-        final Set<Node> toMove = new HashSet<>();
-        for (Node v : nodes) {
+        final var newOrder = new ArrayList<Node>(numberNodes + numberOfNodesThatAreHidden);
+        final var toMove = new HashSet<Node>();
+        for (var v : nodes) {
             if (v.getOwner() != null) {
                 newOrder.add(v);
                 toMove.add(v);
@@ -1673,14 +1659,14 @@ public class Graph extends GraphBase implements INamed {
         }
 
         if (toMove.size() > 0) {
-            for (Iterator<Node> it = nodeIteratorIncludingHidden(); it.hasNext(); ) {
-                Node v = it.next();
+            for (var it = nodeIteratorIncludingHidden(); it.hasNext(); ) {
+                var v = it.next();
                 if (!toMove.contains(v))
                     newOrder.add(v);
             }
 
             Node previousNode = null;
-            for (Node v : newOrder) {
+            for (var v : newOrder) {
                 if (previousNode == null) {
                     firstNode = v;
                     v.prev = null;
@@ -1828,7 +1814,7 @@ public class Graph extends GraphBase implements INamed {
                 var tarEdge = tarGraph.newEdge(tarA, tarB);
                 tarEdge.setInfo(srcEdge.getInfo());
                 tarEdge.setLabel(srcEdge.getLabel());
-                tarEdge.setData(tarEdge.getData());
+                tarEdge.setData(srcEdge.getData());
                 if (src2tarEdge != null)
                     src2tarEdge.put(srcEdge, tarEdge);
             }
@@ -1922,8 +1908,6 @@ public class Graph extends GraphBase implements INamed {
         deleteNode(s);
         return t;
     }
-
-
 }
 
 // EOF

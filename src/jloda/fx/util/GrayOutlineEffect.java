@@ -38,6 +38,6 @@ public class GrayOutlineEffect extends DropShadow {
     }
 
     private GrayOutlineEffect() {
-        super(BlurType.THREE_PASS_BOX, Color.GRAY, 1, 1, 0, 0);
+        super(BlurType.THREE_PASS_BOX, Color.GRAY, 0.5, 0.5, 0, 0);
     }
 }
