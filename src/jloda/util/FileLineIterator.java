@@ -46,7 +46,7 @@ public class FileLineIterator implements ICloseableIterator<String> {
     private String pushedBackLine = null;
 
     private final String fileName;
-    private ProgressPercentage progress;
+    private ProgressListener progress;
 
     /**
      * constructor
@@ -84,7 +84,7 @@ public class FileLineIterator implements ICloseableIterator<String> {
      * @param fileName
      * @throws java.io.FileNotFoundException
      */
-    public FileLineIterator(String fileName, boolean reportProgress) throws IOException {
+    public FileLineIterator(String fileName, ProgressListener progress) throws IOException {
         this.fileName = fileName;
 
         if (fileName.startsWith(PREFIX_TO_INDICATE_TO_PARSE_FILENAME_STRING)) {
@@ -108,7 +108,18 @@ public class FileLineIterator implements ICloseableIterator<String> {
             }
         }
         done = (maxProgress <= 0);
-        setReportProgress(reportProgress);
+        this.progress = progress;
+    }
+
+    /**
+     * constructor
+     *
+     * @param fileName
+     * @throws java.io.FileNotFoundException
+     */
+    public FileLineIterator(String fileName, boolean reportProgress) throws IOException {
+        this(fileName, (ProgressListener) null);
+        setReportProgress(true);
     }
 
     /**
@@ -262,7 +273,10 @@ public class FileLineIterator implements ICloseableIterator<String> {
             nextLine = null;
             lineNumber++;
             if (progress != null) {
-                progress.setProgress(position);
+                try {
+                    progress.setProgress(position);
+                } catch (CanceledException ignored) {
+                }
             }
             return result;
         }
