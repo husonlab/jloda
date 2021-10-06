@@ -44,6 +44,11 @@ public class CopyableLabel extends TextField {
             if (!n)
                 this.deselect();
         });
+
+        textProperty().addListener(e -> {
+            if (getParent() != null)
+                getParent().requestLayout();
+        });
     }
 
     /**

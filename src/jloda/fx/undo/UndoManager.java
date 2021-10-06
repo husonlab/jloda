@@ -93,6 +93,58 @@ public class UndoManager {
         redoStack.clear();
     }
 
+    public void doAndAdd(String name, Runnable undo, Runnable redo) {
+        var command = new UndoableRedoableCommand(name) {
+            @Override
+            public void undo() {
+                undo.run();
+            }
+
+            @Override
+            public void redo() {
+                redo.run();
+            }
+
+            @Override
+            public boolean isUndoable() {
+                return undo != null;
+            }
+
+            @Override
+            public boolean isRedoable() {
+                return redo != null;
+            }
+        };
+        if (command.isRedoable()) {
+            command.redo();
+            add(command);
+        }
+    }
+
+    public void add(String name, Runnable undo, Runnable redo) {
+        var command = new UndoableRedoableCommand(name) {
+            @Override
+            public void undo() {
+                undo.run();
+            }
+
+            @Override
+            public void redo() {
+                redo.run();
+            }
+
+            @Override
+            public boolean isUndoable() {
+                return undo != null;
+            }
+
+            @Override
+            public boolean isRedoable() {
+                return redo != null;
+            }
+        };
+        add(command);
+    }
 
     /**
      * add an undoable property change

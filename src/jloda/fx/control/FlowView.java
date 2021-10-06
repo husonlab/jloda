@@ -168,6 +168,7 @@ public class FlowView<T> extends Pane {
 			}
 		} catch (ConcurrentModificationException ignored) {
 		}
+		Platform.runLater(listView::layout);
 	}
 
 	public int size() {

@@ -72,30 +72,5 @@ abstract public class UndoableRedoableCommand {
     public boolean isRedoable() {
         return true;
     }
-
-    public static UndoableRedoableCommand create(String name, Runnable undo, Runnable redo) {
-        return new UndoableRedoableCommand(name) {
-            @Override
-            public void undo() {
-                undo.run();
-            }
-
-            @Override
-            public void redo() {
-                redo.run();
-            }
-
-            @Override
-            public boolean isUndoable() {
-                return undo != null;
-            }
-
-            @Override
-            public boolean isRedoable() {
-                return redo != null;
-            }
-        };
-    }
-
 }
 
