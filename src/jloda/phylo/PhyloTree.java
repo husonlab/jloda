@@ -854,12 +854,12 @@ public class PhyloTree extends PhyloSplitsGraph {
      * @param edgeId2Number
      */
     private void setId2NumberMapsRec(Node v, Edge e, Pair<Integer, Integer> nodeNumberEdgeNumber, Map<Integer, Integer> nodeId2Number, Map<Integer, Integer> edgeId2Number) {
-        int nodes = nodeNumberEdgeNumber.getFirstInt() + 1;
+        int nodes = nodeNumberEdgeNumber.getFirst() + 1;
         nodeNumberEdgeNumber.setFirst(nodes);
         nodeId2Number.put(v.getId(), nodes);
         for (Edge f = v.getFirstAdjacentEdge(); f != null; f = v.getNextAdjacentEdge(f))
             if (f != e) {
-                int edges = nodeNumberEdgeNumber.getSecondInt() + 1;
+                int edges = nodeNumberEdgeNumber.getSecond() + 1;
                 nodeNumberEdgeNumber.setSecond(edges);
                 edgeId2Number.put(v.getId(), edges);
                 if (PhyloTreeUtils.okToDescendDownThisEdge(this, f, v))

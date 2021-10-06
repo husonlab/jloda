@@ -35,6 +35,8 @@ import java.util.Map;
  * @author Daniel Huson, 2005, 2018
  */
 public class PhyloGraph extends Graph {
+    public static final double DEFAULT_WEIGHT = 1.0;
+    public static final double DEFAULT_CONFIDENCE = 1.0;
     private EdgeDoubleArray edgeWeights;
     private EdgeDoubleArray edgeConfidences;
     private Map<Integer, Node> taxon2node;
@@ -137,14 +139,14 @@ public class PhyloGraph extends Graph {
      */
     public double getWeight(Edge e) {
         if (edgeWeights == null)
-            return 1.0;
+            return DEFAULT_WEIGHT;
         else
             return edgeWeights.getDouble(e);
     }
 
-    public void setWeight(Edge e, Double value) {
+    public void setWeight(Edge e, double value) {
         if (edgeWeights == null) {
-            if (value == null)
+            if (value == DEFAULT_WEIGHT)
                 return;
             edgeWeights = new EdgeDoubleArray(this);
         }
@@ -157,9 +159,9 @@ public class PhyloGraph extends Graph {
      * @param e     Edge
      * @param value double
      */
-    public void setConfidence(Edge e, Double value) {
+    public void setConfidence(Edge e, double value) {
         if (edgeConfidences == null) {
-            if (value == null)
+            if (value == DEFAULT_CONFIDENCE)
                 return;
             edgeConfidences = newEdgeDoubleArray();
         }
@@ -174,7 +176,7 @@ public class PhyloGraph extends Graph {
      */
     public double getConfidence(Edge e) {
         if (edgeConfidences == null || edgeConfidences.get(e) == null)
-            return 1;
+            return DEFAULT_CONFIDENCE;
         else
             return edgeConfidences.get(e);
     }

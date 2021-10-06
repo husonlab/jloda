@@ -338,8 +338,8 @@ public class PhyloTreeUtils {
         NodeSet seen = new NodeSet(tree);
         Pair<Double, Integer> pair = new Pair<>(0.0, 0);
         computeAverageDistanceToLeafRec(tree, v, null, 0, seen, pair);
-        double sum = pair.getFirstDouble();
-        int leaves = pair.getSecondInt();
+        double sum = pair.getFirst();
+        int leaves = pair.getSecond();
         if (leaves > 0)
             return sum / leaves;
         else
