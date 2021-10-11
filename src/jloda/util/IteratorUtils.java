@@ -20,6 +20,9 @@
 
 package jloda.util;
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.Reader;
 import java.util.*;
 import java.util.stream.Stream;
 import java.util.stream.StreamSupport;
@@ -209,14 +212,64 @@ public class IteratorUtils {
     public static <T> Iterator<T> reverseIterator(ArrayList<T> list) {
         return new Iterator<>() {
             private int pos=list.size();
+
             @Override
             public boolean hasNext() {
-                return pos>0;
+                return pos > 0;
             }
+
             @Override
             public T next() {
                 return list.get(--pos);
-             }
+            }
         };
+    }
+
+    public static LineIterator lines(Reader reader) {
+        return new LineIterator(reader);
+
+    }
+
+    public static class LineIterator implements Iterator<String>, AutoCloseable {
+        private final BufferedReader br;
+        private String next;
+        private int lineNumber = 0;
+
+        public LineIterator(Reader reader) {
+            br = (reader instanceof BufferedReader ? (BufferedReader) reader : new BufferedReader(reader));
+            {
+                try {
+                    next = br.readLine();
+                } catch (IOException ignored) {
+                }
+            }
+
+        }
+
+        @Override
+        public boolean hasNext() {
+            return next != null;
+        }
+
+        @Override
+        public String next() {
+            var result = next;
+            if (result != null) {
+                lineNumber++;
+                try {
+                    next = br.readLine();
+                } catch (IOException ignored) {
+                }
+            }
+            return result;
+        }
+
+        public int getLineNumber() {
+            return lineNumber;
+        }
+
+        @Override
+        public void close() {
+        }
     }
 }

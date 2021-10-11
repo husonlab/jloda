@@ -169,15 +169,6 @@ public class PhyloTree extends PhyloSplitsGraph {
     }
 
     /**
-     * gets the string representation of this tree
-     *
-     * @return tree
-     */
-    public String toString() {
-        return "Nodes: " + getNumberOfNodes() + " Edges: " + getNumberOfEdges();
-    }
-
-    /**
      * Produces a string representation of the tree in bracket notation.
      *
      * @return a string representation of the tree in bracket notation

@@ -83,14 +83,16 @@ public class Node extends NodeEdge implements Comparable<Node> {
      * @return string representation
      */
     public String toString() {
-        StringBuilder buf = new StringBuilder("[" + getId() + "] [");
-        if (getInfo() != null)
-            buf.append(getInfo().toString());
-        buf.append("]:");
-        for (Edge e = getFirstAdjacentEdge(); e != null; e = getNextAdjacentEdge(e))
-            buf.append(" ").append(e.getId());
-        return buf.toString();
-    }
+		StringBuilder buf = new StringBuilder("[" + getId() + "]");
+		if (getInfo() != null)
+			buf.append(" [").append(getInfo().toString()).append("]");
+		if (getData() != null)
+			buf.append(" [").append(getData().toString()).append("]");
+		buf.append(":");
+		for (Edge e = getFirstAdjacentEdge(); e != null; e = getNextAdjacentEdge(e))
+			buf.append(" ").append(e.getId());
+		return buf.toString();
+	}
 
     /**
      * delete this node from graph. Any incident adjacentEdges are deleted.

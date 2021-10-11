@@ -53,4 +53,18 @@ public class ProgramExecutorService {
     public static int getNumberOfCoresToUse() {
         return numberOfCoresToUse;
     }
+
+    public static void submit(Runnable runnable) {
+        getInstance().submit(runnable);
+    }
+
+    public static void submit(long delayInMilliseconds, Runnable runnable) {
+        getInstance().submit(() -> {
+            try {
+                Thread.sleep(delayInMilliseconds);
+            } catch (InterruptedException ignored) {
+            }
+            runnable.run();
+        });
+    }
 }

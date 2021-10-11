@@ -36,18 +36,14 @@ import java.util.Vector;
  * Fasta i/o  class
  */
 public class FastA {
-    private int size;
-    private final Vector<String> headers;
-    private final Vector<String> sequences;
+    private int size = 0;
+    private final Vector<String> headers = new Vector<>();
+    private final Vector<String> sequences = new Vector<>();
 
     /**
      * constructor
      */
     public FastA() {
-        size = 0;
-        headers = new Vector<>();
-        sequences = new Vector<>();
-
     }
 
     /**
@@ -161,9 +157,6 @@ public class FastA {
 
     /**
      * read header and sequence in fastA format
-     *
-     * @param r
-     * @throws java.io.IOException
      */
     public void read(Reader r) throws IOException {
         clear();
@@ -181,7 +174,7 @@ public class FastA {
 
                 if (aLine.charAt(0) == '>') // new fasta header
                 {
-                    if (header.length() > 0 && sequence != null) {
+                    if (header.length() > 0) {
                         add(header, sequence.toString());
                     }
                     header = aLine.substring(1).trim();
@@ -192,7 +185,7 @@ public class FastA {
             aLine = br.readLine();
         }
         if (header.length() > 0) {
-            add(header, sequence != null ? sequence.toString() : null);
+            add(header, sequence.toString());
         }
     }
 
@@ -219,7 +212,6 @@ public class FastA {
                         lineLength++;
                         if (lineLength == 0) {
                             w.write('\n');
-                            lineLength = 0;
                         }
                     }
                 }

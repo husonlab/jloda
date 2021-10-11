@@ -820,11 +820,21 @@ public class Graph extends GraphBase implements INamed {
     }
 
     /**
+     * gets the string representation of this graph
+     *
+     * @return tree
+     */
+    public String toString() {
+        return "Nodes: " + getNumberOfNodes() + " Edges: " + getNumberOfEdges();
+    }
+
+
+    /**
      * Get a string representation of the graph.
      *
      * @return the string
      */
-    public String toString() {
+    public String toStringFull() {
         StringBuilder buf = new StringBuilder("Graph:\n");
         buf.append("Nodes: ").append(getNumberOfNodes()).append("\n");
 
