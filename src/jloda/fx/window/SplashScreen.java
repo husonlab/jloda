@@ -49,6 +49,9 @@ public class SplashScreen {
     private static Image image;
     private static SplashScreen instance;
 
+    private static double scale = 0.5;
+    private static double fitHeight = 0.0;
+
     private static Point2D labelAnchor = new Point2D(20, 20);
 
     public static SplashScreen getInstance() {
@@ -70,8 +73,11 @@ public class SplashScreen {
 
         if (image != null) {
             final ImageView imageView = new ImageView(image);
-            imageView.setScaleX(0.5);
-            imageView.setScaleY(0.5);
+            if (getFitHeight() > 0) {
+                setScale(getFitHeight() / image.getHeight());
+            }
+            imageView.setScaleX(getScale());
+            imageView.setScaleY(getScale());
             imageView.setEffect(new DropShadow());
             stackPane.getChildren().add(imageView);
             stage.setWidth(imageView.getScaleX() * image.getWidth() + 2);
@@ -137,5 +143,21 @@ public class SplashScreen {
 
     public static void setLabelAnchor(Point2D labelAnchor) {
         SplashScreen.labelAnchor = labelAnchor;
+    }
+
+    public static double getScale() {
+        return SplashScreen.scale;
+    }
+
+    public static void setScale(double scale) {
+        SplashScreen.scale = scale;
+    }
+
+    public static double getFitHeight() {
+        return SplashScreen.fitHeight;
+    }
+
+    public static void setFitHeight(double fitHeight) {
+        SplashScreen.fitHeight = fitHeight;
     }
 }
