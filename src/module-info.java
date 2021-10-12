@@ -15,6 +15,7 @@ module jloda {
     exports jloda.fx.find;
     exports jloda.fx.graph;
     exports jloda.fx.label;
+    exports jloda.fx.selection;
     exports jloda.fx.shapes;
     exports jloda.fx.undo;
     exports jloda.fx.util;
@@ -58,5 +59,6 @@ module jloda {
     exports jloda.kmers;
     exports jloda.kmers.bloomfilter;
     exports jloda.kmers.mash;
+    exports jloda.fx.workflow;
 
 }
