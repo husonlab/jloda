@@ -338,4 +338,8 @@ public class Table<R, C, V> {
                 copy.put(row, col, get(row, col));
         return copy;
     }
+
+    public int getNumberOfRows() {
+        return dataMap.size();
+    }
 }
