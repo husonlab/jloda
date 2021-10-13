@@ -19,6 +19,7 @@
 
 package jloda.fx.workflow;
 
+import javafx.beans.binding.Bindings;
 import javafx.beans.property.*;
 import javafx.beans.value.ChangeListener;
 import javafx.collections.FXCollections;
@@ -39,6 +40,8 @@ public class Workflow extends NamedBase {
 
 	private final ObservableList<WorkflowNode> nodes = FXCollections.observableArrayList();
 	private int numberOfNodesCreated = 0;
+
+	private final IntegerProperty numberOfNodes = new SimpleIntegerProperty(0);
 
 	private final IntegerProperty numberOfEdges = new SimpleIntegerProperty(0);
 	private final ListChangeListener<WorkflowNode> parentsChangedListener;
@@ -76,6 +79,8 @@ public class Workflow extends NamedBase {
 				}
 			}
 		});
+
+		numberOfNodes.bind(Bindings.size(nodes));
 	}
 
 	public Iterable<WorkflowNode> nodes() {
@@ -136,7 +141,11 @@ public class Workflow extends NamedBase {
 	}
 
 	public int getNumberOfNodes() {
-		return nodes.size();
+		return numberOfNodes.get();
+	}
+
+	public ReadOnlyIntegerProperty numberOfNodesProperty() {
+		return numberOfNodes;
 	}
 
 	public int size() {
