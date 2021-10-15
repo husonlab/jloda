@@ -709,7 +709,7 @@ public class Node extends NodeEdge implements Comparable<Node> {
     }
 
     public Object getData() {
-        return getOwner().getData(this);
+        return getOwner()==null?null:getOwner().getData(this);
     }
 
     public void setData(Object data) {

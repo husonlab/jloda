@@ -52,7 +52,6 @@ import java.util.Collections;
  * Daniel Huson, 4.2019
  */
 public class SplittableTabPane extends Pane {
-
     private final ObjectProperty<TabPane> focusedTabPane = new SimpleObjectProperty<>();
     private final ASingleSelectionModel<Tab> selectionModel = new ASingleSelectionModel<>();
 
@@ -264,6 +263,9 @@ public class SplittableTabPane extends Pane {
         return null;
     }
 
+    public boolean contains (TabPane tabPane) {
+        return tabPane2ParentSplitPane.containsKey(tabPane);
+    }
 
     private void moveTab(Tab tab, TabPane oldTabPane, TabPane newTabPane) {
         moveTab(tab, oldTabPane, newTabPane, -1);
@@ -726,5 +728,5 @@ public class SplittableTabPane extends Pane {
         public Tab getTab() {
             return tab;
         }
-    }
+     }
 }
