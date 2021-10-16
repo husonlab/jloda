@@ -53,8 +53,9 @@ public class AlgorithmNode extends WorkflowNode {
 		service.stateProperty().addListener((v, o, n) -> {
 			setValid(n.equals(Worker.State.SUCCEEDED));
 
-			if (n == Worker.State.FAILED)
+			if (n == Worker.State.FAILED) {
 				System.err.println("Error in " + getAlgorithm().getClass().getSimpleName() + ": Calculation failed: " + service.getException());
+			}
 		});
 
 		validProperty().addListener((v, o, n) -> {

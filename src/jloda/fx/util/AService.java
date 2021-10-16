@@ -72,7 +72,6 @@ public class AService<T> extends Service<T> {
                 }
             }
         });
-
         setOnFailed(e -> NotificationManager.showError("Computation failed: " + Basic.getShortName(AService.this.getException().getClass())
                 + (AService.this.getException().getMessage() != null ? ": " + AService.this.getException().getMessage() : "")));
     }

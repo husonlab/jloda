@@ -60,7 +60,7 @@ public class Workflow extends NamedBase {
 
 		nodeValidListener = (v, o, n) -> {
 			if (n)
-				busy.set(nodes.size() > 0 && !nodes.stream().allMatch(WorkflowNode::isValid));
+				busy.set(nodes.size() > 0 && nodes.stream().anyMatch(a -> !a.isValid()));
 			else
 				busy.set(true);
 		};

@@ -124,18 +124,18 @@ public class RecentFilesManager {
 
     /**
      * create the recent files menu
-     *
-     * @return recent files menuy
      */
     public void setupMenu(final Menu menu) {
         final WeakReference<Menu> ref = new WeakReference<>(menu);
         menuReferences.add(ref);
 
-        for (String fileName : recentFiles) {
-            final MenuItem openMenuItem = new MenuItem(fileName);
-            openMenuItem.setOnAction(e -> fileOpener.get().accept(fileName));
-            openMenuItem.disableProperty().bind(disable);
-            menu.getItems().add(openMenuItem);
+        if (fileOpener.get() != null) {
+            for (String fileName : recentFiles) {
+                final MenuItem openMenuItem = new MenuItem(fileName);
+                openMenuItem.setOnAction(e -> fileOpener.get().accept(fileName));
+                openMenuItem.disableProperty().bind(disable);
+                menu.getItems().add(openMenuItem);
+            }
         }
     }
 
@@ -150,8 +150,6 @@ public class RecentFilesManager {
 
     /**
      * inserts a recent file to top of menu
-     *
-     * @param fileName
      */
     public void insertRecentFile(String fileName) {
         // remove if already present and then add, this will bring to top of list
