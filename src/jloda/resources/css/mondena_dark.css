@@ -71,3 +71,44 @@
 .background {
     -fx-background-color: derive(-fx-base, 35%);
 }
+
+.paragraph-text .text {
+    -fx-fill: white;
+}
+
+.keyword {
+    -fx-fill: #CC7832 !important;
+    -fx-font-weight: bold;
+}
+
+.semicolon {
+    -fx-fill: #A9B7C6 !important;
+    -fx-font-weight: bold;
+}
+
+.paren {
+    -fx-fill: #A9B7C6 !important;
+    -fx-font-weight: bold;
+}
+
+.bracket {
+    -fx-fill: #A9B7C6 !important;
+    -fx-font-weight: bold;
+}
+
+.brace {
+    -fx-fill: #A9B7C6 !important;
+    -fx-font-weight: bold;
+}
+
+.string {
+    -fx-fill: #6A8759 !important;
+}
+
+.comment {
+    -fx-fill: #2B2B2B !important;
+}
+
+.paragraph-box:has-caret {
+    -fx-background-color: #323232 !important;
+}

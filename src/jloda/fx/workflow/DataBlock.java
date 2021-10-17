@@ -24,6 +24,7 @@ package jloda.fx.workflow;
  * Daniel Huson, 10.2021
  */
 abstract public class DataBlock extends NamedBase {
+
 	abstract public int size();
 
 	abstract public void clear();
