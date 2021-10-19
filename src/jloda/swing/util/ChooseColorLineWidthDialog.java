@@ -20,7 +20,7 @@
 
 package jloda.swing.util;
 
-import jloda.util.Basic;
+import jloda.util.NumberUtils;
 import jloda.util.Pair;
 import jloda.util.Single;
 
@@ -88,7 +88,7 @@ public class ChooseColorLineWidthDialog {
         final JButton applyButton = new JButton();
         applyButton.setAction(new AbstractAction("Apply") {
             public void actionPerformed(ActionEvent actionEvent) {
-                resultLineWidth.set(Basic.parseInt(lineWidthTextField.getText()));
+                resultLineWidth.set(NumberUtils.parseInt(lineWidthTextField.getText()));
                 resultColor.set(colorChooser.getColor());
                 chooser.setVisible(false);
             }

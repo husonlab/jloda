@@ -331,7 +331,7 @@ public class AMultipleSelectionModel<T> extends MultipleSelectionModel<T> {
      */
     public void setItems(Collection<T> items) {
         clearSelection();
-        this.items = Basic.toArray(items);
+        this.items = (T[]) items.toArray();
         if (!getListenersSuspended()) {
             canSelectAll.set(true);
             canSelectNone.set(false);

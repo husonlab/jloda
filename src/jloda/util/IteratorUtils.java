@@ -248,7 +248,7 @@ public class IteratorUtils {
 		final ArrayList<T> input = new ArrayList<>();
 		while (it.hasNext())
 			input.add(it.next());
-		final ArrayList<T> array = Basic.randomize(input, random);
+		final ArrayList<T> array = CollectionUtils.randomize(input, random);
 
 		return new Iterator<>() {
 			private int i = 0;

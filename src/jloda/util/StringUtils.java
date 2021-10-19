@@ -72,7 +72,7 @@ public class StringUtils {
 	public static String[] toArray(String str) {
 		var list = new LinkedList<String>();
 
-		for (int j, i = Basic.skipSpaces(str, 0); i < str.length(); i = Basic.skipSpaces(str, j)) {
+		for (int j, i = skipSpaces(str, 0); i < str.length(); i = skipSpaces(str, j)) {
 			for (j = i + 1; j < str.length(); j++)
 				if (Character.isSpaceChar(str.charAt(j)))
 					break; // found next space
@@ -1976,7 +1976,7 @@ public class StringUtils {
 		if (tokens.length == 0)
 			return false;
 		for (String token : tokens) {
-			if (!Basic.isInteger(token))
+			if (!NumberUtils.isInteger(token))
 				return false;
 		}
 		return true;
@@ -1988,8 +1988,8 @@ public class StringUtils {
 		final String[] tokens = string.split("[\\s+,;]");
 		ArrayList<Integer> values = new ArrayList<>();
 		for (String token : tokens) {
-			if (Basic.isInteger(token))
-				values.add(Basic.parseInt(token));
+			if (NumberUtils.isInteger(token))
+				values.add(NumberUtils.parseInt(token));
 		}
 		int[] result = new int[values.size()];
 		for (int i = 0; i < values.size(); i++)
@@ -2108,5 +2108,16 @@ public class StringUtils {
 			buf.append(str.charAt(i));
 		}
 		return buf.toString();
+	}
+
+	/**
+	 * skip all spaces starting at position i
+	 *
+	 * @return first position containing a non-space character or str.length()
+	 */
+	public static int skipSpaces(String str, int i) {
+		while (i < str.length() && Character.isSpaceChar(str.charAt(i)))
+			i++;
+		return i;
 	}
 }

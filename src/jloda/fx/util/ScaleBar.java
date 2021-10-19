@@ -27,7 +27,7 @@ import javafx.scene.chart.NumberAxis;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.Pane;
 import javafx.scene.text.Font;
-import jloda.util.Basic;
+import jloda.util.NumberUtils;
 
 
 /**
@@ -109,7 +109,7 @@ public class ScaleBar extends AnchorPane {
 
     public void update() {
         Platform.runLater(() -> {
-            final double value = Basic.roundSigFig(numberAxis.getWidth() / (unitLengthX * factorX), 2);
+            final double value = NumberUtils.roundSigFig(numberAxis.getWidth() / (unitLengthX * factorX), 2);
             numberAxis.setUpperBound(value);
             numberAxis.setTickUnit(ceilingPowerOf10(value) / 10);
             pane.layout();

@@ -287,7 +287,7 @@ public class ArgsOptions {
             if (arguments.size() == 0)
 				throw new UsageException("Command expected, must be one of: " + StringUtils.toString(legalValues, ", "));
             command = arguments.remove(0);
-            if (!Basic.contains(legalValues, command))
+            if (!CollectionUtils.contains(legalValues, command))
 				throw new UsageException("Command: " + command + ": must be one of: " + StringUtils.toString(legalValues, ", "));
 
             if (verbose)

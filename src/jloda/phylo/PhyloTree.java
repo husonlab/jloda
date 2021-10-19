@@ -346,17 +346,17 @@ public class PhyloTree extends PhyloSplitsGraph {
      */
     private int parseBracketNotationRecursively(Map<String, Node> seen, int depth, Node v, int i, String str) throws IOException {
         try {
-            for (i = Basic.skipSpaces(str, i); i < str.length(); i = Basic.skipSpaces(str, i + 1)) {
-                Node w = newNode();
-                String label = null;
-                if (str.charAt(i) == '(') {
-                    i = parseBracketNotationRecursively(seen, depth + 1, w, i + 1, str);
-                    if (str.charAt(i) != ')')
-                        throw new IOException("Expected ')' at position " + i);
-                    i = Basic.skipSpaces(str, i + 1);
-                    while (i < str.length() && punctuationCharacters.indexOf(str.charAt(i)) == -1) {
-                        int i0 = i;
-                        StringBuilder buf = new StringBuilder();
+            for (i = StringUtils.skipSpaces(str, i); i < str.length(); i = StringUtils.skipSpaces(str, i + 1)) {
+				Node w = newNode();
+				String label = null;
+				if (str.charAt(i) == '(') {
+					i = parseBracketNotationRecursively(seen, depth + 1, w, i + 1, str);
+					if (str.charAt(i) != ')')
+						throw new IOException("Expected ')' at position " + i);
+					i = StringUtils.skipSpaces(str, i + 1);
+					while (i < str.length() && punctuationCharacters.indexOf(str.charAt(i)) == -1) {
+						int i0 = i;
+						StringBuilder buf = new StringBuilder();
                         boolean inQuotes = false;
                         while (i < str.length() && (inQuotes || punctuationCharacters.indexOf(str.charAt(i)) == -1)) {
                             if (str.charAt(i) == '\'')
@@ -448,13 +448,13 @@ public class PhyloTree extends PhyloSplitsGraph {
                     e = newEdge(v, w);
 
                 // detect and read embedded bootstrap values:
-                i = Basic.skipSpaces(str, i);
+				i = StringUtils.skipSpaces(str, i);
 
                 // read edge weights
 
                 if (i < str.length() && str.charAt(i) == ':') // edge weight is following
                 {
-                    i = Basic.skipSpaces(str, i + 1);
+					i = StringUtils.skipSpaces(str, i + 1);
                     int i0 = i;
                     StringBuilder buf = new StringBuilder();
                     while (i < str.length() && (punctuationCharacters.indexOf(str.charAt(i)) == -1 && str.charAt(i) != '['))

@@ -227,7 +227,6 @@ public class BitSetUtils {
      *
      * @param setX
      * @param setA
-     * @return
      */
     public static BitSet minus(BitSet setX, BitSet setA) {
         final BitSet result = new BitSet();
@@ -240,5 +239,34 @@ public class BitSetUtils {
         final BitSet copy = new BitSet();
         copy.or(bitSet);
         return copy;
+    }
+
+    /**
+     * get bits as list of integers
+     *
+     * @return list of integers
+     */
+    public static List<Integer> asList(BitSet bits) {
+        var result = new ArrayList<Integer>();
+        if (bits != null) {
+            for (int i = bits.nextSetBit(0); i != -1; i = bits.nextSetBit(i + 1))
+                result.add(i);
+        }
+        return result;
+    }
+
+    /**
+     * get list of integers as bit set
+     *
+     * @return bits
+     */
+    public static BitSet asBitSet(List<Integer> integers) {
+        var bits = new BitSet();
+        if (integers != null) {
+            for (Integer i : integers) {
+                bits.set(i);
+            }
+        }
+        return bits;
     }
 }

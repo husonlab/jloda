@@ -20,9 +20,9 @@
 package jloda.kmers.mash;
 
 import jloda.kmers.bloomfilter.BloomFilter;
+import jloda.seq.SequenceUtils;
 import jloda.thirdparty.MurmurHash;
 import jloda.util.*;
-import jloda.seq.SequenceUtils;
 import jloda.util.progress.ProgressListener;
 
 import java.io.IOException;
@@ -197,18 +197,18 @@ public class MashSketch {
     }
 
     public static MashSketch parse(String string) throws IOException {
-		int sketchSize = Basic.parseInt(StringUtils.getWordAfter("s=", string));
-		int kMerSize = Basic.parseInt(StringUtils.getWordAfter("k=", string));
-		final String[] numbers = StringUtils.split(StringUtils.getWordAfter(":", string), ',');
+        int sketchSize = NumberUtils.parseInt(StringUtils.getWordAfter("s=", string));
+        int kMerSize = NumberUtils.parseInt(StringUtils.getWordAfter("k=", string));
+        final String[] numbers = StringUtils.split(StringUtils.getWordAfter(":", string), ',');
 
-		if (numbers.length != sketchSize)
-			throw new IOException("Expected sketch size " + sketchSize + ", found: " + numbers.length);
+        if (numbers.length != sketchSize)
+            throw new IOException("Expected sketch size " + sketchSize + ", found: " + numbers.length);
 
-		final MashSketch sketch = new MashSketch(sketchSize, kMerSize, "", true);
-		sketch.hashValues = new long[numbers.length];
-		for (int i = 0; i < numbers.length; i++) {
-			sketch.hashValues[i] = Basic.parseLong(numbers[i]);
-		}
+        final MashSketch sketch = new MashSketch(sketchSize, kMerSize, "", true);
+        sketch.hashValues = new long[numbers.length];
+        for (int i = 0; i < numbers.length; i++) {
+            sketch.hashValues[i] = NumberUtils.parseLong(numbers[i]);
+        }
 		return sketch;
     }
 

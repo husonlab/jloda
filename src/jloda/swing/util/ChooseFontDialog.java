@@ -20,7 +20,7 @@
 
 package jloda.swing.util;
 
-import jloda.util.Basic;
+import jloda.util.NumberUtils;
 import jloda.util.Pair;
 import jloda.util.Single;
 
@@ -176,7 +176,7 @@ public class ChooseFontDialog {
         bottom.add(new JButton(new AbstractAction("Apply") {
             public void actionPerformed(ActionEvent actionEvent) {
                 String name = fontNames.getSelectedItem().toString().trim();
-                int size = Basic.parseInt(fontSizes.getSelectedItem().toString().trim());
+                int size = NumberUtils.parseInt(fontSizes.getSelectedItem().toString().trim());
                 if (name != null && size > 0) {
                     result = new Pair<>(getCurrentFont(fontNames, fontSizes, boldCBox, italicCBox), theColor.get());
                 }
@@ -192,7 +192,7 @@ public class ChooseFontDialog {
 
     static private Font getCurrentFont(JComboBox fontNames, JComboBox fontSizes, JCheckBox boldCBox, JCheckBox italicCBox) {
         String name = fontNames.getSelectedItem().toString().trim();
-        int size = Basic.parseInt(fontSizes.getSelectedItem().toString().trim());
+        int size = NumberUtils.parseInt(fontSizes.getSelectedItem().toString().trim());
         if (name != null && size > 0) {
             int style = 0;
             if (boldCBox.isSelected())

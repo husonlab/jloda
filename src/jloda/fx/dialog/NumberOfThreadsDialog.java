@@ -20,7 +20,7 @@ package jloda.fx.dialog;
 
 import javafx.scene.control.TextInputDialog;
 import javafx.stage.Stage;
-import jloda.util.Basic;
+import jloda.util.NumberUtils;
 import jloda.util.ProgramProperties;
 
 import java.util.Optional;
@@ -40,8 +40,8 @@ public class NumberOfThreadsDialog {
 
         final Optional<String> result = dialog.showAndWait();
 
-        if (result.isPresent() && Basic.isInteger(result.get())) {
-            return Basic.parseInt(result.get());
+        if (result.isPresent() && NumberUtils.isInteger(result.get())) {
+            return NumberUtils.parseInt(result.get());
         } else
             return null;
     }

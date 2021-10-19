@@ -20,7 +20,7 @@
 
 package jloda.fx.undo;
 
-import jloda.util.Basic;
+import jloda.util.CollectionUtils;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -44,7 +44,7 @@ public class CompositeCommand extends UndoableRedoableCommand {
 
     @Override
     public void undo() {
-        Basic.reverse(commands).forEach(UndoableRedoableCommand::undo); // undo in backward order
+		CollectionUtils.reverse(commands).forEach(UndoableRedoableCommand::undo); // undo in backward order
     }
 
     @Override

@@ -21,8 +21,8 @@
 package jloda.util.parse;
 
 import jloda.swing.util.Colors;
-import jloda.util.Basic;
 import jloda.util.IOExceptionWithLineNumber;
+import jloda.util.NumberUtils;
 import jloda.util.StringUtils;
 
 import java.awt.*;
@@ -1583,7 +1583,7 @@ public class NexusStreamParser extends NexusStreamTokenizer implements Closeable
                         if (isHexInt(word)) {
                             r = parseHexInt(word);
                             return new Color(r);
-                        } else if (Basic.isInteger(word)) {
+                        } else if (NumberUtils.isInteger(word)) {
                             r = Integer.parseInt(word);
                         } else {
                             return Colors.parseColor(word);
@@ -1594,7 +1594,7 @@ public class NexusStreamParser extends NexusStreamTokenizer implements Closeable
                         break;
                     case 2:
                         b = Integer.parseInt(word);
-                        if (!Basic.isInteger(peekNextWord())) {
+                        if (!NumberUtils.isInteger(peekNextWord())) {
                             return new Color(r, g, b);
                         }
                         break;
@@ -1663,7 +1663,7 @@ public class NexusStreamParser extends NexusStreamTokenizer implements Closeable
     }
 
     public boolean peekInteger() {
-        return Basic.isInteger(peekNextWord());
+        return NumberUtils.isInteger(peekNextWord());
     }
 
 

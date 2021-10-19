@@ -21,7 +21,7 @@
 package jloda.fx.window;
 
 import javafx.stage.Stage;
-import jloda.util.Basic;
+import jloda.util.NumberUtils;
 
 import java.io.IOException;
 
@@ -53,10 +53,10 @@ public class WindowGeometry {
     public void setFromString(String text) throws IOException {
         final String[] tokens = text.split("\\s+");
         if (tokens.length == 4) {
-            x = Basic.parseDouble(tokens[0]);
-            y = Basic.parseDouble(tokens[1]);
-            width = Basic.parseDouble(tokens[2]);
-            height = Basic.parseDouble(tokens[3]);
+            x = NumberUtils.parseDouble(tokens[0]);
+            y = NumberUtils.parseDouble(tokens[1]);
+            width = NumberUtils.parseDouble(tokens[2]);
+            height = NumberUtils.parseDouble(tokens[3]);
         } else
             throw new IOException("Invalid geometry string: " + text);
     }

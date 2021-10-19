@@ -23,7 +23,7 @@ package jloda.fx.util;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontPosture;
 import javafx.scene.text.FontWeight;
-import jloda.util.Basic;
+import jloda.util.NumberUtils;
 
 /**
  * some font utilities
@@ -124,8 +124,8 @@ public class FontUtils {
      */
     public static Font valueOf(String fontString) {
         final String[] tokens = fontString.split(",");
-        if (tokens.length == 3 && Basic.isDouble(tokens[2]))
-            return font(tokens[0], tokens[1], Basic.parseDouble(tokens[2]));
+        if (tokens.length == 3 && NumberUtils.isDouble(tokens[2]))
+            return font(tokens[0], tokens[1], NumberUtils.parseDouble(tokens[2]));
         else
             return null;
     }

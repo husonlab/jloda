@@ -20,9 +20,9 @@
 package jloda.kmers.bloomfilter;
 
 import jloda.thirdparty.MurmurHash;
-import jloda.util.Basic;
 import jloda.util.ByteInputBuffer;
 import jloda.util.ByteOutputBuffer;
+import jloda.util.NumberUtils;
 import jloda.util.StringUtils;
 
 import java.io.IOException;
@@ -193,17 +193,17 @@ public class BloomFilter {
     }
 
     public static BloomFilter parseString(String string) {
-		long totalBits = Basic.parseLong(StringUtils.getWordAfter("b=", string));
-		int bitsPerItem = Basic.parseInt(StringUtils.getWordAfter("i=", string));
-		int numberOfHashFunctions = Basic.parseInt(StringUtils.getWordAfter("h=", string));
-		int itemsAdded = Basic.parseInt(StringUtils.getWordAfter("a=", string));
-		final BloomFilter bloomFilter = new BloomFilter(totalBits, bitsPerItem, numberOfHashFunctions);
-		bloomFilter.itemsAdded = itemsAdded;
-		String[] numbers = StringUtils.split(StringUtils.getWordAfter(":", string), ',');
-		for (int i = 0; i < numbers.length; i++)
-			bloomFilter.bitSet.getBits()[i] = Basic.parseLong(numbers[i]);
-		return bloomFilter;
-	}
+        long totalBits = NumberUtils.parseLong(StringUtils.getWordAfter("b=", string));
+        int bitsPerItem = NumberUtils.parseInt(StringUtils.getWordAfter("i=", string));
+        int numberOfHashFunctions = NumberUtils.parseInt(StringUtils.getWordAfter("h=", string));
+        int itemsAdded = NumberUtils.parseInt(StringUtils.getWordAfter("a=", string));
+        final BloomFilter bloomFilter = new BloomFilter(totalBits, bitsPerItem, numberOfHashFunctions);
+        bloomFilter.itemsAdded = itemsAdded;
+        String[] numbers = StringUtils.split(StringUtils.getWordAfter(":", string), ',');
+        for (int i = 0; i < numbers.length; i++)
+            bloomFilter.bitSet.getBits()[i] = NumberUtils.parseLong(numbers[i]);
+        return bloomFilter;
+    }
 
     public byte[] getBytes() {
         final ByteOutputBuffer buffer = new ByteOutputBuffer();

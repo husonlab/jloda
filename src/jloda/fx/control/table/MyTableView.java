@@ -41,8 +41,8 @@ import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Text;
 import javafx.util.converter.DefaultStringConverter;
 import jloda.fx.control.AMultipleSelectionModel;
-import jloda.util.Basic;
 import jloda.util.BitSetUtils;
+import jloda.util.NumberUtils;
 import jloda.util.StringUtils;
 import jloda.util.Triplet;
 
@@ -1166,7 +1166,7 @@ public class MyTableView extends Pane {
             this.sortType = sortType;
             sortAsNumbers = true;
             for (MyTableRow row : rows) {
-                if (!Basic.isDouble(row.getValue(colName))) {
+                if (!NumberUtils.isDouble(row.getValue(colName))) {
                     sortAsNumbers = false;
                     break;
                 }
@@ -1176,7 +1176,7 @@ public class MyTableView extends Pane {
         @Override
         public int compare(MyTableRow a, MyTableRow b) {
             if (sortAsNumbers)
-                return (sortType == TableColumn.SortType.ASCENDING ? 1 : -1) * Double.compare(Basic.parseDouble(a.getValue(colName)), Basic.parseDouble(b.getValue(colName)));
+                return (sortType == TableColumn.SortType.ASCENDING ? 1 : -1) * Double.compare(NumberUtils.parseDouble(a.getValue(colName)), NumberUtils.parseDouble(b.getValue(colName)));
             else
                 return (sortType == TableColumn.SortType.ASCENDING ? 1 : -1) * a.getValue(colName).compareTo(b.getValue(colName));
         }
