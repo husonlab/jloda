@@ -25,7 +25,7 @@ import javafx.beans.property.*;
 import jloda.fx.util.AService;
 import jloda.fx.util.ProgramExecutorService;
 import jloda.util.CanceledException;
-import jloda.util.ProgressListener;
+import jloda.util.progress.ProgressListener;
 
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;

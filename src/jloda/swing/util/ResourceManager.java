@@ -21,6 +21,7 @@
 package jloda.swing.util;
 
 import jloda.util.Basic;
+import jloda.util.FileUtils;
 import jloda.util.Pair;
 import jloda.util.ProgramProperties;
 
@@ -163,7 +164,7 @@ public class ResourceManager {
                 final String filesDirectory = ProgramProperties.get("FilesDirectory", "");
                 if (filesDirectory.length() > 0 && new File(filesDirectory, name).canRead()) {
                     try {
-                        return Basic.getInputStreamPossiblyZIPorGZIP(new File(filesDirectory, name).getAbsolutePath());
+						return FileUtils.getInputStreamPossiblyZIPorGZIP(new File(filesDirectory, name).getAbsolutePath());
                     } catch (IOException ignored) {
                     }
                 }
@@ -181,8 +182,8 @@ public class ResourceManager {
      */
     public static InputStream getFileAsStream(Class clazz, String filePackage, String fileName) {
         try {
-            final File file = new File(fileName);
-            final InputStream ins = Basic.getInputStreamPossiblyZIPorGZIP(file.getPath());
+			final File file = new File(fileName);
+			final InputStream ins = FileUtils.getInputStreamPossiblyZIPorGZIP(file.getPath());
             if (ins != null)
                 return ins;
         } catch (IOException ignored) {
@@ -272,15 +273,15 @@ public class ResourceManager {
         } catch (Exception ex) {
             final String filesDirectory = ProgramProperties.get("FilesDirectory", "");
             if (filesDirectory.length() > 0) {
-                if (Basic.isDirectory(filesDirectory)) {
-                    final File file = new File(filesDirectory, fileName);
-                    if (file.canRead()) {
-                        try {
-                            return Basic.getInputStreamPossiblyZIPorGZIP(file.getPath());
-                        } catch (IOException ignored) {
-                        }
-                    }
-                }
+				if (FileUtils.isDirectory(filesDirectory)) {
+					final File file = new File(filesDirectory, fileName);
+					if (file.canRead()) {
+						try {
+							return FileUtils.getInputStreamPossiblyZIPorGZIP(file.getPath());
+						} catch (IOException ignored) {
+						}
+					}
+				}
             }
             Basic.caught(ex);
         }

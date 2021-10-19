@@ -22,7 +22,7 @@ package jloda.fx.util;
 
 import javafx.concurrent.Task;
 import jloda.util.CanceledException;
-import jloda.util.ProgressListener;
+import jloda.util.progress.ProgressListener;
 
 import java.util.concurrent.Callable;
 

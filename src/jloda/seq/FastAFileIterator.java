@@ -1,4 +1,23 @@
 /*
+ *  FastAFileIterator.java Copyright (C) 2021 Daniel H. Huson
+ *
+ *  (Some files contain contributions from other authors, who are then mentioned separately.)
+ *
+ *  This program is free software: you can redistribute it and/or modify
+ *  it under the terms of the GNU General Public License as published by
+ *  the Free Software Foundation, either version 3 of the License, or
+ *  (at your option) any later version.
+ *
+ *  This program is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *  GNU General Public License for more details.
+ *
+ *  You should have received a copy of the GNU General Public License
+ *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
+
+/*
  * FastAFileIterator.java Copyright (C) 2021. Daniel H. Huson
  *
  * (Some code written by other authors, as named in code.)
@@ -18,7 +37,9 @@
  *
  */
 
-package jloda.util;
+package jloda.seq;
+
+import jloda.util.*;
 
 import java.io.*;
 import java.util.LinkedList;
@@ -57,9 +78,9 @@ public class FastAFileIterator implements IFastAIterator, Closeable {
      */
     public FastAFileIterator(String fileName) throws IOException {
         this.fileName = fileName;
-        maxProgress = Basic.guessUncompressedSizeOfFile(fileName);
-        r = new BufferedReader(new InputStreamReader(Basic.getInputStreamPossiblyZIPorGZIP(fileName)));
-        endOfLineBytes = Basic.determineEndOfLinesBytes(new File(fileName));
+        maxProgress = FileUtils.guessUncompressedSizeOfFile(fileName);
+        r = new BufferedReader(new InputStreamReader(FileUtils.getInputStreamPossiblyZIPorGZIP(fileName)));
+        endOfLineBytes = FileUtils.determineEndOfLinesBytes(new File(fileName));
         moveToFirst();
     }
 
@@ -85,7 +106,7 @@ public class FastAFileIterator implements IFastAIterator, Closeable {
                     parts.add(aLine);
                 }
             }
-            nextSequence = Basic.concatenateAndRemoveWhiteSpaces(parts);
+            nextSequence = StringUtils.concatenateAndRemoveWhiteSpaces(parts);
             parts.clear();
         } else
             close();
@@ -130,7 +151,7 @@ public class FastAFileIterator implements IFastAIterator, Closeable {
             } catch (IOException e) {
                 System.err.println("IOException file=" + fileName + " : " + e.getMessage());
             }
-            nextSequence = Basic.concatenateAndRemoveWhiteSpaces(parts);
+            nextSequence = StringUtils.concatenateAndRemoveWhiteSpaces(parts);
             parts.clear();
         } else
             try {
@@ -150,7 +171,7 @@ public class FastAFileIterator implements IFastAIterator, Closeable {
     public Pair<String, String> next(String firstWordInHeader) {
         while (hasNext()) {
             Pair<String, String> pair = next();
-            if (Basic.getFirstWord(Basic.swallowLeadingGreaterSign(pair.getFirst())).equals(firstWordInHeader))
+            if (StringUtils.getFirstWord(StringUtils.swallowLeadingGreaterSign(pair.getFirst())).equals(firstWordInHeader))
                 return pair;
         }
         return null;
@@ -238,7 +259,7 @@ public class FastAFileIterator implements IFastAIterator, Closeable {
      * @throws IOException
      */
     public static IFastAIterator getFastAOrFastQAsFastAIterator(String inputFile) throws IOException {
-        try (BufferedReader r = new BufferedReader(new InputStreamReader(Basic.getInputStreamPossiblyZIPorGZIP(inputFile)))) {
+        try (BufferedReader r = new BufferedReader(new InputStreamReader(FileUtils.getInputStreamPossiblyZIPorGZIP(inputFile)))) {
             String aLine = r.readLine();
             if (aLine.startsWith(">"))
                 return new FastAFileIterator(inputFile);

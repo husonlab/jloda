@@ -20,8 +20,8 @@
 
 package jloda.swing.util;
 
-import jloda.util.Basic;
 import jloda.util.ProgramProperties;
+import jloda.util.StringUtils;
 
 import java.awt.*;
 import java.util.ArrayList;
@@ -165,7 +165,7 @@ public class ColorTableManager {
         int alpha = Math.max(0, Math.min(255, ProgramProperties.get("ColorAlpha", 255)));
 
         for (String table : tables) {
-            final String[] tokens = Basic.split(table, ';');
+			final String[] tokens = StringUtils.split(table, ';');
             if (tokens.length > 0) {
                 int i = 0;
                 while (i < tokens.length) {

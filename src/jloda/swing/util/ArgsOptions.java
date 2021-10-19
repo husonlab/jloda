@@ -275,7 +275,7 @@ public class ArgsOptions {
         for (int i = 0; i < pairs.length; i++) {
             legalValues[i] = pairs[i].getFirst();
         }
-        usage.add(" Command " + Basic.toString(legalValues, " | "));
+        usage.add(" Command " + StringUtils.toString(legalValues, " | "));
 
         for (final Pair<String, String> pair : pairs) {
             if (pair.getSecond() != null)
@@ -285,10 +285,10 @@ public class ArgsOptions {
         final String command;
         if (!isDoHelp()) {
             if (arguments.size() == 0)
-                throw new UsageException("Command expected, must be one of: " + Basic.toString(legalValues, ", "));
+				throw new UsageException("Command expected, must be one of: " + StringUtils.toString(legalValues, ", "));
             command = arguments.remove(0);
             if (!Basic.contains(legalValues, command))
-                throw new UsageException("Command: " + command + ": must be one of: " + Basic.toString(legalValues, ", "));
+				throw new UsageException("Command: " + command + ": must be one of: " + StringUtils.toString(legalValues, ", "));
 
             if (verbose)
                 System.err.println("\tcommand: " + command);
@@ -393,11 +393,11 @@ public class ArgsOptions {
     }
 
     public String getOption(String shortKey, String longKey, String description, java.util.Collection<?> legalValues, String defaultValue) throws UsageException {
-        return getOption(shortKey, longKey, description, Arrays.asList(Basic.toStrings(legalValues)), defaultValue, false);
+		return getOption(shortKey, longKey, description, Arrays.asList(StringUtils.toStrings(legalValues)), defaultValue, false);
     }
 
     public String getOptionMandatory(String shortKey, String longKey, String description, Collection<?> legalValues, String defaultValue) throws UsageException {
-        return getOption(shortKey, longKey, description, Arrays.asList(Basic.toStrings(legalValues)), defaultValue, true);
+		return getOption(shortKey, longKey, description, Arrays.asList(StringUtils.toStrings(legalValues)), defaultValue, true);
     }
 
     public List<String> getOption(String shortKey, String longKey, String description, List<String> defaultValue) throws UsageException {
@@ -557,8 +557,8 @@ public class ArgsOptions {
         String defaultValueString = (defaultValue.length() == 0 ? "" : "Default value: " + defaultValue);
 
         if (!hide)
-            usage.add("\t" + shortKey + ", " + longKey + " [string]: " + description + ". " + (mandatory ? "Mandatory option." : defaultValueString)
-                    + (legalValues != null ? " Legal values: " + Basic.toString(legalValues, ", ") : ""));
+			usage.add("\t" + shortKey + ", " + longKey + " [string]: " + description + ". " + (mandatory ? "Mandatory option." : defaultValueString)
+					  + (legalValues != null ? " Legal values: " + StringUtils.toString(legalValues, ", ") : ""));
 
         String result = defaultValue;
 
@@ -575,14 +575,14 @@ public class ArgsOptions {
                 it.remove();
                 optionFound = true;
                 if (legalValues != null && !legalValues.contains(result))
-                    throw new UsageException("Illegal value for option " + longKey + ": " + result + ", legal values: " + Basic.toString(legalValues, ", "));
+					throw new UsageException("Illegal value for option " + longKey + ": " + result + ", legal values: " + StringUtils.toString(legalValues, ", "));
 
                 break;
             }
         }
         if (!optionFound) {
             if (mandatory && !doHelp)
-                throw new UsageException("Mandatory option '" + longKey + "' not specified" + (legalValues != null ? ", legal values: " + Basic.toString(legalValues, ", ") : "."));
+				throw new UsageException("Mandatory option '" + longKey + "' not specified" + (legalValues != null ? ", legal values: " + StringUtils.toString(legalValues, ", ") : "."));
         }
         if (!hide && verbose && result.length() > 0)
             System.err.println("\t" + longKey + ": " + result);
@@ -609,13 +609,13 @@ public class ArgsOptions {
         else
             longKeys.add(longKey);
 
-        String defaultValueString = (defaultValue.size() == 0 ? "" : "Default value(s): '" + Basic.toString(defaultValue, "' '") + "'");
+		String defaultValueString = (defaultValue.size() == 0 ? "" : "Default value(s): '" + StringUtils.toString(defaultValue, "' '") + "'");
 
         if (!hide) {
             if (mandatory)
-                usage.add("\t" + shortKey + ", " + longKey + " [string(s)]: " + description + ". Mandatory option" + (legalValues != null ? " legal values: " + Basic.toString(legalValues, ", ") : "") + ".");
+				usage.add("\t" + shortKey + ", " + longKey + " [string(s)]: " + description + ". Mandatory option" + (legalValues != null ? " legal values: " + StringUtils.toString(legalValues, ", ") : "") + ".");
             else
-                usage.add("\t" + shortKey + ", " + longKey + " [string(s)]: " + description + ". " + defaultValueString + (legalValues != null ? " legal values: " + Basic.toString(legalValues, ", ") + "." : defaultValueString.length() > 0 ? "." : ""));
+				usage.add("\t" + shortKey + ", " + longKey + " [string(s)]: " + description + ". " + defaultValueString + (legalValues != null ? " legal values: " + StringUtils.toString(legalValues, ", ") + "." : defaultValueString.length() > 0 ? "." : ""));
 
         }
         List<String> result = new LinkedList<>();
@@ -640,7 +640,7 @@ public class ArgsOptions {
                     }
                     it.remove();
                     if (legalValues != null && !legalValues.contains(value))
-                        throw new UsageException("Illegal value for option " + longKey + ": " + value + ", legal values: " + Basic.toString(legalValues, ", "));
+						throw new UsageException("Illegal value for option " + longKey + ": " + value + ", legal values: " + StringUtils.toString(legalValues, ", "));
 
                     result.add(value);
                 }
@@ -655,7 +655,7 @@ public class ArgsOptions {
                 result = defaultValue;
         }
         if (!hide && verbose && result.size() > 0)
-            System.err.println("\t" + longKey + ": " + Basic.toString(result, " "));
+			System.err.println("\t" + longKey + ": " + StringUtils.toString(result, " "));
         return result;
     }
 
@@ -691,8 +691,8 @@ public class ArgsOptions {
      */
     private String[] getDialogInput(String[] args, int argsLength) throws CanceledException {
         JOptionPane pane = new JOptionPane("Enter command-line options (-h for help)", JOptionPane.QUESTION_MESSAGE, JOptionPane.OK_CANCEL_OPTION, ProgramProperties.getProgramIcon(), null, "");
-        pane.setWantsInput(true);
-        pane.setInitialSelectionValue(Basic.toString(args, 0, argsLength, " "));
+		pane.setWantsInput(true);
+		pane.setInitialSelectionValue(StringUtils.toString(args, 0, argsLength, " "));
 
         JDialog dialog = pane.createDialog(null, "Input " + ProgramProperties.getProgramName());
         dialog.setResizable(true);

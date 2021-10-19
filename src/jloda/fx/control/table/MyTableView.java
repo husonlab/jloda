@@ -43,6 +43,7 @@ import javafx.util.converter.DefaultStringConverter;
 import jloda.fx.control.AMultipleSelectionModel;
 import jloda.util.Basic;
 import jloda.util.BitSetUtils;
+import jloda.util.StringUtils;
 import jloda.util.Triplet;
 
 import java.util.*;
@@ -153,7 +154,7 @@ public class MyTableView extends Pane {
 
                 final Optional<String> result = dialog.showAndWait();
                 if (result.isPresent() && rowHeaderView.getSelectionModel().getSelectedItems().size() == 1) {
-                    final String newName = Basic.getUniqueName(result.get().trim(), getRowNames());
+					final String newName = StringUtils.getUniqueName(result.get().trim(), getRowNames());
 
                     final MyTableRow newRow = new MyTableRow(newName);
                     final int pos = getRowIndex(rowHeaderView.getSelectionModel().getSelectedItems().get(0));
@@ -175,7 +176,7 @@ public class MyTableView extends Pane {
                 final Optional<String> result = dialog.showAndWait();
                 if (result.isPresent() && rowHeaderView.getSelectionModel().getSelectedItems().size() == 1) {
                     if (!result.get().equals(oldName)) {
-                        final String newName = Basic.getUniqueName(result.get().trim(), getRowNames());
+						final String newName = StringUtils.getUniqueName(result.get().trim(), getRowNames());
                         renameRow(oldName, newName);
                     }
                 }
@@ -319,8 +320,8 @@ public class MyTableView extends Pane {
         final int index = getRowIndex(oldName);
         final MyTableRow tableRow = getRow(oldName);
         if (index != -1 && tableRow != null) {
-            newName = Basic.getUniqueName(newName.trim(), getRowNames());
-            rowHeaderView.getItems().set(index, newName);
+			newName = StringUtils.getUniqueName(newName.trim(), getRowNames());
+			rowHeaderView.getItems().set(index, newName);
             tableRow.setRowName(newName);
             postUpdate();
         }
@@ -329,8 +330,8 @@ public class MyTableView extends Pane {
     public void renameCol(String oldName, String newName) {
         final TableColumn col = getCol(oldName);
         if (col != null) {
-            newName = Basic.getUniqueName(newName.trim(), getColNames());
-            col.setText(newName);
+			newName = StringUtils.getUniqueName(newName.trim(), getColNames());
+			col.setText(newName);
             for (MyTableRow row : tableView.getItems()) {
                 row.renameCol(oldName, newName);
             }
@@ -424,7 +425,7 @@ public class MyTableView extends Pane {
             final Optional<String> result = dialog.showAndWait();
             if (result.isPresent()) {
                 if (!result.get().equals(tableColumn.getText())) {
-                    final String newName = Basic.getUniqueName(result.get().trim(), getColNames());
+					final String newName = StringUtils.getUniqueName(result.get().trim(), getColNames());
                     renameCol(tableColumn.getText(), newName);
                 }
             }
@@ -864,11 +865,11 @@ public class MyTableView extends Pane {
                         || pickResult.getIntersectedNode() instanceof Text)) {
                     final Dragboard dragboard = rowHeaderView.startDragAndDrop(TransferMode.MOVE);
                     final ClipboardContent content = new ClipboardContent();
-                    content.put(DataFormat.PLAIN_TEXT, Basic.toString(new ArrayList<>(rowHeaderView.getSelectionModel().getSelectedItems()), "\n"));
-                    dragboard.setDragView(dragImage);
+					content.put(DataFormat.PLAIN_TEXT, StringUtils.toString(new ArrayList<>(rowHeaderView.getSelectionModel().getSelectedItems()), "\n"));
+					dragboard.setDragView(dragImage);
 
-                    content.putString(Basic.toString(rowHeaderView.getSelectionModel().getSelectedItems(), "\n"));
-                    dragboard.setContent(content);
+					content.putString(StringUtils.toString(rowHeaderView.getSelectionModel().getSelectedItems(), "\n"));
+					dragboard.setContent(content);
 
                     tableView.getSelectionModel().clearSelection();
                     for (String row : rowHeaderView.getSelectionModel().getSelectedItems())
@@ -888,7 +889,7 @@ public class MyTableView extends Pane {
 
         rowHeaderView.setOnDragDropped(e -> {
             if (getAllowReorderRow()) {
-                final List<String> list = Basic.toList(e.getDragboard().getContent(DataFormat.PLAIN_TEXT).toString());
+				final List<String> list = StringUtils.toList(e.getDragboard().getContent(DataFormat.PLAIN_TEXT).toString());
 
                 String hitRowName = null;
                 {
@@ -1025,8 +1026,8 @@ public class MyTableView extends Pane {
         pausePostingUpdates();
         try {
             setUserData(-1);
-            final String newColName = Basic.getUniqueName(colName, getColNames());
-            final TableColumn<MyTableRow, String> newColumn = createTableCol(newColName);
+			final String newColName = StringUtils.getUniqueName(colName, getColNames());
+			final TableColumn<MyTableRow, String> newColumn = createTableCol(newColName);
             if (pos >= 0 && pos < getColCount() - 1)
                 tableView.getColumns().add(pos + 1, newColumn);
             else
@@ -1044,8 +1045,8 @@ public class MyTableView extends Pane {
     public void addRow(int index, String rowName, Object... values) {
         pausePostingUpdates();
         try {
-            final String newRowName = Basic.getUniqueName(rowName, getRowNames());
-            final MyTableRow newRow = new MyTableRow(newRowName);
+			final String newRowName = StringUtils.getUniqueName(rowName, getRowNames());
+			final MyTableRow newRow = new MyTableRow(newRowName);
             if (index >= 0 && index < getRowCount() - 1)
                 tableView.getItems().add(index, newRow);
             else

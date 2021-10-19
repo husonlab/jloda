@@ -24,7 +24,7 @@ import javafx.scene.Node;
 import javafx.scene.shape.Shape;
 import javafx.scene.shape.Shape3D;
 import javafx.scene.shape.Sphere;
-import jloda.util.Basic;
+import jloda.util.StringUtils;
 
 public enum NodeShape {
     Square, Circle, TriangleUp, TriangleDown, Diamond, Hexagon, Rectangle, Oval, None;
@@ -97,7 +97,7 @@ public enum NodeShape {
      * @return
      */
     public static Shape create(String name, double width, double height) {
-        final NodeShape nodeShape = Basic.valueOfIgnoreCase(NodeShape.class, name);
+		final NodeShape nodeShape = StringUtils.valueOfIgnoreCase(NodeShape.class, name);
         if (nodeShape != null)
             return create(nodeShape, width, height);
         else

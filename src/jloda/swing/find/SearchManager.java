@@ -29,8 +29,8 @@ import jloda.swing.util.Message;
 import jloda.swing.util.ProgressDialog;
 import jloda.util.Basic;
 import jloda.util.CanceledException;
-import jloda.util.ProgressListener;
-import jloda.util.ProgressSilent;
+import jloda.util.progress.ProgressListener;
+import jloda.util.progress.ProgressSilent;
 
 import javax.swing.*;
 import java.awt.*;

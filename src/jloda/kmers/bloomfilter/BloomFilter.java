@@ -23,6 +23,7 @@ import jloda.thirdparty.MurmurHash;
 import jloda.util.Basic;
 import jloda.util.ByteInputBuffer;
 import jloda.util.ByteOutputBuffer;
+import jloda.util.StringUtils;
 
 import java.io.IOException;
 import java.util.Collection;
@@ -188,21 +189,21 @@ public class BloomFilter {
     }
 
     public String getString() {
-        return String.format("b=%d i=%d h=%d a=%d:%s", totalBits, bitsPerItem, numberOfHashFunctions, itemsAdded, Basic.toString(bitSet.getBits(), ","));
+		return String.format("b=%d i=%d h=%d a=%d:%s", totalBits, bitsPerItem, numberOfHashFunctions, itemsAdded, StringUtils.toString(bitSet.getBits(), ","));
     }
 
     public static BloomFilter parseString(String string) {
-        long totalBits = Basic.parseLong(Basic.getWordAfter("b=", string));
-        int bitsPerItem = Basic.parseInt(Basic.getWordAfter("i=", string));
-        int numberOfHashFunctions = Basic.parseInt(Basic.getWordAfter("h=", string));
-        int itemsAdded = Basic.parseInt(Basic.getWordAfter("a=", string));
-        final BloomFilter bloomFilter = new BloomFilter(totalBits, bitsPerItem, numberOfHashFunctions);
-        bloomFilter.itemsAdded = itemsAdded;
-        String[] numbers = Basic.split(Basic.getWordAfter(":", string), ',');
-        for (int i = 0; i < numbers.length; i++)
-            bloomFilter.bitSet.getBits()[i] = Basic.parseLong(numbers[i]);
-        return bloomFilter;
-    }
+		long totalBits = Basic.parseLong(StringUtils.getWordAfter("b=", string));
+		int bitsPerItem = Basic.parseInt(StringUtils.getWordAfter("i=", string));
+		int numberOfHashFunctions = Basic.parseInt(StringUtils.getWordAfter("h=", string));
+		int itemsAdded = Basic.parseInt(StringUtils.getWordAfter("a=", string));
+		final BloomFilter bloomFilter = new BloomFilter(totalBits, bitsPerItem, numberOfHashFunctions);
+		bloomFilter.itemsAdded = itemsAdded;
+		String[] numbers = StringUtils.split(StringUtils.getWordAfter(":", string), ',');
+		for (int i = 0; i < numbers.length; i++)
+			bloomFilter.bitSet.getBits()[i] = Basic.parseLong(numbers[i]);
+		return bloomFilter;
+	}
 
     public byte[] getBytes() {
         final ByteOutputBuffer buffer = new ByteOutputBuffer();

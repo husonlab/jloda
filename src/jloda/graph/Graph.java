@@ -21,7 +21,6 @@ package jloda.graph;
 
 import jloda.util.Basic;
 import jloda.util.INamed;
-import jloda.util.IteratorAdapter;
 import jloda.util.IteratorUtils;
 
 import java.lang.ref.WeakReference;
@@ -756,20 +755,23 @@ public class Graph extends GraphBase implements INamed {
      * @return edge iterator
      */
     public Iterator<Edge> edgeIteratorIncludingHidden() {
-        return new IteratorAdapter<>() {
-            private Edge e = firstEdge;
+		return new Iterator<>() {
+			private Edge e = firstEdge;
 
-            protected Edge findNext() throws NoSuchElementException {
-                if (e != null) {
-                    final var result = e;
-                    checkOwner(e);
-                    e = (Edge) result.next;
-                    return result;
-                } else {
-                    throw new NoSuchElementException("at end");
-                }
-            }
-        };
+			@Override
+			public boolean hasNext() {
+				return e != null;
+			}
+
+			@Override
+			public Edge next() {
+				if (e == null)
+					throw new NoSuchElementException();
+				var result = e;
+				e = e.getNext();
+				return result;
+			}
+		};
     }
 
     /**
@@ -778,23 +780,23 @@ public class Graph extends GraphBase implements INamed {
      * @return node iterator
      */
     public Iterator<Node> nodeIteratorIncludingHidden() {
-        return new IteratorAdapter<>() {
-            private Node v = firstNode;
+		return new Iterator<>() {
+			private Node v = firstNode;
 
-            protected Node findNext() throws NoSuchElementException {
-                if (v != null) {
-                    final var result = v;
-                    v = (Node) v.next;
-                    return result;
-                } else {
-                    throw new NoSuchElementException("at end");
-                }
-            }
+			@Override
+			public boolean hasNext() {
+				return v != null;
+			}
 
-            public boolean hasNext() {
-                return v != null;
-            }
-        };
+			@Override
+			public Node next() {
+				if (v == null)
+					throw new NoSuchElementException();
+				var result = v;
+				v = v.getNext();
+				return result;
+			}
+		};
     }
 
     /**

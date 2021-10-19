@@ -20,7 +20,7 @@
 
 package jloda.swing.util;
 
-import jloda.util.Basic;
+import jloda.util.FileUtils;
 
 import java.io.File;
 import java.io.FilenameFilter;
@@ -65,9 +65,9 @@ public class FastaFileFilter extends FileFilterBase implements FilenameFilter {
     }
 
     public boolean accept(String fileName) {
-        boolean suffixOk = super.accept(Basic.getFileNameWithoutZipOrGZipSuffix(fileName));
+        boolean suffixOk = super.accept(FileUtils.getFileNameWithoutZipOrGZipSuffix(fileName));
         if (suffixOk) {   // look inside the file
-            final String[] lines = Basic.getFirstLinesFromFile(new File(fileName), 2);
+            final String[] lines = FileUtils.getFirstLinesFromFile(new File(fileName), 2);
             return lines != null && lines[0] != null && isFastAHeaderLine(lines[0]) && lines[1] != null && !lines[1].startsWith(">");
         } else
             return false;

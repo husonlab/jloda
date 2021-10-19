@@ -43,7 +43,9 @@ import jloda.fx.util.ExtendedFXMLLoader;
 import jloda.fx.util.TextFileFilter;
 import jloda.fx.window.NotificationManager;
 import jloda.util.Basic;
+import jloda.util.FileUtils;
 import jloda.util.ProgramProperties;
+import jloda.util.StringUtils;
 
 import java.io.File;
 import java.io.IOException;
@@ -242,11 +244,11 @@ public class FindToolBar extends VBox {
                 if (selectedFile != null) {
                     ProgramProperties.put("FindFile", selectedFile.getParent());
                     try {
-                        final List<String> terms = Basic.getLinesFromFile(selectedFile.getPath());
-                        controller.getSearchComboBox().setValue(Basic.toString(terms.stream().map(String::trim)
-                                .filter(line -> line.length() > 0 && !line.startsWith("#")).collect(Collectors.toSet()), "|"));
-                        controller.getRegExCheckBox().setSelected(true);
-                    } catch (IOException e) {
+						final List<String> terms = FileUtils.getLinesFromFile(selectedFile.getPath());
+						controller.getSearchComboBox().setValue(StringUtils.toString(terms.stream().map(String::trim)
+								.filter(line -> line.length() > 0 && !line.startsWith("#")).collect(Collectors.toSet()), "|"));
+						controller.getRegExCheckBox().setSelected(true);
+					} catch (IOException e) {
                         NotificationManager.showWarning("File from file failed: " + e);
                     }
                 }

@@ -315,7 +315,7 @@ public class ArgsOptions {
         for (int i = 0; i < pairs.length; i++) {
             legalValues[i] = pairs[i].getFirst();
         }
-        usage.add(" Command " + Basic.toString(legalValues, " | "));
+        usage.add(" Command " + StringUtils.toString(legalValues, " | "));
 
         for (final Pair<String, String> pair : pairs) {
             if (pair.getSecond() != null)
@@ -325,11 +325,11 @@ public class ArgsOptions {
         final String command;
         if (!isDoHelp()) {
             if (arguments.size() == 0)
-                throw new UsageException("Command expected, must be one of: " + Basic.toString(legalValues, ", "));
+				throw new UsageException("Command expected, must be one of: " + StringUtils.toString(legalValues, ", "));
             command = arguments.remove(0);
             if (!Basic.contains(legalValues, command)) {
                 if (command.startsWith("-"))
-                    throw new UsageException("Command: " + (command.startsWith("-") ? "" : command + ": ") + "+must be one of: " + Basic.toString(legalValues, ", "));
+					throw new UsageException("Command: " + (command.startsWith("-") ? "" : command + ": ") + "+must be one of: " + StringUtils.toString(legalValues, ", "));
             }
 
             if (verbose)
@@ -606,8 +606,8 @@ public class ArgsOptions {
         String defaultValueString = (defaultValue.length() == 0 ? "" : "Default value: " + defaultValue + ".");
 
         if (!hide)
-            usage.add("\t" + shortKey + ", " + longKey + " [string]: " + description + ". " + (mandatory ? "Mandatory option." : defaultValueString)
-                    + (legalValues != null ? " Legal values: " + Basic.toString(legalValues, ", ") : ""));
+			usage.add("\t" + shortKey + ", " + longKey + " [string]: " + description + ". " + (mandatory ? "Mandatory option." : defaultValueString)
+					  + (legalValues != null ? " Legal values: " + StringUtils.toString(legalValues, ", ") : ""));
 
         String result = defaultValue;
 
@@ -624,14 +624,14 @@ public class ArgsOptions {
                 it.remove();
                 found = true;
                 if (legalValues != null && !legalValues.contains(result))
-                    throw new UsageException("Illegal value for option " + longKey + ": " + result + ", legal values: " + Basic.toString(legalValues, ", "));
+					throw new UsageException("Illegal value for option " + longKey + ": " + result + ", legal values: " + StringUtils.toString(legalValues, ", "));
 
                 break;
             }
         }
         if (!found) {
             if (mandatory && !doHelp)
-                throw new UsageException("Mandatory option '" + longKey + "' not specified" + (legalValues != null ? ", legal values: " + Basic.toString(legalValues, ", ") : "."));
+				throw new UsageException("Mandatory option '" + longKey + "' not specified" + (legalValues != null ? ", legal values: " + StringUtils.toString(legalValues, ", ") : "."));
         }
         if (!hide && verbose && result.length() > 0)
             System.err.println("\t" + longKey + ": " + result);
@@ -658,11 +658,11 @@ public class ArgsOptions {
         else
             longKeys.add(longKey);
 
-        final String defaultValueString = (defaultValue.size() == 0 ? "" : "Default value(s): '" + Basic.toString(defaultValue, "' '") + "'");
+		final String defaultValueString = (defaultValue.size() == 0 ? "" : "Default value(s): '" + StringUtils.toString(defaultValue, "' '") + "'");
 
         if (!hide)
-            usage.add("\t" + shortKey + ", " + longKey + " [string(s)]: " + description + ". " + (mandatory ? "Mandatory option." : defaultValueString)
-                    + (legalValues != null ? " Legal values: " + Basic.toString(legalValues, ", ") : ""));
+			usage.add("\t" + shortKey + ", " + longKey + " [string(s)]: " + description + ". " + (mandatory ? "Mandatory option." : defaultValueString)
+					  + (legalValues != null ? " Legal values: " + StringUtils.toString(legalValues, ", ") : ""));
 
         List<String> result = new LinkedList<>();
         boolean inArguments = false; // once in arguments, will continue until argument starts with -
@@ -684,7 +684,7 @@ public class ArgsOptions {
                     }
                     it.remove();
                     if (legalValues != null && !legalValues.contains(value))
-                        throw new UsageException("Illegal value for option " + longKey + ": " + value + ", legal values: " + Basic.toString(legalValues, ", "));
+						throw new UsageException("Illegal value for option " + longKey + ": " + value + ", legal values: " + StringUtils.toString(legalValues, ", "));
 
                     result.add(value);
                 }
@@ -699,7 +699,7 @@ public class ArgsOptions {
                 result = defaultValue;
         }
         if (!hide && verbose && result.size() > 0)
-            System.err.println("\t" + longKey + ": " + Basic.toString(result, " "));
+			System.err.println("\t" + longKey + ": " + StringUtils.toString(result, " "));
         return result;
     }
 

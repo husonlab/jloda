@@ -24,6 +24,7 @@ package jloda.fx.util;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import jloda.util.Basic;
+import jloda.util.FileUtils;
 import jloda.util.Pair;
 
 import java.io.ByteArrayInputStream;
@@ -172,7 +173,7 @@ public class ResourceManagerFX {
         if (fileName.contains("/") || fileName.contains("\\")) {
             final File file = new File(fileName);
             try {
-                return Basic.getInputStreamPossiblyZIPorGZIP(file.getPath());
+				return FileUtils.getInputStreamPossiblyZIPorGZIP(file.getPath());
             } catch (IOException e) {
                 if (!fileName.endsWith(".info")) // don't complain about missing info files
                     System.err.println(e.getMessage());
@@ -182,7 +183,7 @@ public class ResourceManagerFX {
             try {
                 InputStream ins = getFileResourceAsStream(clazz, filePackage, fileName);
                 if (ins != null)
-                    return Basic.getInputStreamPossiblyGZIP(ins, fileName);
+					return FileUtils.getInputStreamPossiblyGZIP(ins, fileName);
             } catch (IOException e) {
             }
             return null;

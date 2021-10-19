@@ -24,7 +24,7 @@ import jloda.graph.Edge;
 import jloda.graph.Graph;
 import jloda.graph.Node;
 import jloda.swing.util.Geometry;
-import jloda.util.Basic;
+import jloda.util.IteratorUtils;
 import jloda.util.ProgramProperties;
 
 import java.awt.*;
@@ -219,16 +219,16 @@ public class LabelLayouter {
             }
 
             int cost = 0;
-            for (Iterator it = Basic.randomize(nodes.iterator(), 17 * i); it.hasNext(); ) {
-                Node v = (Node) it.next();
-                NodeView nv = graphView.getNV(v);
-                if (nv.getLabelColor() != null && nv.getLabel() != null && nv.getLabel().length() > 0) {
+			for (Iterator it = IteratorUtils.randomize(nodes.iterator(), 17 * i); it.hasNext(); ) {
+				Node v = (Node) it.next();
+				NodeView nv = graphView.getNV(v);
+				if (nv.getLabelColor() != null && nv.getLabel() != null && nv.getLabel().length() > 0) {
 
-                    if (nv.getLabelLayout() == NodeView.LAYOUT) {
-                        cost += layout(graphView, v, false);
-                    }
-                }
-            }
+					if (nv.getLabelLayout() == NodeView.LAYOUT) {
+						cost += layout(graphView, v, false);
+					}
+				}
+			}
 
             if (cost < bestCost) {
                 //System.err.println("Cost: " + bestCost+" -> "+cost);
@@ -254,15 +254,15 @@ public class LabelLayouter {
             }
         }
 
-        for (Iterator it = Basic.randomize(nodes.iterator(), 17 * bestRun); it.hasNext(); ) {
-            Node v = (Node) it.next();
-            NodeView nv = graphView.getNV(v);
-            if (nv.getLabelColor() != null && nv.getLabel() != null && nv.getLabel().length() > 0) {
+		for (Iterator it = IteratorUtils.randomize(nodes.iterator(), 17 * bestRun); it.hasNext(); ) {
+			Node v = (Node) it.next();
+			NodeView nv = graphView.getNV(v);
+			if (nv.getLabelColor() != null && nv.getLabel() != null && nv.getLabel().length() > 0) {
 
-                if (nv.getLabelLayout() == NodeView.LAYOUT) {
-                    layout(graphView, v, true);
-                }
-            }
-        }
+				if (nv.getLabelLayout() == NodeView.LAYOUT) {
+					layout(graphView, v, true);
+				}
+			}
+		}
     }
 }

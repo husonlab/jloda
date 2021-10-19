@@ -20,7 +20,6 @@
 package jloda.graph;
 
 import jloda.util.Basic;
-import jloda.util.IteratorAdapter;
 
 import java.util.*;
 
@@ -230,19 +229,24 @@ public class NodeSet extends GraphBase implements Set<Node> {
      * @return an enumeration of the elements in the set
      */
     public Iterator<Node> iterator() {
-        return new IteratorAdapter<>() {
-            private Node v = getFirstElement();
 
-            protected Node findNext() throws NoSuchElementException {
-                if (v != null) {
-                    final Node result = v;
-                    v = getNextElement(v);
-                    return result;
-                } else {
-                    throw new NoSuchElementException("at end");
-                }
-            }
-        };
+		return new Iterator<>() {
+			private Node v = getFirstElement();
+
+			@Override
+			public boolean hasNext() {
+				return v != null;
+			}
+
+			@Override
+			public Node next() {
+				if (v == null)
+					throw new NoSuchElementException();
+				var result = v;
+				v = getNextElement(v);
+				return result;
+			}
+		};
     }
 
     /**

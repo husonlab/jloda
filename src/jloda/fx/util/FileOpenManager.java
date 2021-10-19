@@ -1,0 +1,125 @@
+/*
+ *  Copyright (C) 2018. Daniel H. Huson
+ *
+ *  (Some files contain contributions from other authors, who are then mentioned separately.)
+ *
+ *  This program is free software: you can redistribute it and/or modify
+ *  it under the terms of the GNU General Public License as published by
+ *  the Free Software Foundation, either version 3 of the License, or
+ *  (at your option) any later version.
+ *
+ *  This program is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *  GNU General Public License for more details.
+ *
+ *  You should have received a copy of the GNU General Public License
+ *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
+
+/*
+ * FileOpenManager.java Copyright (C) 2021. Daniel H. Huson
+ *
+ * (Some code written by other authors, as named in code.)
+ *
+ *  This program is free software: you can redistribute it and/or modify
+ *  it under the terms of the GNU General Public License as published by
+ *  the Free Software Foundation, either version 3 of the License, or
+ *  (at your option) any later version.
+ *
+ *  This program is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *  GNU General Public License for more details.
+ *
+ *  You should have received a copy of the GNU General Public License
+ *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ *
+ */
+
+package jloda.fx.util;
+
+import javafx.beans.property.ObjectProperty;
+import javafx.beans.property.SimpleObjectProperty;
+import javafx.beans.property.SimpleStringProperty;
+import javafx.beans.property.StringProperty;
+import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
+import javafx.stage.FileChooser;
+import javafx.stage.Stage;
+import jloda.util.ProgramProperties;
+
+import java.io.File;
+import java.util.Collection;
+import java.util.function.Consumer;
+
+/**
+ * file open manager
+ * Daniel Huson, 5.2019
+ */
+public class FileOpenManager {
+	private static final ObjectProperty<Consumer<String>> fileOpener = new SimpleObjectProperty<>();
+	private static final ObjectProperty<Collection<FileChooser.ExtensionFilter>> extensions = new SimpleObjectProperty<>();
+	private static final StringProperty propertiesKeyword = new SimpleStringProperty("OpenFileDir");
+
+	public static EventHandler<ActionEvent> createOpenFileEventHandler(Stage stage) {
+		return event ->
+		{
+			File previousDir = new File(ProgramProperties.get(getPropertiesKeyword(), ""));
+
+			final FileChooser fileChooser = new FileChooser();
+			if (previousDir.isDirectory())
+				fileChooser.setInitialDirectory(previousDir);
+			if (ProgramProperties.getProgramVersion() != null)
+				fileChooser.setTitle("Open File - " + ProgramProperties.getProgramVersion());
+			else
+				fileChooser.setTitle("Open File");
+
+			if (getExtensions() != null)
+				fileChooser.getExtensionFilters().addAll(getExtensions());
+			final File selectedFile = fileChooser.showOpenDialog(stage);
+
+			if (selectedFile != null && getFileOpener() != null) {
+				ProgramProperties.put(getPropertiesKeyword(), selectedFile.getParent());
+				getFileOpener().accept(selectedFile.getPath());
+				RecentFilesManager.getInstance().insertRecentFile(selectedFile.getPath());
+			}
+		};
+	}
+
+	public static Consumer<String> getFileOpener() {
+		return fileOpener.get();
+	}
+
+	public static ObjectProperty<Consumer<String>> fileOpenerProperty() {
+		return fileOpener;
+	}
+
+	public static void setFileOpener(Consumer<String> fileOpener) {
+		FileOpenManager.fileOpener.set(fileOpener);
+	}
+
+	public static Collection<FileChooser.ExtensionFilter> getExtensions() {
+		return extensions.get();
+	}
+
+	public static ObjectProperty<Collection<FileChooser.ExtensionFilter>> extensionsProperty() {
+		return extensions;
+	}
+
+	public static void setExtensions(Collection<FileChooser.ExtensionFilter> extensions) {
+		FileOpenManager.extensions.set(extensions);
+	}
+
+	public static String getPropertiesKeyword() {
+		return propertiesKeyword.get();
+	}
+
+	public static StringProperty propertiesKeywordProperty() {
+		return propertiesKeyword;
+	}
+
+	public static void setPropertiesKeyword(String propertiesKeyword) {
+		FileOpenManager.propertiesKeyword.set(propertiesKeyword);
+	}
+}

@@ -20,7 +20,7 @@
 
 package jloda.swing.export;
 
-import jloda.util.Basic;
+import jloda.util.FileUtils;
 
 import javax.swing.*;
 import javax.swing.filechooser.FileFilter;
@@ -140,7 +140,7 @@ public class EPSExportType extends FileFilter implements ExportGraphicType {
         if (f.isDirectory()) {
             return true;
         }
-        String extension = Basic.getFileSuffix(f.getName());
+		String extension = FileUtils.getFileSuffix(f.getName());
         if (extension != null) {
             return extension.equalsIgnoreCase(".eps");
         } else {

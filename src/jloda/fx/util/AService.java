@@ -25,7 +25,7 @@ import javafx.scene.layout.Pane;
 import jloda.fx.control.ProgressPane;
 import jloda.fx.window.NotificationManager;
 import jloda.util.Basic;
-import jloda.util.ProgressListener;
+import jloda.util.progress.ProgressListener;
 
 import java.util.concurrent.Callable;
 

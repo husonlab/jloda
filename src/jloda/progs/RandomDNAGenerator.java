@@ -21,7 +21,7 @@
 package jloda.progs;
 
 import jloda.swing.util.CommandLineOptions;
-import jloda.util.FastA;
+import jloda.seq.FastA;
 import jloda.util.UsageException;
 
 import java.io.BufferedReader;

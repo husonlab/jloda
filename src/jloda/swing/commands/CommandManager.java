@@ -25,6 +25,7 @@ import jloda.swing.director.IDirector;
 import jloda.util.Basic;
 import jloda.util.CanceledException;
 import jloda.util.PluginClassLoader;
+import jloda.util.StringUtils;
 import jloda.util.parse.NexusStreamParser;
 
 import javax.swing.*;
@@ -181,7 +182,7 @@ public class CommandManager {
      * @throws CanceledException
      */
     public void execute(String commandString) throws IOException, CanceledException {
-        commandString = Basic.protectBackSlashes(commandString);  // need this for windows paths
+		commandString = StringUtils.protectBackSlashes(commandString);  // need this for windows paths
         NexusStreamParser np = new NexusStreamParser(new StringReader(commandString));
         execute(np);
     }
@@ -221,7 +222,7 @@ public class CommandManager {
                 if (!found) {
                     if (returnOnCommandNotFound) {
                         String command = np.getWordRespectCase();
-                        System.err.println("Failed to parse command: " + command + " " + Basic.toString(np.getTokensRespectCase(null, ";"), " "));
+						System.err.println("Failed to parse command: " + command + " " + StringUtils.toString(np.getTokensRespectCase(null, ";"), " "));
                         String similar = getUsageStartsWith(command);
                         if (similar.length() > 0) {
                             System.err.println("Similar commands:");
@@ -377,10 +378,10 @@ public class CommandManager {
                 if (syntax != null) {
                     String description = command.getDescription();
                     if (description != null) {
-                        if (Basic.getLastLine(syntax).length() + description.length() < 100)
-                            lines.add(syntax + " - " + description + "\n");
-                        else
-                            lines.add(syntax + "\n\t- " + description + "\n");
+						if (StringUtils.getLastLine(syntax).length() + description.length() < 100)
+							lines.add(syntax + " - " + description + "\n");
+						else
+							lines.add(syntax + "\n\t- " + description + "\n");
                     }
                 }
             }
@@ -425,10 +426,10 @@ public class CommandManager {
                     if (command != null && command.getSyntax() != null) {
                         String syntax = command.getSyntax();
                         String description = command.getDescription();
-                        if (Basic.getLastLine(syntax).length() + description.length() < 100)
-                            buf.append(syntax).append(" - ").append(description).append("\n");
-                        else
-                            buf.append(syntax).append("\n\t- ").append(description).append("\n");
+						if (StringUtils.getLastLine(syntax).length() + description.length() < 100)
+							buf.append(syntax).append(" - ").append(description).append("\n");
+						else
+							buf.append(syntax).append("\n\t- ").append(description).append("\n");
 
                         seen.add(command);
                     }

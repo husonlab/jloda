@@ -20,8 +20,8 @@
 
 package jloda.swing.util;
 
-import jloda.util.Basic;
 import jloda.util.ProgramProperties;
+import jloda.util.StringUtils;
 
 import javax.swing.*;
 import java.awt.*;
@@ -56,7 +56,7 @@ public class Alert {
             else
                 label = "Alert";
 
-            JOptionPane.showMessageDialog(parent, Basic.toMessageString(message), label, JOptionPane.ERROR_MESSAGE, ProgramProperties.getProgramIcon());
+			JOptionPane.showMessageDialog(parent, StringUtils.toMessageString(message), label, JOptionPane.ERROR_MESSAGE, ProgramProperties.getProgramIcon());
         } else
             System.err.println("Alert - " + message);
     }

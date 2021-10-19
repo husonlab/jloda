@@ -220,25 +220,131 @@ public class IteratorUtils {
 
             @Override
             public T next() {
-                return list.get(--pos);
-            }
-        };
-    }
+				return list.get(--pos);
+			}
+		};
+	}
 
-    public static LineIterator lines(Reader reader) {
-        return new LineIterator(reader);
+	public static LineIterator lines(Reader reader) {
+		return new LineIterator(reader);
 
-    }
+	}
 
-    public static class LineIterator implements Iterator<String>, AutoCloseable {
-        private final BufferedReader br;
-        private String next;
-        private int lineNumber = 0;
+	/**
+	 * given a iterator, returns a new iterator in random order
+	 *
+	 * @return iterator in random order
+	 */
+	public static <T> Iterator<T> randomize(Iterator<T> it, long seed) {
+		return randomize(it, new Random(seed));
+	}
 
-        public LineIterator(Reader reader) {
-            br = (reader instanceof BufferedReader ? (BufferedReader) reader : new BufferedReader(reader));
-            {
-                try {
+	/**
+	 * given a iterator, returns a new iterator in random order
+	 *
+	 * @return iterator in random order
+	 */
+	public static <T> Iterator<T> randomize(Iterator<T> it, Random random) {
+		final ArrayList<T> input = new ArrayList<>();
+		while (it.hasNext())
+			input.add(it.next());
+		final ArrayList<T> array = Basic.randomize(input, random);
+
+		return new Iterator<>() {
+			private int i = 0;
+
+			@Override
+			public boolean hasNext() {
+				return i < array.size();
+			}
+
+			@Override
+			public T next() {
+				return array.get(i++);
+			}
+
+			@Override
+			public void remove() {
+			}
+		};
+	}
+
+	/**
+	 * given a iterator, returns a new iterator in random order
+	 *
+	 * @return iterator in random order
+	 */
+	public static <T> Iterable<T> randomize(Iterable<T> iterable, Random random) {
+		return () -> randomize(iterable.iterator(), random);
+	}
+
+	public static Iterable<Integer> getIterable(int[] values) {
+		return () -> new Iterator<>() {
+			private int i = 0;
+
+			@Override
+			public boolean hasNext() {
+				return i < values.length;
+			}
+
+			@Override
+			public Integer next() {
+				return values[i++];
+			}
+		};
+	}
+
+	public static <T> Iterable<T> asIterable(Iterator<T> it) {
+		return () -> it;
+	}
+
+	public static <T> Set<T> asSet(Iterable<T> iterable) {
+		final Set<T> set = new HashSet<>();
+		for (T t : iterable) {
+			set.add(t);
+		}
+		return set;
+	}
+
+	public static <T> ArrayList<T> asList(Iterable<T> iterable) {
+		final ArrayList<T> list = new ArrayList<>();
+		for (T t : iterable) {
+			list.add(t);
+		}
+		return list;
+	}
+
+	public static <T> int size(Iterable<T> values) {
+		int count = 0;
+		for (T value : values) {
+			count++;
+		}
+		return count;
+	}
+
+	public static <T> Iterator<T> emptyIterator() {
+		return new Iterator<T>() {
+			@Override
+			public boolean hasNext() {
+				return false;
+			}
+
+			@Override
+			public T next() {
+				return null;
+			}
+		};
+	}
+
+	public static class LineIterator implements Iterator<String>, AutoCloseable {
+		private final BufferedReader br;
+		private String next;
+		private int lineNumber = 0;
+
+		public LineIterator(Reader reader) {
+			br = (reader instanceof BufferedReader ? (BufferedReader) reader : new BufferedReader(reader));
+			{
+				try {
                     next = br.readLine();
                 } catch (IOException ignored) {
                 }

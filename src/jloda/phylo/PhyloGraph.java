@@ -22,7 +22,7 @@ package jloda.phylo;
 
 
 import jloda.graph.*;
-import jloda.util.EmptyIterator;
+import jloda.util.IteratorUtils;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -270,7 +270,7 @@ public class PhyloGraph extends Graph {
     public Iterable<Integer> getTaxa(Node v) {
         return () -> {
             if (node2taxa == null || node2taxa.get(v) == null)
-                return new EmptyIterator<>();
+				return IteratorUtils.emptyIterator();
             else
                 return node2taxa.get(v).iterator();
         };

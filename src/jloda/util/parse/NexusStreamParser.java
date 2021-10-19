@@ -23,6 +23,7 @@ package jloda.util.parse;
 import jloda.swing.util.Colors;
 import jloda.util.Basic;
 import jloda.util.IOExceptionWithLineNumber;
+import jloda.util.StringUtils;
 
 import java.awt.*;
 import java.io.*;
@@ -748,7 +749,7 @@ public class NexusStreamParser extends NexusStreamTokenizer implements Closeable
                     found = true;
                     if (legalValues != null) {
                         var legalTokens = legalValues.split("\\s+");
-                        var which = Basic.getIndexIgnoreCase(result, legalTokens);
+                        var which = StringUtils.getIndexIgnoreCase(result, legalTokens);
                         if (which == -1)
                             throw new IOExceptionWithLineNumber(token + " '" + result + "': illegal value", lineno());
                         else
@@ -1505,7 +1506,7 @@ public class NexusStreamParser extends NexusStreamTokenizer implements Closeable
         for (String legalToken : legalTokens)
             if (word.equals(legalToken))
                 return legalToken;
-        throw new IOExceptionWithLineNumber("input '" + word + "' does not match any of legal tokens: " + Basic.toString(legalTokens, " "), lineno());
+        throw new IOExceptionWithLineNumber("input '" + word + "' does not match any of legal tokens: " + StringUtils.toString(legalTokens, " "), lineno());
     }
 
 
@@ -1521,7 +1522,7 @@ public class NexusStreamParser extends NexusStreamTokenizer implements Closeable
         for (String legalToken : legalTokens)
             if (word.equals(legalToken))
                 return legalToken;
-        throw new IOExceptionWithLineNumber("input '" + word + "' does not match any of legal tokens: " + Basic.toString(legalTokens, " "), lineno());
+        throw new IOExceptionWithLineNumber("input '" + word + "' does not match any of legal tokens: " + StringUtils.toString(legalTokens, " "), lineno());
     }
 
     /**
@@ -1536,7 +1537,7 @@ public class NexusStreamParser extends NexusStreamTokenizer implements Closeable
         for (String legalToken : legalTokens)
             if (word.equalsIgnoreCase(legalToken))
                 return legalToken;
-        throw new IOExceptionWithLineNumber("input '" + word + "' does not match any of legal tokens: " + Basic.toString(legalTokens, ", "), lineno());
+        throw new IOExceptionWithLineNumber("input '" + word + "' does not match any of legal tokens: " + StringUtils.toString(legalTokens, ", "), lineno());
     }
 
     /**
@@ -1551,7 +1552,7 @@ public class NexusStreamParser extends NexusStreamTokenizer implements Closeable
         for (String legalToken : legalTokens)
             if (word.equalsIgnoreCase(legalToken))
                 return legalToken;
-        throw new IOExceptionWithLineNumber("input '" + word + "' does not match any of legal tokens: " + Basic.toString(legalTokens, ", "), lineno());
+        throw new IOExceptionWithLineNumber("input '" + word + "' does not match any of legal tokens: " + StringUtils.toString(legalTokens, ", "), lineno());
     }
 
 
@@ -1672,7 +1673,7 @@ public class NexusStreamParser extends NexusStreamTokenizer implements Closeable
         while (!np.peekMatchIgnoreCase("\""))
             words.add(np.getWordRespectCase());
         np.matchIgnoreCase("\"");
-        return Basic.toString(words, " ");
+        return StringUtils.toString(words, " ");
     }
 
 }

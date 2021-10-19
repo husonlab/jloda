@@ -20,6 +20,9 @@
 
 package jloda.util;
 
+import jloda.util.progress.ProgressListener;
+import jloda.util.progress.ProgressPercentage;
+
 import java.io.*;
 import java.util.stream.Stream;
 import java.util.stream.StreamSupport;
@@ -96,17 +99,17 @@ public class FileLineIterator implements ICloseableIterator<String> {
             maxProgress = 1000000;
             endOfLineBytes = 1;
         } else {
-            final File file = new File(fileName);
-            if (Basic.isZIPorGZIPFile(file.getPath())) {
-                reader = new BufferedReader(new InputStreamReader(Basic.getInputStreamPossiblyZIPorGZIP(file.getPath())));
-                endOfLineBytes = Basic.determineEndOfLinesBytes(new File(fileName));
-                maxProgress = 10 * file.length(); // assuming compression factor of 10-to-1
-            } else {
-                reader = new BufferedReader(new FileReader(file), bufferSize);
-                endOfLineBytes = 1;
-                maxProgress = file.length();
-            }
-        }
+			final File file = new File(fileName);
+			if (FileUtils.isZIPorGZIPFile(file.getPath())) {
+				reader = new BufferedReader(new InputStreamReader(FileUtils.getInputStreamPossiblyZIPorGZIP(file.getPath())));
+				endOfLineBytes = FileUtils.determineEndOfLinesBytes(new File(fileName));
+				maxProgress = 10 * file.length(); // assuming compression factor of 10-to-1
+			} else {
+				reader = new BufferedReader(new FileReader(file), bufferSize);
+				endOfLineBytes = 1;
+				maxProgress = file.length();
+			}
+		}
         done = (maxProgress <= 0);
         this.progress = progress;
     }
@@ -146,8 +149,8 @@ public class FileLineIterator implements ICloseableIterator<String> {
             endOfLineBytes = 1;
             maxProgress = fileName.length() - PREFIX_TO_INDICATE_TO_PARSE_FILENAME_STRING.length();
         } else {
-            reader = new BufferedReader(r, bufferSize);
-            endOfLineBytes = Basic.determineEndOfLinesBytes(new File(fileName));
+			reader = new BufferedReader(r, bufferSize);
+			endOfLineBytes = FileUtils.determineEndOfLinesBytes(new File(fileName));
 
             File file = new File(fileName);
             if (file.exists())

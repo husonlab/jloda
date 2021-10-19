@@ -21,7 +21,7 @@
 package jloda.swing.export;
 
 import jloda.swing.util.ChooseFileDialog;
-import jloda.util.Basic;
+import jloda.util.FileUtils;
 import jloda.util.ProgramProperties;
 
 import javax.swing.*;
@@ -91,13 +91,13 @@ public class ExportImageDialog extends JDialog {
                 file = ChooseFileDialog.chooseFileToSave(ExportImageDialog.this, file, getExportGraphicType().getFileFilter(), getExportGraphicType().getFileFilter(), event, "Save image", getFileExtension());
                 if (file != null) {
                     fileNameChangedByText = false;
-                    String fileName = file.getPath();
-                    String suffix = Basic.getFileSuffix(fileName);
+					String fileName = file.getPath();
+					String suffix = FileUtils.getFileSuffix(fileName);
                     if (suffix == null || suffix.length() == 0) {
                         file = new File(file.getPath() + getFileExtension());
                     }
                     if (suffix != null && !suffix.equals(getFileExtension())) {
-                        setFormat(Basic.getFileSuffix(file.getPath()));
+						setFormat(FileUtils.getFileSuffix(file.getPath()));
                     }
                     setFile(file);
                 }
@@ -108,7 +108,7 @@ public class ExportImageDialog extends JDialog {
                 updateEnabledState();
                 fileNameChangedByText = true;
                 if (!inUpdate) {
-                    String extension = Basic.getFileSuffix(fileField.getText());
+					String extension = FileUtils.getFileSuffix(fileField.getText());
                     if (extension != null && extension.length() > 0) {
                         extension = extension.trim();
                         if (extension.startsWith(".")) {
@@ -146,8 +146,8 @@ public class ExportImageDialog extends JDialog {
                 formatComboBox.addItem(exportGraphicType);
             }
         }
-        setFormat(ProgramProperties.get(GRAPHICSFORMAT, (new EPSExportType()).getFileExtension()));
-        setFile(new File(directory, Basic.replaceFileSuffix(Basic.getFileNameWithoutPath(documentFileName), getFileExtension())));
+		setFormat(ProgramProperties.get(GRAPHICSFORMAT, (new EPSExportType()).getFileExtension()));
+		setFile(new File(directory, FileUtils.replaceFileSuffix(FileUtils.getFileNameWithoutPath(documentFileName), getFileExtension())));
 
         formatComboBox.addItemListener(new ItemListener() {
             public void itemStateChanged(ItemEvent e) {
@@ -155,7 +155,7 @@ public class ExportImageDialog extends JDialog {
                 if (textAsOutlinesButton != null)
                     textAsOutlinesButton.setEnabled(exportGraphicType instanceof EPSExportType);
                 if (!inUpdate) {
-                    String fileName = Basic.replaceFileSuffix(fileField.getText(), exportGraphicType.getFileExtension());
+					String fileName = FileUtils.replaceFileSuffix(fileField.getText(), exportGraphicType.getFileExtension());
                     if (!fileName.equals(exportGraphicType.getFileExtension())) {
                         inUpdate = true;
                         fileField.setText(fileName);
@@ -226,8 +226,8 @@ public class ExportImageDialog extends JDialog {
 
         applyButton = new JButton(new AbstractAction("Apply") {
             public void actionPerformed(ActionEvent actionEvent) {
-                String fileName = getFileName();
-                String suffix = Basic.getFileSuffix(fileName);
+				String fileName = getFileName();
+				String suffix = FileUtils.getFileSuffix(fileName);
                 if (suffix == null || suffix.length() == 0) {
                     fileName += getFileExtension();
                     fileField.setText(fileName);

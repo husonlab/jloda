@@ -21,7 +21,7 @@
 package jloda.swing.export;
 
 import jloda.swing.util.FileFilter;
-import jloda.util.Basic;
+import jloda.util.FileUtils;
 
 import javax.swing.*;
 import java.awt.datatransfer.DataFlavor;
@@ -88,7 +88,7 @@ public class SVGStringExportType implements ExportGraphicType {
         if (f.isDirectory()) {
             return true;
         }
-        String extension = Basic.getFileSuffix(f.getName());
+		String extension = FileUtils.getFileSuffix(f.getName());
         if (extension != null) {
             return extension.equalsIgnoreCase("svg");
         } else {

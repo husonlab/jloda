@@ -21,10 +21,10 @@ package jloda.fx.workflow;
 
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
-import jloda.util.Basic;
+import jloda.util.StringUtils;
 
 public class NamedBase {
-	private final StringProperty name = new SimpleStringProperty(Basic.fromCamelCase(getClass().getSimpleName()));
+	private final StringProperty name = new SimpleStringProperty(StringUtils.fromCamelCase(getClass().getSimpleName()));
 	private final StringProperty shortDescription = new SimpleStringProperty("");
 
 	public String getName() {

@@ -154,11 +154,11 @@ public class Statistics {
      * @return string
      */
     public String toString() {
-        return String.format("n=%d mean=%s stdDev=%s min=%s max=%s", count, Basic.removeTrailingZerosAfterDot("" + (float) mean),
-                Basic.removeTrailingZerosAfterDot("" + (float) stdDev),
-                Basic.removeTrailingZerosAfterDot("" + (float) min),
-                Basic.removeTrailingZerosAfterDot("" + (float) max));
-    }
+		return String.format("n=%d mean=%s stdDev=%s min=%s max=%s", count, StringUtils.removeTrailingZerosAfterDot("" + (float) mean),
+				StringUtils.removeTrailingZerosAfterDot("" + (float) stdDev),
+				StringUtils.removeTrailingZerosAfterDot("" + (float) min),
+				StringUtils.removeTrailingZerosAfterDot("" + (float) max));
+	}
 
     public double getMean() {
         return mean;

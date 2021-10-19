@@ -216,10 +216,10 @@ public class PhyloTree extends PhyloSplitsGraph {
                 String label = labeler.apply(v);
                 if (label != null) {
                     label = label.replaceAll("'", "_");
-                    if (Basic.intersects(label, " :(),"))
-                        tmpTree.setLabel(v, "'" + label + "'");
-                    else
-                        tmpTree.setLabel(v, label);
+                    if (StringUtils.intersects(label, " :(),"))
+						tmpTree.setLabel(v, "'" + label + "'");
+					else
+						tmpTree.setLabel(v, label);
                 }
             }
             tmpTree.write(writer, showWeights);
@@ -1123,10 +1123,10 @@ public class PhyloTree extends PhyloSplitsGraph {
     private void redirectEdgesAwayFromRootRec(Node v, Edge e) {
         if (e != null && v != e.getTarget() && !isSpecial(e))
             e.reverse();
-        for (Edge f : Basic.asList(v.adjacentEdges())) {
-            if (f != e && PhyloTreeUtils.okToDescendDownThisEdge(this, f, v))
-                redirectEdgesAwayFromRootRec(f.getOpposite(v), f);
-        }
+		for (Edge f : IteratorUtils.asList(v.adjacentEdges())) {
+			if (f != e && PhyloTreeUtils.okToDescendDownThisEdge(this, f, v))
+				redirectEdgesAwayFromRootRec(f.getOpposite(v), f);
+		}
     }
 
     /**

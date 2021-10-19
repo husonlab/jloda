@@ -27,6 +27,7 @@ import de.erichseifert.vectorgraphics2d.pdf.PDFProcessor;
 import de.erichseifert.vectorgraphics2d.util.PageSize;
 import jloda.swing.util.FileFilter;
 import jloda.util.Basic;
+import jloda.util.FileUtils;
 
 import javax.swing.*;
 import java.awt.datatransfer.DataFlavor;
@@ -144,7 +145,7 @@ public class PDFExportType extends SVGExportType implements ExportGraphicType {
         if (f.isDirectory()) {
             return true;
         }
-        String extension = Basic.getFileSuffix(f.getName());
+		String extension = FileUtils.getFileSuffix(f.getName());
         if (extension != null) {
             return extension.equalsIgnoreCase("pdf");
         } else {

@@ -61,7 +61,7 @@ public class ProgramProperties {
 
     private static final boolean macOS = (System.getProperty("os.name") != null && System.getProperty("os.name").toLowerCase().startsWith("mac"));
     private static boolean useGUI = false;
-    private static IStateChecker stateChecker = null;
+    private static Runnable stateChecker = null;
     public static final String OPENFILE = "OpenFile";
     public static final String SAVEFILE = "SaveFile";
     public static final String SAVEFORMAT = "SaveFormat";
@@ -560,17 +560,16 @@ public class ProgramProperties {
 
     public static void checkState() {
         if (stateChecker != null)
-            stateChecker.check();
+            stateChecker.run();
     }
 
-    public static void setStateChecker(IStateChecker stateChecker) {
+    public static void setStateChecker(Runnable stateChecker) {
         ProgramProperties.stateChecker = stateChecker;
     }
 
     public static ObservableList<javafx.scene.image.Image> getProgramIconsFX() {
         return programIconsFX;
     }
-
 
     public static javafx.scene.paint.Color get(Object name, javafx.scene.paint.Color defaultColorFX) {
         String value = (String) props.get(name);

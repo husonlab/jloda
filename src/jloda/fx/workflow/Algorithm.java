@@ -19,7 +19,7 @@
 
 package jloda.fx.workflow;
 
-import jloda.util.ProgressListener;
+import jloda.util.progress.ProgressListener;
 
 import java.io.IOException;
 import java.util.Collection;

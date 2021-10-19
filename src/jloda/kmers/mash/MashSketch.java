@@ -22,6 +22,8 @@ package jloda.kmers.mash;
 import jloda.kmers.bloomfilter.BloomFilter;
 import jloda.thirdparty.MurmurHash;
 import jloda.util.*;
+import jloda.seq.SequenceUtils;
+import jloda.util.progress.ProgressListener;
 
 import java.io.IOException;
 import java.util.Collection;
@@ -91,7 +93,7 @@ public class MashSketch {
                 final int top = sequence.length - kMerSize;
                 for (int offset = 0; offset < top; offset++) {
                     if (isNucleotides) {
-                        final int ambiguousPos = Basic.lastIndexOf(sequence, offset, kMerSize, 'N'); // don't use k-mers with ambiguity letters
+						final int ambiguousPos = StringUtils.lastIndexOf(sequence, offset, kMerSize, 'N'); // don't use k-mers with ambiguity letters
                         if (ambiguousPos != -1) {
                             offset = ambiguousPos; // skip to last ambiguous so that increment will move past
                             continue;
@@ -191,23 +193,23 @@ public class MashSketch {
     }
 
     public String getString() {
-        return String.format("s=%d k=%d:%s", sketchSize, kSize, Basic.toString(getValues(), ","));
+		return String.format("s=%d k=%d:%s", sketchSize, kSize, StringUtils.toString(getValues(), ","));
     }
 
     public static MashSketch parse(String string) throws IOException {
-        int sketchSize = Basic.parseInt(Basic.getWordAfter("s=", string));
-        int kMerSize = Basic.parseInt(Basic.getWordAfter("k=", string));
-        final String[] numbers = Basic.split(Basic.getWordAfter(":", string), ',');
+		int sketchSize = Basic.parseInt(StringUtils.getWordAfter("s=", string));
+		int kMerSize = Basic.parseInt(StringUtils.getWordAfter("k=", string));
+		final String[] numbers = StringUtils.split(StringUtils.getWordAfter(":", string), ',');
 
-        if (numbers.length != sketchSize)
-            throw new IOException("Expected sketch size " + sketchSize + ", found: " + numbers.length);
+		if (numbers.length != sketchSize)
+			throw new IOException("Expected sketch size " + sketchSize + ", found: " + numbers.length);
 
-        final MashSketch sketch = new MashSketch(sketchSize, kMerSize, "", true);
-        sketch.hashValues = new long[numbers.length];
-        for (int i = 0; i < numbers.length; i++) {
-            sketch.hashValues[i] = Basic.parseLong(numbers[i]);
-        }
-        return sketch;
+		final MashSketch sketch = new MashSketch(sketchSize, kMerSize, "", true);
+		sketch.hashValues = new long[numbers.length];
+		for (int i = 0; i < numbers.length; i++) {
+			sketch.hashValues[i] = Basic.parseLong(numbers[i]);
+		}
+		return sketch;
     }
 
     public byte[] getBytes() {
@@ -241,7 +243,7 @@ public class MashSketch {
         final StringBuilder buf = new StringBuilder();
         if (kmers != null) {
             for (byte[] kmer : kmers) {
-                buf.append(Basic.toString(kmer)).append("\n");
+				buf.append(StringUtils.toString(kmer)).append("\n");
             }
         }
         return buf.toString();

@@ -20,7 +20,7 @@
 
 package jloda.swing.util;
 
-import jloda.util.Basic;
+import jloda.util.FileUtils;
 import jloda.util.ProgramProperties;
 
 import javax.swing.*;
@@ -217,7 +217,7 @@ public class ChooseFileDialog {
                     file = new File(dialog.getDirectory(), dialog.getFile());
                     okToWrite = true;
                     if (defaultSuffix != null) {
-                        String suffix = Basic.getFileSuffix(file.getName());
+						String suffix = FileUtils.getFileSuffix(file.getName());
                         if (suffix == null || suffix.equals(file.getName())) {
                             file = new File(file.getParent(), file.getName() + defaultSuffix);
                             // todo: don't seem to need this:
@@ -255,7 +255,7 @@ public class ChooseFileDialog {
                 okToWrite = true;
 
                 if (defaultSuffix != null) {
-                    String suffix = Basic.getFileSuffix(file.getName());
+					String suffix = FileUtils.getFileSuffix(file.getName());
                     if (suffix == null || suffix.equals(file.getName())) {
                         file = new File(file.getParent(), file.getName() + defaultSuffix);
                     }

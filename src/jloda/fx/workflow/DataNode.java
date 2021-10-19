@@ -23,7 +23,7 @@ import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.ReadOnlyObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.value.ChangeListener;
-import jloda.util.Basic;
+import jloda.util.StringUtils;
 
 import java.util.stream.Collectors;
 
@@ -71,8 +71,8 @@ public class DataNode extends WorkflowNode {
 	public String toReportString(boolean full) {
 		if (full) return String.format("%s (%s); parents: %s children: %s",
 				toReportString(false), isValid(),
-				Basic.toString(getParents().stream().map(WorkflowNode::getId).collect(Collectors.toList()), ","),
-				Basic.toString(getChildren().stream().map(WorkflowNode::getId).collect(Collectors.toList()), ","));
+				StringUtils.toString(getParents().stream().map(WorkflowNode::getId).collect(Collectors.toList()), ","),
+				StringUtils.toString(getChildren().stream().map(WorkflowNode::getId).collect(Collectors.toList()), ","));
 		else
 			return String.format("%02d DataBlock '%s'", getId(),
 					(getDataBlock() != null ? getDataBlock().getName() : getName()));

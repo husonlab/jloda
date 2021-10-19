@@ -20,7 +20,7 @@
 
 package jloda.graph;
 
-import jloda.util.Basic;
+import jloda.util.StringUtils;
 
 /**
  * multi-sample data associated with a node
@@ -128,7 +128,7 @@ public class NodeData {
     }
 
     public String toString() {
-        return "assigned: " + Basic.toString(assigned, 0, assigned.length, ",", true) + ", summarized: " + Basic.toString(summarized, 0, summarized.length, ",", true);
+		return "assigned: " + StringUtils.toString(assigned, 0, assigned.length, ",", true) + ", summarized: " + StringUtils.toString(summarized, 0, summarized.length, ",", true);
     }
 
     public NodeData clone() {

@@ -20,7 +20,7 @@
 
 package jloda.swing.export;
 
-import jloda.util.Basic;
+import jloda.util.FileUtils;
 import jloda.util.ProgramProperties;
 
 import javax.imageio.ImageIO;
@@ -145,7 +145,7 @@ public class PNGExportType extends FileFilter implements ExportGraphicType {
         if (f.isDirectory()) {
             return true;
         }
-        String extension = Basic.getFileSuffix(f.getName());
+		String extension = FileUtils.getFileSuffix(f.getName());
         if (extension != null) {
             return extension.equalsIgnoreCase("png");
         } else {

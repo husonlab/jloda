@@ -20,8 +20,8 @@
 
 package jloda.swing.util;
 
-import jloda.util.Basic;
 import jloda.util.ProgramProperties;
+import jloda.util.StringUtils;
 
 import javax.swing.*;
 import javax.swing.tree.TreeCellRenderer;
@@ -64,11 +64,11 @@ public class MultiLineCellRenderer implements TreeCellRenderer {
         textPane.setEditable(false);
 
         textPane.setContentType("text/html");
-        String text = Basic.trimEmptyLines(stringValue);
+		String text = StringUtils.trimEmptyLines(stringValue);
         if (text.contains("\n") && text.indexOf("\n") < text.length() - 1) // more than one line:
         {
-            text = Basic.trimEmptyLines(text).replaceAll("\t", "&#9;");
-            text = "<html><pre><font face=\"monospace\" size=\"3\">" + text + "</font></pre></html>";
+			text = StringUtils.trimEmptyLines(text).replaceAll("\t", "&#9;");
+			text = "<html><pre><font face=\"monospace\" size=\"3\">" + text + "</font></pre></html>";
         } else // only one line:
             text = "<html><font face=\"monospace\" size=\"3\">" + text + "</font></html>";
 

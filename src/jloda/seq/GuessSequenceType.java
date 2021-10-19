@@ -19,9 +19,6 @@
 
 package jloda.seq;
 
-import jloda.util.FastAFileIterator;
-import jloda.util.IFastAIterator;
-
 import java.io.IOException;
 import java.util.BitSet;
 

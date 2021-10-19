@@ -170,7 +170,7 @@ public class ByteInputBuffer {
     }
 
     public String toString() {
-        return Basic.toString(bytes, 0, size);
+        return StringUtils.toString(bytes, 0, size);
     }
 
     public static int readIntLittleEndian(byte[] bytes) {

@@ -39,7 +39,7 @@
 package jloda.graph.algorithms;
 
 import jloda.util.APoint2D;
-import jloda.util.BBoxUtils;
+import jloda.fx.util.BBoxUtils;
 
 import java.util.ArrayList;
 import java.util.Collection;

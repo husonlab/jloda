@@ -49,18 +49,18 @@ public class FileLineBytesIterator implements ICloseableIterator<byte[]> {
      * @throws IOException
      */
     public FileLineBytesIterator(String fileName) throws IOException {
-        reader = new InputStreamReader(Basic.getInputStreamPossiblyZIPorGZIP(fileName));
-        if (Basic.isZIPorGZIPFile(fileName))
-            maxProgress = 20 * ((new File(fileName))).length();
-        else
-            maxProgress = ((new File(fileName))).length();
+		reader = new InputStreamReader(FileUtils.getInputStreamPossiblyZIPorGZIP(fileName));
+		if (FileUtils.isZIPorGZIPFile(fileName))
+			maxProgress = 20 * ((new File(fileName))).length();
+		else
+			maxProgress = ((new File(fileName))).length();
 
-        // get first letter
-        firstByteOfNextLine = (byte) reader.read();
-        if (hasNext())
-            position++;
-        while (firstByteOfNextLine == '\r' || firstByteOfNextLine == '\n' && hasNext()) {
-            firstByteOfNextLine = (byte) reader.read();
+		// get first letter
+		firstByteOfNextLine = (byte) reader.read();
+		if (hasNext())
+			position++;
+		while (firstByteOfNextLine == '\r' || firstByteOfNextLine == '\n' && hasNext()) {
+			firstByteOfNextLine = (byte) reader.read();
             if (hasNext())
                 position++;
         }

@@ -23,10 +23,7 @@ package jloda.swing.director;
 
 import jloda.swing.find.SearchManager;
 import jloda.swing.util.ResourceManager;
-import jloda.util.Basic;
-import jloda.util.CanceledException;
-import jloda.util.Pair;
-import jloda.util.ProgramProperties;
+import jloda.util.*;
 
 import javax.swing.*;
 import java.awt.event.ActionEvent;
@@ -335,7 +332,7 @@ public class ProjectManager {
                     ok = true;
                     for (IDirector dir : projects) {
                         if (i > 1) {
-                            newName = Basic.getFileBaseName(name) + "-" + i + Basic.getFileSuffix(name);
+							newName = FileUtils.getFileBaseName(name) + "-" + i + FileUtils.getFileSuffix(name);
                         }
                         String title = dir.getMainViewer().getTitle();
                         if (title != null && title.startsWith(newName)) {

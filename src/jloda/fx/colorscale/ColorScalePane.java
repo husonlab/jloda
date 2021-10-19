@@ -30,7 +30,7 @@ import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import jloda.fx.util.ExtendedFXMLLoader;
-import jloda.util.Basic;
+import jloda.util.StringUtils;
 
 import java.io.IOException;
 
@@ -67,20 +67,20 @@ public class ColorScalePane extends Pane {
      */
     public void setColorScale(String title, double leftValue, double rightValue, boolean reverse, ObservableList<Color> colors) {
         if (colors.size() > 0) {
-            getChildren().setAll(root);
-            setTitleText(title != null ? title + ":" : "");
-            setLeftText(Basic.removeTrailingZerosAfterDot(String.format("%,.2f", leftValue)));
-            setRightText(Basic.removeTrailingZerosAfterDot(String.format("%,.2f", rightValue)));
+			getChildren().setAll(root);
+			setTitleText(title != null ? title + ":" : "");
+			setLeftText(StringUtils.removeTrailingZerosAfterDot(String.format("%,.2f", leftValue)));
+			setRightText(StringUtils.removeTrailingZerosAfterDot(String.format("%,.2f", rightValue)));
 
-            final Canvas canvas = controller.getCanvas();
-            final GraphicsContext gc = canvas.getGraphicsContext2D();
-            gc.clearRect(0, 0, canvas.getWidth(), canvas.getHeight());
+			final Canvas canvas = controller.getCanvas();
+			final GraphicsContext gc = canvas.getGraphicsContext2D();
+			gc.clearRect(0, 0, canvas.getWidth(), canvas.getHeight());
 
-            final double factor = colors.size() / canvas.getWidth();
+			final double factor = colors.size() / canvas.getWidth();
 
-            for (int x = 0; x < canvas.getWidth(); x++) {
-                final Color color = colors.get(Math.max(0, Math.min(colors.size() - 1, (int) Math.round(factor * (reverse ? canvas.getWidth() - x : x)))));
-                gc.setFill(color);
+			for (int x = 0; x < canvas.getWidth(); x++) {
+				final Color color = colors.get(Math.max(0, Math.min(colors.size() - 1, (int) Math.round(factor * (reverse ? canvas.getWidth() - x : x)))));
+				gc.setFill(color);
                 gc.setStroke(color);
                 gc.fillRect(x, 0, 1, canvas.getHeight());
                 gc.strokeRect(x, 0, 1, canvas.getHeight());

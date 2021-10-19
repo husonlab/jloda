@@ -21,7 +21,7 @@
 package jloda.fx.util;
 
 import javafx.scene.control.TextArea;
-import jloda.util.Basic;
+import jloda.util.StringUtils;
 
 import java.io.PrintStream;
 
@@ -108,13 +108,13 @@ public class PrintStreamToTextArea extends PrintStream {
     }
 
     public void println(char[] x) {
-        textArea.appendText(Basic.toString(x) + "\n");
-        textArea.positionCaret(textArea.getText().length());
+		textArea.appendText(StringUtils.toString(x) + "\n");
+		textArea.positionCaret(textArea.getText().length());
     }
 
     public void print(char[] x) {
-        textArea.appendText(Basic.toString(x));
-        textArea.positionCaret(textArea.getText().length());
+		textArea.appendText(StringUtils.toString(x));
+		textArea.positionCaret(textArea.getText().length());
     }
 
     public void println(long x) {

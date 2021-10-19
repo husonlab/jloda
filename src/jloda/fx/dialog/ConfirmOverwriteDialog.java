@@ -22,7 +22,7 @@ import javafx.scene.control.Alert;
 import javafx.scene.control.ButtonBar;
 import javafx.scene.control.ButtonType;
 import javafx.stage.Stage;
-import jloda.util.Basic;
+import jloda.util.FileUtils;
 
 import java.util.Optional;
 
@@ -34,14 +34,14 @@ public class ConfirmOverwriteDialog {
     public enum Result {yes, all, no, cancel}
 
     public static Result apply(Stage owner, String fileName) {
-        if (!Basic.fileExistsAndIsNonEmpty(fileName))
-            return Result.yes;
+		if (!FileUtils.fileExistsAndIsNonEmpty(fileName))
+			return Result.yes;
 
         Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
         alert.initOwner(owner);
-        alert.setTitle("File exists");
-        alert.setHeaderText("The file '" + Basic.getFileNameWithoutPath(fileName) + "' already exists.");
-        alert.setContentText("Overwrite the existing file?");
+		alert.setTitle("File exists");
+		alert.setHeaderText("The file '" + FileUtils.getFileNameWithoutPath(fileName) + "' already exists.");
+		alert.setContentText("Overwrite the existing file?");
         ButtonType buttonTypeYes = new ButtonType("Yes");
         ButtonType buttonTypeYesAll = new ButtonType("Yes to all");
         ButtonType buttonTypeNo = new ButtonType("No");

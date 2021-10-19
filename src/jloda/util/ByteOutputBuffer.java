@@ -134,7 +134,7 @@ public class ByteOutputBuffer {
     }
 
     public String toString() {
-        return Basic.toString(bytes, 0, size);
+        return StringUtils.toString(bytes, 0, size);
     }
 
     public byte[] copyBytes() {

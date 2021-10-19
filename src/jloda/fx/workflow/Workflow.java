@@ -19,12 +19,15 @@
 
 package jloda.fx.workflow;
 
+import javafx.beans.InvalidationListener;
 import javafx.beans.binding.Bindings;
 import javafx.beans.property.*;
 import javafx.beans.value.ChangeListener;
 import javafx.collections.FXCollections;
 import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
+import javafx.concurrent.Worker;
+import jloda.util.IteratorUtils;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -34,9 +37,11 @@ import java.util.stream.Stream;
  * a work flow that consists of a DAG of algorithm and data nodes
  * Daniel Huson ,10.2021
  */
-public class Workflow extends NamedBase {
-	private final BooleanProperty busy = new SimpleBooleanProperty(false);
-	private final ChangeListener<Boolean> nodeValidListener;
+public class Workflow extends WorkerBase implements Worker<Boolean> {
+	private final BooleanProperty valid = new SimpleBooleanProperty(true);
+	private final ChangeListener<Boolean> nodeValidChangeListener;
+
+	private final InvalidationListener nodeStateChangeListener;
 
 	private final ObservableList<WorkflowNode> nodes = FXCollections.observableArrayList();
 	private int numberOfNodesCreated = 0;
@@ -49,6 +54,11 @@ public class Workflow extends NamedBase {
 	private final BooleanProperty connected = new SimpleBooleanProperty(true);
 
 	public Workflow() {
+		this("Workflow");
+	}
+
+	public Workflow(String title) {
+		setTitle(title);
 		parentsChangedListener = change -> {
 			var count = 0;
 			while (change.next()) {
@@ -58,29 +68,97 @@ public class Workflow extends NamedBase {
 			numberOfEdges.set(numberOfEdges.get() + count);
 		};
 
-		nodeValidListener = (v, o, n) -> {
+		nodeValidChangeListener = (v, o, n) -> {
 			if (n)
-				busy.set(nodes.size() > 0 && nodes.stream().anyMatch(a -> !a.isValid()));
+				valid.set(nodes.size() > 0 && nodes.stream().anyMatch(a -> !a.isValid()));
 			else
-				busy.set(true);
+				valid.set(true);
 		};
+
+		nodeStateChangeListener = (e) -> {
+			var currentStates = getAllCurrentStates();
+
+			if (currentStates.contains(State.FAILED)) {
+				setState(State.FAILED);
+				if (getException() == null) {
+					IteratorUtils.asStream(algorithmNodes()).filter(a -> a.getService().getState() == State.FAILED)
+							.findFirst().ifPresent(a -> setException(a.getService().getException()));
+				}
+			} else {
+				setException(null);
+				if (currentStates.contains(State.CANCELLED)) {
+					setState(State.CANCELLED);
+				} else if (currentStates.contains(State.RUNNING)) {
+					setState(State.RUNNING);
+				} else if (currentStates.contains(State.SCHEDULED)) {
+					setState(State.SCHEDULED);
+				} else if (currentStates.contains(State.READY)) {
+					setState(State.READY);
+				} else if (currentStates.contains(State.SUCCEEDED)) {
+					if (getMessage() == null)
+						IteratorUtils.asStream(algorithmNodes()).filter(a -> a.getService().getState() == State.SCHEDULED)
+								.findFirst().ifPresent(a -> setMessage(a.getService().getMessage()));
+					setState(State.SUCCEEDED);
+				}
+			}
+			if (!currentStates.contains(State.SUCCEEDED))
+				setMessage(null);
+			setRunning(currentStates.contains(State.RUNNING) || currentStates.contains(State.SCHEDULED));
+		};
+
+		stateProperty().addListener((v, o, n) -> {
+			if (n == State.SUCCEEDED || n == State.READY)
+				setException(null);
+		});
 
 		nodes.addListener((ListChangeListener<? super WorkflowNode>) e -> {
 			while (e.next()) {
 				if (e.wasAdded()) {
 					for (var node : e.getAddedSubList()) {
-						node.validProperty().addListener(nodeValidListener);
+						node.validProperty().addListener(nodeValidChangeListener);
 						node.getParents().addListener(parentsChangedListener);
+						if (node instanceof AlgorithmNode) {
+							setTotalWork(getTotalWork() + 1);
+							((AlgorithmNode) node).getService().stateProperty().addListener(nodeStateChangeListener);
+						}
 					}
 				} else if (e.wasRemoved()) {
 					for (var node : e.getRemoved()) {
-						node.validProperty().removeListener(nodeValidListener);
+						node.validProperty().removeListener(nodeValidChangeListener);
+						if (node instanceof AlgorithmNode) {
+							((AlgorithmNode) node).getService().stateProperty().removeListener(nodeStateChangeListener);
+							setTotalWork(getTotalWork() - 1);
+
+						}
 					}
 				}
 			}
 		});
 
 		numberOfNodes.bind(Bindings.size(nodes));
+	}
+
+	@Override
+	public boolean cancel() {
+		var canceled = 0;
+		for (var v : IteratorUtils.asStream(algorithmNodes()).filter(a -> a.getService().getState() == State.RUNNING).collect(Collectors.toList())) {
+			if (v.getService().cancel())
+				canceled++;
+		}
+		return canceled > 0;
+	}
+
+	public void reset() {
+		setException(null);
+		IteratorUtils.asStream(algorithmNodes()).forEach(a -> a.getService().reset());
+	}
+
+	public void restart(AlgorithmNode algorithmNode) {
+		algorithmNode.restart();
+	}
+
+	public Set<Worker.State> getAllCurrentStates() {
+		return IteratorUtils.asStream(algorithmNodes()).map(a -> a.getService().getState()).collect(Collectors.toSet());
 	}
 
 	public Iterable<WorkflowNode> nodes() {
@@ -170,12 +248,12 @@ public class Workflow extends NamedBase {
 		assert owner == this : "Wrong owner";
 	}
 
-	public boolean getBusy() {
-		return busy.get();
+	public boolean isValid() {
+		return valid.get();
 	}
 
-	public ReadOnlyBooleanProperty busyProperty() {
-		return busy;
+	public ReadOnlyBooleanProperty validProperty() {
+		return valid;
 	}
 
 	public String toReportString() {

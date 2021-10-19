@@ -20,6 +20,8 @@
 
 package jloda.util;
 
+import jloda.util.progress.ProgressPercentage;
+
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;

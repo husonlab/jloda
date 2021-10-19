@@ -1,4 +1,23 @@
 /*
+ *  GFF3FileFilter.java Copyright (C) 2021 Daniel H. Huson
+ *
+ *  (Some files contain contributions from other authors, who are then mentioned separately.)
+ *
+ *  This program is free software: you can redistribute it and/or modify
+ *  it under the terms of the GNU General Public License as published by
+ *  the Free Software Foundation, either version 3 of the License, or
+ *  (at your option) any later version.
+ *
+ *  This program is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *  GNU General Public License for more details.
+ *
+ *  You should have received a copy of the GNU General Public License
+ *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
+
+/*
  * GFF3FileFilter.java Copyright (C) 2021. Daniel H. Huson
  *
  * (Some code written by other authors, as named in code.)
@@ -18,9 +37,10 @@
  *
  */
 
-package jloda.util;
+package jloda.swing.util;
 
 import jloda.swing.util.FileFilterBase;
+import jloda.util.FileUtils;
 
 import java.io.File;
 import java.io.FilenameFilter;
@@ -51,10 +71,10 @@ public class GFF3FileFilter extends FileFilterBase implements FilenameFilter {
     }
 
     public boolean accept(String fileName) {
-        boolean suffixOk = super.accept(Basic.getFileNameWithoutZipOrGZipSuffix(fileName));
+        boolean suffixOk = super.accept(FileUtils.getFileNameWithoutZipOrGZipSuffix(fileName));
         if (suffixOk) {   // look inside the file
             if (lookInside) {
-                final String[] lines = Basic.getFirstLinesFromFile(new File(fileName), 1);
+                final String[] lines = FileUtils.getFirstLinesFromFile(new File(fileName), 1);
                 return lines != null && lines[0] != null && lines[0].startsWith("##gff-version 3");
             } else
                 return true;

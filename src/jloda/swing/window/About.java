@@ -24,6 +24,7 @@ import jloda.swing.util.BasicSwing;
 import jloda.swing.util.ResourceManager;
 import jloda.util.Basic;
 import jloda.util.ProgramProperties;
+import jloda.util.StringUtils;
 
 import javax.swing.*;
 import java.awt.*;
@@ -113,7 +114,7 @@ public class About {
                 }
                 gc.setColor(Color.BLACK);
                 if (versionString != null) {
-                    String[] tokens = Basic.split(versionString, '\n');
+                    String[] tokens = StringUtils.split(versionString, '\n');
                     for (int i = 0; i < tokens.length; i++) {
                         gc.drawString(tokens[i], versionStringOffset.x, versionStringOffset.y + 14 * i);
                     }

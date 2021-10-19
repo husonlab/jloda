@@ -27,7 +27,7 @@
  */
 package jloda.swing.util;
 
-import jloda.util.Basic;
+import jloda.util.StringUtils;
 import jloda.util.UsageException;
 
 import javax.swing.*;
@@ -458,7 +458,7 @@ public class CommandLineOptions {
             if (describe.charAt(0) != '!') {
                 settings.add("" + result);
                 if (stage == 1) {
-                    gui.addRow(label, describe, "" + Basic.listAsString(result, " "));
+					gui.addRow(label, describe, "" + StringUtils.listAsString(result, " "));
                 }
             } else
                 settings.add(null);
@@ -526,7 +526,7 @@ public class CommandLineOptions {
             if (describe.charAt(0) != '!') {
                 settings.add("" + result);
                 if (stage == 1) {
-                    gui.addRow(label, describe + " (mandatory option)", Basic.listAsString(result, " "));
+					gui.addRow(label, describe + " (mandatory option)", StringUtils.listAsString(result, " "));
                 }
             } else
                 settings.add(null);

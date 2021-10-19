@@ -41,6 +41,8 @@ module jloda {
     exports jloda.util;
     exports jloda.util.interval;
     exports jloda.util.parse;
+    exports jloda.util.progress;
+
     exports jloda.seq;
     exports jloda.thirdparty;
 
@@ -53,7 +55,6 @@ module jloda {
     opens jloda.resources.icons.dialog;
     opens jloda.resources.css;
 
-    exports jloda;
     exports jloda.swing.window;
     exports jloda.fx.geom;
     exports jloda.kmers;

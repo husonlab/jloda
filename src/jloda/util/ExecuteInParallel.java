@@ -19,6 +19,9 @@
 
 package jloda.util;
 
+import jloda.util.progress.ProgressListener;
+import jloda.util.progress.ProgressSilent;
+
 import java.util.Collection;
 import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.ExecutorService;

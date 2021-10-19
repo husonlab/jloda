@@ -21,7 +21,7 @@
 package jloda.swing.export;
 
 import jloda.swing.export.gifEncode.Gif89Encoder;
-import jloda.util.Basic;
+import jloda.util.FileUtils;
 
 import javax.swing.*;
 import javax.swing.filechooser.FileFilter;
@@ -130,7 +130,7 @@ public class GIFExportType extends FileFilter implements ExportGraphicType {
         if (f.isDirectory()) {
             return true;
         }
-        String extension = Basic.getFileSuffix(f.getName());
+		String extension = FileUtils.getFileSuffix(f.getName());
         if (extension != null) {
             return extension.equalsIgnoreCase("gif");
         } else {

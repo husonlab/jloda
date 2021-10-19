@@ -23,7 +23,7 @@ import jloda.graph.Edge;
 import jloda.graph.EdgeSet;
 import jloda.graph.Graph;
 import jloda.util.Pair;
-import jloda.util.ProgressListener;
+import jloda.util.progress.ProgressListener;
 
 import java.util.ArrayList;
 import java.util.Comparator;

@@ -1,7 +1,7 @@
 /*
- * BlastMode.java Copyright (C) 2021. Daniel H. Huson
+ *  Copyright (C) 2018. Daniel H. Huson
  *
- * (Some code written by other authors, as named in code.)
+ *  (Some files contain contributions from other authors, who are then mentioned separately.)
  *
  *  This program is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -15,15 +15,12 @@
  *
  *  You should have received a copy of the GNU General Public License
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
- *
  */
 
-package jloda.util;
+package jloda.util.progress;
 
-public enum BlastMode {
-    Unknown, BlastN, BlastP, BlastX, Classifier;
+public interface ProgressObserver {
 
-    public static BlastMode valueOfIgnoreCase(String label) {
-        return Basic.valueOfIgnoreCase(BlastMode.class, label);
-    }
+	void reportProgress(int progress);
+
 }

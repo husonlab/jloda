@@ -24,7 +24,7 @@ package jloda.swing.export;
 import de.erichseifert.vectorgraphics2d.VectorGraphics2D;
 import de.erichseifert.vectorgraphics2d.svg.SVGProcessor;
 import de.erichseifert.vectorgraphics2d.util.PageSize;
-import jloda.util.Basic;
+import jloda.util.FileUtils;
 
 import javax.swing.*;
 import javax.swing.filechooser.FileFilter;
@@ -137,7 +137,7 @@ public class SVGExportType extends FileFilter implements ExportGraphicType {
         if (f.isDirectory()) {
             return true;
         }
-        final String extension = Basic.getFileSuffix(f.getName());
+		final String extension = FileUtils.getFileSuffix(f.getName());
         return extension != null && extension.equalsIgnoreCase("svg");
     }
 

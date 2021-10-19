@@ -26,6 +26,7 @@ import javafx.beans.value.ChangeListener;
 import javafx.concurrent.Worker;
 import jloda.fx.util.AService;
 import jloda.util.Basic;
+import jloda.util.StringUtils;
 
 import java.util.stream.Collectors;
 
@@ -117,8 +118,8 @@ public class AlgorithmNode extends WorkflowNode {
 		if (full)
 			return String.format("%s (%s); parents: %s children: %s",
 					toReportString(false), isValid(),
-					Basic.toString(getParents().stream().map(WorkflowNode::getId).collect(Collectors.toList()), ","),
-					Basic.toString(getChildren().stream().map(WorkflowNode::getId).collect(Collectors.toList()), ","));
+					StringUtils.toString(getParents().stream().map(WorkflowNode::getId).collect(Collectors.toList()), ","),
+					StringUtils.toString(getChildren().stream().map(WorkflowNode::getId).collect(Collectors.toList()), ","));
 		else
 			return String.format("%02d AlgorithmNode '%s'", getId(),
 					(getAlgorithm() != null ? getAlgorithm().getName() : getName()));

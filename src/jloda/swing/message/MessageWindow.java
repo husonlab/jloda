@@ -25,6 +25,7 @@ import jloda.swing.find.SearchManager;
 import jloda.swing.util.Alert;
 import jloda.util.Basic;
 import jloda.util.ProgramProperties;
+import jloda.util.StringUtils;
 
 import javax.swing.*;
 import java.awt.*;
@@ -297,13 +298,13 @@ public class MessageWindow {
                 }
 
                 public void println(char[] x) {
-                    textArea.append(Basic.toString(x) + "\n");
-                    textArea.setCaretPosition(textArea.getText().length());
+					textArea.append(StringUtils.toString(x) + "\n");
+					textArea.setCaretPosition(textArea.getText().length());
                 }
 
                 public void print(char[] x) {
-                    textArea.append(Basic.toString(x));
-                    textArea.setCaretPosition(textArea.getText().length());
+					textArea.append(StringUtils.toString(x));
+					textArea.setCaretPosition(textArea.getText().length());
                 }
 
                 public void println(long x) {

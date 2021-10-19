@@ -30,6 +30,8 @@ import jloda.graph.Node;
 import jloda.graph.NodeArray;
 import jloda.graph.NodeSet;
 import jloda.util.*;
+import jloda.util.progress.ProgressListener;
+import jloda.util.progress.ProgressSilent;
 
 import java.util.Arrays;
 import java.util.BitSet;
