@@ -174,6 +174,7 @@ public class BasicFX {
         node.setTranslateY(changeY.apply(node.getTranslateY()));
     }
 
+
     public static void centerAndShow(Stage parent, Stage child) {
         child.setX(parent.getX() + 0.5 * parent.getWidth());
         child.setY(parent.getY() + 0.5 * parent.getHeight());

@@ -41,6 +41,7 @@ package jloda.seq;
 
 import jloda.util.Basic;
 import jloda.util.FileUtils;
+import jloda.util.IFastAIterator;
 import jloda.util.Pair;
 
 import java.io.BufferedReader;
