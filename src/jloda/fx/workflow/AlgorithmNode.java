@@ -63,6 +63,13 @@ public class AlgorithmNode extends WorkflowNode {
 			if (!n)
 				service.cancel();
 		});
+
+		algorithm.addListener((v, o, n) -> {
+			if (o != null)
+				nameProperty().unbindBidirectional(o.nameProperty());
+			if (n != null)
+				nameProperty().bindBidirectional(n.nameProperty());
+		});
 	}
 
 	@Override

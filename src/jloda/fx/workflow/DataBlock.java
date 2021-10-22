@@ -28,4 +28,6 @@ abstract public class DataBlock extends NamedBase {
 	abstract public int size();
 
 	abstract public void clear();
+
+	abstract public void updateShortDescription();
 }

@@ -33,7 +33,7 @@ public class CopyableLabel extends TextField {
      */
     public CopyableLabel() {
         this.setFont(Font.font("Courier new", 12));
-        this.prefColumnCountProperty().bind(lengthProperty()); // why do we need to scale down???
+        this.prefColumnCountProperty().bind(lengthProperty());
         this.maxWidthProperty().bind(this.prefWidthProperty());
 
         this.setEditable(false);

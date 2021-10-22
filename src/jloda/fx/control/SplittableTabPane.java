@@ -274,7 +274,7 @@ public class SplittableTabPane extends Pane {
     /**
      * move tab to other tab pane and update context menu accordingly
      *
-     * @param tab
+     * @param tab        tab to move
      * @param oldTabPane if not null, removed from here
      * @param newTabPane if not null, added to here, otherwise removed
      * @param index      index to add at, or -1
@@ -323,10 +323,6 @@ public class SplittableTabPane extends Pane {
 
     /**
      * split the given tab pane in the given orientation and move the tab into the new tab pane
-     *
-     * @param orientation
-     * @param tab
-     * @param tabPane
      */
     private void split(Orientation orientation, Tab tab, TabPane tabPane) {
         final SplitPane parentSplitPane = tabPane2ParentSplitPane.get(tabPane);

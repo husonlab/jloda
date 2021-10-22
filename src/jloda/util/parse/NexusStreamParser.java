@@ -127,7 +127,6 @@ public class NexusStreamParser extends NexusStreamTokenizer implements Closeable
      * match next token with 'begin NAME;' or 'beginblock NAME;'
      *
      * @param blockName name of block
-     * @throws IOExceptionWithLineNumber
      */
     public void matchBeginBlock(String blockName) throws IOExceptionWithLineNumber {
         matchAnyTokenIgnoreCase("begin beginBlock");
@@ -136,8 +135,6 @@ public class NexusStreamParser extends NexusStreamTokenizer implements Closeable
 
     /**
      * match next token with 'end;' or 'endblock;'
-     *
-     * @throws IOExceptionWithLineNumber
      */
     public void matchEndBlock() throws IOExceptionWithLineNumber {
         matchAnyTokenIgnoreCase("end endBlock");
@@ -1290,8 +1287,8 @@ public class NexusStreamParser extends NexusStreamTokenizer implements Closeable
     /**
      * returns all words between first and last using ';' as punctuation character
      *
-     * @param first
-     * @param last
+     * @param first first word or null
+     * @param last  last word
      * @return all words between first and last token
      */
     public List<String> getWordsRespectCase(String first, String last) throws IOExceptionWithLineNumber {
@@ -1676,6 +1673,9 @@ public class NexusStreamParser extends NexusStreamTokenizer implements Closeable
         return StringUtils.toString(words, " ");
     }
 
+    public boolean isAtBeginOfBlock(String blockName) {
+        return peekMatchIgnoreCase("begin " + blockName + ";") || peekMatchIgnoreCase("BeginBlock " + blockName + ";");
+    }
 }
 
 // EOF

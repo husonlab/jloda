@@ -36,6 +36,18 @@ public class DataNode extends WorkflowNode {
 
 	public DataNode(Workflow owner) {
 		super(owner);
+
+		dataBlock.addListener((v, o, n) -> {
+			if (o != null)
+				nameProperty().unbindBidirectional(o.nameProperty());
+			if (n != null)
+				nameProperty().bindBidirectional(n.nameProperty());
+		});
+
+		validProperty().addListener((v, o, n) -> {
+			if (n && getDataBlock() != null)
+				getDataBlock().updateShortDescription();
+		});
 	}
 
 	@Override

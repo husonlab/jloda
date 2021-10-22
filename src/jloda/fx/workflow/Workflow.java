@@ -103,7 +103,7 @@ public class Workflow extends WorkerBase implements Worker<Boolean> {
 			}
 			if (!currentStates.contains(State.SUCCEEDED))
 				setMessage(null);
-			setRunning(currentStates.contains(State.RUNNING) || currentStates.contains(State.SCHEDULED));
+			setRunning(currentStates.contains(State.SCHEDULED) || currentStates.contains(State.READY) || currentStates.contains(State.RUNNING));
 		};
 
 		stateProperty().addListener((v, o, n) -> {
@@ -161,7 +161,7 @@ public class Workflow extends WorkerBase implements Worker<Boolean> {
 		return IteratorUtils.asStream(algorithmNodes()).map(a -> a.getService().getState()).collect(Collectors.toSet());
 	}
 
-	public Iterable<WorkflowNode> nodes() {
+	public ObservableList<WorkflowNode> nodes() {
 		return nodes;
 	}
 
