@@ -70,8 +70,6 @@ public class UndoManager {
 
     /**
      * if command is redo-able, calls redo and then adds
-     *
-     * @param command
      */
     public void doAndAdd(UndoableRedoableCommand command) {
         if (command.isRedoable()) {
@@ -82,8 +80,6 @@ public class UndoManager {
 
     /**
      * add a command to the undoable stack
-     *
-     * @param command
      */
     public void add(UndoableRedoableCommand command) {
         if (command.isUndoable())
@@ -94,31 +90,9 @@ public class UndoManager {
     }
 
     public void doAndAdd(String name, Runnable undo, Runnable redo) {
-        var command = new UndoableRedoableCommand(name) {
-            @Override
-            public void undo() {
-                undo.run();
-            }
-
-            @Override
-            public void redo() {
-                redo.run();
-            }
-
-            @Override
-            public boolean isUndoable() {
-                return undo != null;
-            }
-
-            @Override
-            public boolean isRedoable() {
-                return redo != null;
-            }
-        };
-        if (command.isRedoable()) {
-            command.redo();
-            add(command);
-        }
+        if (redo != null)
+            redo.run();
+        add(name, undo, redo);
     }
 
     public void add(String name, Runnable undo, Runnable redo) {
@@ -150,10 +124,6 @@ public class UndoManager {
      * add an undoable property change
      *
      * @param name     is used in undo/redo menu
-     * @param property
-     * @param oldValue
-     * @param newValue
-     * @param <T>
      */
     public <T> void add(String name, Property<T> property, T oldValue, T newValue) {
         if (isRecordChanges() && !isPerformingUndoOrRedo())
@@ -176,9 +146,6 @@ public class UndoManager {
 
     /**
      * undo the current undoable command
-     *
-     * @throws IllegalStateException if no current undoable command
-     * @throws Exception
      */
     public void undo() {
         if (undoStack.size() == 0)
@@ -203,9 +170,6 @@ public class UndoManager {
 
     /**
      * redo the current redoable event
-     *
-     * @throws IllegalStateException if no current redoable command
-     * @throws Exception
      */
     public void redo() {
         if (redoStack.size() == 0)

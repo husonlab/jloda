@@ -19,9 +19,7 @@
 
 package jloda.fx.workflow;
 
-import javafx.beans.property.BooleanProperty;
-import javafx.beans.property.ReadOnlyBooleanProperty;
-import javafx.beans.property.SimpleBooleanProperty;
+import javafx.beans.property.*;
 import javafx.beans.value.ChangeListener;
 import javafx.collections.FXCollections;
 import javafx.collections.ListChangeListener;
@@ -42,11 +40,18 @@ abstract public class WorkflowNode extends NamedBase {
 	private final ObservableList<WorkflowNode> children = FXCollections.observableArrayList();
 
 	private final BooleanProperty valid = new SimpleBooleanProperty(false);
+	private final BooleanProperty allParentsValid = new SimpleBooleanProperty(false);
+	private final IntegerProperty numberOfInvalidParents = new SimpleIntegerProperty(0);
+
 	private final ChangeListener<Boolean> parentValidListener = createParentValidListener();
+	private final ChangeListener<Boolean> parentValidListener2;
 
 	WorkflowNode(Workflow owner) {
 		this.owner = owner;
 		id = owner.getNodeUID();
+
+		parentValidListener2 = (v, o, n) -> numberOfInvalidParents.set(numberOfInvalidParents.get() + (n ? -1 : 1));
+		allParentsValid.bind(numberOfInvalidParents.isEqualTo(0));
 
 		parents.addListener((ListChangeListener<? super WorkflowNode>) e -> {
 			while (e.next()) {
@@ -56,6 +61,9 @@ abstract public class WorkflowNode extends NamedBase {
 							owner.checkOwner(v.getOwner());
 							assert this != v : "Self loop";
 							v.validProperty().addListener(parentValidListener);
+							v.validProperty().addListener(parentValidListener2);
+							if (!v.isValid())
+								numberOfInvalidParents.set(numberOfInvalidParents.get() + 1);
 							if (!v.getChildren().contains(this))
 								v.getChildren().add(this);
 						} catch (Exception ex) {
@@ -68,6 +76,9 @@ abstract public class WorkflowNode extends NamedBase {
 							owner.checkOwner(v.getOwner());
 							v.getChildren().remove(this);
 							v.validProperty().removeListener(parentValidListener);
+							v.validProperty().removeListener(parentValidListener2);
+							if (!v.isValid())
+								numberOfInvalidParents.set(numberOfInvalidParents.get() - 1);
 						} catch (Exception ex) {
 							Basic.caught(ex);
 						}
@@ -108,12 +119,20 @@ abstract public class WorkflowNode extends NamedBase {
 		return parents;
 	}
 
+	public WorkflowNode getPreferredParent() {
+		return parents.size() > 0 ? parents.get(0) : null;
+	}
+
 	public int getInDegree() {
 		return parents.size();
 	}
 
 	public ObservableList<WorkflowNode> getChildren() {
 		return children;
+	}
+
+	public WorkflowNode getPreferredChild() {
+		return children.size() > 0 ? children.get(0) : null;
 	}
 
 	public void addParent(WorkflowNode v) {
@@ -177,4 +196,12 @@ abstract public class WorkflowNode extends NamedBase {
 	}
 
 	abstract protected ChangeListener<Boolean> createParentValidListener();
+
+	public boolean isAllParentsValid() {
+		return allParentsValid.get();
+	}
+
+	public BooleanProperty allParentsValidProperty() {
+		return allParentsValid;
+	}
 }

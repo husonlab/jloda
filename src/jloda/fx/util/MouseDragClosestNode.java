@@ -28,7 +28,7 @@ import javafx.scene.Node;
 import java.util.function.BiConsumer;
 
 /**
- * maintains a draggable nod
+ * maintains a draggable node
  * Daniel Huson, 1.2020
  */
 public class MouseDragClosestNode {

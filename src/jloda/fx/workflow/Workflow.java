@@ -27,6 +27,7 @@ import javafx.collections.FXCollections;
 import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
 import javafx.concurrent.Worker;
+import javafx.util.Pair;
 import jloda.util.IteratorUtils;
 
 import java.util.*;
@@ -66,6 +67,9 @@ public class Workflow extends WorkerBase implements Worker<Boolean> {
 				count -= change.getRemovedSize();
 			}
 			numberOfEdges.set(numberOfEdges.get() + count);
+			if (!isConnected())
+				connected.set(determineIsConnected(nodes.get(0)));
+			// todo: need to check whether DAG here.
 		};
 
 		nodeValidChangeListener = (v, o, n) -> {
@@ -185,34 +189,48 @@ public class Workflow extends WorkerBase implements Worker<Boolean> {
 		return () -> nodeStream().filter(v -> v instanceof AlgorithmNode).map(v -> (AlgorithmNode) v).iterator();
 	}
 
-	public void addDataNode(DataNode v) {
-		nodes.add(v);
-		if (!isDAG())
-			throw new IllegalArgumentException("AddNode(): not DAG");
-		if (!isConnected())
-			connected.set(determineIsConnected(v));
+	public void addNode(WorkflowNode node) {
+		addNodes(Collections.singleton(node), null);
 	}
 
-	public void addAlgorithmNode(AlgorithmNode v) {
-		nodes.add(v);
-		if (!isDAG())
-			throw new IllegalArgumentException("AddNode(): not DAG");
-		if (!isConnected())
-			connected.set(determineIsConnected(v));
+	public void addNodes(Collection<WorkflowNode> toAdd, Collection<Pair<WorkflowNode, WorkflowNode>> directedEdges) {
+		WorkflowNode first = null;
+		for (var node : toAdd) {
+			if (first == null)
+				first = node;
+			checkOwner(node.getOwner());
+			nodes.add(node);
+		}
+		if (directedEdges != null) {
+			for (var parentChild : directedEdges) {
+				if (nodes.contains(parentChild.getKey()) && nodes.contains(parentChild.getValue())) {
+					parentChild.getKey().getChildren().add(parentChild.getValue());
+				}
+			}
+		}
+		if (!isConnected() && first != null)
+			connected.set(determineIsConnected(first));
 	}
 
 	public void deleteNode(WorkflowNode v) {
-		checkOwner(v.getOwner());
+		deleteNodes(Collections.singleton(v));
+	}
 
-		for (var w : v.getParents()) {
-			w.getChildren().remove(v);
+	public void deleteNodes(Collection<WorkflowNode> toDelete) {
+		for (var v : toDelete) {
+			checkOwner(v.getOwner());
+
+			var parents = new ArrayList<>(v.getParents());
+			for (var w : parents) {
+				w.getChildren().remove(v);
+			}
+
+			var children = new ArrayList<>(v.getChildren());
+			for (var w : children) {
+				w.getParents().remove(v);
+			}
+			nodes.remove(v);
 		}
-
-		for (var w : v.getParents()) {
-			w.getParents().remove(v);
-		}
-
-		nodes.remove(v);
 
 		if (isConnected() && nodes.size() > 0)
 			connected.set(determineIsConnected(nodes.get(0)));
@@ -315,25 +333,64 @@ public class Workflow extends WorkerBase implements Worker<Boolean> {
 	}
 
 	private boolean determineIsConnected(WorkflowNode start) {
-		var discovered = new HashSet<WorkflowNode>();
-		var stack = new Stack<WorkflowNode>();
-		stack.push(start);
-		discovered.add(start);
-		while (stack.size() > 0) {
-			var v = stack.pop();
-			for (var w : v.getParents()) {
-				if (!discovered.contains(w)) {
-					discovered.add(w);
-					stack.push(w);
+		if (start == null)
+			return true;
+		else {
+			var discovered = new HashSet<WorkflowNode>();
+			var stack = new Stack<WorkflowNode>();
+			stack.push(start);
+			discovered.add(start);
+			while (stack.size() > 0) {
+				var v = stack.pop();
+				for (var w : v.getParents()) {
+					if (!discovered.contains(w)) {
+						discovered.add(w);
+						stack.push(w);
+					}
+				}
+				for (var w : v.getChildren()) {
+					if (!discovered.contains(w)) {
+						discovered.add(w);
+						stack.push(w);
+					}
 				}
 			}
-			for (var w : v.getChildren()) {
-				if (!discovered.contains(w)) {
-					discovered.add(w);
-					stack.push(w);
-				}
+			return discovered.size() == nodes.size();
+		}
+	}
+
+	public Collection<WorkflowNode> getAllDescendants(WorkflowNode node, boolean includeGivenNode) {
+		var result = new ArrayList<WorkflowNode>();
+		var seen = new HashSet<WorkflowNode>();
+		if (includeGivenNode)
+			result.add(node);
+		var queue = new LinkedList<>(node.getChildren());
+		while (queue.size() > 0) {
+			node = queue.pop();
+			if (!seen.contains(node)) {
+				seen.add(node);
+				result.add(node);
+				queue.addAll(node.getChildren());
 			}
 		}
-		return discovered.size() == nodes.size();
+		return result;
 	}
+
+	public Collection<WorkflowNode> getAllAncestors(WorkflowNode node, boolean includeGivenNode) {
+		var result = new ArrayList<WorkflowNode>();
+		var seen = new HashSet<WorkflowNode>();
+		if (includeGivenNode)
+			result.add(node);
+		var queue = new LinkedList<>(node.getParents());
+		while (queue.size() > 0) {
+			node = queue.pop();
+			if (!seen.contains(node)) {
+				seen.add(node);
+				result.add(node);
+				queue.addAll(node.getParents());
+			}
+		}
+		return result;
+	}
+
 }
