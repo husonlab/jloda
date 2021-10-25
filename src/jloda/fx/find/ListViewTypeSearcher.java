@@ -20,86 +20,73 @@
 
 package jloda.fx.find;
 
+import javafx.concurrent.Service;
+import javafx.concurrent.Task;
 import javafx.scene.control.ListView;
 import javafx.scene.input.KeyCode;
-import jloda.util.Single;
 
 /**
  * adds text search capability to a list view
  * Daniel Huson, 10.2018
  */
-public class ListViewTypeSearcher {
+public class ListViewTypeSearcher<T> {
+	private final Service<Boolean> clearService;
+	private int index = 0;
+	private String searchString = "";
 
-    /**
-     * setups a text-based searcher for a list tree
-     *
-     * @param listView
-     * @param <T>
-     */
-    public static <T> void setup(final ListView<T> listView) {
-        final Single<KeyCode> prevKeyCode = new Single<>(null);
-        final Single<Integer> index = new Single<>(-1);
-        final Single<String> searchString = new Single<>("");
 
-        listView.focusedProperty().addListener((c, o, n) -> {
-            if (n) {
-                searchString.set("");
-                index.set(-1);
-            }
-        });
+	public ListViewTypeSearcher(final ListView<T> listView) {
+		clearService = new Service<>() {
+			@Override
+			protected Task<Boolean> createTask() {
+				return new Task<>() {
+					@Override
+					protected Boolean call() {
+						try {
+							Thread.sleep(1000);
+							searchString = "";
+							index = 0;
+						} catch (InterruptedException ignored) {
+						}
+						return false;
+					}
+				};
+			}
+		};
+		listView.setOnKeyPressed(e -> {
+			if (e.getText().length() > 0) {
+				clearService.restart();
+				searchString += e.getText().toLowerCase();
+				if (listView.getItems().size() > 0 && searchString.length() > 0) {
+					if (index >= listView.getItems().size())
+						index = 0;
 
-        listView.setOnKeyPressed(e -> {
-            if (e.getCode().isLetterKey() || e.getCode().isDigitKey() || e.getCode().isWhitespaceKey()) {
-                if (listView.getItems().size() > 0 && searchString.get().length() > 0) {
-                    index.set(index.get() + 1);
-                    if (index.get() >= listView.getItems().size())
-                        index.set(0);
+					// search for next
+					while (index < listView.getItems().size()) {
+						if (listView.getItems().get(index).toString().toLowerCase().contains(searchString)) {
+							listView.getSelectionModel().clearAndSelect(index);
+							listView.scrollTo(index);
+							break;
+						}
+						index += 1;
+					}
+				}
+			} else if (e.getCode() == KeyCode.BACK_SPACE) {
+				if (searchString.length() > 0) {
+					searchString = "";
+				} else {
+					listView.getSelectionModel().clearSelection();
+					index = 0;
+				}
+			}
+		});
 
-                    // search for next
-                    while (index.get() < listView.getItems().size()) {
-                        if (listView.getItems().get(index.get()).toString().contains(searchString.get())) {
-                            listView.getSelectionModel().select(index.get());
-                            listView.scrollTo(index.get());
-                            break;
-                        }
-                        index.set(index.get() + 1);
-                    }
-                }
+	}
 
-            } else if (e.getCode() == KeyCode.BACK_SPACE) {
-                searchString.set("");
-                if (prevKeyCode.get() == KeyCode.BACK_SPACE)
-                    listView.getSelectionModel().clearSelection();
-            } else if (e.getCode() != KeyCode.SHIFT) {
-                if (prevKeyCode.get() == KeyCode.ENTER) {
-                    searchString.set("");
-                }
-
-                if (searchString.get().length() < 10000) {
-                    if (e.getCode() != KeyCode.ENTER)
-                        searchString.set(searchString.get() + e.getText());
-
-                    if (searchString.get().length() == 1) {
-                        listView.getSelectionModel().clearSelection();
-                        index.set(-1);
-                    }
-
-                    int prevIndex = index.get();
-                    index.set(prevIndex + 1);
-                    while (index.get() < listView.getItems().size()) {
-                        if (listView.getItems().get(index.get()).toString().contains(searchString.get())) {
-                            if (prevIndex >= 0 && prevIndex < index.get())
-                                listView.getSelectionModel().clearSelection(prevIndex);
-                            listView.getSelectionModel().select(index.get());
-                            listView.scrollTo(index.get());
-                            break;
-                        }
-                        index.set(index.get() + 1);
-                    }
-
-                }
-            }
-            prevKeyCode.set(e.getCode());
-        });
-    }
+	/**
+	 * setups a text-based searcher for a list tree
+	 */
+	public static <T> ListViewTypeSearcher setup(final ListView<T> listView) {
+		return new ListViewTypeSearcher<>(listView);
+	}
 }
