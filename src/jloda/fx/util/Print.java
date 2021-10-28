@@ -22,6 +22,7 @@ package jloda.fx.util;
 
 import javafx.application.Platform;
 import javafx.print.PageLayout;
+import javafx.print.PageRange;
 import javafx.print.PrinterJob;
 import javafx.scene.Node;
 import javafx.scene.control.ButtonBar;
@@ -29,6 +30,7 @@ import javafx.scene.control.ButtonType;
 import javafx.scene.control.TextArea;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.text.Font;
 import javafx.scene.text.Text;
 import javafx.scene.text.TextFlow;
 import javafx.scene.transform.Scale;
@@ -36,7 +38,9 @@ import javafx.stage.Stage;
 import jloda.fx.window.NotificationManager;
 import jloda.util.ProgramProperties;
 
+import java.util.ArrayList;
 import java.util.Optional;
+import java.util.concurrent.Executors;
 
 /**
  * print a  node
@@ -121,27 +125,6 @@ public class Print {
 			NotificationManager.showError("Failed to create Printer Job");
 	}
 
-	public static void printText(Stage owner, String text) {
-		final PrinterJob printerJob = PrinterJob.createPrinterJob();
-		if (printerJob != null && printerJob.showPrintDialog(owner)) {
-
-
-			var printArea = new TextFlow(new Text(text));
-			printArea.setStyle("-fx-font-family: 'Courier New'; -fx-font-size: 10");
-
-			PageLayout pageLayout = printerJob.getJobSettings().getPageLayout();
-			printArea.setMaxWidth(pageLayout.getPrintableWidth());
-
-			if (printerJob.printPage(printArea)) {
-				printerJob.endJob();
-				// done printing
-			} else {
-				NotificationManager.showError("Print failed");
-			}
-		}
-	}
-
-
 	/**
 	 * print a snapshot of the given node
 	 *
@@ -181,5 +164,124 @@ public class Print {
 		if (job.showPageSetupDialog(owner)) {
 			pageLayoutSelected = (job.getJobSettings().getPageLayout());
 		}
+	}
+
+	public static void printText(Stage owner, String text) {
+		printText(owner, text, new Font("Courier New", 10));
+	}
+
+	public static void printText(Stage owner, String text, Font font) {
+		var service = Executors.newSingleThreadExecutor();
+		service.submit(() -> {
+			var printerJob = PrinterJob.createPrinterJob();
+			if (printerJob != null) {
+				var jobSettings = printerJob.getJobSettings();
+				var pages = createPages(jobSettings.getPageLayout().getPrintableWidth(), jobSettings.getPageLayout().getPrintableHeight(), font, text);
+				jobSettings.setPageRanges(new PageRange(1, pages.size()));
+
+				if (printerJob.showPrintDialog(owner)) {
+					var pageWidth = jobSettings.getPageLayout().getPrintableWidth();
+					var pageHeight = jobSettings.getPageLayout().getPrintableHeight();
+
+					// todo: bug: some pages do not appear if only a subset of pages is selected for printing...
+					var printed = false;
+					for (var pageRange : jobSettings.getPageRanges()) {
+						for (var page = pageRange.getStartPage(); page <= pageRange.getEndPage(); page++) {
+							System.err.println("Printing page " + page);
+							var textFlow = new TextFlow(new Text(pages.get(page - 1)));
+							textFlow.setStyle(String.format("-fx-font-family: '%s'; -fx-font-size: %fpx;", font.getFamily(), font.getSize()));
+							textFlow.setPrefWidth(pageWidth);
+							textFlow.setPrefHeight(pageHeight);
+							printed = printerJob.printPage(textFlow);
+							if (!printed) {
+								NotificationManager.showError("Print failed");
+								break;
+							}
+						}
+					}
+					if (printed)
+						printerJob.endJob();
+				}
+			}
+		});
+		service.shutdown();
+	}
+
+	/**
+	 * divide text into pages
+	 * See: https://coderanch.com/t/709329/java/JavaFX-approach-dividing-text-blob
+	 */
+	private static ArrayList<String> createPages(double pageWidth, double pageHeight, Font font, String text) {
+		var lineHeight = (new FontMetrics(font)).getLineHeight();
+		var linesPerPage = pageHeight / lineHeight;
+
+		var pageBuilder = new StringBuilder();
+		var lineBuilder = new StringBuilder();
+		var pageNumber = 0;
+		var lineNumber = 0;
+
+		var pages = new ArrayList<String>();
+
+		for (var line : text.split("\n")) {
+			var internal = new Text();
+			internal.setText(line);
+			if (internal.getLayoutBounds().getWidth() <= (int) pageWidth) {
+				pageBuilder.append(line).append("\n");
+				lineNumber++;
+			} else {
+				int pos = 0;
+				var chars = line.toCharArray();
+				lineBuilder.setLength(0);
+				for (var c : chars) {
+					pos++;
+					internal.setText(lineBuilder.toString() + c);
+					if (internal.getLayoutBounds().getWidth() > pageWidth) {
+						pageBuilder.append(lineBuilder);
+						lineBuilder.setLength(0);
+						lineNumber++;
+						if (lineNumber == (int) linesPerPage) {
+							var lastWord = lastWord(pageBuilder.toString(), Character.toString(c));
+							if (!lastWord.equals(Character.toString(c))) {
+								pageBuilder.replace(pageBuilder.lastIndexOf(lastWord), (pageBuilder.length()), "");
+							}
+							pages.add(pageNumber, pageBuilder.toString());
+							pageBuilder.setLength(0);
+							lineBuilder.setLength(0);
+							lineNumber = 0;
+							pageNumber++;
+							if (!lastWord.equals(Character.toString(c))) lineBuilder.append(lastWord);
+						}
+					}
+					lineBuilder.append(c);
+					if (pos == chars.length) {
+						pageBuilder.append(lineBuilder).append("\n");
+						lineBuilder.setLength(0);
+						lineNumber++;
+					}
+				}
+			}
+
+			if (lineNumber == (int) linesPerPage) {
+				pages.add(pageBuilder.toString());
+				pageBuilder.setLength(0);
+				pageNumber++;
+				lineNumber = 0;
+			}
+		}
+		pages.add(pageNumber, pageBuilder.toString());
+		return pages;
+	}
+
+	private static String lastWord(String line, String chr) {
+		int len = line.length();
+		if (chr.matches("[a-zA-Z0-9]") && line.substring(len - 1).matches("[a-zA-Z0-9]")) {
+			for (int p = (len - 1); p >= 0; p--) {
+				char c = line.charAt(p);
+				if (Character.toString(c).matches("[$&+,:;=\\\\?@#|/'<>.^* ()%!-]")) {
+					return line.substring(p + 1);
+				}
+			}
+		}
+		return chr;
 	}
 }
