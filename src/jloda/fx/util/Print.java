@@ -51,9 +51,6 @@ public class Print {
 
 	/**
 	 * print the given node
-	 *
-	 * @param owner
-	 * @param node0
 	 */
 	public static void print(Stage owner, Node node0) {
 		final PrinterJob job = PrinterJob.createPrinterJob();
@@ -127,9 +124,6 @@ public class Print {
 
 	/**
 	 * print a snapshot of the given node
-	 *
-	 * @param owner
-	 * @param node
 	 */
 	public static void printSnapshot(Stage owner, Node node) {
 		final PrinterJob job = PrinterJob.createPrinterJob();
@@ -146,7 +140,6 @@ public class Print {
 				if (imageView.getFitHeight() > pageLayout.getPrintableHeight())
 					imageView.setFitHeight(pageLayout.getPrintableHeight());
 
-
 				if (job.printPage(pageLayout, imageView))
 					job.endJob();
 			}
@@ -156,8 +149,6 @@ public class Print {
 
 	/**
 	 * show the page layout dialog
-	 *
-	 * @param owner
 	 */
 	public static void showPageLayout(Stage owner) {
 		final PrinterJob job = PrinterJob.createPrinterJob();
@@ -166,10 +157,16 @@ public class Print {
 		}
 	}
 
+	/**
+	 * print a text, over multiple pages, if necessary
+	 */
 	public static void printText(Stage owner, String text) {
 		printText(owner, text, new Font("Courier New", 10));
 	}
 
+	/**
+	 * print a text, over multiple pages, if necessary
+	 */
 	public static void printText(Stage owner, String text, Font font) {
 		var service = Executors.newSingleThreadExecutor();
 		service.submit(() -> {
@@ -187,14 +184,14 @@ public class Print {
 					var printed = false;
 					for (var pageRange : jobSettings.getPageRanges()) {
 						for (var page = pageRange.getStartPage(); page <= pageRange.getEndPage(); page++) {
-							System.err.println("Printing page " + page);
+							// System.err.println("Printing page " + page);
 							var textFlow = new TextFlow(new Text(pages.get(page - 1)));
 							textFlow.setStyle(String.format("-fx-font-family: '%s'; -fx-font-size: %fpx;", font.getFamily(), font.getSize()));
 							textFlow.setPrefWidth(pageWidth);
 							textFlow.setPrefHeight(pageHeight);
 							printed = printerJob.printPage(textFlow);
 							if (!printed) {
-								NotificationManager.showError("Print failed");
+								NotificationManager.showError("Print failed, page=" + page);
 								break;
 							}
 						}
@@ -273,10 +270,10 @@ public class Print {
 	}
 
 	private static String lastWord(String line, String chr) {
-		int len = line.length();
+		var len = line.length();
 		if (chr.matches("[a-zA-Z0-9]") && line.substring(len - 1).matches("[a-zA-Z0-9]")) {
-			for (int p = (len - 1); p >= 0; p--) {
-				char c = line.charAt(p);
+			for (var p = (len - 1); p >= 0; p--) {
+				var c = line.charAt(p);
 				if (Character.toString(c).matches("[$&+,:;=\\\\?@#|/'<>.^* ()%!-]")) {
 					return line.substring(p + 1);
 				}
