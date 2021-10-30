@@ -52,6 +52,8 @@ public class AlgorithmNode extends WorkflowNode {
 			return false;
 		});
 		service.stateProperty().addListener((v, o, n) -> {
+			System.err.println("Service (" + getName() + ") " + o + " -> " + n);
+
 			setValid(n.equals(Worker.State.SUCCEEDED));
 
 			if (n == Worker.State.FAILED) {
@@ -60,7 +62,7 @@ public class AlgorithmNode extends WorkflowNode {
 		});
 
 		validProperty().addListener((v, o, n) -> {
-			if (!n)
+			if (!n && service.isRunning())
 				service.cancel();
 		});
 
@@ -113,6 +115,8 @@ public class AlgorithmNode extends WorkflowNode {
 
 	public void restart() {
 		try {
+			if (service.getProgressListener() != null)
+				service.getProgressListener().setTasks("Running", getName());
 			service.restart();
 		} catch (Exception ex) {
 			Basic.caught(ex);

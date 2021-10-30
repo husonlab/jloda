@@ -48,11 +48,14 @@ public class Workflow extends WorkerBase implements Worker<Boolean> {
 	private int numberOfNodesCreated = 0;
 
 	private final IntegerProperty numberOfNodes = new SimpleIntegerProperty(0);
+	private final IntegerProperty numberOfDataNodes = new SimpleIntegerProperty(0);
+	private final IntegerProperty numberOfAlgorithmNodes = new SimpleIntegerProperty(0);
 
 	private final IntegerProperty numberOfEdges = new SimpleIntegerProperty(0);
 	private final ListChangeListener<WorkflowNode> parentsChangedListener;
 
 	private final BooleanProperty connected = new SimpleBooleanProperty(true);
+
 
 	public Workflow() {
 		this("Workflow");
@@ -60,11 +63,13 @@ public class Workflow extends WorkerBase implements Worker<Boolean> {
 
 	public Workflow(String title) {
 		setTitle(title);
-		parentsChangedListener = change -> {
+		parentsChangedListener = c -> {
 			var count = 0;
-			while (change.next()) {
-				count += change.getAddedSize();
-				count -= change.getRemovedSize();
+			while (c.next()) {
+				if (c.wasAdded())
+					count += c.getAddedSize();
+				if (c.wasRemoved())
+					count -= c.getRemovedSize();
 			}
 			numberOfEdges.set(numberOfEdges.get() + count);
 			if (!isConnected())
@@ -122,17 +127,22 @@ public class Workflow extends WorkerBase implements Worker<Boolean> {
 						node.validProperty().addListener(nodeValidChangeListener);
 						node.getParents().addListener(parentsChangedListener);
 						if (node instanceof AlgorithmNode) {
+							numberOfAlgorithmNodes.set(numberOfAlgorithmNodes.get() + 1);
 							setTotalWork(getTotalWork() + 1);
 							((AlgorithmNode) node).getService().stateProperty().addListener(nodeStateChangeListener);
+						} else if (node instanceof DataNode) {
+							numberOfDataNodes.set(numberOfDataNodes.get() + 1);
 						}
 					}
 				} else if (e.wasRemoved()) {
 					for (var node : e.getRemoved()) {
 						node.validProperty().removeListener(nodeValidChangeListener);
 						if (node instanceof AlgorithmNode) {
+							numberOfAlgorithmNodes.set(numberOfAlgorithmNodes.get() - 1);
 							((AlgorithmNode) node).getService().stateProperty().removeListener(nodeStateChangeListener);
 							setTotalWork(getTotalWork() - 1);
-
+						} else if (node instanceof DataNode) {
+							numberOfDataNodes.set(numberOfDataNodes.get() - 1);
 						}
 					}
 				}
@@ -162,7 +172,7 @@ public class Workflow extends WorkerBase implements Worker<Boolean> {
 	}
 
 	public Set<Worker.State> getAllCurrentStates() {
-		return IteratorUtils.asStream(algorithmNodes()).map(a -> a.getService().getState()).collect(Collectors.toSet());
+		return IteratorUtils.asStream(algorithmNodes()).filter(a -> !(a.isValid() && a.getService().getState() == State.READY)).map(a -> a.getService().getState()).collect(Collectors.toSet());
 	}
 
 	public ObservableList<WorkflowNode> nodes() {
@@ -244,6 +254,22 @@ public class Workflow extends WorkerBase implements Worker<Boolean> {
 		return numberOfNodes;
 	}
 
+	public int getNumberOfDataNodes() {
+		return numberOfDataNodes.get();
+	}
+
+	public ReadOnlyIntegerProperty numberOfDataNodesProperty() {
+		return numberOfDataNodes;
+	}
+
+	public int getNumberOfAlgorithmNodes() {
+		return numberOfAlgorithmNodes.get();
+	}
+
+	public ReadOnlyIntegerProperty numberOfAlgorithmNodesProperty() {
+		return numberOfAlgorithmNodes;
+	}
+
 	public int size() {
 		return getNumberOfNodes();
 	}
@@ -272,6 +298,10 @@ public class Workflow extends WorkerBase implements Worker<Boolean> {
 
 	public ReadOnlyBooleanProperty validProperty() {
 		return valid;
+	}
+
+	protected void setValid(boolean valid) {
+		this.valid.set(valid);
 	}
 
 	public String toReportString() {
@@ -393,4 +423,49 @@ public class Workflow extends WorkerBase implements Worker<Boolean> {
 		return result;
 	}
 
+	public DataNode newDataNode(DataBlock dataBlock) {
+		var node = new DataNode(this);
+		nodes.add(node);
+		node.setDataBlock(dataBlock);
+		return node;
+	}
+
+	public AlgorithmNode newAlgorithmNode(Algorithm algorithm) {
+		var node = new AlgorithmNode(this);
+		nodes.add(node);
+		node.setAlgorithm(algorithm);
+		return node;
+	}
+
+	/**
+	 * make a copy that is shallow in the sense that we reference the original datablocks and algorithms, rather than copy them
+	 *
+	 * @param src source to copy from
+	 */
+	public void shallowCopy(Workflow src) {
+		clear();
+
+		var nodeCopyNodeMap = new HashMap<WorkflowNode, WorkflowNode>();
+
+		for (var node : src.nodes()) {
+			var nodeCopy = nodeCopyNodeMap.get(node);
+			if (nodeCopy == null) {
+				if (node instanceof DataNode dataNode) {
+					nodeCopyNodeMap.put(node, newDataNode(dataNode.getDataBlock()));
+				} else if (node instanceof AlgorithmNode algorithmNode) {
+					nodeCopyNodeMap.put(node, newAlgorithmNode(algorithmNode.getAlgorithm()));
+				}
+			}
+		}
+
+		for (var node : src.nodes()) {
+			var nodeCopy = nodeCopyNodeMap.get(node);
+			for (var parent : node.getParents()) {
+				var parentCopy = nodeCopyNodeMap.get(parent);
+				if (!nodeCopy.getParents().contains(parentCopy)) {
+					nodeCopy.getParents().add(parentCopy);
+				}
+			}
+		}
+	}
 }

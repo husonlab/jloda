@@ -45,6 +45,8 @@ public interface SelectionModel<T> {
 
 	ObservableSet<T> getSelectedItems();
 
+	T getSelectedItem();
+
 	ReadOnlyIntegerProperty sizeProperty();
 
 	int size();

@@ -1,5 +1,5 @@
 <!--
-	~  build.xml Copyright (C) 2019 Daniel H. Huson
+	~  build.xml Copyright (C) 2021 Daniel H. Huson
 	~
 	~  (Some files contain contributions from other authors, who are then mentioned separately.)
 	~
@@ -18,9 +18,6 @@
 -->
 
 	<project name="JLODA" default="jar" basedir=".">
-	        <property name="ant.build.javac.source" value="13"/>
-        	<property name="ant.build.javac.target" value="13"/>
-
 		<property name="jfxDir" value="../../javafx/lib"/>
 		<property name="buildSrcDir" value="../antbuild/src"/>
 		<property name="buildModulesDir" value="../antbuild/modules"/>
@@ -53,7 +50,7 @@
 		</target>
 
 		<target name="compile" depends="copy_resources">
-			<javac  
+			<javac  source = "16" target = "16"
 				includeantruntime="false"
 				srcdir="../antbuild/src/jloda"
 				destdir="${buildModulesDir}/jloda"

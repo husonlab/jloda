@@ -79,6 +79,13 @@ public class SetSelectionModel<T> implements SelectionModel<T> {
 		return set;
 	}
 
+	public T getSelectedItem() {
+		if (size() == 0)
+			return null;
+		else
+			return set.iterator().next();
+	}
+
 	@Override
 	public ReadOnlyIntegerProperty sizeProperty() {
 		return size;

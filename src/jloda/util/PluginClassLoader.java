@@ -56,14 +56,14 @@ public class PluginClassLoader {
     }
 
     /**
-     * get an instance of each class of the given types in the given packages
-     *
-     * @param className    the name of the class (ignoring case)
-     * @param clazz1       this must be assignable from the returned class
-     * @param clazz2       if non-null, must also be assignable from the returned class
-     * @param packageNames
-     * @return instances
-     */
+	 * get an instance of each class of the given types in the given packages
+	 *
+	 * @param className    the name of the class (ignoring case)
+	 * @param clazz1       this must be assignable from the returned class
+	 * @param clazz2       if non-null, must also be assignable from the returned class
+	 * @param packageNames list of package names to search
+	 * @return instances
+	 */
     public static <C, D> List<C> getInstances(String className, Class<C> clazz1, Class<D> clazz2, String... packageNames) {
         final List<C> plugins = new LinkedList<>();
         final LinkedList<String> packageNameQueue = new LinkedList<>(Arrays.asList(packageNames));
@@ -78,14 +78,14 @@ public class PluginClassLoader {
                         try {
                             resources[i] = resources[i].substring(0, resources[i].length() - 6);
                             final Class<C> c = classForName(clazz1, packageName.concat(".").concat(resources[i]));
-                            if (!c.isInterface() && !Modifier.isAbstract(c.getModifiers()) && clazz1.isAssignableFrom(c) && (clazz2 == null || clazz2.isAssignableFrom(c))
-                                    && (className == null || Basic.getShortName(c).equalsIgnoreCase(className))) {
-                                try {
-                                    plugins.add(c.getConstructor().newInstance());
-                                } catch (InstantiationException ex) {
-                                    //Basic.caught(ex);
-                                }
-                            }
+							if (!c.isInterface() && !Modifier.isAbstract(c.getModifiers()) && clazz1.isAssignableFrom(c) && (clazz2 == null || clazz2.isAssignableFrom(c))
+								&& (className == null || c.getSimpleName().equalsIgnoreCase(className))) {
+								try {
+									plugins.add(c.getConstructor().newInstance());
+								} catch (InstantiationException ex) {
+									Basic.caught(ex);
+								}
+							}
                         } catch (Exception ex) {
                             // Basic.caught(ex);
                         }

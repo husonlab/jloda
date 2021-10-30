@@ -39,8 +39,8 @@ abstract public class WorkflowNode extends NamedBase {
 	private final ObservableList<WorkflowNode> parents = FXCollections.observableArrayList();
 	private final ObservableList<WorkflowNode> children = FXCollections.observableArrayList();
 
-	private final BooleanProperty valid = new SimpleBooleanProperty(false);
-	private final BooleanProperty allParentsValid = new SimpleBooleanProperty(false);
+	private final BooleanProperty valid = new SimpleBooleanProperty(true);
+	private final BooleanProperty allParentsValid = new SimpleBooleanProperty(true);
 	private final IntegerProperty numberOfInvalidParents = new SimpleIntegerProperty(0);
 
 	private final ChangeListener<Boolean> parentValidListener = createParentValidListener();

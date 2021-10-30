@@ -135,35 +135,44 @@ public class MainWindowManager {
         if (mainWindows.size() == 0) {
             ProgramProperties.store();
             Platform.exit();
-            System.exit(0);
-        }
+			System.exit(0);
+		}
 
-        if (lastFocusedMainWindow == mainWindow) {
-            lastFocusedMainWindow = mainWindows.get(mainWindows.size() - 1);
-        }
-        return true;
-    }
+		if (lastFocusedMainWindow == mainWindow) {
+			lastFocusedMainWindow = mainWindows.get(mainWindows.size() - 1);
+		}
+		return true;
+	}
 
-    public IMainWindow createAndShowWindow(boolean useExistingEmpty) {
-        final IMainWindow mainWindow = getLastFocusedMainWindow();
-        if (useExistingEmpty && mainWindow.isEmpty())
-            return mainWindow;
-        else {
-            try {
-                final WindowGeometry windowGeometry = new WindowGeometry();
+	public IMainWindow createAndShowWindow(boolean useExistingEmpty) {
+		return createAndShowWindow(useExistingEmpty ? getLastFocusedMainWindow() : null);
+	}
 
-                if (mainWindow != null) {
-                    windowGeometry.setFromStage(mainWindow.getStage());
-                    windowGeometry.setX(windowGeometry.getX() + 50);
-                    windowGeometry.setY(windowGeometry.getY() + 50);
-                } else {
-                    windowGeometry.setFromString(ProgramProperties.get("WindowGeometry", "50 50 800 800"));
-                }
-                final IMainWindow newWindow = getMainWindow(0).createNew();
-                final Stage stage = new Stage();
-                stage.setTitle("Untitled - " + ProgramProperties.getProgramName() + " [" + (++windowsCreated) + "]");
-                stage.focusedProperty().addListener((c, o, n) -> {
-                    if (n)
+	/**
+	 * create and show window
+	 *
+	 * @param existingWindow an existing window or null
+	 * @return the new window, or the existing window, if it is non-null and empty
+	 */
+	public IMainWindow createAndShowWindow(IMainWindow existingWindow) {
+		if (existingWindow != null && existingWindow.isEmpty())
+			return existingWindow;
+		else {
+			try {
+				final WindowGeometry windowGeometry = new WindowGeometry();
+
+				if (existingWindow != null) {
+					windowGeometry.setFromStage(existingWindow.getStage());
+					windowGeometry.setX(windowGeometry.getX() + 50);
+					windowGeometry.setY(windowGeometry.getY() + 50);
+				} else {
+					windowGeometry.setFromString(ProgramProperties.get("WindowGeometry", "50 50 800 800"));
+				}
+				final IMainWindow newWindow = getMainWindow(0).createNew();
+				final Stage stage = new Stage();
+				stage.setTitle("Untitled - " + ProgramProperties.getProgramName() + " [" + (++windowsCreated) + "]");
+				stage.focusedProperty().addListener((c, o, n) -> {
+					if (n)
                         setLastFocusedMainWindow(newWindow);
                 });
 
