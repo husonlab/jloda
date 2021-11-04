@@ -40,6 +40,7 @@ import javafx.scene.layout.StackPane;
 import javafx.stage.Stage;
 import jloda.util.Basic;
 import jloda.util.ProgramProperties;
+import jloda.util.Single;
 
 import java.io.Closeable;
 import java.io.IOException;
@@ -84,7 +85,8 @@ public class SplittableTabPane extends Pane {
         rootSplitPane.setOrientation(Orientation.HORIZONTAL);
         getChildren().add(rootSplitPane);
 
-        tabs.addListener((ListChangeListener<Tab>) (c) -> {
+        tabs.addListener((ListChangeListener<Tab>) c -> {
+            var previouslySelected = new Single<Tab>(null);
             while (c.next()) {
                 if (c.wasAdded()) {
                     for (Tab tab : c.getAddedSubList()) {
@@ -105,6 +107,7 @@ public class SplittableTabPane extends Pane {
                         setupDrag(tab);
                     }
                 } else if (c.wasRemoved()) {
+                    previouslySelected.setIfCurrentValueIsNull(selectionModel.getSelectedItem());
                     for (Tab tab : c.getRemoved()) {
                         // check whether in auxiliary window:
                         boolean gone = false;
@@ -129,6 +132,8 @@ public class SplittableTabPane extends Pane {
             }
             selectionModel.setItems(tabs);
             size.set(tabs.size());
+            if (previouslySelected.isNotNull() && tabs.contains(previouslySelected.get()))
+                Platform.runLater(() -> selectionModel.select(previouslySelected.get()));
         });
 
         rootSplitPane.getItems().addListener((InvalidationListener) e -> {

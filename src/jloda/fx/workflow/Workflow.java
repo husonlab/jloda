@@ -79,7 +79,7 @@ public class Workflow extends WorkerBase implements Worker<Boolean> {
 
 		nodeValidChangeListener = (v, o, n) -> {
 			if (n)
-				valid.set(nodes.size() > 0 && nodes.stream().anyMatch(a -> !a.isValid()));
+				valid.set(nodes.size() > 0 && nodes.stream().allMatch(a -> a.isValid()));
 			else
 				valid.set(true);
 		};

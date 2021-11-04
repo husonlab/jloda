@@ -280,7 +280,7 @@ public class FileUtils {
 
 	/**
 	 * gets an input stream. If file ends on gz or zip opens appropriate unzipping stream. Can also be stdin or stdin.gz.
-	 * Can also be a URL or a URL ending on .gz
+	 * Can also be an URL or an URL ending on .gz
 	 */
 	public static InputStream getInputStreamPossiblyZIPorGZIP(String fileName) throws IOException {
 		if (fileName.endsWith("stdin"))
@@ -289,27 +289,25 @@ public class FileUtils {
 			return new GZIPInputStream(System.in);
 		if (isHTTPorFileURL(fileName))
 			return getInputStreamPossiblyGZIP(null, fileName);
-
-		final File file = new File(fileName);
+		final var file = new File(fileName);
 		if (file.isDirectory())
 			throw new IOException("Directory, not a file: " + file);
 		if (!file.exists())
 			throw new IOException("No such file: " + file);
 		final InputStream ins;
 		if (fileName.toLowerCase().endsWith(".gz")) {
-			ins = new GZIPInputStream(new FileInputStream(file));
+			return new GZIPInputStream(new FileInputStream(file));
 		} else if (fileName.toLowerCase().endsWith(".zip")) {
-			ZipFile zf = new ZipFile(file);
-			Enumeration e = zf.entries();
-			ZipEntry entry = (ZipEntry) e.nextElement(); // your only file
-			ins = zf.getInputStream(entry);
+			var zf = new ZipFile(file);
+			var e = zf.entries();
+			var entry = (ZipEntry) e.nextElement(); // your only file
+			return zf.getInputStream(entry);
 		} else
-			ins = new FileInputStream(file);
-		return ins;
+			return new FileInputStream(file);
 	}
 
 	/**
-	 * opens a file or gzipped file for reading. Can also be stdin or a URL
+	 * opens a file or gzipped file for reading. Can also be stdin or an URL
 	 */
 	public static InputStream getInputStreamPossiblyGZIP(InputStream ins, String fileName) throws IOException {
 		if (fileName.endsWith("stdin"))
@@ -537,23 +535,30 @@ public class FileUtils {
 	 * @return 1 or 2
 	 */
 	public static int determineEndOfLinesBytes(File file) {
-		try {
-			RandomAccessFile r = new RandomAccessFile(file, "r");
-			int count = 0;
-			long length = 0;
-			for (; count < 5; count++) {
-				String aLine = r.readLine();
-				if (aLine == null)
-					break;
-				length += aLine.length();
+		return determineEndOfLinesBytes(file.getPath());
+	}
+
+	/**
+	 * get the number of bytes used to terminate a line
+	 *
+	 * @return 1 or 2
+	 */
+	public static int determineEndOfLinesBytes(String fileName) {
+		var previous = 0;
+		try (var r = getReaderPossiblyZIPorGZIP(fileName)) {
+			while (r.ready()) {
+				var ch = r.read();
+				if (ch == '\n') {
+					if (previous == '\r')
+						return 2;
+					else
+						return 1;
+				}
+				previous = ch;
 			}
-			long diff = r.getFilePointer() - length;
-			r.close();
-			return (int) (diff / count);
-		} catch (Exception e) {
-			//Basic.caught(e);
-			return 1;
+		} catch (IOException ignored) {
 		}
+		return 1;
 	}
 
 	/**

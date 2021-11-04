@@ -95,21 +95,18 @@ public class FileLineIterator implements ICloseableIterator<String> {
             endOfLineBytes = 1;
             maxProgress = fileName.length() - PREFIX_TO_INDICATE_TO_PARSE_FILENAME_STRING.length();
         } else if (fileName.equals("stdin")) {
-            reader = new BufferedReader(new InputStreamReader(System.in));
+            reader = new BufferedReader(new InputStreamReader(FileUtils.getInputStreamPossiblyGZIP(System.in, "stdin")));
             maxProgress = 1000000;
             endOfLineBytes = 1;
         } else {
-			final File file = new File(fileName);
-			if (FileUtils.isZIPorGZIPFile(file.getPath())) {
-				reader = new BufferedReader(new InputStreamReader(FileUtils.getInputStreamPossiblyZIPorGZIP(file.getPath())));
-				endOfLineBytes = FileUtils.determineEndOfLinesBytes(new File(fileName));
-				maxProgress = 10 * file.length(); // assuming compression factor of 10-to-1
-			} else {
-				reader = new BufferedReader(new FileReader(file), bufferSize);
-				endOfLineBytes = 1;
-				maxProgress = file.length();
-			}
-		}
+
+            if (FileUtils.fileExistsAndIsNonEmpty(fileName)) {
+                maxProgress = (FileUtils.isZIPorGZIPFile(fileName) ? 10 : 1) * (new File(fileName)).length();
+            } else
+                maxProgress = 10000000;  // unknown
+            reader = new BufferedReader(new InputStreamReader(FileUtils.getInputStreamPossiblyZIPorGZIP(fileName)));
+            endOfLineBytes = FileUtils.determineEndOfLinesBytes(fileName);
+        }
         done = (maxProgress <= 0);
         this.progress = progress;
     }
