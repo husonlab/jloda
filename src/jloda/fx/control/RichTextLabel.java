@@ -60,7 +60,7 @@ public class RichTextLabel extends TextFlow {
     private final ObjectProperty<Font> font = new SimpleObjectProperty<>(Font.font("serif", 14));
     private final StringProperty text = new SimpleStringProperty();
     private final BooleanProperty requireHTMLTag = new SimpleBooleanProperty(false);
-    private final ObjectProperty<Paint> textFill = new SimpleObjectProperty<>(Color.BLACK);
+    private ObjectProperty<Paint> textFill = new SimpleObjectProperty<>(Color.BLACK);
     private final ObjectProperty<Node> graphic = new SimpleObjectProperty<>(null);
 
     private final ObjectProperty<ContentDisplay> contentDisplay = new SimpleObjectProperty<>(ContentDisplay.TOP);
@@ -227,7 +227,8 @@ public class RichTextLabel extends TextFlow {
                     if (isRequireHTMLTag()) { // require leading HTML tag, but none found, return non-styled text
                         final Text text = new Text(getText());
                         text.setFont(getFont());
-                        text.setFill(getTextFill());
+                        if (getTextFill() != Color.BLACK)
+                            text.setFill(getTextFill());
                         getChildren().add(text);
                         return;
                     } else
@@ -246,10 +247,10 @@ public class RichTextLabel extends TextFlow {
             if (events.size() <= 1 || !events.get(events.size() - 1).getChange().equals(Event.Change.htmlEnd))
                 events.add(new Event(Event.Change.htmlEnd, getText().length(), getText().length(), null));
 
-            double offset = 0;
-            Font currentFont = getFont();
-            double fontSize = currentFont.getSize();
-            Paint textFill = getTextFill();
+            var offset = 0.0;
+            var currentFont = getFont();
+            var fontSize = currentFont.getSize();
+            var textFill = getTextFill();
 
             final Map<String, Boolean> active = new HashMap<>();
 
@@ -257,15 +258,16 @@ public class RichTextLabel extends TextFlow {
             final Stack<Double> fontSizeStack = new Stack<>();
             final Stack<Paint> colorStack = new Stack<>();
 
-            int segmentStart = events.get(0).getSegmentStart();
+            var segmentStart = events.get(0).getSegmentStart();
 
-            for (int i = 1; i < events.size(); i++) {
+            for (var i = 1; i < events.size(); i++) {
                 final Event event = events.get(i);
 
 
                 if (event.getPos() > segmentStart) {
                     final Text textItem = new Text(getText().substring(segmentStart, event.getPos()));
-                    textItem.setFill(textFill);
+                    if (textFill != Color.BLACK)
+                        textItem.setFill(textFill);
 
                     final FontWeight weight;
                     final Boolean bold = active.get("bold");
