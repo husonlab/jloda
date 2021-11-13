@@ -27,7 +27,6 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableSet;
 
 import java.util.Collection;
-import java.util.HashSet;
 
 /**
  * select model based on a set
@@ -36,7 +35,7 @@ import java.util.HashSet;
  * @param <T>
  */
 public class SetSelectionModel<T> implements SelectionModel<T> {
-	private final ObservableSet<T> set = FXCollections.observableSet(new HashSet<>());
+	private final ObservableSet<T> set = FXCollections.observableSet();
 	private final IntegerProperty size;
 
 	public SetSelectionModel() {

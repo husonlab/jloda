@@ -37,7 +37,6 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
-import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
 
 
@@ -62,9 +61,9 @@ public class ResourceManagerFX {
         if (iconMap.containsKey(fileName))
             return iconMap.get(fileName);
 
-        for (Pair<Class, String> pair : classLoadersAndRoots) {
+        for (var pair : classLoadersAndRoots) {
             try {
-                final Image iconImage = getImageResource(pair.getFirst(), pair.getSecond() + "/icons", fileName);
+                var iconImage = getImageResource(pair.getFirst(), pair.getSecond() + "/icons", fileName);
                 if (iconImage != null) {
                     iconMap.put(fileName, iconImage);
                     return iconMap.get(fileName);
@@ -78,7 +77,7 @@ public class ResourceManagerFX {
     }
 
     public static ImageView getIconAsImageView(String fileName, final double height) {
-        final ImageView imageView = new ImageView(getIcon(fileName));
+        var imageView = new ImageView(getIcon(fileName));
         imageView.setPreserveRatio(true);
         if (height > 0)
             imageView.setFitHeight(height);
@@ -86,9 +85,9 @@ public class ResourceManagerFX {
     }
 
     public static ArrayList<Image> getIcons(String... fileNames) {
-        final ArrayList<Image> list = new ArrayList<>();
-        for (String name : fileNames) {
-            final Image image = getIcon(name);
+        var list = new ArrayList<Image>();
+        for (var name : fileNames) {
+            var image = getIcon(name);
             if (image != null)
                 list.add(image);
         }
@@ -100,8 +99,8 @@ public class ResourceManagerFX {
         if (imageMap.containsKey(fileName))
             return imageMap.get(fileName);
 
-        for (Pair<Class, String> pair : classLoadersAndRoots) {
-            final Image image = getImageResource(pair.getFirst(), pair.getSecond() + "/images", fileName);
+        for (var pair : classLoadersAndRoots) {
+            var image = getImageResource(pair.getFirst(), pair.getSecond() + "/images", fileName);
             if (image != null) {
                 imageMap.put(fileName, image);
                 return image;
@@ -115,8 +114,8 @@ public class ResourceManagerFX {
      * Gets the named file
      */
     public static File getFile(String name) {
-        for (Pair<Class, String> pair : classLoadersAndRoots) {
-            final File file = getFileResource(pair.getFirst(), pair.getSecond() + "/files", name);
+        for (var pair : classLoadersAndRoots) {
+            var file = getFileResource(pair.getFirst(), pair.getSecond() + "/files", name);
             if (file != null)
                 return file;
         }
@@ -127,8 +126,8 @@ public class ResourceManagerFX {
      * Returns the file with name specified by the parameter, or <code>null</code> if there is none.
      */
     public static URL getCssURL(String name) {
-        for (Pair<Class, String> pair : classLoadersAndRoots) {
-            final URL url = getFileURL(pair.getFirst(), pair.getSecond() + "/css", name);
+        for (var pair : classLoadersAndRoots) {
+            var url = getFileURL(pair.getFirst(), pair.getSecond() + "/css", name);
             if (url != null)
                 return url;
         }
@@ -139,7 +138,7 @@ public class ResourceManagerFX {
      * Returns the path with name specified by the parameter, or just the name, else
      */
     public static String getFileName(String name) {
-        final File file = getFile(name);
+        var file = getFile(name);
         if (file != null)
             return file.getPath().replaceAll("%20", " ");
         else
@@ -155,8 +154,8 @@ public class ResourceManagerFX {
     public static InputStream getFileAsStream(String fileName) {
         if (fileName == null)
             return null;
-        for (Pair<Class, String> pair : classLoadersAndRoots) {
-            final InputStream stream = getFileAsStream(pair.getFirst(), pair.getSecond() + "/files", fileName);
+        for (var pair : classLoadersAndRoots) {
+            var stream = getFileAsStream(pair.getFirst(), pair.getSecond() + "/files", fileName);
             if (stream != null)
                 return stream;
         }
@@ -171,7 +170,7 @@ public class ResourceManagerFX {
      */
     public static InputStream getFileAsStream(Class clazz, String filePackage, String fileName) {
         if (fileName.contains("/") || fileName.contains("\\")) {
-            final File file = new File(fileName);
+            var file = new File(fileName);
             try {
 				return FileUtils.getInputStreamPossiblyZIPorGZIP(file.getPath());
             } catch (IOException e) {
@@ -181,7 +180,7 @@ public class ResourceManagerFX {
             }
         } else {
             try {
-                InputStream ins = getFileResourceAsStream(clazz, filePackage, fileName);
+                var ins = getFileResourceAsStream(clazz, filePackage, fileName);
                 if (ins != null)
 					return FileUtils.getInputStreamPossiblyGZIP(ins, fileName);
             } catch (IOException e) {
@@ -203,16 +202,16 @@ public class ResourceManagerFX {
             packageName = "/" + packageName;
         if (!packageName.endsWith("/"))
             packageName += "/";
-        final String resname = (packageName + fileName).replaceAll(" ", "\\ ");
-        try (InputStream is = clazz.getResourceAsStream(resname)) {
+        var resname = (packageName + fileName).replaceAll(" ", "\\ ");
+        try (var is = clazz.getResourceAsStream(resname)) {
             if (is != null) {
-                byte[] buffer = new byte[0];
-                byte[] tmpbuf = new byte[1024];
+                var buffer = new byte[0];
+                var tmpbuf = new byte[1024];
                 while (true) {
                     int len = is.read(tmpbuf);
                     if (len <= 0)
                         break;
-                    byte[] newbuf = new byte[buffer.length + len];
+                    var newbuf = new byte[buffer.length + len];
                     System.arraycopy(buffer, 0, newbuf, 0, buffer.length);
                     System.arraycopy(tmpbuf, 0, newbuf, buffer.length, len);
                     buffer = newbuf;
@@ -239,12 +238,13 @@ public class ResourceManagerFX {
         if (!packageName.endsWith("/"))
             packageName += "/";
         try {
-            final String resourceName = (packageName + fileName).replaceAll(" ", "\\ ");
-            final URL url = clazz.getResource(resourceName);
-            return new File(url.getFile());
-        } catch (Exception exc) {
-            return null;
+            var resourceName = (packageName + fileName).replaceAll(" ", "\\ ");
+            var url = clazz.getResource(resourceName);
+            if (url != null)
+                return new File(url.getFile());
+        } catch (Exception ignored) {
         }
+        return null;
     }
 
     /**
@@ -260,7 +260,7 @@ public class ResourceManagerFX {
         if (!packageName.endsWith("/"))
             packageName += "/";
         try {
-            final String resourceName = (packageName + fileName).replaceAll(" ", "\\ ");
+            var resourceName = (packageName + fileName).replaceAll(" ", "\\ ");
             return clazz.getResource(resourceName);
         } catch (Exception exc) {
             return null;
@@ -280,7 +280,7 @@ public class ResourceManagerFX {
         if (!packageName.endsWith("/"))
             packageName += "/";
         try {
-            final String resourceName = (packageName + fileName).replace(" ", "\\ ");
+            var resourceName = (packageName + fileName).replace(" ", "\\ ");
             return clazz.getResourceAsStream(resourceName);
         } catch (Exception ex) {
             return null;
@@ -289,11 +289,6 @@ public class ResourceManagerFX {
 
     /**
      * gets an image from the named package
-     *
-     * @param packageName
-     * @param fileName
-     * @return image
-     * @throws IOException
      */
     public static Image getImage(Class clazz, String packageName, String fileName) {
         return getImageResource(clazz, packageName, fileName);
@@ -301,15 +296,12 @@ public class ResourceManagerFX {
 
     /**
      * does the named file exist as a resource or file?
-     *
-     * @param name
-     * @return true if named file exists as a resource or file
      */
     public static boolean fileExists(String name) {
         if (name == null || name.length() == 0)
             return false;
 
-        try (InputStream ins = getFileAsStream(name)) {
+        try (var ins = getFileAsStream(name)) {
             return (ins != null);
         } catch (IOException ex) {
             return false;
@@ -318,16 +310,12 @@ public class ResourceManagerFX {
 
     /**
      * does the named file exist as a resource ?
-     *
-     * @param packageName
-     * @param name
-     * @return true if named file exists as a resource
      */
     public static boolean fileResourceExists(Class clazz, String packageName, String name) {
         if (name == null || name.length() == 0)
             return false;
 
-        try (InputStream ins = getFileResourceAsStream(clazz, packageName, name)) {
+        try (var ins = getFileResourceAsStream(clazz, packageName, name)) {
             return (ins != null);
         } catch (IOException ex) {
             return false;
@@ -352,25 +340,25 @@ public class ResourceManagerFX {
     public static String getVersion(final Class clazz, final String name) {
         String version;
         try {
-            final String threadContexteClass = clazz.getName().replace('.', '/');
-            final URL url = clazz.getResource(threadContexteClass + ".class");
+            var threadContexteClass = clazz.getName().replace('.', '/');
+            var url = clazz.getResource(threadContexteClass + ".class");
             if (url == null) {
                 version = name + " $ (no manifest) $";
             } else {
-                final String path = url.getPath();
-                final String jarExt = ".jar";
-                int index = path.indexOf(jarExt);
-                SimpleDateFormat sdf = new SimpleDateFormat("EEE, d MMM yyyy HH:mm:ss Z");
+                var path = url.getPath();
+                var jarExt = ".jar";
+                var index = path.indexOf(jarExt);
+                var sdf = new SimpleDateFormat("EEE, d MMM yyyy HH:mm:ss Z");
                 if (index != -1) {
-                    final String jarPath = path.substring(0, index + jarExt.length());
-                    final File file = new File(jarPath);
-                    final String jarVersion = file.getName();
-                    final JarFile jarFile = new JarFile(new File(new URI(jarPath)));
-                    final JarEntry entry = jarFile.getJarEntry("META-INF/MANIFEST.MF");
+                    var jarPath = path.substring(0, index + jarExt.length());
+                    var file = new File(jarPath);
+                    var jarVersion = file.getName();
+                    var jarFile = new JarFile(new File(new URI(jarPath)));
+                    var entry = jarFile.getJarEntry("META-INF/MANIFEST.MF");
                     version = name + " $ " + jarVersion.substring(0, jarVersion.length() - jarExt.length()) + " $ " + sdf.format(new Date(entry.getTime()));
                     jarFile.close();
                 } else {
-                    final File file = new File(path);
+                    var file = new File(path);
                     version = name + " $ " + sdf.format(new Date(file.lastModified()));
                 }
             }
