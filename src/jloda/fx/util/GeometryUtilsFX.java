@@ -24,34 +24,41 @@ import javafx.geometry.Point2D;
 import javafx.geometry.Point3D;
 
 public class GeometryUtilsFX {
-    private final static double RAD_TO_DEG_FACTOR = 180.0 / Math.PI;
-    private final static double DEG_TO_RAD_FACTOR = Math.PI / 180.0;
+	private final static double RAD_TO_DEG_FACTOR = 180.0 / Math.PI;
+	private final static double DEG_TO_RAD_FACTOR = Math.PI / 180.0;
 
-    /**
-     * Computes the angle of a two-dimensional vector in degree
-     */
-    public static double computeAngle(Point2D p) {
-        if (p.getX() != 0) {
-            double x = Math.abs(p.getX());
-            double y = Math.abs(p.getY());
-            double a = Math.atan(y / x);
+	/**
+	 * Computes the angle of a two-dimensional vector in degrees
+	 */
+	public static double computeAngle(Point2D p) {
+		return computeAngle(p.getX(), p.getY());
+	}
 
-            if (p.getX() > 0) {
-                if (p.getY() > 0)
-                    return rad2deg(a);
-                else
-                    return rad2deg(2.0 * Math.PI - a);
-            } else // p.getX()<0
-            {
-                if (p.getY() > 0)
-                    return rad2deg(Math.PI - a);
-                else
-                    return rad2deg(Math.PI + a);
-            }
-        } else if (p.getY() > 0)
-            return rad2deg(0.5 * Math.PI);
-        else // p.y<0
-            return rad2deg(-0.5 * Math.PI);
+	/**
+	 * Computes the angle of a two-dimensional vector in degrees
+	 */
+	public static double computeAngle(double px, double py) {
+		if (px != 0) {
+			double x = Math.abs(px);
+			double y = Math.abs(py);
+			double a = Math.atan(y / x);
+
+			if (px > 0) {
+				if (py > 0)
+					return rad2deg(a);
+				else
+					return rad2deg(2.0 * Math.PI - a);
+			} else // px<0
+			{
+				if (py > 0)
+					return rad2deg(Math.PI - a);
+				else
+					return rad2deg(Math.PI + a);
+			}
+		} else if (py > 0)
+			return rad2deg(0.5 * Math.PI);
+		else // p.y<0
+			return rad2deg(-0.5 * Math.PI);
     }
 
     /**
@@ -134,21 +141,28 @@ public class GeometryUtilsFX {
 	 * Translate a point in the direction specified by an angle.
 	 */
 	public static Point2D translateByAngle(Point2D apt, double alpha, double dist) {
+		return translateByAngle(apt.getX(), apt.getY(), alpha, dist);
+	}
+
+	/**
+	 * Translate a point in the direction specified by an angle.
+	 */
+	public static Point2D translateByAngle(double aptX, double aptY, double alpha, double dist) {
 		double dx = dist * Math.cos(DEG_TO_RAD_FACTOR * alpha);
 		double dy = dist * Math.sin(DEG_TO_RAD_FACTOR * alpha);
 		if (Math.abs(dx) < 0.000001)
 			dx = 0;
 		if (Math.abs(dy) < 0.000001)
-            dy = 0;
-        return new Point2D(apt.getX() + dx, apt.getY() + dy);
-    }
+			dy = 0;
+		return new Point2D(aptX + dx, aptY + dy);
+	}
 
-    /**
-     * Rotates a two-dimensional vector by the angle alpha.
-     *
-     * @param p     point
-     * @param alpha angle in degree
-     * @return q point rotated around origin
+	/**
+	 * Rotates a two-dimensional vector by the angle alpha.
+	 *
+	 * @param p     point
+	 * @param alpha angle in degree
+	 * @return q point rotated around origin
      */
     public static Point2D rotate(Point2D p, double alpha) {
         return rotate(p.getX(), p.getY(), alpha);
