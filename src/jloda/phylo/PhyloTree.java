@@ -1311,13 +1311,24 @@ public class PhyloTree extends PhyloSplitsGraph {
 
 
     /**
-     * reticulation edge of positive length
+     * determines whether edge represents a transfer
      *
-     * @param e
      * @return true if transfer edge
      */
     public boolean isTransferEdge(Edge e) {
         return isSpecial(e) && getWeight(e) == -1;
+    }
+
+    public int computeMaxDepth() {
+        return computeMaxDepthRec(getRoot(), 0);
+    }
+
+    private int computeMaxDepthRec(Node v, int depth) {
+        if (v.isLeaf())
+            return depth;
+        else {
+            return v.childrenStream(false).mapToInt(w -> computeMaxDepthRec(w, depth + 1)).max().orElse(0);
+        }
     }
 }
 

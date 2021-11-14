@@ -451,6 +451,15 @@ public class RichTextLabel extends TextFlow {
         return null;
     }
 
+    /**
+     * gets a very rough estimate of the width
+     *
+     * @return estimated width
+     */
+    public double getEstimatedWidth() {
+        return getRawText().length() * 0.7 * getFont().getSize();
+    }
+
     static private class Event {
         enum Change {
             htmlStart("<html>"), htmlEnd("</html>"),

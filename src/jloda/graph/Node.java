@@ -619,25 +619,29 @@ public class Node extends NodeEdge implements Comparable<Node> {
                 return e != null;
             }
 
-            @Override
-            public Node next() {
-                final Node result = e.getTarget();
-                e = getNextOutEdge(e);
-                return result;
-            }
-        };
-    }
+			@Override
+			public Node next() {
+				final Node result = e.getTarget();
+				e = getNextOutEdge(e);
+				return result;
+			}
+		};
+	}
 
-    public Stream<Node> childrenStream(boolean parallel) {
-        return StreamSupport.stream(children().spliterator(), parallel);
-    }
+	public Stream<Node> childrenStream() {
+		return StreamSupport.stream(children().spliterator(), false);
+	}
 
-    public Iterable<Node> parents() {
-        return () -> new Iterator<>() {
-            private Edge e = getFirstInEdge();
+	public Stream<Node> childrenStream(boolean parallel) {
+		return StreamSupport.stream(children().spliterator(), parallel);
+	}
 
-            @Override
-            public boolean hasNext() {
+	public Iterable<Node> parents() {
+		return () -> new Iterator<>() {
+			private Edge e = getFirstInEdge();
+
+			@Override
+			public boolean hasNext() {
                 return e != null;
             }
 

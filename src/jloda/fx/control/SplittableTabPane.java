@@ -73,6 +73,8 @@ public class SplittableTabPane extends Pane {
      * constructor
      */
     public SplittableTabPane() {
+        getStyleClass().add("background");
+
         final TabPane tabPane = createTabPane();
         tabPane.prefWidthProperty().bind(widthProperty());
         tabPane.prefHeightProperty().bind(heightProperty());
@@ -112,8 +114,8 @@ public class SplittableTabPane extends Pane {
                         // check whether in auxiliary window:
                         boolean gone = false;
                         for (AuxiliaryWindow auxiliaryWindow : auxiliaryWindows) {
-                            if (auxiliaryWindow.getTab() == tab) {
-                                auxiliaryWindow.getStage().close();
+                            if (auxiliaryWindow.tab() == tab) {
+                                auxiliaryWindow.stage().close();
                                 gone = true;
                                 break;
                             }
@@ -221,8 +223,8 @@ public class SplittableTabPane extends Pane {
      */
     public void redockAll() {
         for (AuxiliaryWindow auxiliaryWindow : auxiliaryWindows) {
-            moveTab(auxiliaryWindow.getTab(), null, getFocusedTabPane());
-            auxiliaryWindow.getStage().close();
+            moveTab(auxiliaryWindow.tab(), null, getFocusedTabPane());
+            auxiliaryWindow.stage().close();
         }
     }
 
@@ -505,12 +507,12 @@ public class SplittableTabPane extends Pane {
                 final double y = tabPane.localToScreen(0, 0).getY();
                 moveTab(tab, tabPane, null);
                 final AuxiliaryWindow auxiliaryWindow = createAuxiliaryWindow(tab, x, y, tabPane.getWidth(), tabPane.getHeight() - 20, redock);
-                auxiliaryWindow.getStage().setOnCloseRequest((z) -> {
+                auxiliaryWindow.stage().setOnCloseRequest((z) -> {
                     redock.getOnAction().handle(null);
-                    auxiliaryWindow.getStage().hide();
+                    auxiliaryWindow.stage().hide();
                     auxiliaryWindows.remove(auxiliaryWindow);
                 });
-                auxiliaryWindow.getStage().show();
+                auxiliaryWindow.stage().show();
                 auxiliaryWindows.add(auxiliaryWindow);
             });
             undock.disableProperty().bind(allowUndock.not().or(sizeProperty().lessThan(2)));
@@ -592,6 +594,8 @@ public class SplittableTabPane extends Pane {
      */
     private TabPane createTabPane() {
         final TabPane tabPane = new TabPane();
+        tabPane.getStyleClass().add("background");
+
         tabPane.getSelectionModel().selectedItemProperty().addListener((c, o, n) -> {
             if (n == null)
                 selectionModel.clearSelection();
@@ -692,6 +696,7 @@ public class SplittableTabPane extends Pane {
 
     private AuxiliaryWindow createAuxiliaryWindow(final Tab tab, double screenX, double screenY, double width, double height, MenuItem redock) {
         final StackPane root = new StackPane();
+        root.getStyleClass().add("background");
         tab.setContextMenu(new ContextMenu(redock));
 
         root.getChildren().add(tab.getContent());
@@ -707,27 +712,14 @@ public class SplittableTabPane extends Pane {
         stage.getIcons().addAll(ProgramProperties.getProgramIconsFX());
 
         stage.setScene(new Scene(root, width, height));
+        tab.getContent().getStyleClass().add("background");
+
         stage.sizeToScene();
         stage.setX(screenX);
         stage.setY(screenY);
         return new AuxiliaryWindow(stage, tab);
     }
 
-    private static class AuxiliaryWindow {
-        final private Stage stage;
-        final private Tab tab;
-
-        AuxiliaryWindow(Stage stage, Tab tab) {
-            this.stage = stage;
-            this.tab = tab;
-        }
-
-        public Stage getStage() {
-            return stage;
-        }
-
-        public Tab getTab() {
-            return tab;
-        }
-     }
+    private static record AuxiliaryWindow(Stage stage, Tab tab) {
+    }
 }
