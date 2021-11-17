@@ -21,6 +21,8 @@
 package jloda.fx.util;
 
 import javafx.beans.InvalidationListener;
+import javafx.beans.property.ReadOnlyProperty;
+import javafx.beans.value.ChangeListener;
 import javafx.geometry.Dimension2D;
 import javafx.scene.Group;
 import javafx.scene.Node;
@@ -288,5 +290,24 @@ public class BasicFX {
 
     public static FontPosture getPosture(Font font) {
         return font.getName().contains("Italic") ? FontPosture.ITALIC : FontPosture.REGULAR;
+    }
+
+    /**
+     * adds listener to provided property and reports on changes
+     *
+     * @param property the property to listen to
+     */
+    public static <T> void reportChanges(ReadOnlyProperty<T> property) {
+        reportChanges(null, property);
+    }
+
+    /**
+     * adds listener to provided property and reports on changes
+     *
+     * @param property the property to listen to
+     */
+    public static <T> void reportChanges(String label, ReadOnlyProperty<T> property) {
+        ChangeListener<T> listener = (v, o, n) -> System.err.println((label != null ? label + ": " : "") + property.getName() + ": " + (o == null ? null : o.toString()) + " -> " + (n == null ? "null" : n.toString()));
+        property.addListener(listener);
     }
 }

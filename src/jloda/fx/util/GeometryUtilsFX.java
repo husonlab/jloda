@@ -39,9 +39,9 @@ public class GeometryUtilsFX {
 	 */
 	public static double computeAngle(double px, double py) {
 		if (px != 0) {
-			double x = Math.abs(px);
-			double y = Math.abs(py);
-			double a = Math.atan(y / x);
+			var x = Math.abs(px);
+			var y = Math.abs(py);
+			var a = Math.atan(y / x);
 
 			if (px > 0) {
 				if (py > 0)
@@ -65,34 +65,31 @@ public class GeometryUtilsFX {
      * computes the angle difference between a and b as viewed from center
      */
     public static double computeObservedAngle(Point2D center, Point2D a, Point2D b) {
-        final Point2D da = a.subtract(center);
-        final Point2D db = b.subtract(center);
-        double angle = Math.abs(computeAngle(da) - computeAngle(db));
-        if (angle > 180)
-            angle = 360 - angle;
+		final var da = a.subtract(center);
+		final var db = b.subtract(center);
+		var angle = Math.abs(computeAngle(da) - computeAngle(db));
+		if (angle > 180)
+			angle = 360 - angle;
 
-        final double det = da.getX() * db.getY() - da.getY() * db.getX();
+		final var det = da.getX() * db.getY() - da.getY() * db.getX();
 
-        if (det >= 0)
-            return angle;
-        else
-            return -angle;
-    }
+		if (det >= 0)
+			return angle;
+		else
+			return -angle;
+	}
 
     /**
      * computes the angle difference between a and b as viewed from center
      */
     public static double basicComputeAngle(Point2D center, Point2D a, Point2D b) {
-        Point2D da = a.subtract(center);
-        Point2D db = b.subtract(center);
-        return modulo360(computeAngle(db) - computeAngle(da));
-    }
+		var da = a.subtract(center);
+		var db = b.subtract(center);
+		return modulo360(computeAngle(db) - computeAngle(da));
+	}
 
     /**
      * returns the signed difference of angles A and B
-     *
-     * @param AngleA
-     * @param AngleB
      */
     public static double signedDiffAngle(double AngleA, double AngleB) {
         if (modulo360(AngleA - AngleB) > 180) {
@@ -120,7 +117,7 @@ public class GeometryUtilsFX {
 	 * Rotates a point by angle alpha around a second point
 	 */
 	public static Point2D rotateAbout(Point2D src, double alpha, Point2D anchor) {
-		Point2D tar = new Point2D(src.getX() - anchor.getX(), src.getY() - anchor.getY());
+		var tar = new Point2D(src.getX() - anchor.getX(), src.getY() - anchor.getY());
 		tar = rotate(tar, alpha);
 		tar = new Point2D(tar.getX() + anchor.getX(), tar.getY() + anchor.getY());
 		return tar;
@@ -130,7 +127,7 @@ public class GeometryUtilsFX {
 	 * Rotates a point by angle alpha around a second point
 	 */
 	public static Point2D rotateAbout(double srcX, double srcY, double alpha, double anchorX, double anchorY) {
-		Point2D tar = new Point2D(srcX - anchorX, srcY - anchorY);
+		var tar = new Point2D(srcX - anchorX, srcY - anchorY);
 		tar = rotate(tar, alpha);
 		tar = new Point2D(tar.getX() + anchorX, tar.getY() + anchorY);
 		return tar;
@@ -148,8 +145,8 @@ public class GeometryUtilsFX {
 	 * Translate a point in the direction specified by an angle.
 	 */
 	public static Point2D translateByAngle(double aptX, double aptY, double alpha, double dist) {
-		double dx = dist * Math.cos(DEG_TO_RAD_FACTOR * alpha);
-		double dy = dist * Math.sin(DEG_TO_RAD_FACTOR * alpha);
+		var dx = dist * Math.cos(DEG_TO_RAD_FACTOR * alpha);
+		var dy = dist * Math.sin(DEG_TO_RAD_FACTOR * alpha);
 		if (Math.abs(dx) < 0.000001)
 			dx = 0;
 		if (Math.abs(dy) < 0.000001)
@@ -173,10 +170,10 @@ public class GeometryUtilsFX {
      * Rotates a two-dimensional vector by the angle alpha.
      */
     public static Point2D rotate(double x, double y, double alpha) {
-        double sina = Math.sin(DEG_TO_RAD_FACTOR * alpha);
-        double cosa = Math.cos(DEG_TO_RAD_FACTOR * alpha);
-        return new Point2D(x * cosa - y * sina, x * sina + y * cosa);
-    }
+		var sina = Math.sin(DEG_TO_RAD_FACTOR * alpha);
+		var cosa = Math.cos(DEG_TO_RAD_FACTOR * alpha);
+		return new Point2D(x * cosa - y * sina, x * sina + y * cosa);
+	}
 
     /**
      * put angle into range 0-360
@@ -236,13 +233,17 @@ public class GeometryUtilsFX {
         return new Point2D(point.getX(), point.getY());
     }
 
-    /**
-     * are three points colinear?
-     */
-    public static boolean colinear(Point3D a, Point3D b, Point3D c) {
-        final double v1 = 2 * ((a.getX() - c.getX()) * (b.getX() - a.getX()) + (a.getY() - c.getY()) * (b.getY() - a.getY()) + (a.getZ() - c.getZ()) * (b.getZ() - a.getZ()));
-        final double v2 = 4 * ((a.getX() - b.getX()) * (a.getX() - b.getX()) + (a.getY() - b.getY()) * (a.getY() - b.getY()) + (a.getZ() - b.getZ()) * (a.getZ() - b.getZ()))
-                * ((b.getX() - a.getX()) * (b.getX() - a.getX()) + (b.getY() - a.getY()) * (b.getY() - a.getY()) + (b.getZ() - a.getZ()) * (b.getZ() - a.getZ()));
-        return Math.abs(v1 * v1 - 4 * v2) < 0.001;
-    }
+	/**
+	 * are three points colinear?
+	 */
+	public static boolean colinear(Point3D a, Point3D b, Point3D c) {
+		final var v1 = 2 * ((a.getX() - c.getX()) * (b.getX() - a.getX()) + (a.getY() - c.getY()) * (b.getY() - a.getY()) + (a.getZ() - c.getZ()) * (b.getZ() - a.getZ()));
+		final var v2 = 4 * ((a.getX() - b.getX()) * (a.getX() - b.getX()) + (a.getY() - b.getY()) * (a.getY() - b.getY()) + (a.getZ() - b.getZ()) * (a.getZ() - b.getZ()))
+					   * ((b.getX() - a.getX()) * (b.getX() - a.getX()) + (b.getY() - a.getY()) * (b.getY() - a.getY()) + (b.getZ() - a.getZ()) * (b.getZ() - a.getZ()));
+		return Math.abs(v1 * v1 - 4 * v2) < 0.001;
+	}
+
+	public static Point2D computeCartesian(double radius, double angleInDegrees) {
+		return new Point2D(radius * Math.cos(deg2rad(angleInDegrees)), radius * Math.sin(deg2rad(angleInDegrees)));
+	}
 }
