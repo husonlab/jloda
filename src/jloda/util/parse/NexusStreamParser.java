@@ -360,7 +360,11 @@ public class NexusStreamParser extends NexusStreamTokenizer implements Closeable
                         break;
                     throw new IOExceptionWithLineNumber("'" + last + "' expected, got EOF", lineno());
                 }
-                list.add(toString().toLowerCase());
+                var word = toString();
+                if (word.contains("\s+"))
+                    list.add("'" + word + "'");
+                else
+                    list.add(word);
                 nextToken();
             }
         } catch (IOException ex) {
@@ -391,14 +395,17 @@ public class NexusStreamParser extends NexusStreamTokenizer implements Closeable
                         break;
                     throw new IOExceptionWithLineNumber("'" + last + "' expected, got EOF", lineno());
                 }
-                list.add(toString());
+                var word = toString();
+                if (word.contains("\s+"))
+                    list.add("'" + word + "'");
+                else
+                    list.add(word);
                 nextToken();
             }
         } catch (IOException ex) {
             throw new IOExceptionWithLineNumber(lineno(), ex);
         }
         return list;
-
     }
 
     /**
