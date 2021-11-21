@@ -21,6 +21,7 @@
 package jloda.phylo;
 
 import jloda.graph.*;
+import jloda.graph.algorithms.Traversals;
 import jloda.util.*;
 
 import java.io.*;
@@ -1330,6 +1331,23 @@ public class PhyloTree extends PhyloSplitsGraph {
             return v.childrenStream(false).mapToInt(w -> computeMaxDepthRec(w, depth + 1)).max().orElse(0);
         }
     }
+
+    /**
+     * list node labels in pre-order
+     *
+     * @param ignoreInternalNumericalLabels if set, will ignore number labels on internal nodes
+     * @return list
+     */
+    public List<String> listNodeLabels(boolean ignoreInternalNumericalLabels) {
+        final var list = new ArrayList<String>();
+        Traversals.preOrderTreeTraversal(getRoot(), v -> {
+            var label = getLabel(v);
+            if (label != null && v.getOutDegree() == 0 && !(ignoreInternalNumericalLabels && NumberUtils.isDouble(label)))
+                list.add(label);
+        });
+        return list;
+    }
+
 }
 
 // EOF

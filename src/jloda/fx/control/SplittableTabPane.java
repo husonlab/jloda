@@ -129,6 +129,11 @@ public class SplittableTabPane extends Pane {
                                 Basic.caught(ex);
                             }
                         }
+
+                        // make sure that tab is completely purged:
+                        for (var tb : tabPane2ParentSplitPane.keySet()) {
+                            tb.getTabs().remove(tab);
+                        }
                     }
                 }
             }
