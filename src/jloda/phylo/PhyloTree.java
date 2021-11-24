@@ -200,11 +200,6 @@ public class PhyloTree extends PhyloSplitsGraph {
 
     /**
      * writes a tree
-     *
-     * @param writer
-     * @param showWeights
-     * @param labeler
-     * @throws IOException
      */
     public void write(final Writer writer, final boolean showWeights, final Function<Node, String> labeler) throws IOException {
         if (labeler == null) {
@@ -267,9 +262,6 @@ public class PhyloTree extends PhyloSplitsGraph {
 
     /**
      * parse a tree in Newick format, discarding the root
-     *
-     * @param str
-     * @throws IOException
      */
     public void parseBracketNotation(String str) throws IOException {
         parseBracketNotation(str, false);
@@ -279,10 +271,6 @@ public class PhyloTree extends PhyloSplitsGraph {
 
     /**
      * parse a tree in newick format, as a rooted tree, if desired.
-     *
-     * @param str
-     * @param rooted maintain root, even if it has degree 2
-     * @throws IOException
      */
     public void parseBracketNotation(String str, boolean rooted) throws IOException {
         parseBracketNotation(str, rooted, true);
@@ -291,11 +279,6 @@ public class PhyloTree extends PhyloSplitsGraph {
 
     /**
      * parse a tree in newick format, as a rooted tree, if desired.
-     *
-     * @param str
-     * @param rooted   maintain root, even if it has degree 2
-     * @param doClear: erase the existing tree?
-     * @throws IOException
      */
     public void parseBracketNotation(String str, boolean rooted, boolean doClear) throws IOException {
         if (doClear)
@@ -324,6 +307,14 @@ public class PhyloTree extends PhyloSplitsGraph {
                 else setRoot(v);
             }
         }
+
+        if (!hasWeights) {
+            for (var e : edges()) {
+                if (getWeight(e) == 0.0)
+                    setWeight(e, 1.0);
+            }
+        }
+
         if (ALLOW_READ_RETICULATE)
             postProcessReticulate();
 
@@ -343,7 +334,6 @@ public class PhyloTree extends PhyloSplitsGraph {
      * @param i     current position in string
      * @param str   string
      * @return new current position
-     * @throws IOException
      */
     private int parseBracketNotationRecursively(Map<String, Node> seen, int depth, Node v, int i, String str) throws IOException {
         try {
@@ -1045,9 +1035,6 @@ public class PhyloTree extends PhyloSplitsGraph {
     /**
      * given a rooted tree and a set of collapsed nodes, returns a tree that contains
      * only the uncollapsed part of the tree
-     *
-     * @param src
-     * @param collapsedNodes
      */
     public void extractTree(PhyloTree src, NodeSet collapsedNodes) {
         clear();
@@ -1071,15 +1058,10 @@ public class PhyloTree extends PhyloSplitsGraph {
 
     /**
      * recursively does the work
-     *
-     * @param v
-     * @param e
-     * @param collapsedNodes
-     * @param oldNode2newNode
-     * @param toDelete
      */
     private void extractTreeRec(Node v, Edge e, NodeSet collapsedNodes, NodeArray<Node> oldNode2newNode, NodeSet toDelete) {
-        toDelete.remove(oldNode2newNode.get(v));
+        if (oldNode2newNode != null)
+            toDelete.remove(oldNode2newNode.get(v));
         if (!collapsedNodes.contains(v)) {
             for (Edge f = v.getFirstAdjacentEdge(); f != null; f = v.getNextAdjacentEdge(f)) {
                 if (f != e && PhyloTreeUtils.okToDescendDownThisEdge(this, f, v)) {
@@ -1100,8 +1082,6 @@ public class PhyloTree extends PhyloSplitsGraph {
 
     /**
      * hide collapsed subtrees on write?
-     *
-     * @param hideCollapsedSubTreeOnWrite
      */
     public void setHideCollapsedSubTreeOnWrite(boolean hideCollapsedSubTreeOnWrite) {
         this.hideCollapsedSubTreeOnWrite = hideCollapsedSubTreeOnWrite;
@@ -1117,9 +1097,6 @@ public class PhyloTree extends PhyloSplitsGraph {
 
     /**
      * recursively does the work
-     *
-     * @param v
-     * @param e
      */
     private void redirectEdgesAwayFromRootRec(Node v, Edge e) {
         if (e != null && v != e.getTarget() && !isSpecial(e))
@@ -1132,9 +1109,6 @@ public class PhyloTree extends PhyloSplitsGraph {
 
     /**
      * gets a clean version of the label. This is a label that can be printed in a Newick string
-     *
-     * @param v
-     * @return clean label
      */
     private String getCleanLabel(Edge v) {
         String label = getLabel(v);

@@ -57,11 +57,12 @@ import java.util.concurrent.Executors;
 public class RichTextLabel extends TextFlow {
     private static final Map<String, Image> file2image = new HashMap<>();
 
-    private final ObjectProperty<Font> font = new SimpleObjectProperty<>(Font.font("serif", 14));
+    private final ObjectProperty<Font> font = new SimpleObjectProperty<>(Font.font("System", 14));
     private final StringProperty text = new SimpleStringProperty();
     private final BooleanProperty requireHTMLTag = new SimpleBooleanProperty(false);
-    private ObjectProperty<Paint> textFill = new SimpleObjectProperty<>(Color.BLACK);
+    private final ObjectProperty<Paint> textFill = new SimpleObjectProperty<>(Color.BLACK);
     private final ObjectProperty<Node> graphic = new SimpleObjectProperty<>(null);
+    private final DoubleProperty scale = new SimpleDoubleProperty(1.0);
 
     private final ObjectProperty<ContentDisplay> contentDisplay = new SimpleObjectProperty<>(ContentDisplay.TOP);
 
@@ -88,6 +89,12 @@ public class RichTextLabel extends TextFlow {
         graphicProperty().addListener(c -> update());
         contentDisplayProperty().addListener(c -> update());
 
+        scale.addListener((v, o, n) -> {
+            if (n.doubleValue() > 0)
+                update();
+            else
+                Platform.runLater(() -> setScale(0.001));
+        });
         setText(text);
     }
 
@@ -191,17 +198,17 @@ public class RichTextLabel extends TextFlow {
     }
 
     public static String getSupportedHTMLTags() {
-        return "<i> italics </i>, " +
-                "<b> bold </b>, " +
-                "<sup> super-script </sup> , " +
-                "<sub> sub-script </sub> , " +
-                "<u> underline </u>, " +
-                "<a> strike through </a> , " +
-                "<br> new line, " +
-                "<font \"name\">  font name </font> , " +
-                "<size \"value\"> font size </size>, " +
-                "<c \"value\"> font color </c>, " +
-                "<img src=\"url\" alt=\"text\" width=\"value\" height=\"value\"> adds an image";
+        return "<i>italics</i>, " +
+               "<b>bold</b>, " +
+               "<sup>super-script</sup>, " +
+               "<sub>sub-script</sub>, " +
+               "<u>underline</u>, " +
+               "<a>strike-through</a>, " +
+               "<br>new-line, " +
+               "<font \"name\">font-name</font>, " +
+               "<size \"value\">font-size</size>, " +
+               "<c \"value\">font-color</c>," +
+               "<img src=\"url\" alt=\"text\" width=\"value\" height=\"value\"> adds an image";
     }
 
     @Override
@@ -226,7 +233,11 @@ public class RichTextLabel extends TextFlow {
                 } else {
                     if (isRequireHTMLTag()) { // require leading HTML tag, but none found, return non-styled text
                         final Text text = new Text(getText());
-                        text.setFont(getFont());
+                        if (getScale() == 1.0)
+                            text.setFont(getFont());
+                        else
+                            text.setFont(new Font(getFont().getName(), getScale() * getFont().getSize()));
+
                         if (getTextFill() != Color.BLACK)
                             text.setFill(getTextFill());
                         getChildren().add(text);
@@ -263,7 +274,6 @@ public class RichTextLabel extends TextFlow {
             for (var i = 1; i < events.size(); i++) {
                 final Event event = events.get(i);
 
-
                 if (event.getPos() > segmentStart) {
                     final Text textItem = new Text(getText().substring(segmentStart, event.getPos()));
                     if (textFill != Color.BLACK)
@@ -287,7 +297,7 @@ public class RichTextLabel extends TextFlow {
                     else
                         posture = FontPosture.REGULAR;
 
-                    textItem.setFont(Font.font(currentFont.getFamily(), weight, posture, fontSize));
+                    textItem.setFont(Font.font(currentFont.getFamily(), weight, posture, getScale() * fontSize));
 
                     final Boolean strike = active.get("strike");
                     if (strike != null)
@@ -306,7 +316,7 @@ public class RichTextLabel extends TextFlow {
                     if (event.isStart()) {
                         String family = event.getArgument();
                         if (!Font.getFamilies().contains(family)) {
-                            family = "Arial";
+                            family = "System";
                         }
                         if (family != null) {
                             fontStack.push(currentFont);
@@ -449,6 +459,18 @@ public class RichTextLabel extends TextFlow {
                 return new Text(map.get("alt"));
         }
         return null;
+    }
+
+    public double getScale() {
+        return scale.get();
+    }
+
+    public DoubleProperty scaleProperty() {
+        return scale;
+    }
+
+    public void setScale(double scale) {
+        this.scale.set(scale);
     }
 
     /**
