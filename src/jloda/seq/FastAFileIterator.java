@@ -17,8 +17,9 @@
  *   along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package jloda.seq;
+package alora.io;
 
+import jloda.seq.FastQAsFastAFileIterator;
 import jloda.util.*;
 
 import java.io.*;
@@ -60,6 +61,15 @@ public class FastAFileIterator implements IFastAIterator, Closeable {
         this.fileName = fileName;
         maxProgress = FileUtils.guessUncompressedSizeOfFile(fileName);
         r = new BufferedReader(new InputStreamReader(FileUtils.getInputStreamPossiblyZIPorGZIP(fileName)));
+        endOfLineBytes = FileUtils.determineEndOfLinesBytes(new File(fileName));
+        moveToFirst();
+    }
+
+    public FastAFileIterator(String fileName, BufferedReader reader, long position) throws IOException {
+        this.fileName = fileName;
+        maxProgress = FileUtils.guessUncompressedSizeOfFile(fileName);
+        this.position = position;
+        r = reader;
         endOfLineBytes = FileUtils.determineEndOfLinesBytes(new File(fileName));
         moveToFirst();
     }
