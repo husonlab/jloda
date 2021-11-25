@@ -55,13 +55,15 @@ import java.util.concurrent.Executors;
  * Daniel Huson, 6.2020
  */
 public class RichTextLabel extends TextFlow {
+    public final static Font DEFAULT_FONT = Font.font("Arial", 14);
     private static final Map<String, Image> file2image = new HashMap<>();
 
-    private final ObjectProperty<Font> font = new SimpleObjectProperty<>(Font.font("serif", 14));
+    private final ObjectProperty<Font> font = new SimpleObjectProperty<>(DEFAULT_FONT);
     private final StringProperty text = new SimpleStringProperty();
     private final BooleanProperty requireHTMLTag = new SimpleBooleanProperty(false);
-    private ObjectProperty<Paint> textFill = new SimpleObjectProperty<>(Color.BLACK);
+    private final ObjectProperty<Paint> textFill = new SimpleObjectProperty<>(Color.BLACK);
     private final ObjectProperty<Node> graphic = new SimpleObjectProperty<>(null);
+    private final DoubleProperty scale = new SimpleDoubleProperty(1.0);
 
     private final ObjectProperty<ContentDisplay> contentDisplay = new SimpleObjectProperty<>(ContentDisplay.TOP);
 
@@ -88,6 +90,12 @@ public class RichTextLabel extends TextFlow {
         graphicProperty().addListener(c -> update());
         contentDisplayProperty().addListener(c -> update());
 
+        scale.addListener((v, o, n) -> {
+            if (n.doubleValue() > 0)
+                update();
+            else
+                Platform.runLater(() -> setScale(0.001));
+        });
         setText(text);
     }
 
@@ -191,17 +199,17 @@ public class RichTextLabel extends TextFlow {
     }
 
     public static String getSupportedHTMLTags() {
-        return "<i> italics </i>, " +
-                "<b> bold </b>, " +
-                "<sup> super-script </sup> , " +
-                "<sub> sub-script </sub> , " +
-                "<u> underline </u>, " +
-                "<a> strike through </a> , " +
-                "<br> new line, " +
-                "<font \"name\">  font name </font> , " +
-                "<size \"value\"> font size </size>, " +
-                "<c \"value\"> font color </c>, " +
-                "<img src=\"url\" alt=\"text\" width=\"value\" height=\"value\"> adds an image";
+        return "<i>italics</i>, " +
+               "<b>bold</b>, " +
+               "<sup>super-script</sup>, " +
+               "<sub>sub-script</sub>, " +
+               "<u>underline</u>, " +
+               "<a>strike-through</a>, " +
+               "<br>new-line, " +
+               "<font \"name\">font-name</font>, " +
+               "<size \"value\">font-size</size>, " +
+               "<c \"value\">font-color</c>," +
+               "<img src=\"url\" alt=\"text\" width=\"value\" height=\"value\"> adds an image";
     }
 
     @Override
@@ -221,12 +229,16 @@ public class RichTextLabel extends TextFlow {
             final ArrayList<Event> events = new ArrayList<>();
             {
                 final Event event = Event.getEventAtPos(getText(), 0);
-                if (event != null && event.getChange().equals(Event.Change.htmlStart)) {
+                if (event != null && event.change().equals(Event.Change.htmlStart)) {
                     events.add(event);
                 } else {
                     if (isRequireHTMLTag()) { // require leading HTML tag, but none found, return non-styled text
                         final Text text = new Text(getText());
-                        text.setFont(getFont());
+                        if (getScale() == 1.0)
+                            text.setFont(getFont());
+                        else
+                            text.setFont(new Font(getFont().getName(), getScale() * getFont().getSize()));
+
                         if (getTextFill() != Color.BLACK)
                             text.setFill(getTextFill());
                         getChildren().add(text);
@@ -240,11 +252,11 @@ public class RichTextLabel extends TextFlow {
                 final Event event = Event.getEventAtPos(getText(), pos);
                 if (event != null) {
                     events.add(event);
-                    if (event.getChange().equals(Event.Change.htmlEnd))
+                    if (event.change().equals(Event.Change.htmlEnd))
                         break;
                 }
             }
-            if (events.size() <= 1 || !events.get(events.size() - 1).getChange().equals(Event.Change.htmlEnd))
+            if (events.size() <= 1 || !events.get(events.size() - 1).change().equals(Event.Change.htmlEnd))
                 events.add(new Event(Event.Change.htmlEnd, getText().length(), getText().length(), null));
 
             var offset = 0.0;
@@ -258,14 +270,13 @@ public class RichTextLabel extends TextFlow {
             final Stack<Double> fontSizeStack = new Stack<>();
             final Stack<Paint> colorStack = new Stack<>();
 
-            var segmentStart = events.get(0).getSegmentStart();
+            var segmentStart = events.get(0).segmentStart();
 
             for (var i = 1; i < events.size(); i++) {
                 final Event event = events.get(i);
 
-
-                if (event.getPos() > segmentStart) {
-                    final Text textItem = new Text(getText().substring(segmentStart, event.getPos()));
+                if (event.pos() > segmentStart) {
+                    final Text textItem = new Text(getText().substring(segmentStart, event.pos()));
                     if (textFill != Color.BLACK)
                         textItem.setFill(textFill);
 
@@ -287,7 +298,7 @@ public class RichTextLabel extends TextFlow {
                     else
                         posture = FontPosture.REGULAR;
 
-                    textItem.setFont(Font.font(currentFont.getFamily(), weight, posture, fontSize));
+                    textItem.setFont(Font.font(currentFont.getFamily(), weight, posture, getScale() * fontSize));
 
                     final Boolean strike = active.get("strike");
                     if (strike != null)
@@ -304,9 +315,9 @@ public class RichTextLabel extends TextFlow {
 
                 if (event.getChangeType().equals("fontFamily")) {
                     if (event.isStart()) {
-                        String family = event.getArgument();
+                        String family = event.argument();
                         if (!Font.getFamilies().contains(family)) {
-                            family = "Arial";
+                            family = DEFAULT_FONT.getFamily();
                         }
                         if (family != null) {
                             fontStack.push(currentFont);
@@ -319,7 +330,7 @@ public class RichTextLabel extends TextFlow {
                 }
                 if (event.getChangeType().equals("fontSize")) {
                     if (event.isStart()) {
-                        final String argument = event.getArgument();
+                        final String argument = event.argument();
                         if (argument != null) {
                             fontSizeStack.push(currentFont.getSize());
                             try {
@@ -334,7 +345,7 @@ public class RichTextLabel extends TextFlow {
                 }
                 if (event.getChangeType().equals("color")) {
                     if (event.isStart()) {
-                        final String argument = event.getArgument();
+                        final String argument = event.argument();
                         if (argument != null) {
                             try {
                                 final Color newColor = Color.valueOf(argument);
@@ -371,15 +382,15 @@ public class RichTextLabel extends TextFlow {
 
                 active.put(event.getChangeType(), event.isStart());
 
-                segmentStart = event.getSegmentStart();
+                segmentStart = event.segmentStart();
 
-                if (event.getChange() == Event.Change.image) {
-                    final Node node = getImageNode(event.getArgument());
+                if (event.change() == Event.Change.image) {
+                    final Node node = getImageNode(event.argument());
                     if (node != null) {
                         node.setTranslateY(offset);
                         getChildren().add(node);
                     }
-                } else if (event.getChange() == Event.Change.lineBreak) {
+                } else if (event.change() == Event.Change.lineBreak) {
                     getChildren().add(new Text("\n"));
                 }
             }
@@ -438,9 +449,9 @@ public class RichTextLabel extends TextFlow {
                     if (width == -1 || height == -1)
                         imageView.setPreserveRatio(true);
                     if (width != -1)
-                        imageView.setFitWidth(width);
+                        imageView.setFitWidth(getScale() * width);
                     if (height != -1)
-                        imageView.setFitHeight(height);
+                        imageView.setFitHeight(getScale() * height);
                     return imageView;
                 } catch (Exception ignored) {
                 }
@@ -449,6 +460,18 @@ public class RichTextLabel extends TextFlow {
                 return new Text(map.get("alt"));
         }
         return null;
+    }
+
+    public double getScale() {
+        return scale.get();
+    }
+
+    public DoubleProperty scaleProperty() {
+        return scale;
+    }
+
+    public void setScale(double scale) {
+        this.scale.set(scale);
     }
 
     /**
@@ -460,7 +483,7 @@ public class RichTextLabel extends TextFlow {
         return getRawText().length() * 0.7 * getFont().getSize();
     }
 
-    static private class Event {
+    private record Event(RichTextLabel.Event.Change change, int pos, int segmentStart, String argument) {
         enum Change {
             htmlStart("<html>"), htmlEnd("</html>"),
             italicStart("<i>"), italicEnd("</i>"),
@@ -481,64 +504,36 @@ public class RichTextLabel extends TextFlow {
                 this.tag = tag;
             }
 
-            public String getTag() {
+            public String tag() {
                 return tag;
             }
         }
 
-        private final Event.Change change;
-        private final int pos;
-        private final int segmentStart;
-        private final String argument;
-
-        public Event(Event.Change change, int pos, int segmentStart, String argument) {
-            this.change = change;
-            this.pos = pos;
-            this.segmentStart = segmentStart;
-            this.argument = argument;
-        }
-
-        public Event.Change getChange() {
-            return change;
-        }
-
-        public int getPos() {
-            return pos;
-        }
-
-        public int getSegmentStart() {
-            return segmentStart;
-        }
-
         public String getChangeType() {
-            return getChange().name().replaceAll("Start$", "").replaceAll("End$", "");
+            return change().name().replaceAll("Start$", "").replaceAll("End$", "");
         }
 
         public boolean isStart() {
-            return getChange().name().endsWith("Start");
+            return change().name().endsWith("Start");
         }
 
         public static Event getEventAtPos(String line, int pos) {
             line = line.substring(pos);
             for (Event.Change change : Event.Change.values()) {
-                if (line.startsWith(change.getTag())) {
-                    if (change.getTag().endsWith(" ")) // requires argument
+                if (line.startsWith(change.tag())) {
+                    if (change.tag().endsWith(" ")) // requires argument
                     {
-                        int startPos = change.getTag().length();
+                        int startPos = change.tag().length();
                         int endPos = line.indexOf(">");
                         String argument = (startPos < endPos ? line.substring(startPos, endPos).trim() : null);
                         if (argument != null && argument.startsWith("\"") && argument.endsWith("\""))
                             argument = argument.substring(1, argument.length() - 1);
                         return new Event(change, pos, pos + endPos + 1, argument);
                     } else
-                        return new Event(change, pos, pos + change.getTag().length(), null);
+                        return new Event(change, pos, pos + change.tag().length(), null);
                 }
             }
             return null;
-        }
-
-        public String getArgument() {
-            return argument;
         }
     }
 }

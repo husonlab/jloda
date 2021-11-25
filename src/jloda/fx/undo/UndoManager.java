@@ -123,12 +123,14 @@ public class UndoManager {
     /**
      * add an undoable property change
      *
-     * @param name     is used in undo/redo menu
+     * @param name is used in undo/redo menu
      */
     public <T> void add(String name, Property<T> property, T oldValue, T newValue) {
-        if (isRecordChanges() && !isPerformingUndoOrRedo())
+        if (isRecordChanges() && !isPerformingUndoOrRedo()) {
             add(new UndoableChangeProperty<>(name, property, oldValue, newValue));
+        }
     }
+
 
     /**
      * adds a undoable apply item. If undo is called on this, then all undos up until the previous undoable apply are performed.

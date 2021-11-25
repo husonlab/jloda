@@ -325,6 +325,10 @@ public class Workflow extends WorkerBase implements Worker<Boolean> {
 		for (var node : nodes()) {
 			node.setValid(false);
 		}
+		for (var node : nodes) {
+			node.getParents().clear();
+			node.getChildren().clear();
+		}
 		nodes.clear();
 	}
 
