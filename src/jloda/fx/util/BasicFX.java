@@ -24,8 +24,8 @@ import javafx.beans.InvalidationListener;
 import javafx.beans.property.ReadOnlyProperty;
 import javafx.beans.value.ChangeListener;
 import javafx.geometry.Dimension2D;
-import javafx.scene.Group;
 import javafx.scene.Node;
+import javafx.scene.Parent;
 import javafx.scene.control.MenuItem;
 import javafx.scene.control.Slider;
 import javafx.scene.control.TableView;
@@ -47,7 +47,6 @@ import javafx.stage.Stage;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.LinkedList;
-import java.util.Queue;
 import java.util.function.Function;
 
 /**
@@ -90,20 +89,19 @@ public class BasicFX {
     }
 
     /**
-     * get all children, including all Group nodes and their children
+     * get all children, recursively
      *
-     * @param children
+     * @param children initial set of children
      * @return recursively get all children
      */
     public static Collection<? extends Node> getAllChildrenRecursively(Collection<Node> children) {
-        final ArrayList<Node> all = new ArrayList<>();
-        final Queue<Node> stack = new LinkedList<>(children);
-        while (stack.size() > 0) {
-            final Node node = stack.remove();
+        final var all = new ArrayList<Node>();
+        final var list = new LinkedList<>(children);
+        while (list.size() > 0) {
+            final var node = list.remove();
             all.add(node);
-            if (node instanceof Group) {
-                stack.addAll(((Group) node).getChildren());
-            }
+            if (node instanceof Parent parent)
+                list.addAll(parent.getChildrenUnmodifiable());
         }
         return all;
     }
@@ -309,5 +307,20 @@ public class BasicFX {
     public static <T> void reportChanges(String label, ReadOnlyProperty<T> property) {
         ChangeListener<T> listener = (v, o, n) -> System.err.println((label != null ? label + ": " : "") + property.getName() + ": " + (o == null ? null : o.toString()) + " -> " + (n == null ? "null" : n.toString()));
         property.addListener(listener);
+    }
+
+    /**
+     * gets the angle of a pane on screen
+     *
+     * @param pane the pane
+     * @return angle in degrees
+     */
+    public static double getAngleOnScreen(Pane pane) {
+        var orig = pane.localToScreen(0, 0);
+        var one = pane.localToScreen(1, 0);
+        if (orig != null && one != null)
+            return GeometryUtilsFX.modulo360(one.subtract(orig).angle(1, 0));
+        else
+            return 0;
     }
 }

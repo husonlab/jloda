@@ -30,6 +30,7 @@ import javafx.scene.paint.Color;
 import javafx.scene.paint.Paint;
 import javafx.scene.text.*;
 import jloda.fx.util.BasicFX;
+import jloda.fx.util.GeometryUtilsFX;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -58,14 +59,30 @@ public class RichTextLabel extends TextFlow {
     public final static Font DEFAULT_FONT = Font.font("Arial", 14);
     private static final Map<String, Image> file2image = new HashMap<>();
 
-    private final ObjectProperty<Font> font = new SimpleObjectProperty<>(DEFAULT_FONT);
-    private final StringProperty text = new SimpleStringProperty();
-    private final BooleanProperty requireHTMLTag = new SimpleBooleanProperty(false);
-    private final ObjectProperty<Paint> textFill = new SimpleObjectProperty<>(Color.BLACK);
-    private final ObjectProperty<Node> graphic = new SimpleObjectProperty<>(null);
-    private final DoubleProperty scale = new SimpleDoubleProperty(1.0);
+    private Font font = DEFAULT_FONT;
+    private ObjectProperty<Font> fontProperty;
 
-    private final ObjectProperty<ContentDisplay> contentDisplay = new SimpleObjectProperty<>(ContentDisplay.TOP);
+    private String text;
+    private StringProperty textProperty;
+
+    private Paint textFill = Color.BLACK;
+    private ObjectProperty<Paint> textFillProperty;
+
+    private boolean requireHTMLTag = false;
+    private BooleanProperty requireHTMLTagProperty;
+
+    private Node graphic;
+    private ObjectProperty<Node> graphicProperty;
+
+    private ContentDisplay contentDisplay = ContentDisplay.TOP;
+    private ObjectProperty<ContentDisplay> contentDisplayProperty;
+
+    private boolean keepTextUpright = true;
+    private BooleanProperty keepTextUprightProperty;
+
+    private double scale = 1.0;
+    private DoubleProperty scaleProperty;
+
 
     /**
      * constructor
@@ -83,19 +100,14 @@ public class RichTextLabel extends TextFlow {
         setMaxWidth(Control.USE_PREF_SIZE);
         setMaxHeight(Control.USE_PREF_SIZE);
 
-        textProperty().addListener(c -> update());
-        fontProperty().addListener(c -> update());
-        textFillProperty().addListener(c -> update());
-        requireHTMLTagProperty().addListener(c -> update());
-        graphicProperty().addListener(c -> update());
-        contentDisplayProperty().addListener(c -> update());
-
-        scale.addListener((v, o, n) -> {
-            if (n.doubleValue() > 0)
-                update();
-            else
-                Platform.runLater(() -> setScale(0.001));
+        boundsInParentProperty().addListener((v, o, n) -> {
+            if (isKeepTextUpright()) {
+                var screenAngle = BasicFX.getAngleOnScreen(this);
+                if (screenAngle > 90 && screenAngle < 270)
+                    Platform.runLater(() -> setRotate(GeometryUtilsFX.modulo360(getRotate() + 180)));
+            }
         });
+
         setText(text);
     }
 
@@ -110,78 +122,197 @@ public class RichTextLabel extends TextFlow {
         setTextFill(that.getTextFill());
         setRequireHTMLTag(that.isRequireHTMLTag());
         setContentDisplay(that.getContentDisplay());
+        setScale(that.getScale());
+        setKeepTextUpright(that.isKeepTextUpright());
     }
 
     public String getText() {
-        return text.get().replaceAll("\\n", "<n>");
+        return textProperty == null ? text : textProperty.get();
     }
 
     public StringProperty textProperty() {
-        return text;
+        if (textProperty == null) {
+            textProperty = new SimpleStringProperty(text);
+            textProperty().addListener(c -> update());
+        }
+        return textProperty;
     }
 
+
     public void setText(String text) {
-        this.text.set(text);
+        if (text != null) {
+            if (text.contains("'"))
+                text = text.replaceAll("'", "\"");
+            if (text.contains("\n"))
+                text = text.replaceAll("\\n", "<br>");
+        }
+
+        if (textProperty != null)
+            textProperty.set(text);
+        else {
+            this.text = text;
+            Platform.runLater(this::update);
+        }
     }
 
     public Font getFont() {
-        return font.get();
+        return fontProperty == null ? font : fontProperty.get();
     }
 
     public ObjectProperty<Font> fontProperty() {
-        return font;
+        if (fontProperty == null) {
+            fontProperty = new SimpleObjectProperty<>(font);
+            fontProperty().addListener(c -> update());
+        }
+        return fontProperty;
     }
 
     public void setFont(Font font) {
-        this.font.set(font);
+        if (fontProperty != null)
+            fontProperty.set(font);
+        else {
+            this.font = font;
+            Platform.runLater(this::update);
+        }
     }
 
     public Paint getTextFill() {
-        return textFill.get();
+        return textFillProperty == null ? textFill : textFillProperty.get();
     }
 
     public ObjectProperty<Paint> textFillProperty() {
-        return textFill;
+        if (textFillProperty == null) {
+            textFillProperty = new SimpleObjectProperty<>(textFill);
+            textFillProperty().addListener(c -> update());
+        }
+        return textFillProperty;
     }
 
     public void setTextFill(Paint textFill) {
-        this.textFill.set(textFill);
+        if (textFillProperty != null)
+            textFillProperty.set(textFill);
+        else {
+            this.textFill = textFill;
+            Platform.runLater(this::update);
+        }
     }
 
     public boolean isRequireHTMLTag() {
-        return requireHTMLTag.get();
+        return requireHTMLTagProperty == null ? requireHTMLTag : requireHTMLTagProperty.get();
     }
 
     public BooleanProperty requireHTMLTagProperty() {
-        return requireHTMLTag;
+        if (requireHTMLTagProperty == null) {
+            requireHTMLTagProperty = new SimpleBooleanProperty(requireHTMLTag);
+            requireHTMLTagProperty().addListener(c -> update());
+        }
+        return requireHTMLTagProperty;
     }
 
     public void setRequireHTMLTag(boolean requireHTMLTag) {
-        this.requireHTMLTag.set(requireHTMLTag);
+        if (requireHTMLTagProperty != null)
+            requireHTMLTagProperty.set(requireHTMLTag);
+        else {
+            this.requireHTMLTag = requireHTMLTag;
+            Platform.runLater(this::update);
+        }
     }
 
     public Node getGraphic() {
-        return graphic.get();
+        return graphicProperty == null ? graphic : graphicProperty.get();
     }
 
     public ObjectProperty<Node> graphicProperty() {
-        return graphic;
+        if (graphicProperty == null) {
+            graphicProperty = new SimpleObjectProperty<>(graphic);
+            graphicProperty().addListener(c -> update());
+        }
+        return graphicProperty;
     }
 
     public void setGraphic(Node graphic) {
-        this.graphic.set(graphic);
+        if (graphicProperty != null)
+            graphicProperty.set(graphic);
+        else {
+            this.graphic = graphic;
+            Platform.runLater(this::update);
+        }
     }
 
     public ContentDisplay getContentDisplay() {
-        return contentDisplay.get();
+        return contentDisplayProperty == null ? contentDisplay : contentDisplayProperty.get();
     }
 
     public ObjectProperty<ContentDisplay> contentDisplayProperty() {
-        return contentDisplay;
+        if (contentDisplayProperty == null) {
+            contentDisplayProperty = new SimpleObjectProperty<>(contentDisplay);
+            contentDisplayProperty().addListener(c -> update());
+        }
+        return contentDisplayProperty;
     }
 
     public void setContentDisplay(ContentDisplay contentDisplay) {
-        this.contentDisplay.set(contentDisplay);
+        if (contentDisplayProperty != null) {
+            contentDisplayProperty.set(contentDisplay);
+        } else {
+            this.contentDisplay = contentDisplay;
+            Platform.runLater(this::update);
+        }
+    }
+
+    public double getScale() {
+        return scaleProperty == null ? scale : scaleProperty.get();
+    }
+
+    public DoubleProperty scaleProperty() {
+        if (scaleProperty == null) {
+            scaleProperty = new SimpleDoubleProperty(scale);
+            scaleProperty.addListener((v, o, n) -> {
+                if (n.doubleValue() > 0)
+                    update();
+                else
+                    Platform.runLater(() -> setScale(0.001));
+            });
+        }
+        return scaleProperty;
+    }
+
+    public void setScale(double scale) {
+        if (scaleProperty != null)
+            scaleProperty.set(scale);
+        else if (scale != this.scale) {
+            this.scale = scale;
+            if (scale > 0)
+                Platform.runLater(this::update);
+            else
+                Platform.runLater(() -> setScale(0.001));
+        }
+    }
+
+    public boolean isKeepTextUpright() {
+        return keepTextUprightProperty == null ? keepTextUpright : keepTextUprightProperty.get();
+    }
+
+    public BooleanProperty keepTextUprightProperty() {
+        if (keepTextUprightProperty == null) {
+            keepTextUprightProperty = new SimpleBooleanProperty(keepTextUpright);
+            keepTextUprightProperty().addListener(c -> update());
+        }
+        return keepTextUprightProperty;
+    }
+
+    /**
+     * if set,  ensures that the text is always upright, that is, never upside-down
+     *
+     * @param keepTextUpright if true, rotates text by 180, if necessary, to keep it upright
+     */
+    public void setKeepTextUpright(boolean keepTextUpright) {
+        if (keepTextUprightProperty != null)
+            keepTextUprightProperty.set(keepTextUpright);
+        else {
+            this.keepTextUpright = keepTextUpright;
+            Platform.runLater(this::update);
+        }
     }
 
     public String getRawText() {
@@ -219,8 +350,6 @@ public class RichTextLabel extends TextFlow {
 
     private void update() {
         getChildren().clear();
-
-        setText(getText().replaceAll("'", "\""));
 
         if (getGraphic() != null && (getContentDisplay() != ContentDisplay.TOP || getContentDisplay() != ContentDisplay.LEFT))
             getChildren().add(getGraphic());
@@ -460,18 +589,6 @@ public class RichTextLabel extends TextFlow {
                 return new Text(map.get("alt"));
         }
         return null;
-    }
-
-    public double getScale() {
-        return scale.get();
-    }
-
-    public DoubleProperty scaleProperty() {
-        return scale;
-    }
-
-    public void setScale(double scale) {
-        this.scale.set(scale);
     }
 
     /**
