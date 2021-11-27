@@ -319,7 +319,7 @@ public class BasicFX {
         var orig = pane.localToScreen(0, 0);
         var one = pane.localToScreen(1, 0);
         if (orig != null && one != null)
-            return GeometryUtilsFX.modulo360(one.subtract(orig).angle(1, 0));
+            return GeometryUtilsFX.modulo360(one.subtract(orig).angle(1000.0, 0.0));
         else
             return 0;
     }
