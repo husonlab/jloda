@@ -296,7 +296,6 @@ public class EdgeLabelSearcher implements IObjectSearcher<Edge> {
         return found;
     }
 
-    @Override
     public ItemSelectionModel<Edge> getSelectionModel() {
         return edgeSelectionModel;
     }

@@ -21,7 +21,6 @@
 package jloda.fx.find;
 
 import javafx.beans.property.ReadOnlyObjectProperty;
-import jloda.fx.control.ItemSelectionModel;
 
 /**
  * implement this interface to support the Find and Find-Replace dialogs
@@ -105,13 +104,5 @@ public interface IObjectSearcher<T> extends ISearcher {
      * @return last node found or null
      */
     ReadOnlyObjectProperty<T> foundProperty();
-
-    /**
-     * gets the selection model
-     *
-     * @return selection model
-     */
-    ItemSelectionModel<T> getSelectionModel();
-
 }
 

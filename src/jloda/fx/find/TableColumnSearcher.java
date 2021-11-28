@@ -26,7 +26,6 @@ import javafx.beans.property.*;
 import javafx.scene.control.SelectionMode;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
-import jloda.fx.control.ItemSelectionModel;
 
 import java.util.function.BiConsumer;
 
@@ -124,11 +123,6 @@ public class TableColumnSearcher<S> implements IObjectSearcher<String> {
 
     @Override
     public ReadOnlyObjectProperty<String> foundProperty() {
-        return null;
-    }
-
-    @Override
-    public ItemSelectionModel<String> getSelectionModel() {
         return null;
     }
 

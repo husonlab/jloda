@@ -21,7 +21,6 @@
 package jloda.fx.control.table;
 
 import javafx.beans.property.*;
-import jloda.fx.control.ItemSelectionModel;
 import jloda.fx.find.IObjectSearcher;
 
 public class MyTableViewSearcher implements IObjectSearcher<String> {
@@ -106,11 +105,6 @@ public class MyTableViewSearcher implements IObjectSearcher<String> {
 
     @Override
     public ReadOnlyObjectProperty<String> foundProperty() {
-        return null;
-    }
-
-    @Override
-    public ItemSelectionModel<String> getSelectionModel() {
         return null;
     }
 

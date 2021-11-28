@@ -288,7 +288,6 @@ public class NodeLabelSearcher implements IObjectSearcher<Node> {
         return found;
     }
 
-    @Override
     public ItemSelectionModel<Node> getSelectionModel() {
         return nodeSelectionModel;
     }

@@ -158,7 +158,6 @@ public class Searcher<T> implements IObjectSearcher<T> {
         return null;
     }
 
-    @Override
     public ItemSelectionModel<T> getSelectionModel() {
         return selectionModel;
     }

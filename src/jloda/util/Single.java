@@ -60,17 +60,19 @@ public class Single<S> implements Comparable<Single<S>>, Comparator<Single<S>> {
     }
 
     public int compareTo(Single<S> p) {
-        int value = ((Comparable<S>) this.get()).compareTo(p.get());
-        if (value != 0)
-            return value;
-        else
-            return ((Comparable<S>) this.get()).compareTo(p.get());
+        if (this.get() instanceof Comparable && p.get() instanceof Comparable) {
+            int value = ((Comparable<S>) this.get()).compareTo(p.get());
+            if (value != 0)
+                return value;
+            else
+                return ((Comparable<S>) this.get()).compareTo(p.get());
+        } else
+            throw new IllegalArgumentException("Not comparable");
     }
 
     public boolean equals(Object other) {
         boolean good = false;
-        if (other instanceof Single) {
-            Single p = (Single) other;
+        if (other instanceof Single p) {
             if (value == null) {
                 good = (p.value == null);
             } else {

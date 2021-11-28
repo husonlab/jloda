@@ -143,11 +143,6 @@ public class GraphSearcher implements IObjectSearcher<Node> {
     }
 
     @Override
-    public ItemSelectionModel<Node> getSelectionModel() {
-        return null;
-    }
-
-    @Override
     public String getName() {
         return "Graph find";
     }
