@@ -2120,4 +2120,8 @@ public class StringUtils {
 			i++;
 		return i;
 	}
+
+	public static String toLowerCaseWithUnderScores(String label) {
+		return label.toLowerCase().replaceAll("\s+", "_");
+	}
 }
