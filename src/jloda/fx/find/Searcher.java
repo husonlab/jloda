@@ -25,9 +25,7 @@ import javafx.beans.binding.Bindings;
 import javafx.beans.property.*;
 import javafx.collections.ObservableList;
 import javafx.scene.control.SelectionMode;
-import jloda.fx.control.ItemSelectionModel;
 
-import java.util.BitSet;
 import java.util.function.BiConsumer;
 import java.util.function.Function;
 
@@ -39,35 +37,38 @@ import java.util.function.Function;
  */
 public class Searcher<T> implements IObjectSearcher<T> {
     private final ObservableList<T> items;
-    private final ItemSelectionModel<T> selectionModel;
-    private final Function<T, String> textGetter;
-    private final BiConsumer<T, String> textSetter;
+    private final Function<Integer, Boolean> isSelectedFunction;
+    private final BiConsumer<Integer, Boolean> selectCallback;
+    private final Function<Integer, String> textGetter;
+    private final BiConsumer<Integer, String> textSetter;
     private final StringProperty name = new SimpleStringProperty("Searcher");
+
+    private final ObjectProperty<T> found = new SimpleObjectProperty<>();
 
     private final BooleanProperty globalFindable = new SimpleBooleanProperty(false);
 
     private final BooleanProperty selectionFindable = new SimpleBooleanProperty(false);
-
-    private boolean doClearAll = false;
-    private final BitSet toSelect = new BitSet();
-    private final BitSet toDeselect = new BitSet();
 
     private int current = 0;
 
     /**
      * constructor
      *
-     * @param selectionModel
-     * @param textGetter
-     * @param textSetter
+     * @param items              the lists of items
+     * @param isSelectedFunction function that returns selection state for a given item index
+     * @param selectCallback     callback for changing the selection state for a given item index
+     * @param selectionMode      desired selection mode
+     * @param textGetter         gets text for current item
+     * @param textSetter         sets text for current item
      */
-    public Searcher(ObservableList<T> items, ItemSelectionModel<T> selectionModel, Function<T, String> textGetter, BiConsumer<T, String> textSetter) {
-        this.selectionModel = selectionModel;
+    public Searcher(ObservableList<T> items, Function<Integer, Boolean> isSelectedFunction, BiConsumer<Integer, Boolean> selectCallback, ObjectProperty<SelectionMode> selectionMode, Function<Integer, String> textGetter, BiConsumer<Integer, String> textSetter) {
+        this.isSelectedFunction = isSelectedFunction;
+        this.selectCallback = selectCallback;
         this.items = items;
         this.textGetter = textGetter;
         this.textSetter = textSetter;
 
-        globalFindable.bind(selectionModel.selectionModeProperty().isEqualTo(SelectionMode.MULTIPLE).and(Bindings.size(items).greaterThan(0)));
+        globalFindable.bind(selectionMode.isEqualTo(SelectionMode.MULTIPLE).and(Bindings.size(items).greaterThan(0)));
     }
 
     @Override
@@ -121,31 +122,32 @@ public class Searcher<T> implements IObjectSearcher<T> {
 
     @Override
     public boolean isCurrentSelected() {
-        return current != -1 && current < items.size() && !toDeselect.get(current) && (toSelect.get(current) || selectionModel.isSelected(items.get(current)));
+        return isCurrentSet() && isSelectedFunction.apply(current);
     }
 
     @Override
     public void setCurrentSelected(boolean select) {
-        if (current != -1) {
-            if (!select) {
-                toDeselect.set(current);
-                toSelect.set(current, false);
-            } else {
-                toDeselect.set(current, false);
-                toSelect.set(current);
-            }
+        if (isCurrentSet()) {
+            var index = current;
+            Platform.runLater(() -> {
+                selectCallback.accept(index, select);
+                found.set(items.get(index));
+            });
+
         }
     }
 
     @Override
     public String getCurrentLabel() {
-        return textGetter.apply(items.get(current));
+        return textGetter.apply(current);
     }
 
     @Override
     public void setCurrentLabel(String newLabel) {
-        if (textSetter != null)
-            textSetter.accept(items.get(current), newLabel);
+        if (textSetter != null && isCurrentSet()) {
+            var index = current;
+            Platform.runLater(() -> textSetter.accept(index, newLabel));
+        }
     }
 
     @Override
@@ -155,12 +157,9 @@ public class Searcher<T> implements IObjectSearcher<T> {
 
     @Override
     public ReadOnlyObjectProperty<T> foundProperty() {
-        return null;
+        return found;
     }
 
-    public ItemSelectionModel<T> getSelectionModel() {
-        return selectionModel;
-    }
 
     @Override
     public String getName() {
@@ -182,26 +181,7 @@ public class Searcher<T> implements IObjectSearcher<T> {
      */
     @Override
     public void updateView() {
-        if (!Platform.isFxApplicationThread())
-            throw new RuntimeException("Not fx application thread");
-
-        if (doClearAll) {
-            selectionModel.clearSelection();
-            doClearAll = false;
-        } else {
-            for (int index = toDeselect.nextSetBit(0); index != -1 && index < items.size(); index = toDeselect.nextSetBit(index + 1)) {
-                if (selectionModel.isSelected(items.get(index)))
-                    selectionModel.clearSelection(items.get(index));
-            }
-        }
-        toDeselect.clear();
-
-        for (int index = toSelect.nextSetBit(0); index != -1 && index < items.size(); index = toSelect.nextSetBit(index + 1)) {
-            if (!selectionModel.isSelected(items.get(index)))
-                selectionModel.select(items.get(index));
-        }
-        toSelect.clear();
-    }
+     }
 
     @Override
     public boolean canFindAll() {
@@ -210,14 +190,11 @@ public class Searcher<T> implements IObjectSearcher<T> {
 
     @Override
     public void selectAll(boolean select) {
-        if (select) {
-            toSelect.set(0, items.size());
-            toDeselect.clear();
-        } else {
-            toSelect.clear();
-            doClearAll = true;
-
-        }
+        Platform.runLater(() -> {
+            for (int t = 0; t < items.size(); t++) {
+                selectCallback.accept(t, select);
+            }
+        });
     }
 
     public StringProperty nameProperty() {

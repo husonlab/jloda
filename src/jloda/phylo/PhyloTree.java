@@ -665,7 +665,7 @@ public class PhyloTree extends PhyloSplitsGraph {
 
                             outs.write(label);
                             if (writeEdgeWeights) {
-                                outs.write(":" + getWeight(f));
+                                outs.write(StringUtils.removeTrailingZerosAfterDot(String.format(":%.8f", getWeight(f))));
                                 if (writeEdgeLabels && getLabel(f) != null) {
                                     outs.write("[" + getLabelForWriting(f) + "]");
                                 }
@@ -681,7 +681,7 @@ public class PhyloTree extends PhyloSplitsGraph {
         }
 
         if (writeEdgeWeights && e != null) {
-            outs.write(":" + (getWeight(e)));
+            outs.write(StringUtils.removeTrailingZerosAfterDot(String.format(":%.8f", getWeight(e))));
             if (writeEdgeLabels && getLabel(e) != null) {
                 outs.write("[" + getLabelForWriting(e) + "]");
             }

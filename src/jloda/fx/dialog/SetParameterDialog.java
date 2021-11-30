@@ -23,15 +23,24 @@ import javafx.scene.control.ChoiceDialog;
 import javafx.stage.Stage;
 import jloda.util.ProgramProperties;
 
-import java.util.List;
+import java.util.Collection;
 
 /**
- * get an integer value
- * Daniel Huson, 1.2010
+ * simple parameter choice dialog
+ * Daniel Huson, 11.2021
  */
 public class SetParameterDialog {
-    public static String apply(Stage parent, String message, List<String> values, String defaultValue) {
-        final ChoiceDialog<String> dialog = new ChoiceDialog<>(defaultValue, values);
+    /**
+     * quest parameter from user
+     *
+     * @return value or null
+     */
+    public static <S> S apply(Stage parent, String message, Collection<S> values, S defaultValue) {
+        final ChoiceDialog<S> dialog = new ChoiceDialog<>(defaultValue, values);
+        if (parent != null) {
+            dialog.setX(Math.max(parent.getX(), parent.getX() + 0.5 * parent.getWidth() - 200));
+            dialog.setY(Math.max(parent.getY(), parent.getY() + 0.5 * parent.getHeight() - 200));
+        }
         dialog.setTitle("Set Parameter - " + ProgramProperties.getProgramName());
         dialog.setHeaderText(message);
         dialog.setContentText("Choose the value:");

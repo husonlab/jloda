@@ -79,7 +79,7 @@ public class ListViewSearcher<S> implements IObjectSearcher<String> {
 
     @Override
     public void setCurrentSelected(boolean select) {
-        if (isCurrentSelected()) {
+        if (isCurrentSet()) {
             final int which = pos;
             final Runnable runnable = () -> {
                 if (select)

@@ -26,7 +26,7 @@ import javafx.beans.property.ReadOnlyObjectProperty;
  * implement this interface to support the Find and Find-Replace dialogs
  * Daniel Huson, 7.2008
  */
-public interface IObjectSearcher<T> extends ISearcher {
+public interface IObjectSearcher<S> extends ISearcher {
 
     /**
      * goto the first object
@@ -103,6 +103,6 @@ public interface IObjectSearcher<T> extends ISearcher {
      *
      * @return last node found or null
      */
-    ReadOnlyObjectProperty<T> foundProperty();
+    ReadOnlyObjectProperty<S> foundProperty();
 }
 

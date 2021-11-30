@@ -83,7 +83,8 @@ public class MyTableViewSearcher implements IObjectSearcher<String> {
 
     @Override
     public void setCurrentSelected(boolean select) {
-        tableView.selectCell(row, col, select);
+        if (isCurrentSet())
+            tableView.selectCell(row, col, select);
 
     }
 
