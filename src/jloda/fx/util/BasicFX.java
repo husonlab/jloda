@@ -47,6 +47,7 @@ import javafx.stage.Stage;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.LinkedList;
+import java.util.Optional;
 import java.util.function.Function;
 
 /**
@@ -57,7 +58,7 @@ public class BasicFX {
     /**
      * go to given line and given col
      *
-     * @param lineNumber
+     * @param lineNumber line number
      * @param col        if col<=1 or col>line length, will select the whole line, else selects line starting at given col
      */
     public static void gotoAndSelectLine(TextArea textArea, long lineNumber, int col) {
@@ -315,12 +316,31 @@ public class BasicFX {
      * @param pane the pane
      * @return angle in degrees
      */
-    public static double getAngleOnScreen(Pane pane) {
+    public static Optional<Double> getAngleOnScreen(Pane pane) {
         var orig = pane.localToScreen(0, 0);
-        var one = pane.localToScreen(1, 0);
-        if (orig != null && one != null)
-            return GeometryUtilsFX.modulo360(one.subtract(orig).angle(1000.0, 0.0));
-        else
-            return 0;
+        if (orig != null) {
+            var x1000 = pane.localToScreen(1000, 0);
+            return Optional.of(GeometryUtilsFX.modulo360(x1000.subtract(orig).angle(1000.0, 0.0)));
+        } else
+            return Optional.empty();
+    }
+
+    /**
+     * does this pane appear as a mirrored image on the screen?
+     *
+     * @param pane the pane
+     * @return true, if mirror image, false if direct image
+     */
+    public static Optional<Boolean> isMirrored(Pane pane) {
+        var orig = pane.localToScreen(0, 0);
+        if (orig != null) {
+            var x1000 = pane.localToScreen(1000, 0);
+            var y1000 = pane.localToScreen(0, 1000);
+            var p1 = x1000.subtract(orig);
+            var p2 = y1000.subtract(orig);
+            var determinant = p1.getX() * p2.getY() - p1.getY() * p2.getX();
+            return Optional.of(determinant < 0);
+        } else
+            return Optional.empty();
     }
 }

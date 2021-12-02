@@ -885,26 +885,26 @@ public class PhyloTree extends PhyloSplitsGraph {
      * @param weightToTarget weight for new adjacent to target of e
      */
     public void setRoot(Edge e, double weightToSource, double weightToTarget, EdgeArray<String> edgeLabels) {
-        final Node root = getRoot();
+        final var root = getRoot();
         if (root != null && root.getDegree() == 2 && (getTaxa(root) == null || getNumberOfTaxa(root) == 0)) {
             if (root == e.getSource()) {
-                Edge f = (root.getFirstAdjacentEdge() != e ? root.getFirstAdjacentEdge() : root.getLastAdjacentEdge());
+                var f = (root.getFirstAdjacentEdge() != e ? root.getFirstAdjacentEdge() : root.getLastAdjacentEdge());
                 setWeight(e, weightToSource);
                 setWeight(f, weightToTarget);
                 return; // root stays root
             } else if (root == e.getTarget()) {
-                Edge f = (root.getFirstAdjacentEdge() != e ? root.getFirstAdjacentEdge() : root.getLastAdjacentEdge());
+                var f = (root.getFirstAdjacentEdge() != e ? root.getFirstAdjacentEdge() : root.getLastAdjacentEdge());
                 setWeight(e, weightToTarget);
                 setWeight(f, weightToSource);
                 return; // root stays root
             }
             eraseRoot(edgeLabels);
         }
-        Node v = e.getSource();
-        Node w = e.getTarget();
-        Node u = newNode();
-        Edge vu = newEdge(v, u);
-        Edge uw = newEdge(u, w);
+        var v = e.getSource();
+        var w = e.getTarget();
+        var u = newNode();
+        var vu = newEdge(v, u);
+        var uw = newEdge(u, w);
         setWeight(vu, weightToSource);
         setWeight(uw, weightToTarget);
         if (edgeLabels != null) {

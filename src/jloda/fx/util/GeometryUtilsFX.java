@@ -246,4 +246,8 @@ public class GeometryUtilsFX {
 	public static Point2D computeCartesian(double radius, double angleInDegrees) {
 		return new Point2D(radius * Math.cos(deg2rad(angleInDegrees)), radius * Math.sin(deg2rad(angleInDegrees)));
 	}
+
+	public static double magnitude(double x, double y) {
+		return Math.sqrt((x * x + y * y));
+	}
 }

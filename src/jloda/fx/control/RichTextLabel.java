@@ -83,11 +83,36 @@ public class RichTextLabel extends TextFlow {
     private double _scale = 1.0;
     private DoubleProperty scale;
 
+    private transient boolean inUprighting = false;
+
     /**
      * constructor
      */
     public RichTextLabel() {
-        this("");
+        setMaxWidth(Control.USE_PREF_SIZE);
+        setMaxHeight(Control.USE_PREF_SIZE);
+
+        boundsInParentProperty().addListener((v, o, n) -> {
+            if (isKeepTextUpright() && !inUprighting) {
+                Platform.runLater(() -> {
+                    if (!inUprighting) {
+                        inUprighting = true;
+                        try {
+                            var mirrored = BasicFX.isMirrored(this);
+                            if (mirrored.isPresent() && mirrored.get()) {
+                                setScaleX(-getScaleX());
+                            }
+                            var screenAngle = BasicFX.getAngleOnScreen(this);
+                            if (screenAngle.isPresent() && screenAngle.get() > 90 && screenAngle.get() < 270) {
+                                setRotate(GeometryUtilsFX.modulo360(getRotate() + 180.0));
+                            }
+                        } finally {
+                            inUprighting = false;
+                        }
+                    }
+                });
+            }
+        });
     }
 
     /**
@@ -96,17 +121,7 @@ public class RichTextLabel extends TextFlow {
      * @param text text
      */
     public RichTextLabel(String text) {
-        setMaxWidth(Control.USE_PREF_SIZE);
-        setMaxHeight(Control.USE_PREF_SIZE);
-
-        boundsInParentProperty().addListener((v, o, n) -> {
-            if (isKeepTextUpright()) {
-                var screenAngle = BasicFX.getAngleOnScreen(this);
-                if (screenAngle > 90 && screenAngle < 270)
-                    Platform.runLater(() -> setRotate(GeometryUtilsFX.modulo360(getRotate() + 180)));
-            }
-        });
-
+        this();
         setText(text);
     }
 
@@ -339,7 +354,7 @@ public class RichTextLabel extends TextFlow {
                "<br>new-line, " +
                "<font \"name\">font-name</font>, " +
                "<size \"value\">font-size</size>, " +
-               "<c \"value\">font-color</c>," +
+               "<c \"value\">font-color</c>, " +
                "<img src=\"url\" alt=\"text\" width=\"value\" height=\"value\"> adds an image";
     }
 
@@ -393,11 +408,11 @@ public class RichTextLabel extends TextFlow {
             var fontSize = currentFont.getSize();
             var textFill = getTextFill();
 
-            final Map<String, Boolean> active = new HashMap<>();
+            final var active = new HashMap<String, Boolean>();
 
-            final Stack<Font> fontStack = new Stack<>();
-            final Stack<Double> fontSizeStack = new Stack<>();
-            final Stack<Paint> colorStack = new Stack<>();
+            final var fontStack = new Stack<Font>();
+            final var fontSizeStack = new Stack<Double>();
+            final var colorStack = new Stack<Paint>();
 
             var segmentStart = events.get(0).segmentStart();
 
@@ -405,12 +420,12 @@ public class RichTextLabel extends TextFlow {
                 final Event event = events.get(i);
 
                 if (event.pos() > segmentStart) {
-                    final Text textItem = new Text(getText().substring(segmentStart, event.pos()));
+                    final var textItem = new Text(getText().substring(segmentStart, event.pos()));
                     if (textFill != Color.BLACK)
                         textItem.setFill(textFill);
 
                     final FontWeight weight;
-                    final Boolean bold = active.get("bold");
+                    final var bold = active.get("bold");
                     if (bold == null)
                         weight = BasicFX.getWeight(currentFont);
                     else if (bold)
@@ -419,7 +434,7 @@ public class RichTextLabel extends TextFlow {
                         weight = FontWeight.NORMAL;
 
                     final FontPosture posture;
-                    final Boolean italic = active.get("italic");
+                    final var italic = active.get("italic");
                     if (italic == null)
                         posture = BasicFX.getPosture(currentFont);
                     else if (italic)
@@ -429,10 +444,10 @@ public class RichTextLabel extends TextFlow {
 
                     textItem.setFont(Font.font(currentFont.getFamily(), weight, posture, getScale() * fontSize));
 
-                    final Boolean strike = active.get("strike");
+                    final var strike = active.get("strike");
                     if (strike != null)
                         textItem.setStrikethrough(strike);
-                    final Boolean underline = active.get("underline");
+                    final var underline = active.get("underline");
                     if (underline != null)
                         textItem.setUnderline(underline);
 
@@ -444,7 +459,7 @@ public class RichTextLabel extends TextFlow {
 
                 if (event.getChangeType().equals("fontFamily")) {
                     if (event.isStart()) {
-                        String family = event.argument();
+                        var family = event.argument();
                         if (!Font.getFamilies().contains(family)) {
                             family = DEFAULT_FONT.getFamily();
                         }
@@ -459,7 +474,7 @@ public class RichTextLabel extends TextFlow {
                 }
                 if (event.getChangeType().equals("fontSize")) {
                     if (event.isStart()) {
-                        final String argument = event.argument();
+                        final var argument = event.argument();
                         if (argument != null) {
                             fontSizeStack.push(currentFont.getSize());
                             try {
@@ -474,7 +489,7 @@ public class RichTextLabel extends TextFlow {
                 }
                 if (event.getChangeType().equals("color")) {
                     if (event.isStart()) {
-                        final String argument = event.argument();
+                        final var argument = event.argument();
                         if (argument != null) {
                             try {
                                 final Color newColor = Color.valueOf(argument);
@@ -514,7 +529,7 @@ public class RichTextLabel extends TextFlow {
                 segmentStart = event.segmentStart();
 
                 if (event.change() == Event.Change.image) {
-                    final Node node = getImageNode(event.argument());
+                    final var node = getImageNode(event.argument());
                     if (node != null) {
                         node.setTranslateY(offset);
                         getChildren().add(node);
