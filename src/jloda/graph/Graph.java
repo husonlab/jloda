@@ -827,7 +827,11 @@ public class Graph extends GraphBase implements INamed {
      * @return tree
      */
     public String toString() {
-        return "Nodes: " + getNumberOfNodes() + " Edges: " + getNumberOfEdges();
+        if (name == null || name.isBlank())
+            return
+                    "Nodes: " + getNumberOfNodes() + " Edges: " + getNumberOfEdges();
+        else
+            return getName();
     }
 
 

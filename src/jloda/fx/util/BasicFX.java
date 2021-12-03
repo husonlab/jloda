@@ -90,6 +90,23 @@ public class BasicFX {
     }
 
     /**
+     * recursively gets node and all nodes below it
+     */
+    public static Collection<? extends Node> getAllRecursively(Node node, Class<? extends Node> clazz) {
+        final var all = new ArrayList<Node>();
+        final var queue = new LinkedList<Node>();
+        queue.add(node);
+        while (queue.size() > 0) {
+            node = queue.pop();
+            if (clazz.isAssignableFrom(node.getClass()))
+                all.add(node);
+            if (node instanceof Parent parent)
+                queue.addAll(parent.getChildrenUnmodifiable());
+        }
+        return all;
+    }
+
+    /**
      * get all children, recursively
      *
      * @param children initial set of children

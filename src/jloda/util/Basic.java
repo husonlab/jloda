@@ -24,7 +24,9 @@ import java.io.*;
 import java.net.URI;
 import java.net.URL;
 import java.text.SimpleDateFormat;
+import java.util.Collection;
 import java.util.Date;
+import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
@@ -340,6 +342,22 @@ public class Basic {
         if (pos != -1)
             return 1073741824L * Long.parseLong(string.substring(0, pos));
         return Long.parseLong(string);
+    }
+
+    /**
+     * are two collections equal?
+     */
+    public static <T> boolean equal(Collection<T> a, Collection<T> b) {
+        if (a == b)
+            return true;
+        if (a == null || b == null || a.size() != b.size())
+            return false;
+        a = new HashSet<>(a);
+        b = new HashSet<>(b);
+        if (a.size() != b.size())
+            return false;
+        b.removeAll(a);
+        return b.isEmpty();
     }
 }
 
