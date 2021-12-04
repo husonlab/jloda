@@ -21,6 +21,7 @@
 package jloda.util;
 
 import java.util.*;
+import java.util.stream.Stream;
 
 /**
  * some bit set convenience methods
@@ -96,6 +97,10 @@ public class BitSetUtils {
                 return result;
             }
         };
+    }
+
+    public static Stream<Integer> asStream(BitSet set) {
+        return IteratorUtils.asStream(members(set));
     }
 
     public static BitSet asBitSet(Iterable<Integer> bits) {
