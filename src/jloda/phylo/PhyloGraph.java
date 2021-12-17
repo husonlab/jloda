@@ -24,10 +24,7 @@ package jloda.phylo;
 import jloda.graph.*;
 import jloda.util.IteratorUtils;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * Phylogenetic graph
@@ -141,7 +138,7 @@ public class PhyloGraph extends Graph {
         if (edgeWeights == null)
             return DEFAULT_WEIGHT;
         else
-            return edgeWeights.getDouble(e);
+            return edgeWeights.getOrDefault(e, DEFAULT_WEIGHT);
     }
 
     public void setWeight(Edge e, double value) {
@@ -175,10 +172,10 @@ public class PhyloGraph extends Graph {
      * @return returns the edge confidence, or 1, if not set
      */
     public double getConfidence(Edge e) {
-        if (edgeConfidences == null || edgeConfidences.get(e) == null)
+        if (edgeConfidences == null)
             return DEFAULT_CONFIDENCE;
         else
-            return edgeConfidences.get(e);
+            return edgeConfidences.getOrDefault(e, DEFAULT_CONFIDENCE);
     }
 
 
@@ -205,6 +202,13 @@ public class PhyloGraph extends Graph {
             return 0;
         else
             return taxon2node.size();
+    }
+
+    public Iterable<Integer> getTaxa() {
+        if (taxon2node == null)
+            return Collections.emptyList();
+        else
+            return taxon2node.keySet();
     }
 
     public boolean hasTaxa(Node v) {

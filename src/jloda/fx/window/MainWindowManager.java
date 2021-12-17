@@ -263,9 +263,10 @@ public class MainWindowManager {
     }
 
     public static void ensureDarkTheme(IMainWindow window) {
-        window.getStage().getScene().getStylesheets().remove("jloda/resources/css/mondena_dark.css");
-        if (isUseDarkTheme())
-            window.getStage().getScene().getStylesheets().add("jloda/resources/css/mondena_dark.css");
+		if (window != null)
+			window.getStage().getScene().getStylesheets().remove("jloda/resources/css/mondena_dark.css");
+		if (isUseDarkTheme())
+			window.getStage().getScene().getStylesheets().add("jloda/resources/css/mondena_dark.css");
         for (var aux : MainWindowManager.getInstance().getAuxiliaryWindows(window)) {
             aux.getScene().getStylesheets().remove("jloda/resources/css/mondena_dark.css");
             if (isUseDarkTheme())

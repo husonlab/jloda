@@ -161,6 +161,7 @@ public class MashSketch {
                 sketch.kmers[i++] = kmer;
             }
         }
+        progress.reportTaskCompleted();
         return sketch;
     }
 

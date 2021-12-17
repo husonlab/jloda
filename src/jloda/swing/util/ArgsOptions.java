@@ -89,24 +89,28 @@ public class ArgsOptions {
 
         usage = new LinkedList<>();
 
-        try {
-            doHelp = (args.length > 0 && args[0].equalsIgnoreCase("help")) || getOption("-h", "--help", "Show help", false, false);
-            setVerbose(getOption("-v", "--verbose", "verbose", false) && !doHelp);
-        } catch (UsageException e) {
-        }
+		try {
+			doHelp = (args.length > 0 && args[0].equalsIgnoreCase("help")) || getOption("-h", "--help", "Show help", false, false);
+			setVerbose(getOption("-v", "--verbose", "verbose", false) && !doHelp);
+		} catch (UsageException e) {
+		}
 
-        if (verbose)
-            System.err.println(programName + " - " + getDescription() + "\nOptions:");
-    }
+		if (verbose)
+			System.err.println(programName + " - " + getDescription() + "\nOptions:");
+	}
 
-    /**
-     * get description
-     *
-     * @return description
-     */
-    public String getDescription() {
-        return description;
-    }
+	public static Command createCommand(String name, String description) {
+		return new Command(name, description);
+	}
+
+	/**
+	 * get description
+	 *
+	 * @return description
+	 */
+	public String getDescription() {
+		return description;
+	}
 
     public String getUsage() {
         StringBuilder result = new StringBuilder();

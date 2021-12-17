@@ -43,14 +43,6 @@ public class UndoableChangePropertyPair<S, T> extends UndoableRedoableCommand {
 
     /**
      * constructor
-     *
-     * @param name
-     * @param property1
-     * @param oldValue1
-     * @param newValue1
-     * @param property2
-     * @param oldValue2
-     * @param newValue2
      */
     public UndoableChangePropertyPair(String name, Property<S> property1, S oldValue1, S newValue1, Property<T> property2, T oldValue2, T newValue2) {
         super(name);
@@ -60,7 +52,6 @@ public class UndoableChangePropertyPair<S, T> extends UndoableRedoableCommand {
         this.property2 = property2;
         this.oldValue2 = oldValue2;
         this.newValue2 = newValue2;
-
     }
 
     @Override

@@ -99,8 +99,6 @@ public class Edge extends NodeEdge implements Comparable<Edge> {
      *              adjacentEdges incident with v (or before the first node if dir_v = BEFORE). Likewise for e_w.
      */
     void init(Graph G, int id, Node v, Edge e_v, int dir_v, Node w, Edge e_w, int dir_w, Object obj) throws NotOwnerException {
-
-        //ToDo: [DAVE] removed the prev0 parameter here, as this will cause a bug if prev0 is not the final edge.
         super.init(G, G.lastEdge, null, id, obj);
 
         source = v;

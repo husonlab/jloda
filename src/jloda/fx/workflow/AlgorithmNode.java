@@ -25,6 +25,7 @@ import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.value.ChangeListener;
 import javafx.concurrent.Worker;
 import jloda.fx.util.AService;
+import jloda.fx.window.NotificationManager;
 import jloda.util.Basic;
 import jloda.util.StringUtils;
 
@@ -52,12 +53,13 @@ public class AlgorithmNode extends WorkflowNode {
 			return false;
 		});
 		service.stateProperty().addListener((v, o, n) -> {
-			System.err.println("Service (" + getName() + ") " + o + " -> " + n);
+			if (false)
+				System.err.println("Service (" + getName() + ") " + o + " -> " + n);
 
 			setValid(n.equals(Worker.State.SUCCEEDED));
 
 			if (n == Worker.State.FAILED) {
-				System.err.println("Error in " + getAlgorithm().getClass().getSimpleName() + ": Calculation failed: " + service.getException());
+				NotificationManager.showError(getAlgorithm().getName() + ": Calculation failed: " + service.getException());
 			}
 		});
 
@@ -78,7 +80,8 @@ public class AlgorithmNode extends WorkflowNode {
 	protected ChangeListener<Boolean> createParentValidListener() {
 		return (v, o, n) -> {
 			if (n && getParents().stream().allMatch(WorkflowNode::isValid)) {
-				System.err.println(toReportString(false) + " restarting, n=" + n + " parents: " + (getParents().size()) + ", all=" + getParents().stream().allMatch(WorkflowNode::isValid));
+				if (false)
+					System.err.println(toReportString(false) + " restarting, n=" + n + " parents: " + (getParents().size()) + ", all=" + getParents().stream().allMatch(WorkflowNode::isValid));
 				restart();
 			} else
 				setValid(false);

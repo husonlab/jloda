@@ -975,7 +975,7 @@ public class Graph extends GraphBase implements INamed {
      * copies a graph
      */
     public NodeArray<Node> copy(Graph src) {
-        NodeArray<Node> oldNode2newNode = src.newNodeArray();
+        final NodeArray<Node> oldNode2newNode = src.newNodeArray();
         copy(src, oldNode2newNode, null);
         return oldNode2newNode;
     }
@@ -1227,7 +1227,7 @@ public class Graph extends GraphBase implements INamed {
      * @return a clone of this graph
      */
     public Object clone() {
-        Graph result = new Graph();
+		var result = new Graph();
         result.copy(this);
         return result;
     }
@@ -1259,7 +1259,7 @@ public class Graph extends GraphBase implements INamed {
         synchronized (nodeArrays) {
             var toDelete = new LinkedList<WeakReference<NodeArray<?>>>();
             for (var ref : nodeArrays) {
-                NodeArray<?> as = ref.get();
+				var as = ref.get();
                 if (as == null)
                     toDelete.add(ref); // reference is dead
                 else {
@@ -1455,21 +1455,21 @@ public class Graph extends GraphBase implements INamed {
      * @return component
      */
     public NodeSet getSpecialComponent(Node v) {
-        NodeSet nodes = new NodeSet(this);
-        List<Node> queue = new LinkedList<>();
-        queue.add(v);
-        nodes.add(v);
-        while (queue.size() > 0) {
-            v = queue.remove(0);
-            for (Edge e = v.getFirstAdjacentEdge(); e != null; e = v.getNextAdjacentEdge(e)) {
-                if (!isSpecial(e)) {
-                    Node w = e.getOpposite(v);
-                    if (!nodes.contains(w)) {
-                        queue.add(w);
-                        nodes.add(w);
-                    }
-                }
-            }
+		var nodes = newNodeSet();
+		var queue = new LinkedList<Node>();
+		queue.add(v);
+		nodes.add(v);
+		while (queue.size() > 0) {
+			v = queue.remove(0);
+			for (var e : v.adjacentEdges()) {
+				if (!isSpecial(e)) {
+					Node w = e.getOpposite(v);
+					if (!nodes.contains(w)) {
+						queue.add(w);
+						nodes.add(w);
+					}
+				}
+			}
         }
         return nodes;
     }
@@ -1478,25 +1478,8 @@ public class Graph extends GraphBase implements INamed {
      * erase all data components
      */
     public void clearData() {
-        for (Node v = getFirstNode(); v != null; v = v.getNext()) {
-            v.setData(null);
-        }
+		nodes().forEach(v -> v.setData(null));
     }
-
-    /*public NodeSet computeSetOfLeaves(Node v) {
-        NodeSet sons = new NodeSet(this);
-        getLeavesRec(v,sons);
-        return sons;
-   }
-    public void getLeavesRec(Node v, NodeSet nodes) {
-        for (Edge f = v.getFirstOutEdge(); f != null; f = v.getNextOutEdge(f)) {
-           Node w = f.getTarget();
-           getLeavesRec(w,sons);
-       }
-                  if (v.getOutDegree() == 0)
-           nodes.add(w);
-        return sons;
-   }*/
 
     /**
      * gets all nodes as a new set
@@ -1538,7 +1521,7 @@ public class Graph extends GraphBase implements INamed {
 
             @Override
             public Edge next() {
-                Edge result = e;
+				var result = e;
                 e = e.getNext();
                 while (e != null && e.isHidden()) {
                     e = e.getNext();
@@ -1600,7 +1583,7 @@ public class Graph extends GraphBase implements INamed {
 
             @Override
             public Node next() {
-                Node result = v;
+				var result = v;
                 v = v.getNext();
                 return result;
             }
@@ -1803,7 +1786,7 @@ public class Graph extends GraphBase implements INamed {
      * @return src to target map
      */
     public NodeArray<Node> extract(Collection<Node> nodes, Collection<Edge> edges, Graph tarGraph) {
-        NodeArray<Node> src2tarNode = newNodeArray();
+		final NodeArray<Node> src2tarNode = newNodeArray();
         extract(nodes, edges, tarGraph, src2tarNode, null);
         return src2tarNode;
     }
@@ -1888,21 +1871,22 @@ public class Graph extends GraphBase implements INamed {
     }
 
     public boolean isConnected() {
-        if (getNumberOfNodes() == 0)
-            return true;
-        var visited = newNodeSet();
-        var stack = new Stack<Node>();
-        stack.push(getFirstNode());
-        while (stack.size() > 0) {
-            var v = stack.pop();
-            visited.add(v);
-            for (var w : v.adjacentNodes()) {
-                if (!visited.contains(w))
-                    stack.push(w);
-            }
-        }
-        return visited.size() == getNumberOfNodes();
-    }
+		if (getNumberOfNodes() == 0)
+			return true;
+		try (var visited = newNodeSet()) {
+			var stack = new Stack<Node>();
+			stack.push(getFirstNode());
+			while (stack.size() > 0) {
+				var v = stack.pop();
+				visited.add(v);
+				for (var w : v.adjacentNodes()) {
+					if (!visited.contains(w))
+						stack.push(w);
+				}
+			}
+			return visited.size() == getNumberOfNodes();
+		}
+	}
 
     /**
      * contract an edge
@@ -1914,16 +1898,60 @@ public class Graph extends GraphBase implements INamed {
         var s = e.getSource();
         var t = e.getTarget();
         for(var f:s.adjacentEdges()) {
-            if(f!=e) {
-                var g = f.getTarget()==s?newEdge(f.getSource(), t):newEdge(t, f.getTarget());
-                g.setData(f.getData());
-                g.setInfo(f.getInfo());
-                g.setLabel(f.getLabel());
-            }
-        }
-        deleteNode(s);
-        return t;
-    }
+			if (f != e) {
+				var g = f.getTarget() == s ? newEdge(f.getSource(), t) : newEdge(t, f.getTarget());
+				g.setData(f.getData());
+				g.setInfo(f.getInfo());
+				g.setLabel(f.getLabel());
+			}
+		}
+		deleteNode(s);
+		return t;
+	}
+
+	void close(NodeSet set) {
+		synchronized (nodeSets) {
+			for (var ref : nodeSets) {
+				if (ref.get() == set) {
+					nodeSets.remove(ref);
+					return;
+				}
+			}
+		}
+	}
+
+	void close(EdgeSet set) {
+		synchronized (edgeSets) {
+			for (var ref : edgeSets) {
+				if (ref.get() == set) {
+					edgeSets.remove(ref);
+					return;
+				}
+			}
+		}
+	}
+
+	void close(NodeArray<?> array) {
+		synchronized (nodeArrays) {
+			for (var ref : nodeArrays) {
+				if (ref.get() == array) {
+					nodeArrays.remove(ref);
+					return;
+				}
+			}
+		}
+	}
+
+	void close(EdgeArray<?> array) {
+		synchronized (edgeArrays) {
+			for (var ref : edgeArrays) {
+				if (ref.get() == array) {
+					edgeArrays.remove(ref);
+					return;
+				}
+			}
+		}
+	}
 }
 
 // EOF

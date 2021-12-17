@@ -32,17 +32,17 @@ import java.util.function.Function;
  * Daniel Huson 2004, 2021
  */
 
-public class EdgeArray<T> extends GraphBase implements Iterable<T>, Map<Edge, T>, Function<Edge, T> {
-    private T[] data;
-    private int size = 0;
+public class EdgeArray<T> extends GraphBase implements Iterable<T>, Map<Edge, T>, Function<Edge, T>, AutoCloseable {
+	private T[] data;
+	private int size = 0;
 
-    /**
-     * Construct an edge array with default value null
-     */
-    public EdgeArray(Graph g) {
-        setOwner(g);
-        data = (T[]) new Object[g.getMaxEdgeId() + 1];
-        g.registerEdgeArray(this);
+	/**
+	 * Construct an edge array with default value null
+	 */
+	public EdgeArray(Graph g) {
+		setOwner(g);
+		data = (T[]) new Object[g.getMaxEdgeId() + 1];
+		g.registerEdgeArray(this);
     }
 
     /**
@@ -244,15 +244,20 @@ public class EdgeArray<T> extends GraphBase implements Iterable<T>, Map<Edge, T>
         return set;
     }
 
-    @Override
-    public Collection<T> values() {
-        return IteratorUtils.asList(this);
-    }
+	@Override
+	public Collection<T> values() {
+		return IteratorUtils.asList(this);
+	}
 
-    @Override
-    public T apply(Edge edge) {
-        return get(edge);
-    }
+	@Override
+	public T apply(Edge edge) {
+		return get(edge);
+	}
+
+	@Override
+	public void close() {
+		getOwner().close(this);
+	}
 }
 
 

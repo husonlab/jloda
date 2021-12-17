@@ -41,8 +41,8 @@ import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import jloda.fx.util.ExtendedFXMLLoader;
 import jloda.fx.util.TextFileFilter;
+import jloda.fx.window.MainWindowManager;
 import jloda.fx.window.NotificationManager;
-import jloda.util.Basic;
 import jloda.util.FileUtils;
 import jloda.util.ProgramProperties;
 import jloda.util.StringUtils;
@@ -119,12 +119,22 @@ public class FindToolBar extends VBox {
 
         searchManager.messageProperty().addListener((c, o, n) -> {
             final Color color;
-            if (n.startsWith("No"))
-                color = Color.LIGHTPINK.deriveColor(1, 0.5, 1, 1);
-            else if (n.startsWith("Found"))
-                color = Color.PALEGREEN.deriveColor(1, 0.5, 1, 1);
-            else
-                color = Color.WHITE;
+            // todo: this should use CSS colors
+            if (MainWindowManager.isUseDarkTheme()) {
+                if (n.startsWith("No"))
+                    color = Color.DARKRED;
+                else if (n.startsWith("Found"))
+                    color = Color.GREEN;
+                else
+                    color = Color.TRANSPARENT;
+            } else {
+                if (n.startsWith("No"))
+                    color = Color.LIGHTPINK.deriveColor(1, 0.5, 1, 1);
+                else if (n.startsWith("Found"))
+                    color = Color.PALEGREEN.deriveColor(1, 0.5, 1, 1);
+                else
+                    color = Color.TRANSPARENT;
+            }
             controller.getSearchComboBox().getEditor().setBackground(new Background(new BackgroundFill(color, CornerRadii.EMPTY, Insets.EMPTY)));
         });
 

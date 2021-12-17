@@ -27,17 +27,17 @@ import java.util.*;
  * NodeSet implements a set of nodes contained in a given graph
  * Daniel Huson, 2003
  */
-public class NodeSet extends GraphBase implements Set<Node> {
-    private final BitSet bits;
+public class NodeSet extends GraphBase implements Set<Node>, AutoCloseable {
+	private final BitSet bits;
 
-    /**
-     * Constructs a new empty NodeSet for Graph G.
-     *
-     * @param graph Graph
-     */
-    public NodeSet(Graph graph) {
-        setOwner(graph);
-        graph.registerNodeSet(this);
+	/**
+	 * Constructs a new empty NodeSet for Graph G.
+	 *
+	 * @param graph Graph
+	 */
+	public NodeSet(Graph graph) {
+		setOwner(graph);
+		graph.registerNodeSet(this);
         bits = new BitSet();
     }
 
@@ -363,15 +363,20 @@ public class NodeSet extends GraphBase implements Set<Node> {
         return buf.toString();
     }
 
-    /**
-     * do the two sets have a non-empty intersection?
-     *
-     * @param aset
-     * @return true, if intersection is non-empty
-     */
-    public boolean intersects(NodeSet aset) {
-        return bits.intersects(aset.bits);
-    }
+	/**
+	 * do the two sets have a non-empty intersection?
+	 *
+	 * @param aset
+	 * @return true, if intersection is non-empty
+	 */
+	public boolean intersects(NodeSet aset) {
+		return bits.intersects(aset.bits);
+	}
+
+	@Override
+	public void close() {
+		getOwner().close(this);
+	}
 }
 
 // EOF

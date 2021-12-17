@@ -30,17 +30,17 @@ import java.util.*;
 /**
  * EdgeSet implements a set of edges contained in a given graph
  */
-public class EdgeSet extends GraphBase implements Iterable<Edge>, Set<Edge> {
-    final BitSet bits;
+public class EdgeSet extends GraphBase implements Iterable<Edge>, Set<Edge>, AutoCloseable {
+	final BitSet bits;
 
-    /**
-     * Constructs a new empty EdgeSet for Graph G.
-     *
-     * @param graph Graph
-     */
-    public EdgeSet(Graph graph) {
-        setOwner(graph);
-        graph.registerEdgeSet(this);
+	/**
+	 * Constructs a new empty EdgeSet for Graph G.
+	 *
+	 * @param graph Graph
+	 */
+	public EdgeSet(Graph graph) {
+		setOwner(graph);
+		graph.registerEdgeSet(this);
         bits = new BitSet();
     }
 
@@ -294,16 +294,21 @@ public class EdgeSet extends GraphBase implements Iterable<Edge>, Set<Edge> {
 
     /**
      * gets the last edge or null. Not efficient,
-     *
-     * @return last edge or null
-     */
-    public Edge getLastElement() {
-        for (Edge e = getOwner().getLastEdge(); e != null; e = e.getPrev()) {
-            if (contains(e))
-                return null;
-        }
-        return null;
-    }
+	 *
+	 * @return last edge or null
+	 */
+	public Edge getLastElement() {
+		for (Edge e = getOwner().getLastEdge(); e != null; e = e.getPrev()) {
+			if (contains(e))
+				return null;
+		}
+		return null;
+	}
+
+	@Override
+	public void close() {
+		getOwner().close(this);
+	}
 }
 
 // EOF

@@ -186,7 +186,8 @@ abstract public class WorkflowNode extends NamedBase {
 	public void setValid(boolean valid) {
 		if (valid != isValid()) {
 			// todo: debugging:
-			System.err.println(toReportString(false) + " valid -> " + valid);
+			if (false)
+				System.err.println(toReportString(false) + " valid -> " + valid);
 			this.valid.set(valid);
 		}
 	}

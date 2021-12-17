@@ -22,7 +22,7 @@ package jloda.swing.graphview;
 
 import jloda.graph.*;
 import jloda.phylo.PhyloTree;
-import jloda.phylo.PhyloTreeUtils;
+import jloda.phylo.PhyloTreeNetworkUtils;
 import jloda.swing.util.Geometry;
 
 import java.awt.*;
@@ -213,19 +213,19 @@ public class TreeDrawerCircular extends DefaultGraphDrawer implements IGraphDraw
                     java.util.List<Point2D> list = new LinkedList<>();
                     list.add(originPt);
                     Point2D aPt = Geometry.rotate(vPt, wAngle - vAngle);
-                    list.add(aPt);
-                    viewer.setInternalPoints(f, list);
-                } else if (tree.isSpecial(f)) {
-                    viewer.getEV(f).setShape(EdgeView.QUAD_EDGE);
-                    double wAngle = (w.getInDegree() == 1 ? angles.getDouble(w.getFirstInEdge()) : 0);
-                    java.util.List<Point2D> list = new LinkedList<>();
-                    Point2D aPt = Geometry.rotate(vPt, wAngle - vAngle);
-                    list.add(aPt);
-                    viewer.setInternalPoints(f, list);
-                }
-                if (PhyloTreeUtils.okToDescendDownThisEdge(tree, f, v)) {
-                    stack.push(f.getTarget());
-                }
+					list.add(aPt);
+					viewer.setInternalPoints(f, list);
+				} else if (tree.isSpecial(f)) {
+					viewer.getEV(f).setShape(EdgeView.QUAD_EDGE);
+					double wAngle = (w.getInDegree() == 1 ? angles.getDouble(w.getFirstInEdge()) : 0);
+					java.util.List<Point2D> list = new LinkedList<>();
+					Point2D aPt = Geometry.rotate(vPt, wAngle - vAngle);
+					list.add(aPt);
+					viewer.setInternalPoints(f, list);
+				}
+				if (PhyloTreeNetworkUtils.okToDescendDownThisEdge(tree, f, v)) {
+					stack.push(f.getTarget());
+				}
             }
         }
     }

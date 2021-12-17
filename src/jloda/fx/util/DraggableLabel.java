@@ -22,83 +22,103 @@ package jloda.fx.util;
 
 import javafx.beans.property.BooleanProperty;
 import javafx.scene.Cursor;
+import javafx.scene.Node;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.text.Font;
 import javafx.scene.text.Text;
+import jloda.util.Pair;
 
 /**
  * maintains a draggable label
  * Daniel Huson, 5.2018
  */
 public class DraggableLabel {
-    private final Text text = new Text();
-    private final AnchorPane anchorPane;
+	private final Text text = new Text();
+	private final AnchorPane anchorPane;
 
-    private double mouseX = 0;
-    private double mouseY = 0;
+	private final BooleanProperty visible;
 
-    private final BooleanProperty visible;
+	/**
+	 * constructor
+	 */
+	public DraggableLabel(AnchorPane anchorPane) {
+		this.anchorPane = (anchorPane != null ? anchorPane : new AnchorPane());
 
-    /**
-     * constructor
-     */
-    public DraggableLabel(AnchorPane anchorPane) {
-        this.anchorPane = (anchorPane != null ? anchorPane : new AnchorPane());
+		visible = text.visibleProperty();
 
-        visible = text.visibleProperty();
+		text.setFont(Font.font("Arial", 10));
 
-        text.setFont(Font.font("Arial", 10));
+		AnchorPane.setRightAnchor(text, 5.0);
+		AnchorPane.setTopAnchor(text, 5.0);
+		this.anchorPane.getChildren().add(text);
 
-        AnchorPane.setRightAnchor(text, 5.0);
-        AnchorPane.setTopAnchor(text, 5.0);
-        this.anchorPane.getChildren().add(text);
+		makeDraggable(text);
+	}
 
-        text.setOnMousePressed((e -> {
-            mouseX = e.getScreenX();
-            mouseY = e.getScreenY();
-            text.setCursor(Cursor.CLOSED_HAND);
-            e.consume();
-        }));
+	public String getText() {
+		return text.getText();
+	}
 
-        text.setOnMouseDragged((e -> {
-            double deltaX = e.getScreenX() - mouseX;
-            double deltaY = e.getScreenY() - mouseY;
-            AnchorPane.setRightAnchor(text, AnchorPane.getRightAnchor(text) - deltaX);
-            AnchorPane.setTopAnchor(text, AnchorPane.getTopAnchor(text) + deltaY);
-            mouseX = e.getScreenX();
-            mouseY = e.getScreenY();
-            e.consume();
-        }));
+	public void setText(String text) {
+		this.text.setText(text);
+	}
 
-        text.setOnMouseReleased(e -> text.setCursor(Cursor.DEFAULT));
+	public Text get() {
+		return text;
+	}
 
-    }
+	public boolean getVisible() {
+		return visible.get();
+	}
 
-    public String getText() {
-        return text.getText();
-    }
+	public BooleanProperty visibleProperty() {
+		return visible;
+	}
 
-    public void setText(String text) {
-        this.text.setText(text);
-    }
+	public void setVisible(boolean visible) {
+		this.visible.set(visible);
+	}
 
-    public Text get() {
-        return text;
-    }
+	public AnchorPane getAnchorPane() {
+		return anchorPane;
+	}
 
-    public boolean getVisible() {
-        return visible.get();
-    }
+	/**
+	 * if node is contained in an anchor pane, makes it click-draggable
+	 *
+	 * @param node contained in anchor pane
+	 */
+	public static void makeDraggable(Node node) {
+		var right = AnchorPane.getRightAnchor(node);
+		var left = AnchorPane.getLeftAnchor(node);
+		var top = AnchorPane.getTopAnchor(node);
+		var bottom = AnchorPane.getBottomAnchor(node);
 
-    public BooleanProperty visibleProperty() {
-        return visible;
-    }
+		if ((right == null || left == null) && (top == null || bottom == null)) {
+			final var mouseDown = new Pair<Double, Double>();
 
-    public void setVisible(boolean visible) {
-        this.visible.set(visible);
-    }
+			node.setOnMousePressed((e -> {
+				mouseDown.set(e.getScreenX(), e.getScreenY());
+				node.setCursor(Cursor.CLOSED_HAND);
+				e.consume();
+			}));
 
-    public AnchorPane getAnchorPane() {
-        return anchorPane;
-    }
+			node.setOnMouseDragged((e -> {
+				double deltaX = e.getScreenX() - mouseDown.getFirst();
+				double deltaY = e.getScreenY() - mouseDown.getSecond();
+				if (right != null)
+					AnchorPane.setRightAnchor(node, AnchorPane.getRightAnchor(node) - deltaX);
+				if (left != null)
+					AnchorPane.setLeftAnchor(node, AnchorPane.getLeftAnchor(node) + deltaX);
+				if (top != null)
+					AnchorPane.setTopAnchor(node, AnchorPane.getTopAnchor(node) + deltaY);
+				if (bottom != null)
+					AnchorPane.setBottomAnchor(node, AnchorPane.getBottomAnchor(node) - deltaY);
+				mouseDown.set(e.getScreenX(), e.getScreenY());
+				e.consume();
+			}));
+
+			node.setOnMouseReleased(e -> node.setCursor(Cursor.DEFAULT));
+		}
+	}
 }

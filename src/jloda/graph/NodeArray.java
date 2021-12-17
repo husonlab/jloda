@@ -32,17 +32,17 @@ import java.util.function.Function;
  * Daniel Huson 2004, 2021
  */
 
-public class NodeArray<T> extends GraphBase implements Iterable<T>, Map<Node, T>, Function<Node, T> {
-    private T[] data;
-    private int size = 0;
+public class NodeArray<T> extends GraphBase implements Iterable<T>, Map<Node, T>, Function<Node, T>, AutoCloseable {
+	private T[] data;
+	private int size = 0;
 
-    /**
-     * Construct an node array with default value null
-     */
-    public NodeArray(Graph g) {
-        setOwner(g);
-        data = (T[]) new Object[g.getMaxNodeId() + 1];
-        g.registerNodeArray(this);
+	/**
+	 * Construct an node array with default value null
+	 */
+	public NodeArray(Graph g) {
+		setOwner(g);
+		data = (T[]) new Object[g.getMaxNodeId() + 1];
+		g.registerNodeArray(this);
     }
 
     /**
@@ -255,15 +255,20 @@ public class NodeArray<T> extends GraphBase implements Iterable<T>, Map<Node, T>
         return set;
     }
 
-    @Override
-    public Collection<T> values() {
-        return IteratorUtils.asList(this);
-    }
+	@Override
+	public Collection<T> values() {
+		return IteratorUtils.asList(this);
+	}
 
-    @Override
-    public T apply(Node node) {
-        return get(node);
-    }
+	@Override
+	public T apply(Node node) {
+		return get(node);
+	}
+
+	@Override
+	public void close() {
+		getOwner().close(this);
+	}
 }
 
 

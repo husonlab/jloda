@@ -126,16 +126,15 @@ public class RecentFilesManager {
      * create the recent files menu
      */
     public void setupMenu(final Menu menu) {
-        final WeakReference<Menu> ref = new WeakReference<>(menu);
-        menuReferences.add(ref);
+        menuReferences.add(new WeakReference<>(menu));
 
         if (fileOpener.get() != null) {
-            for (String fileName : recentFiles) {
-                final MenuItem openMenuItem = new MenuItem(fileName);
-                openMenuItem.setOnAction(e -> fileOpener.get().accept(fileName));
-                openMenuItem.disableProperty().bind(disable);
-                menu.getItems().add(openMenuItem);
-            }
+			for (var fileName : recentFiles) {
+				final MenuItem openMenuItem = new MenuItem(fileName);
+				openMenuItem.setOnAction(e -> fileOpener.get().accept(fileName));
+				openMenuItem.disableProperty().bind(disable);
+				menu.getItems().add(openMenuItem);
+			}
         }
     }
 

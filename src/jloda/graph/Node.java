@@ -112,31 +112,32 @@ public class Node extends NodeEdge implements Comparable<Node> {
     }
 
     /**
-     * rearrange the adjacent adjacentEdges
-     *
-     * @param newOrder
-     */
+	 * rearrange the adjacent adjacentEdges
+	 *
+	 * @param newOrder new order in which edges should occur
+	 */
     public void rearrangeAdjacentEdges(Collection<Edge> newOrder) {
-        Edge[] array = new Edge[newOrder.size()];
-        int i = 0;
-        for (Edge e : newOrder)
-            array[newOrder.size() - (++i)] = e;
+		final var array = new Edge[newOrder.size()];
+		{
+			var i = 0;
+			for (var e : newOrder)
+				array[newOrder.size() - (++i)] = e;
+		}
 
-        for (i = 0; i < array.length; i++) {
-            Edge e = array[i];
-            checkOwner(e);
-            Edge pred = e.getPrevIncidentTo(this);
-            Edge succ = e.getNextIncidentTo(this);
-            if (pred != null) {
-                pred.setNext(this, succ);
-                if (succ != null) {
-                    succ.setPrev(this, pred);
-                } else {
-                    this.lastAdjacentEdge = pred;
-                }
-                e.setPrev(this, null);
-                this.firstAdjacentEdge.setPrev(this, e);
-                e.setNext(this, this.firstAdjacentEdge);
+		for (var i = 0; i < array.length; i++) {
+			var e = array[i];
+			var pred = e.getPrevIncidentTo(this);
+			var succ = e.getNextIncidentTo(this);
+			if (pred != null) {
+				pred.setNext(this, succ);
+				if (succ != null) {
+					succ.setPrev(this, pred);
+				} else {
+					this.lastAdjacentEdge = pred;
+				}
+				e.setPrev(this, null);
+				this.firstAdjacentEdge.setPrev(this, e);
+				e.setNext(this, this.firstAdjacentEdge);
                 this.firstAdjacentEdge = e;
             }
         }

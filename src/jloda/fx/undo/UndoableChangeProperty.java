@@ -42,7 +42,6 @@ public class UndoableChangeProperty<T> extends UndoableRedoableCommand {
         this(name, property, oldValue, newValue, null);
     }
 
-
     public UndoableChangeProperty(String name, Property<T> property, T oldValue, T newValue, Consumer<T> updater) {
         super(name);
         this.property = property;
