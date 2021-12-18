@@ -296,9 +296,7 @@ public class SearchManager {
             return false;
 
         boolean changed = false;
-        if (getSearcher() instanceof IObjectSearcher) {
-            IObjectSearcher searcher = (IObjectSearcher) getSearcher();
-
+        if (getSearcher() instanceof IObjectSearcher<?> searcher) {
             progressListener.setMaximum(-1);
 
             boolean ok = searcher.isCurrentSet();
@@ -313,6 +311,8 @@ public class SearchManager {
                     String label = searcher.getCurrentLabel();
                     if (label == null)
                         label = "";
+                    if (searcher.getPrepareTextForReplaceFunction() != null)
+                        label = searcher.getPrepareTextForReplaceFunction().apply(label);
                     String replace = getReplacement(pattern, getReplaceText(), label);
                     if (replace != null && !label.equals(replace)) {
                         searcher.setCurrentSelected(true);
@@ -344,8 +344,7 @@ public class SearchManager {
 
         int count = 0;
 
-        if (getSearcher() instanceof IObjectSearcher) {
-            IObjectSearcher searcher = (IObjectSearcher) getSearcher();
+        if (getSearcher() instanceof IObjectSearcher<?> searcher) {
             boolean ok = isForwardDirection() ? searcher.gotoFirst() : searcher.gotoLast();
             progressListener.setMaximum(searcher.numberOfObjects());
 
@@ -357,6 +356,8 @@ public class SearchManager {
                     String label = searcher.getCurrentLabel();
                     if (label == null)
                         label = "";
+                    if (searcher.getPrepareTextForReplaceFunction() != null)
+                        label = searcher.getPrepareTextForReplaceFunction().apply(label);
                     String replace = getReplacement(pattern, getReplaceText(), label);
                     if (replace != null && !replace.equals(label)) {
                         searcher.setCurrentSelected(true);
@@ -367,8 +368,7 @@ public class SearchManager {
                 ok = isForwardDirection() ? searcher.gotoNext() : searcher.gotoPrevious();
                 progressListener.incrementProgress();
             }
-        } else if (getSearcher() instanceof ITextSearcher) {
-            ITextSearcher searcher = (ITextSearcher) getSearcher();
+        } else if (getSearcher() instanceof ITextSearcher searcher) {
             searcher.setGlobalScope(isGlobalScope());
 
             final String regexp = prepareRegularExpression(getSearchText());

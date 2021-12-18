@@ -24,6 +24,8 @@ import javafx.beans.binding.Bindings;
 import javafx.beans.property.*;
 import javafx.scene.control.TableView;
 
+import java.util.function.Function;
+
 /**
  * searcher for my table view
  * Daniel Huson, 2019
@@ -116,6 +118,11 @@ public class TableViewSearcher<S> implements IObjectSearcher<String> {
             return tableView.getColumns().get(col).getCellObservableValue(tableView.getItems().get(row)).getValue().toString();
         else
             return tableView.getItems().get(row).toString();
+    }
+
+    @Override
+    public Function<String, String> getPrepareTextForReplaceFunction() {
+        return null;
     }
 
     @Override

@@ -109,6 +109,16 @@
     -fx-fill: #2B2B2B !important;
 }
 
+.lineno {
+    -fx-text-fill: black !important;
+    -fx-background-color: derive(-fx-base, 50%);
+}
+
+
 .paragraph-box:has-caret {
     -fx-background-color: #323232 !important;
+}
+
+.styled-text-area .caret {
+    -fx-stroke: white !important;
 }

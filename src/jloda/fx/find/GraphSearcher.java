@@ -106,6 +106,11 @@ public class GraphSearcher implements IObjectSearcher<Node> {
     }
 
     @Override
+    public Function<String, String> getPrepareTextForReplaceFunction() {
+        return null;
+    }
+
+    @Override
     public void setCurrentLabel(String newLabel) {
         if (which != null) {
             final Node node = which;

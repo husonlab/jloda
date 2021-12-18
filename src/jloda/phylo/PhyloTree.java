@@ -304,13 +304,6 @@ public class PhyloTree extends PhyloSplitsGraph {
         if (ALLOW_READ_RETICULATE)
             postProcessReticulate();
 
-        if (!hasWeights.get()) {
-            for (var e : edges()) {
-                if (getWeight(e) == 0.0 && !isSpecial(e))
-                    setWeight(e, 1.0);
-            }
-        }
-
         // System.err.println("Bootstrap values detected:    " + getInputHasBootstrapValuesOnNodes());
         // System.err.println("Multi-labeled nodes detected: " + getInputHasMultiLabels());
     }
@@ -361,55 +354,8 @@ public class PhyloTree extends PhyloSplitsGraph {
                             {
                                 setLabel(old, label + ".1");
                                 seen.put(label, null); // keep label in, but null indicates has changed
-                                    seen.put(label + ".1", old);
-                                    setInputHasMultiLabels(true);
-                                }
-
-                                var t = 1;
-                            String labelt;
-                            do {
-                                    labelt = label + "." + (++t);
-                                } while (seen.containsKey(labelt));
-                                label = labelt;
-                            }
-                            seen.put(label, w);
-                        }
-                        setLabel(w, label);
-                        if (label.length() == 0)
-                            throw new IOException("Expected label at position " + pos0);
-                }
-                } else // everything to next ) : or , is considered a label:
-                {
-                    if (getNumberOfNodes() == 1)
-                        throw new IOException("Expected '(' at position " + pos);
-                    var pos0 = pos;
-                    final var buf = new StringBuilder();
-                    boolean inQuotes = false;
-                    while (pos < str.length() && (inQuotes || punctuationCharacters.indexOf(str.charAt(pos)) == -1)) {
-                        if (str.charAt(pos) == '\'')
-                            inQuotes = !inQuotes;
-                        else
-                            buf.append(str.charAt(pos));
-                        pos++;
-                    }
-                    label = buf.toString().trim();
-
-                    if (label.startsWith("'") && label.endsWith("'") && label.length() > 1)
-                        label = label.substring(1, label.length() - 1).trim();
-
-
-                    if (label.length() > 0) {
-                        if (!getAllowMultiLabeledNodes() && seen.containsKey(label) && PhyloTreeNetworkUtils.findReticulateLabel(label) == null) {
-                            // give first occurrence of this label the suffix .1
-                            var old = seen.get(label);
-                            if (old != null) // change label of node
-                            {
-                                setLabel(old, label + ".1");
-                                seen.put(label, null); // keep label in, but null indicates has changed
                                 seen.put(label + ".1", old);
                                 setInputHasMultiLabels(true);
-                                if (getWarnMultiLabeled())
-                                    System.err.println("multi-label: " + label);
                             }
 
                             var t = 1;
@@ -425,59 +371,107 @@ public class PhyloTree extends PhyloSplitsGraph {
                     if (label.length() == 0)
                         throw new IOException("Expected label at position " + pos0);
                 }
-                Edge e = null;
-                if (v != null)
-                    e = newEdge(v, w);
+            } else // everything to next ) : or , is considered a label:
+            {
+                if (getNumberOfNodes() == 1)
+                    throw new IOException("Expected '(' at position " + pos);
+                var pos0 = pos;
+                final var buf = new StringBuilder();
+                boolean inQuotes = false;
+                while (pos < str.length() && (inQuotes || punctuationCharacters.indexOf(str.charAt(pos)) == -1)) {
+                    if (str.charAt(pos) == '\'')
+                        inQuotes = !inQuotes;
+                    else
+                        buf.append(str.charAt(pos));
+                    pos++;
+                }
+                label = buf.toString().trim();
 
-                // detect and read embedded bootstrap values:
-				pos = StringUtils.skipSpaces(str, pos);
+                if (label.startsWith("'") && label.endsWith("'") && label.length() > 1)
+                    label = label.substring(1, label.length() - 1).trim();
+
+
+                if (label.length() > 0) {
+                    if (!getAllowMultiLabeledNodes() && seen.containsKey(label) && PhyloTreeNetworkUtils.findReticulateLabel(label) == null) {
+                        // give first occurrence of this label the suffix .1
+                        var old = seen.get(label);
+                        if (old != null) // change label of node
+                        {
+                            setLabel(old, label + ".1");
+                            seen.put(label, null); // keep label in, but null indicates has changed
+                            seen.put(label + ".1", old);
+                            setInputHasMultiLabels(true);
+                            if (getWarnMultiLabeled())
+                                System.err.println("multi-label: " + label);
+                        }
+
+                        var t = 1;
+                        String labelt;
+                        do {
+                            labelt = label + "." + (++t);
+                        } while (seen.containsKey(labelt));
+                        label = labelt;
+                    }
+                    seen.put(label, w);
+                }
+                setLabel(w, label);
+                if (label.length() == 0)
+                    throw new IOException("Expected label at position " + pos0);
+            }
+            Edge e = null;
+            if (v != null)
+                e = newEdge(v, w);
+
+            // detect and read embedded bootstrap values:
+            pos = StringUtils.skipSpaces(str, pos);
 
             // read edge weights
+            var didReadWeight = false;
 
-                if (pos < str.length() && str.charAt(pos) == ':') // edge weight is following
-                {
-                    pos = StringUtils.skipSpaces(str, pos + 1);
-                    var pos0 = pos;
-                    var buf = new StringBuilder();
-                    while (pos < str.length() && (punctuationCharacters.indexOf(str.charAt(pos)) == -1 && str.charAt(pos) != '['))
-                        buf.append(str.charAt(pos++));
-                    var number = buf.toString().trim();
-                    try {
-                        var weight = Math.max(0, Double.parseDouble(number));
-                        if (e != null)
-                            setWeight(e, weight);
-                        hasWeights.set(true);
-                    } catch (Exception ex) {
-                        throw new IOException("Expected number at position " + pos0 + " (got: '" + number + "')");
-                    }
+            if (pos < str.length() && str.charAt(pos) == ':') { // edge weight is following
+                pos = StringUtils.skipSpaces(str, pos + 1);
+                var pos0 = pos;
+                var buf = new StringBuilder();
+                while (pos < str.length() && (punctuationCharacters.indexOf(str.charAt(pos)) == -1 && str.charAt(pos) != '['))
+                    buf.append(str.charAt(pos++));
+                var number = buf.toString().trim();
+                try {
+                    var weight = Math.max(0, Double.parseDouble(number));
+                    if (e != null)
+                        setWeight(e, weight);
+                    didReadWeight = true;
+                    hasWeights.set(true);
+                } catch (Exception ex) {
+                    throw new IOException("Expected number at position " + pos0 + " (got: '" + number + "')");
                 }
+            }
 
             // adjust edge weights for reticulate edges
             if (e != null) {
-                    try {
-                        if (label != null && PhyloTreeNetworkUtils.isReticulateNode(label)) {
-                            // if an instance of a reticulate node is marked ##, then we will set the weight of the edge to the node to a number >0
-                            // to indicate that edge should be drawn as a tree edge
-                            if (PhyloTreeNetworkUtils.isReticulateAcceptorEdge(label)) {
-                                if (getWeight(e) <= 0)
-                                    setWeight(e, 0.000001);
-                            } else {
-                                if (getWeight(e) > 0)
-                                    setWeight(e, 0.0);
-                            }
+                try {
+                    if (label != null && PhyloTreeNetworkUtils.isReticulateNode(label)) {
+                        // if an instance of a reticulate node is marked ##, then we will set the weight of the edge to the node to a number >0
+                        // to indicate that edge should be drawn as a tree edge
+                        if (PhyloTreeNetworkUtils.isReticulateAcceptorEdge(label)) {
+                            if (!didReadWeight || getWeight(e) <= 0)
+                                setWeight(e, 0.000001);
+                        } else {
+                            if (getWeight(e) > 0)
+                                setWeight(e, 0.0);
                         }
-                    } catch (IllegalSelfEdgeException e1) {
-                        Basic.caught(e1);
                     }
+                } catch (IllegalSelfEdgeException e1) {
+                    Basic.caught(e1);
                 }
+            }
 
-                // now i should be pointing to a ',', a ')' or '[' (for a label)
-                if (pos >= str.length()) {
-                    if (depth == 0)
-                        return pos; // finished parsing tree
-                    else
-                        throw new IOException("Unexpected end of line");
-                }
+            // now i should be pointing to a ',', a ')' or '[' (for a label)
+            if (pos >= str.length()) {
+                if (depth == 0)
+                    return pos; // finished parsing tree
+                else
+                    throw new IOException("Unexpected end of line");
+            }
             if (str.charAt(pos) == '[') // edge label
             {
                 int x = str.indexOf('[', pos + 1);
@@ -544,7 +538,7 @@ public class PhyloTree extends PhyloSplitsGraph {
     /**
      * Writes a tree in bracket notation
      *
-     * @param w         the writer
+     * @param w            the writer
      * @param writeWeights write edge weights or not
      */
     public void write(Writer w, boolean writeWeights) throws IOException {
@@ -705,6 +699,7 @@ public class PhyloTree extends PhyloSplitsGraph {
 
     /**
      * gets a clean version of the label. This is a label that can be printed in a Newick string
+     *
      * @return clean label
      */
     private String getCleanLabel(Node v) {
@@ -725,7 +720,7 @@ public class PhyloTree extends PhyloSplitsGraph {
      * post processes a tree that really describes a reticulate network
      */
     public void postProcessReticulate() {
-        // determine all the groups of reticulate ndoes
+        // determine all the groups of reticulate nodes
         final var reticulateNumber2Nodes = new HashMap<String, List<Node>>(); // maps each reticulate-node prefix to the set of all nodes that have it
 
         for (var v : nodes()) {
@@ -758,9 +753,9 @@ public class PhyloTree extends PhyloSplitsGraph {
 
                         for (var e : v.adjacentEdges()) {
                             final Edge f;
-                            if (e.getSource() == v) { /// transfer child of v to u
+                            if (e.getSource() == v) { /// move child of v to u
                                 f = newEdge(u, e.getTarget());
-                            } else { // transfer parent of v to u
+                            } else { // move parent of v to u
                                 f = newEdge(e.getSource(), u);
                             }
                             setSplit(f, getSplit(e));
@@ -984,7 +979,7 @@ public class PhyloTree extends PhyloSplitsGraph {
      *
      * @return true, if is rooted network
      */
-    public boolean isRootedNetwork() {
+    public boolean isReticulated() {
         return nodeStream().anyMatch(v -> v.getInDegree() >= 2);
     }
 
@@ -1307,7 +1302,7 @@ public class PhyloTree extends PhyloSplitsGraph {
      * @return true if transfer edge
      */
     public boolean isTransferEdge(Edge e) {
-        return isSpecial(e) && getWeight(e) == -1;
+        return isSpecial(e) && getWeight(e) > 0;
     }
 
     /**

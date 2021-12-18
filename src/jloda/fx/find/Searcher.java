@@ -40,6 +40,8 @@ public class Searcher<T> implements IObjectSearcher<T> {
     private final Function<Integer, Boolean> isSelectedFunction;
     private final BiConsumer<Integer, Boolean> selectCallback;
     private final Function<Integer, String> textGetter;
+    private final Function<String, String> prepareTextForReplaceFunction;
+
     private final BiConsumer<Integer, String> textSetter;
     private final StringProperty name = new SimpleStringProperty("Searcher");
 
@@ -61,11 +63,12 @@ public class Searcher<T> implements IObjectSearcher<T> {
      * @param textGetter         gets text for current item
      * @param textSetter         sets text for current item
      */
-    public Searcher(ObservableList<T> items, Function<Integer, Boolean> isSelectedFunction, BiConsumer<Integer, Boolean> selectCallback, ObjectProperty<SelectionMode> selectionMode, Function<Integer, String> textGetter, BiConsumer<Integer, String> textSetter) {
+    public Searcher(ObservableList<T> items, Function<Integer, Boolean> isSelectedFunction, BiConsumer<Integer, Boolean> selectCallback, ObjectProperty<SelectionMode> selectionMode, Function<Integer, String> textGetter, Function<String, String> prepareTextForReplaceFunction, BiConsumer<Integer, String> textSetter) {
         this.isSelectedFunction = isSelectedFunction;
         this.selectCallback = selectCallback;
         this.items = items;
         this.textGetter = textGetter;
+        this.prepareTextForReplaceFunction = prepareTextForReplaceFunction;
         this.textSetter = textSetter;
 
         globalFindable.bind(selectionMode.isEqualTo(SelectionMode.MULTIPLE).and(Bindings.size(items).greaterThan(0)));
@@ -140,6 +143,11 @@ public class Searcher<T> implements IObjectSearcher<T> {
     @Override
     public String getCurrentLabel() {
         return textGetter.apply(current);
+    }
+
+    @Override
+    public Function<String, String> getPrepareTextForReplaceFunction() {
+        return prepareTextForReplaceFunction;
     }
 
     @Override

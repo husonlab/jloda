@@ -22,9 +22,11 @@ package jloda.fx.find;
 
 import javafx.beans.property.ReadOnlyObjectProperty;
 
+import java.util.function.Function;
+
 /**
  * implement this interface to support the Find and Find-Replace dialogs
- * Daniel Huson, 7.2008
+ * Daniel Huson, 7.2016
  */
 public interface IObjectSearcher<S> extends ISearcher {
 
@@ -83,6 +85,13 @@ public interface IObjectSearcher<S> extends ISearcher {
      * @return label
      */
     String getCurrentLabel();
+
+    /**
+     * provides a function that is applied to text label just before replace is performed
+     *
+     * @return updated label
+     */
+    Function<String, String> getPrepareTextForReplaceFunction();
 
     /**
      * set the label of the current object

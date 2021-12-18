@@ -23,6 +23,8 @@ package jloda.fx.control.table;
 import javafx.beans.property.*;
 import jloda.fx.find.IObjectSearcher;
 
+import java.util.function.Function;
+
 public class MyTableViewSearcher implements IObjectSearcher<String> {
     private final MyTableView tableView;
     private int row = -1;
@@ -91,6 +93,11 @@ public class MyTableViewSearcher implements IObjectSearcher<String> {
     @Override
     public String getCurrentLabel() {
         return tableView.getValue(row, col);
+    }
+
+    @Override
+    public Function<String, String> getPrepareTextForReplaceFunction() {
+        return null;
     }
 
     @Override

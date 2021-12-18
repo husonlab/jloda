@@ -26,6 +26,8 @@ import javafx.beans.property.*;
 import javafx.scene.control.Labeled;
 import javafx.scene.control.ListView;
 
+import java.util.function.Function;
+
 /**
  * searcher for list view
  * Daniel Huson, 2.2020
@@ -97,6 +99,11 @@ public class ListViewSearcher<S> implements IObjectSearcher<String> {
     @Override
     public String getCurrentLabel() {
         return listView.getItems().get(pos).toString();
+    }
+
+    @Override
+    public Function<String, String> getPrepareTextForReplaceFunction() {
+        return null;
     }
 
     @Override

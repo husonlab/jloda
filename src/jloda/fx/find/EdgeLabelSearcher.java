@@ -30,6 +30,7 @@ import jloda.phylo.PhyloSplitsGraph;
 
 import java.util.LinkedList;
 import java.util.Objects;
+import java.util.function.Function;
 
 /**
  * Class for finding and replacing edge labels in a labeled graph
@@ -172,6 +173,11 @@ public class EdgeLabelSearcher implements IObjectSearcher<Edge> {
             return null;
         else
             return graph.getLabel(current);
+    }
+
+    @Override
+    public Function<String, String> getPrepareTextForReplaceFunction() {
+        return null;
     }
 
     /**
