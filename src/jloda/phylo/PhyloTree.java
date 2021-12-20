@@ -740,10 +740,7 @@ public class PhyloTree extends PhyloSplitsGraph {
             }
         }
 
-        var hasTransferReticulation = false;
-        var hasNonTransferReticulation = false;
-
-        // collapse all instances of a reticulate node into one node
+         // collapse all instances of a reticulate node into one node
         for (var reticulateNumber : reticulateNumber2Nodes.keySet()) {
             final var list = reticulateNumber2Nodes.get(reticulateNumber);
             if (list.size() > 0) {
@@ -785,19 +782,10 @@ public class PhyloTree extends PhyloSplitsGraph {
                         }
                     }
                 }
-                if (transferAcceptorEdge.isNull())
-                    hasNonTransferReticulation = true;
-                else
-                    hasTransferReticulation = true;
                 if (transferAcceptorEdge.isNotNull()) {
                     u.inEdgesStream(false).filter(e -> e != transferAcceptorEdge.get()).forEach(e -> setWeight(e, -1.0));
                 }
             }
-        }
-
-        if (hasNonTransferReticulation && hasTransferReticulation) {
-            System.err.println("WARNING: Tree contains both of simple and transfer reticulations, will treat transfers as simple reticulations");
-            edgeStream().filter(this::isReticulatedEdge).forEach(e -> setWeight(e, 0));
         }
     }
 
