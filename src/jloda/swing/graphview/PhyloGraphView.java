@@ -575,29 +575,30 @@ public class PhyloGraphView extends GraphView {
     }
 
     /**
-     * contract all given adjacentEdges
-     *
-     * @param edges
-     * @return number of adjacentEdges successfully removed
-     */
+	 * contract all given edges
+	 *
+	 * @param edges
+	 * @return number of edges successfully removed
+	 */
     public boolean contractAll(Set<Edge> edges) {
         boolean result = false;
         final PhyloSplitsGraph graph = getPhyloGraph();
         final Set<Node> diVertices = new HashSet<>();
         while (edges.size() > 0) {
-            final Edge e = edges.iterator().next();
-            edges.remove(e);
-            if (!graph.isSpecial(e) && e.getTarget().getOutDegree() > 0) {
-                final Node v = e.getSource();
-                final Node w = e.getTarget();
-                if (w.getOutDegree() == 0) {
-                    if (graph.getLabel(w) != null && graph.getLabel(w).length() > 0) {
-                        if (graph.getLabel(v) == null || graph.getLabel(v).length() == 0)
-                            graph.setLabel(v, graph.getLabel(w));
-                        else {
-                            graph.setLabel(v, graph.getLabel(v) + "+" + graph.getLabel(w));
-                        }
-                    }
+			final Edge e = edges.iterator().next();
+			edges.remove(e);
+			var isReticulateEdge = (graph instanceof PhyloTree phyloTree && phyloTree.isReticulatedEdge(e));
+			if (!isReticulateEdge && e.getTarget().getOutDegree() > 0) {
+				final Node v = e.getSource();
+				final Node w = e.getTarget();
+				if (w.getOutDegree() == 0) {
+					if (graph.getLabel(w) != null && graph.getLabel(w).length() > 0) {
+						if (graph.getLabel(v) == null || graph.getLabel(v).length() == 0)
+							graph.setLabel(v, graph.getLabel(w));
+						else {
+							graph.setLabel(v, graph.getLabel(v) + "+" + graph.getLabel(w));
+						}
+					}
                     graph.deleteEdge(e);
                 } else {
                     for (Edge f = w.getFirstOutEdge(); f != null; f = w.getNextOutEdge(f)) {

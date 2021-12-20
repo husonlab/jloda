@@ -29,6 +29,7 @@ package jloda.swing.graphview;
 
 import jloda.fx.util.ProgramExecutorService;
 import jloda.graph.*;
+import jloda.phylo.PhyloTree;
 import jloda.swing.util.Cursors;
 import jloda.swing.util.Geometry;
 import jloda.util.Basic;
@@ -1014,7 +1015,7 @@ public class GraphViewListener implements IGraphViewListener {
      * separate the selected from the none-selected nodes
      * has the same angle and length
      *
-     * @return firstlength double
+     * @return first length double
      */
 
     private double canMaintainEdgeLengths() {
@@ -1025,7 +1026,8 @@ public class GraphViewListener implements IGraphViewListener {
 
         try {
             for (Edge e = graph.getFirstEdge(); e != null; e = graph.getNextEdge(e)) {
-                if (!graph.isSpecial(e)) {
+                var isReticulate = (graph instanceof PhyloTree phyloTree && phyloTree.isReticulatedEdge(e));
+                if (!isReticulate) {
                     Node v = graph.getSource(e);
                     Node w = graph.getTarget(e);
                     Point2D pv;
@@ -1069,32 +1071,33 @@ public class GraphViewListener implements IGraphViewListener {
      * @param origLength double
      */
     private void maintainEdgeLengths(double origLength) {
-        Graph G = viewer.getGraph();
-        NodeSet visited = new NodeSet(G);
+        Graph graph = viewer.getGraph();
+        NodeSet visited = new NodeSet(graph);
 
         double length = -1;
         Point2D diff = null;
 
         try {
             // put all selected nodes into visited set:
-            for (Node v = G.getFirstNode(); v != null; v = G.getNextNode(v))
+            for (Node v = graph.getFirstNode(); v != null; v = graph.getNextNode(v))
                 if (viewer.selectedNodes.contains(v))
                     visited.add(v);
 
-            for (Edge e = G.getFirstEdge(); e != null; e = G.getNextEdge(e)) {
-                if (!G.isSpecial(e)) {
-                    Node v = G.getSource(e);
-                    Node w = G.getTarget(e);
+            for (Edge e = graph.getFirstEdge(); e != null; e = graph.getNextEdge(e)) {
+                var isReticulate = (graph instanceof PhyloTree phyloTree && phyloTree.isReticulatedEdge(e));
+                if (!isReticulate) {
+                    Node v = graph.getSource(e);
+                    Node w = graph.getTarget(e);
                     Node z;
                     Point2D pv;
                     Point2D pw;
                     if (viewer.selectedNodes.contains(v) && !viewer.selectedNodes.contains(w)
-                            && !visited.contains(w)) {
+                        && !visited.contains(w)) {
                         pv = viewer.getLocation(v);
                         pw = viewer.getLocation(w);
                         z = w;
                     } else if (!viewer.selectedNodes.contains(v) && viewer.selectedNodes.contains(w)
-                            && !visited.contains(v)) {
+                               && !visited.contains(v)) {
                         pv = viewer.getLocation(w);
                         pw = viewer.getLocation(v);
                         z = v;
@@ -1114,7 +1117,7 @@ public class GraphViewListener implements IGraphViewListener {
                                 (length - origLength) * (pw.getY() - pv.getY()) / length);
                     }
 
-                    shiftAllNodesRecursively(G, z, diff, visited);
+                    shiftAllNodesRecursively(graph, z, diff, visited);
                 }
             }
         } catch (NotOwnerException ex) {

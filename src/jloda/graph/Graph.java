@@ -31,10 +31,10 @@ import java.util.stream.StreamSupport;
 /**
  * A graph
  * <p/>
- * The nodes and adjacentEdges are stored in several doubly-linked lists.
+ * The nodes and edges are stored in several doubly-linked lists.
  * The set of nodes in the graph is stored in a list
- * The set of adjacentEdges in the graph is stored in a list
- * Around each node, the set of incident adjacentEdges is stored in a list.
+ * The set of edges in the graph is stored in a list
+ * Around each node, the set of incident edges is stored in a list.
  * Daniel Huson, 2002
  * <p/>
  */
@@ -64,7 +64,6 @@ public class Graph extends GraphBase implements INamed {
     private EdgeArray<Object> edgeInfo;
     private EdgeArray<String> edgeLabel;
     private EdgeArray<Object> edgeData;
-    private EdgeSet specialEdges;
 
     private final List<WeakReference<NodeSet>> nodeSets = new LinkedList<>();
     // created node arrays are kept here. When an node is deleted, it's
@@ -381,7 +380,6 @@ public class Graph extends GraphBase implements INamed {
         edgeInfo = null;
         edgeLabel = null;
         edgeData = null;
-        specialEdges = null;
     }
 
     /**
@@ -1018,7 +1016,6 @@ public class Graph extends GraphBase implements INamed {
             setInfo(f, src.getInfo(e));
             setData(f, src.getData(e));
             setLabel(f, src.getLabel(e));
-            setSpecial(f, src.isSpecial(e));
 
             oldEdge2newEdge.put(e, f);
         }
@@ -1072,8 +1069,6 @@ public class Graph extends GraphBase implements INamed {
             } catch (IllegalSelfEdgeException e1) {
                 Basic.caught(e1);
             }
-            if (src.isSpecial(e))
-                setSpecial(f, true);
             setInfo(f, src.getInfo(e));
             oldEdge2newEdge.put(e, f);
         }
@@ -1402,76 +1397,6 @@ public class Graph extends GraphBase implements INamed {
      */
     public int getMaxEdgeId() {
         return maxEdgeId;
-    }
-
-    /**
-     * is this a special edge?
-     *
-     * @param e edge
-     * @return true, if marked as special
-     */
-    public boolean isSpecial(Edge e) {
-        return specialEdges != null && specialEdges.size() > 0 && specialEdges.contains(e);
-    }
-
-    /**
-     * mark as special or not
-     *
-     * @param e edge
-     * @param special is special
-     */
-    public void setSpecial(Edge e, boolean special) {
-        if (specialEdges == null) {
-            if (!special)
-                return;
-            specialEdges = newEdgeSet();
-        }
-        if (special)
-            specialEdges.add(e);
-        else
-            specialEdges.remove(e);
-    }
-
-    /**
-     * gets the number of special edges
-     *
-     * @return number of special edges
-     */
-    public int getNumberSpecialEdges() {
-        return specialEdges == null ? 0 : specialEdges.size();
-    }
-
-    /**
-     * gets the set of special edges
-     */
-    public Iterable<Edge> specialEdges() {
-        return specialEdges != null ? specialEdges : Collections.emptySet();
-    }
-
-    /**
-     * get the non-special-edge connected component containing v
-     *
-     * @param v node
-     * @return component
-     */
-    public NodeSet getSpecialComponent(Node v) {
-		var nodes = newNodeSet();
-		var queue = new LinkedList<Node>();
-		queue.add(v);
-		nodes.add(v);
-		while (queue.size() > 0) {
-			v = queue.remove(0);
-			for (var e : v.adjacentEdges()) {
-				if (!isSpecial(e)) {
-					Node w = e.getOpposite(v);
-					if (!nodes.contains(w)) {
-						queue.add(w);
-						nodes.add(w);
-					}
-				}
-			}
-        }
-        return nodes;
     }
 
     /**

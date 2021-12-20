@@ -31,17 +31,16 @@ import java.util.function.Function;
 import java.util.stream.Collectors;
 
 /**
- * Phylogenetic tree
+ * Phylogenetic tree, with support for rooted phylogenetic network
  * Daniel Huson, 2003
  */
 public class PhyloTree extends PhyloSplitsGraph {
     public static final boolean ALLOW_WRITE_RETICULATE = true;
     public static final boolean ALLOW_READ_RETICULATE = true;
-    public static final boolean ALLOW_READ_WRITE_EDGE_LABELS = true;
 
     public boolean allowMultiLabeledNodes = true;
 
-    Node root = null; // can be a node or edge
+    Node root = null;
     boolean inputHasMultiLabels = false;
     static boolean warnMultiLabeled = true;
     private boolean hideCollapsedSubTreeOnWrite = false;
@@ -49,8 +48,7 @@ public class PhyloTree extends PhyloSplitsGraph {
 
     private final boolean cleanLabelsOnWrite;
 
-    private double weight = 1;
-
+    private EdgeSet reticulatedEdges;
     protected NodeArray<List<Node>> lsaChildrenMap; // keep track of children in LSA tree in network
 
     /**
@@ -77,7 +75,10 @@ public class PhyloTree extends PhyloSplitsGraph {
     public void clear() {
         super.clear();
         setRoot(null);
-        lsaChildrenMap = null;
+        if (reticulatedEdges != null)
+            reticulatedEdges.clear();
+        if (lsaChildrenMap != null)
+            lsaChildrenMap.clear();
     }
 
     /**
@@ -116,6 +117,11 @@ public class PhyloTree extends PhyloSplitsGraph {
                     }
                     getLSAChildrenMap().put(oldNode2NewNode.get(v), newChildren);
                 }
+            }
+        }
+        if (src.reticulatedEdges != null) {
+            for (var e : src.reticulatedEdges) {
+                setReticulated(oldEdge2NewEdge.get(e), true);
             }
         }
         setName(src.getName());
@@ -343,7 +349,7 @@ public class PhyloTree extends PhyloSplitsGraph {
                     label = buf.toString().trim();
 
                     if (label.length() > 0) {
-                        if (!getAllowMultiLabeledNodes() && seen.containsKey(label) && PhyloTreeNetworkUtils.findReticulateLabel(label) == null)
+                        if (!getAllowMultiLabeledNodes() && seen.containsKey(label) && PhyloTreeNetworkIOUtils.findReticulateLabel(label) == null)
                         // if label already used, make unique, unless this is a reticulate node
                         {
                             if (label.startsWith("'") && label.endsWith("'") && label.length() > 1)
@@ -390,9 +396,8 @@ public class PhyloTree extends PhyloSplitsGraph {
                 if (label.startsWith("'") && label.endsWith("'") && label.length() > 1)
                     label = label.substring(1, label.length() - 1).trim();
 
-
                 if (label.length() > 0) {
-                    if (!getAllowMultiLabeledNodes() && seen.containsKey(label) && PhyloTreeNetworkUtils.findReticulateLabel(label) == null) {
+                    if (!getAllowMultiLabeledNodes() && seen.containsKey(label) && PhyloTreeNetworkIOUtils.findReticulateLabel(label) == null) {
                         // give first occurrence of this label the suffix .1
                         var old = seen.get(label);
                         if (old != null) // change label of node
@@ -449,10 +454,10 @@ public class PhyloTree extends PhyloSplitsGraph {
             // adjust edge weights for reticulate edges
             if (e != null) {
                 try {
-                    if (label != null && PhyloTreeNetworkUtils.isReticulateNode(label)) {
+                    if (label != null && PhyloTreeNetworkIOUtils.isReticulateNode(label)) {
                         // if an instance of a reticulate node is marked ##, then we will set the weight of the edge to the node to a number >0
                         // to indicate that edge should be drawn as a tree edge
-                        if (PhyloTreeNetworkUtils.isReticulateAcceptorEdge(label)) {
+                        if (PhyloTreeNetworkIOUtils.isReticulateAcceptorEdge(label)) {
                             if (!didReadWeight || getWeight(e) <= 0)
                                 setWeight(e, 0.000001);
                         } else {
@@ -621,22 +626,22 @@ public class PhyloTree extends PhyloSplitsGraph {
                     final Node w = f.getTarget();
                     boolean inEdgeHasWeight = (getWeight(f) > 0);
 
-                    if (isSpecial(f)) {
+                    if (isReticulatedEdge(f)) {
                         if (outputNodeReticulationNumberMap.get(w) == null) {
                             outputNodeReticulationNumberMap.set(w, ++outputReticulationNumber);
                             final String label;
                             if (getLabel(w) != null)
-                                label = getLabelForWriting(w) + PhyloTreeNetworkUtils.makeReticulateNodeLabel(inEdgeHasWeight, outputNodeReticulationNumberMap.get(w));
+                                label = getLabelForWriting(w) + PhyloTreeNetworkIOUtils.makeReticulateNodeLabel(inEdgeHasWeight, outputNodeReticulationNumberMap.get(w));
                             else
-                                label = PhyloTreeNetworkUtils.makeReticulateNodeLabel(inEdgeHasWeight, outputNodeReticulationNumberMap.get(w));
+                                label = PhyloTreeNetworkIOUtils.makeReticulateNodeLabel(inEdgeHasWeight, outputNodeReticulationNumberMap.get(w));
 
                             writeRec(outs, w, f, writeEdgeWeights, writeEdgeLabels, nodeId2Number, edgeId2Number, label);
                         } else {
                             String label;
                             if (getLabel(w) != null)
-                                label = getLabelForWriting(w) + PhyloTreeNetworkUtils.makeReticulateNodeLabel(inEdgeHasWeight, outputNodeReticulationNumberMap.get(w));
+                                label = getLabelForWriting(w) + PhyloTreeNetworkIOUtils.makeReticulateNodeLabel(inEdgeHasWeight, outputNodeReticulationNumberMap.get(w));
                             else
-                                label = PhyloTreeNetworkUtils.makeReticulateNodeLabel(inEdgeHasWeight, outputNodeReticulationNumberMap.get(w));
+                                label = PhyloTreeNetworkIOUtils.makeReticulateNodeLabel(inEdgeHasWeight, outputNodeReticulationNumberMap.get(w));
 
                             outs.write(label);
                             if (writeEdgeWeights && getWeight(f) != 1.0 && getWeight(f) != -1.0) {
@@ -655,7 +660,7 @@ public class PhyloTree extends PhyloSplitsGraph {
                 outs.write(nodeLabel);
         }
 
-        if (writeEdgeWeights && e != null && (!isSpecial(e) || getWeight(e) != 1.0 && getWeight(e) != -1.0)) {
+        if (writeEdgeWeights && e != null && (!isReticulatedEdge(e) || getWeight(e) != 1.0 && getWeight(e) != -1.0)) {
             outs.write(StringUtils.removeTrailingZerosAfterDot(String.format(":%.8f", getWeight(e))));
             if (writeEdgeLabels && getLabel(e) != null) {
                 outs.write("[" + getLabelForWriting(e) + "]");
@@ -726,14 +731,17 @@ public class PhyloTree extends PhyloSplitsGraph {
         for (var v : nodes()) {
             var label = getLabel(v);
             if (label != null && label.length() > 0) {
-                var reticulateLabel = PhyloTreeNetworkUtils.findReticulateLabel(label);
+                var reticulateLabel = PhyloTreeNetworkIOUtils.findReticulateLabel(label);
                 if (reticulateLabel != null) {
-                    setLabel(v, PhyloTreeNetworkUtils.removeReticulateNodeSuffix(label));
+                    setLabel(v, PhyloTreeNetworkIOUtils.removeReticulateNodeSuffix(label));
                     List<Node> list = reticulateNumber2Nodes.computeIfAbsent(reticulateLabel, k -> new LinkedList<>());
                     list.add(v);
                 }
             }
         }
+
+        var hasTransferReticulation = false;
+        var hasNonTransferReticulation = false;
 
         // collapse all instances of a reticulate node into one node
         for (var reticulateNumber : reticulateNumber2Nodes.keySet()) {
@@ -765,53 +773,33 @@ public class PhyloTree extends PhyloSplitsGraph {
                         deleteNode(v);
                     }
                 }
-                var hasReticulateAcceptorEdge = false;
+                var transferAcceptorEdge = new Single<Edge>();
                 for (var e : u.inEdges()) {
-                    setSpecial(e, true);
-                    if (getWeight(e) > 0)
-                        if (!hasReticulateAcceptorEdge)
-                            hasReticulateAcceptorEdge = true;
+                    setReticulated(e, true);
+                    if (getWeight(e) > 0) {
+                        if (transferAcceptorEdge.isNull())
+                            transferAcceptorEdge.set(e);
                         else {
                             setWeight(e, 0.0);
-                            System.err.println("Warning: node has more than one reticulate-acceptor edge, will only use first");
+                            System.err.println("Warning: node has more than one transfer-acceptor edge, will only use first");
                         }
-                }
-                if (hasReticulateAcceptorEdge) {
-                    for (var e : u.inEdges()) {
-                        if (getWeight(e) == 0)
-                            setWeight(e, -1.0);
                     }
+                }
+                if (transferAcceptorEdge.isNull())
+                    hasNonTransferReticulation = true;
+                else
+                    hasTransferReticulation = true;
+                if (transferAcceptorEdge.isNotNull()) {
+                    u.inEdgesStream(false).filter(e -> e != transferAcceptorEdge.get()).forEach(e -> setWeight(e, -1.0));
                 }
             }
         }
-    }
 
-    /**
-     * computes mapping of node ids to numbers 1..numberOfNodes and of edge ids to numbers 1..numberOfEdges.
-     * Proceeds recursively from the root of the tree
-     */
-    public void setId2NumberMaps(Map<Integer, Integer> nodeId2Number, Map<Integer, Integer> edgeId2Number) {
-        if (getRoot() != null)
-            setId2NumberMapsRec(getRoot(), null, new Pair<>(0, 0), nodeId2Number, edgeId2Number);
+        if (hasNonTransferReticulation && hasTransferReticulation) {
+            System.err.println("WARNING: Tree contains both of simple and transfer reticulations, will treat transfers as simple reticulations");
+            edgeStream().filter(this::isReticulatedEdge).forEach(e -> setWeight(e, 0));
+        }
     }
-
-    /**
-     * recursively does the work
-     */
-    private void setId2NumberMapsRec(Node v, Edge e, Pair<Integer, Integer> nodeNumberEdgeNumber, Map<Integer, Integer> nodeId2Number, Map<Integer, Integer> edgeId2Number) {
-        int nodes = nodeNumberEdgeNumber.getFirst() + 1;
-        nodeNumberEdgeNumber.setFirst(nodes);
-        nodeId2Number.put(v.getId(), nodes);
-        for (Edge f = v.getFirstAdjacentEdge(); f != null; f = v.getNextAdjacentEdge(f))
-            if (f != e) {
-                int edges = nodeNumberEdgeNumber.getSecond() + 1;
-                nodeNumberEdgeNumber.setSecond(edges);
-                edgeId2Number.put(v.getId(), edges);
-                if (PhyloTreeNetworkUtils.okToDescendDownThisEdge(this, f, v))
-                    setId2NumberMapsRec(f.getOpposite(v), f, nodeNumberEdgeNumber, nodeId2Number, edgeId2Number);
-            }
-    }
-
 
     /**
      * gets the root node if set, or null
@@ -1042,7 +1030,7 @@ public class PhyloTree extends PhyloSplitsGraph {
             toDelete.remove(oldNode2newNode.get(v));
         if (!collapsedNodes.contains(v)) {
             for (Edge f = v.getFirstAdjacentEdge(); f != null; f = v.getNextAdjacentEdge(f)) {
-                if (f != e && PhyloTreeNetworkUtils.okToDescendDownThisEdge(this, f, v)) {
+                if (f != e && this.okToDescendDownThisEdgeInTraversal(f, v)) {
                     extractTreeRec(f.getOpposite(v), f, collapsedNodes, oldNode2newNode, toDelete);
                 }
             }
@@ -1066,7 +1054,7 @@ public class PhyloTree extends PhyloSplitsGraph {
     }
 
     /**
-     * redirect edges away from root. Assumes that special edges already point away from root
+     * redirect edges away from root. Assumes that reticulate edges already point away from root
      */
     public void redirectEdgesAwayFromRoot() {
         redirectEdgesAwayFromRootRec(getRoot(), null);
@@ -1077,10 +1065,10 @@ public class PhyloTree extends PhyloSplitsGraph {
      * recursively does the work
      */
     private void redirectEdgesAwayFromRootRec(Node v, Edge e) {
-        if (e != null && v != e.getTarget() && !isSpecial(e))
+        if (e != null && v != e.getTarget() && !isReticulatedEdge(e))
             e.reverse();
         for (var f : IteratorUtils.asList(v.adjacentEdges())) {
-            if (f != e && PhyloTreeNetworkUtils.okToDescendDownThisEdge(this, f, v))
+            if (f != e && this.okToDescendDownThisEdgeInTraversal(f, v))
                 redirectEdgesAwayFromRootRec(f.getOpposite(v), f);
         }
     }
@@ -1162,14 +1150,6 @@ public class PhyloTree extends PhyloSplitsGraph {
         return last;
     }
 
-    public double getWeight() {
-        return weight;
-    }
-
-    public void setWeight(double weight) {
-        this.weight = weight;
-    }
-
     /**
      * compute the cycle for this tree and then return it
      *
@@ -1188,7 +1168,7 @@ public class PhyloTree extends PhyloSplitsGraph {
             setTaxon2Cycle(t, ++pos);
         }
         for (var f : v.adjacentEdges()) {
-            if (f != e && PhyloTreeNetworkUtils.okToDescendDownThisEdge(this, f, v))
+            if (f != e && this.okToDescendDownThisEdgeInTraversal(f, v))
                 pos = computeCycleRec(f.getOpposite(v), f, pos);
         }
         return pos;
@@ -1297,12 +1277,17 @@ public class PhyloTree extends PhyloSplitsGraph {
     }
 
     /**
-     * determines whether edge represents a transfer
+     * determines whether edge represents a transfer.
+     * This is the case if the edge is a reticulate edge and has non-positive weight
      *
      * @return true if transfer edge
      */
     public boolean isTransferEdge(Edge e) {
-        return isSpecial(e) && getWeight(e) > 0;
+        return isReticulatedEdge(e) && getWeight(e) < 0.0;
+    }
+
+    public boolean isTransferAcceptorEdge(Edge e) {
+        return isReticulatedEdge(e) && getWeight(e) > 0;
     }
 
     /**
@@ -1389,6 +1374,78 @@ public class PhyloTree extends PhyloSplitsGraph {
         method.accept(level, v);
         for (var e : v.outEdges()) {
             breathFirstTraversal(e.getTarget(), level + 1, method);
+        }
+    }
+
+    /**
+     * is this a reticulated edge?
+     *
+     * @param e edge
+     * @return true, if marked as reticulate
+     */
+    public boolean isReticulatedEdge(Edge e) {
+        return reticulatedEdges != null && reticulatedEdges.contains(e);
+    }
+
+    /**
+     * mark as reticulated or not
+     *
+     * @param e          edge
+     * @param reticulate is reticulate
+     */
+    public void setReticulated(Edge e, boolean reticulate) {
+        if (reticulatedEdges == null) {
+            if (!reticulate)
+                return;
+            reticulatedEdges = newEdgeSet();
+        }
+        if (reticulate)
+            reticulatedEdges.add(e);
+        else
+            reticulatedEdges.remove(e);
+    }
+
+    /**
+     * gets the number of reticulate edges
+     *
+     * @return number of reticulate edges
+     */
+    public int getNumberReticulateEdges() {
+        return reticulatedEdges == null ? 0 : reticulatedEdges.size();
+    }
+
+    /**
+     * iterable over all reticulate edges
+     */
+    public Iterable<Edge> reticulatedEdges() {
+        return reticulatedEdges != null ? reticulatedEdges : Collections.emptySet();
+    }
+
+    /**
+     * determines whether it is ok to descend an edge in a recursive
+     * traverse of a tree. Use this to ensure that each node is visited only once
+     *
+     * @return true, if we should descend this edge, false else
+     */
+    public boolean okToDescendDownThisEdgeInTraversal(Edge e, Node v) {
+        if (!isReticulatedEdge(e))
+            return true;
+        else {
+            if (v != e.getSource())
+                return false; // only go DOWN reticulate edges.
+            return e == e.getTarget().inEdgesStream(false).filter(this::isReticulatedEdge).findFirst().orElse(null);
+        }
+    }
+
+    /**
+     * determines whether it is ok to descend an edge in a recursive
+     * traverse of a tree. Use this to ensure that each node is visited only once
+     */
+    public boolean okToDescendDownThisEdgeInTraversal(Edge e) {
+        if (!isReticulatedEdge(e))
+            return true;
+        else {
+            return e == e.getTarget().inEdgesStream(false).filter(this::isReticulatedEdge).findFirst().orElse(null);
         }
     }
 }

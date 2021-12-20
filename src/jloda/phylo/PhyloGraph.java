@@ -105,22 +105,22 @@ public class PhyloGraph extends Graph {
         setName(src.getName());
 
         if (src.taxon2node != null) {
-            for (Node v : src.nodes()) {
-                final Node w = (oldNode2NewNode.get(v));
-                for (Integer tax : src.getTaxa(v)) {
+            for (Node v : src.taxon2node.values()) {
+                final var w = (oldNode2NewNode.get(v));
+                for (var tax : src.getTaxa(v)) {
                     addTaxon(w, tax);
                 }
             }
         }
 
         if (src.edgeWeights != null) {
-            for (var e : src.edges()) {
+            for (var e : src.edgeWeights.keys()) {
                 setWeight(oldEdge2NewEdge.get(e), src.getWeight(e));
             }
         }
 
         if (src.edgeConfidences != null) {
-            for (var e : src.edges()) {
+            for (var e : src.edgeConfidences.keys()) {
                 setConfidence(oldEdge2NewEdge.get(e), src.getConfidence(e));
             }
         }
@@ -177,7 +177,6 @@ public class PhyloGraph extends Graph {
         else
             return edgeConfidences.getOrDefault(e, DEFAULT_CONFIDENCE);
     }
-
 
     /**
      * find the corresponding node for a given taxon-id.
@@ -335,7 +334,7 @@ public class PhyloGraph extends Graph {
     }
 
     /**
-     * add the nodes and adjacentEdges of another graph to this graph. Doesn't make the graph connected, though!
+     * add the nodes and edges of another graph to this graph. Doesn't make the graph connected, though!
      *
      * @param graph
      */
@@ -359,4 +358,5 @@ public class PhyloGraph extends Graph {
             throw new RuntimeException(e1);
         }
     }
+
 }
