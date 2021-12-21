@@ -101,6 +101,8 @@ public class PhyloTree extends PhyloSplitsGraph {
      * @param oldEdge2NewEdge
      */
     public void copy(PhyloTree src, NodeArray<Node> oldNode2NewNode, EdgeArray<Edge> oldEdge2NewEdge) {
+        if (oldEdge2NewEdge == null)
+            oldEdge2NewEdge = new EdgeArray<>(src);
         oldNode2NewNode = super.copy(src, oldNode2NewNode, oldEdge2NewEdge);
         // super.copy(src, oldNode2NewNode, oldEdge2NewEdge);
         if (src.getRoot() != null) {
@@ -1103,6 +1105,10 @@ public class PhyloTree extends PhyloSplitsGraph {
             return v.children();
     }
 
+    public boolean isLeaf(Node v) {
+        return v.getOutDegree() == 0;
+    }
+
     /**
      * determines whether this node is a leaf in tree, if tree, or in the LSA tree, if network
      *
@@ -1262,6 +1268,10 @@ public class PhyloTree extends PhyloSplitsGraph {
         }
 
         return hasContractedOne;
+    }
+
+    public boolean isTreeEdge(Edge e) {
+        return !isReticulatedEdge(e);
     }
 
     /**
