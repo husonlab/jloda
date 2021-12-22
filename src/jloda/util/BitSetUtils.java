@@ -42,6 +42,19 @@ public class BitSetUtils {
     }
 
     /**
+     * get the union of some bit sets
+     *
+     * @param sets
+     * @return union
+     */
+    public static BitSet union(Collection<BitSet> sets) {
+        final BitSet result = new BitSet();
+        for (BitSet a : sets)
+            result.or(a);
+        return result;
+    }
+
+    /**
      * get the intersection of some bit sets
      *
      * @param sets
