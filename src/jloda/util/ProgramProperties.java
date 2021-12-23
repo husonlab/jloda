@@ -20,6 +20,7 @@
 
 package jloda.util;
 
+import javafx.beans.property.*;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.scene.image.Image;
@@ -32,6 +33,7 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.OutputStream;
 import java.util.*;
+import java.util.function.Function;
 
 /**
  * track program properties
@@ -602,5 +604,45 @@ public class ProgramProperties {
         for (String key : presets.keySet()) {
             props.put(key, presets.get(key).toString());
         }
+    }
+
+    public static void track(IntegerProperty property, Integer defaultValue) {
+        var label = property.getBean().getClass().getName() + property.getName();
+        if (!property.isBound()) {
+            property.set(get(label, defaultValue));
+        }
+        property.addListener((v, o, n) -> put(label, property.get()));
+    }
+
+    public static void track(DoubleProperty property, Double defaultValue) {
+        var label = property.getBean().getClass().getName() + property.getName();
+        if (!property.isBound()) {
+            property.set(get(label, defaultValue));
+        }
+        property.addListener((v, o, n) -> put(label, property.get()));
+    }
+
+    public static void track(BooleanProperty property, Boolean defaultValue) {
+        var label = property.getBean().getClass().getName() + property.getName();
+        if (!property.isBound()) {
+            property.set(get(label, defaultValue));
+        }
+        property.addListener((v, o, n) -> put(label, property.get()));
+    }
+
+    public static void track(StringProperty property, String defaultValue) {
+        var label = property.getBean().getClass().getName() + property.getName();
+        if (!property.isBound()) {
+            property.set(get(label, defaultValue));
+        }
+        property.addListener((v, o, n) -> put(label, property.get()));
+    }
+
+    public static <T> void track(ObjectProperty<T> property, Function<String, T> valueOf, T defaultValue) {
+        var label = property.getBean().getClass().getName() + property.getName();
+        if (!property.isBound()) {
+            property.set(valueOf.apply(get(label, defaultValue.toString())));
+        }
+        property.addListener((v, o, n) -> put(label, property.get().toString()));
     }
 }
