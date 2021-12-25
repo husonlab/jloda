@@ -336,6 +336,18 @@ public class IteratorUtils {
 		};
 	}
 
+	/**
+	 * gets first item or null
+	 *
+	 * @param iterable
+	 * @param <T>
+	 * @return first item or null
+	 */
+	public static <T> T getFirst(Iterable<T> iterable) {
+		var iterator = iterable.iterator();
+		return iterator.hasNext() ? iterator.next() : null;
+	}
+
 	public static class LineIterator implements Iterator<String>, AutoCloseable {
 		private final BufferedReader br;
 		private String next;

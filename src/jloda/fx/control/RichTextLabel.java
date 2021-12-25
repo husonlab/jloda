@@ -92,6 +92,7 @@ public class RichTextLabel extends TextFlow {
         setMaxWidth(Control.USE_PREF_SIZE);
         setMaxHeight(Control.USE_PREF_SIZE);
 
+        // this only works when the label gets setup... now sure why it doesn't work later
         boundsInParentProperty().addListener((v, o, n) -> {
             if (isKeepTextUpright() && !inUprighting) {
                 Platform.runLater(() -> {
@@ -131,6 +132,7 @@ public class RichTextLabel extends TextFlow {
      * @param that label to be copied.
      */
     public RichTextLabel(RichTextLabel that) {
+        this();
         setFont(that.getFont());
         setTextFill(that.getTextFill());
         setRequireHTMLTag(that.isRequireHTMLTag());

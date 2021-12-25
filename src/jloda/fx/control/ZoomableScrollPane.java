@@ -65,6 +65,8 @@ public class ZoomableScrollPane extends ScrollPane {
      */
     public ZoomableScrollPane(Node content) {
         super();
+        getStyleClass().add("background");
+
         this.content = content;
         zoomNode = new Group();
         if (content != null)
