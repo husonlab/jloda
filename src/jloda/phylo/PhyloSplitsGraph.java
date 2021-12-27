@@ -405,7 +405,6 @@ public class PhyloSplitsGraph extends PhyloGraph {
         }
         return max;
     }
-
 }
 
 // EOF

@@ -21,6 +21,8 @@
 package jloda.fx.util;
 
 import javafx.application.Platform;
+import javafx.beans.property.DoubleProperty;
+import javafx.beans.property.SimpleDoubleProperty;
 import javafx.geometry.Side;
 import javafx.scene.Cursor;
 import javafx.scene.chart.NumberAxis;
@@ -36,9 +38,9 @@ import jloda.util.NumberUtils;
  */
 public class ScaleBar extends AnchorPane {
     private final Pane pane = new Pane();
-    private final NumberAxis numberAxis;
-    private double unitLengthX = 1;
-    private double factorX = 1;
+    private final NumberAxis numberAxis = new NumberAxis();
+    private final DoubleProperty unitLengthX = new SimpleDoubleProperty(1.0);
+    private final DoubleProperty factorX = new SimpleDoubleProperty(1.0);
 
     private double mouseX = 0;
     private double mouseY = 0;
@@ -47,8 +49,6 @@ public class ScaleBar extends AnchorPane {
      * constructor
      */
     public ScaleBar() {
-        numberAxis = new NumberAxis();
-
         pane.getChildren().add(numberAxis);
 
         // pane.setBackground(new Background(new BackgroundFill(Color.YELLOW,null,null)));
@@ -87,29 +87,13 @@ public class ScaleBar extends AnchorPane {
         });
 
         update();
-    }
 
-    public double getFactorX() {
-        return factorX;
-    }
-
-    public void setFactorX(double factorX) {
-        this.factorX = factorX;
-        update();
-    }
-
-    public double getUnitLengthX() {
-        return unitLengthX;
-    }
-
-    public void setUnitLengthX(double unitLengthX) {
-        this.unitLengthX = unitLengthX;
-        update();
+        factorX.addListener(e -> update());
     }
 
     public void update() {
         Platform.runLater(() -> {
-            final double value = NumberUtils.roundSigFig(numberAxis.getWidth() / (unitLengthX * factorX), 2);
+            final double value = NumberUtils.roundSigFig(numberAxis.getWidth() / (getUnitLengthX() * getFactorX()), 2);
             numberAxis.setUpperBound(value);
             numberAxis.setTickUnit(ceilingPowerOf10(value) / 10);
             pane.layout();
@@ -122,5 +106,29 @@ public class ScaleBar extends AnchorPane {
 
     public NumberAxis getNumberAxis() {
         return numberAxis;
+    }
+
+    public double getFactorX() {
+        return factorX.get();
+    }
+
+    public DoubleProperty factorXProperty() {
+        return factorX;
+    }
+
+    public void setFactorX(double factorX) {
+        this.factorX.set(factorX);
+    }
+
+    public double getUnitLengthX() {
+        return unitLengthX.get();
+    }
+
+    public DoubleProperty unitLengthXProperty() {
+        return unitLengthX;
+    }
+
+    public void setUnitLengthX(double unitLengthX) {
+        this.unitLengthX.set(unitLengthX);
     }
 }

@@ -337,6 +337,20 @@ public class IteratorUtils {
 	}
 
 	/**
+	 * iterates over items in sorted order
+	 *
+	 * @param list
+	 * @param comparator
+	 * @param <T>
+	 * @return iterator in sorted order
+	 */
+	public static <T> Iterable<T> sorted(Collection<T> list, Comparator<T> comparator) {
+		var sorted = new ArrayList<>(list);
+		sorted.sort(comparator);
+		return sorted;
+	}
+
+	/**
 	 * gets first item or null
 	 *
 	 * @param iterable
