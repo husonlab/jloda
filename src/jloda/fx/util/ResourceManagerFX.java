@@ -45,7 +45,7 @@ import java.util.jar.JarFile;
  * Daniel Huson and others, 2003, 2018
  */
 public class ResourceManagerFX {
-    private static final ArrayList<Pair<Class, String>> classLoadersAndRoots = new ArrayList<>();
+    private static final ArrayList<Pair<Class<?>, String>> classLoadersAndRoots = new ArrayList<>();
 
     private static final HashMap<String, Image> iconMap = new HashMap<>();
     private static final HashMap<String, Image> imageMap = new HashMap<>();
@@ -168,11 +168,11 @@ public class ResourceManagerFX {
      * @param filePackage the package containing file
      * @param fileName    the name of the file
      */
-    public static InputStream getFileAsStream(Class clazz, String filePackage, String fileName) {
+    public static InputStream getFileAsStream(Class<?> clazz, String filePackage, String fileName) {
         if (fileName.contains("/") || fileName.contains("\\")) {
             var file = new File(fileName);
             try {
-				return FileUtils.getInputStreamPossiblyZIPorGZIP(file.getPath());
+                return FileUtils.getInputStreamPossiblyZIPorGZIP(file.getPath());
             } catch (IOException e) {
                 if (!fileName.endsWith(".info")) // don't complain about missing info files
                     System.err.println(e.getMessage());
@@ -182,8 +182,8 @@ public class ResourceManagerFX {
             try {
                 var ins = getFileResourceAsStream(clazz, filePackage, fileName);
                 if (ins != null)
-					return FileUtils.getInputStreamPossiblyGZIP(ins, fileName);
-            } catch (IOException e) {
+                    return FileUtils.getInputStreamPossiblyGZIP(ins, fileName);
+            } catch (IOException ignored) {
             }
             return null;
         }
@@ -196,7 +196,7 @@ public class ResourceManagerFX {
      * @param packageName the path through a package (the name of the subpackage) where to look for the icon
      * @param fileName    the name of the icon file
      */
-    public static Image getImageResource(Class clazz, String packageName, String fileName) {
+    public static Image getImageResource(Class<?> clazz, String packageName, String fileName) {
         packageName = packageName.replace(".", "/");
         if (!packageName.startsWith("/"))
             packageName = "/" + packageName;
@@ -231,7 +231,7 @@ public class ResourceManagerFX {
      * @param packageName the path through a package (the name of the subpackage) where to look for the icon
      * @param fileName    the name of the file
      */
-    public static File getFileResource(Class clazz, String packageName, String fileName) {
+    public static File getFileResource(Class<?> clazz, String packageName, String fileName) {
         packageName = packageName.replace(".", "/");
         if (!packageName.startsWith("/"))
             packageName = "/" + packageName;
@@ -253,7 +253,7 @@ public class ResourceManagerFX {
      * @param packageName the path through a package (the name of the subpackage) where to look for the icon
      * @param fileName    the name of the file
      */
-    public static URL getFileURL(Class clazz, String packageName, String fileName) {
+    public static URL getFileURL(Class<?> clazz, String packageName, String fileName) {
         packageName = packageName.replace(".", "/");
         if (!packageName.startsWith("/"))
             packageName = "/" + packageName;
@@ -273,7 +273,7 @@ public class ResourceManagerFX {
      * @param packageName the path through a package (the name of the subpackage) where to look for the icon
      * @param fileName    the name of the file
      */
-    public static InputStream getFileResourceAsStream(Class clazz, String packageName, String fileName) {
+    public static InputStream getFileResourceAsStream(Class<?> clazz, String packageName, String fileName) {
         packageName = packageName.replace(".", "/");
         if (!packageName.startsWith("/"))
             packageName = "/" + packageName;
@@ -290,7 +290,7 @@ public class ResourceManagerFX {
     /**
      * gets an image from the named package
      */
-    public static Image getImage(Class clazz, String packageName, String fileName) {
+    public static Image getImage(Class<?> clazz, String packageName, String fileName) {
         return getImageResource(clazz, packageName, fileName);
     }
 
@@ -311,7 +311,7 @@ public class ResourceManagerFX {
     /**
      * does the named file exist as a resource ?
      */
-    public static boolean fileResourceExists(Class clazz, String packageName, String name) {
+    public static boolean fileResourceExists(Class<?> clazz, String packageName, String name) {
         if (name == null || name.length() == 0)
             return false;
 
@@ -322,11 +322,11 @@ public class ResourceManagerFX {
         }
     }
 
-    public static ArrayList<Pair<Class, String>> getClassLoadersAndRoots() {
+    public static ArrayList<Pair<Class<?>, String>> getClassLoadersAndRoots() {
         return classLoadersAndRoots;
     }
 
-    public static void addResourceRoot(Class clazzForClassLoader, String rootPath) {
+    public static void addResourceRoot(Class<?> clazzForClassLoader, String rootPath) {
         classLoadersAndRoots.add(new Pair<>(clazzForClassLoader, rootPath));
     }
 
@@ -337,7 +337,7 @@ public class ResourceManagerFX {
      * @param name
      * @return compile time version
      */
-    public static String getVersion(final Class clazz, final String name) {
+    public static String getVersion(final Class<?> clazz, final String name) {
         String version;
         try {
             var threadContexteClass = clazz.getName().replace('.', '/');
@@ -364,7 +364,7 @@ public class ResourceManagerFX {
             }
         } catch (Exception e) {
             //Basic.caught(e);
-            version = name + " $ " + e.toString();
+            version = name + " $ " + e;
         }
         return version;
     }
