@@ -31,6 +31,7 @@ import javafx.scene.paint.Paint;
 import javafx.scene.text.*;
 import jloda.fx.util.BasicFX;
 import jloda.fx.util.GeometryUtilsFX;
+import jloda.util.Basic;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -599,7 +600,8 @@ public class RichTextLabel extends TextFlow {
                     if (height != -1)
                         imageView.setFitHeight(getScale() * height);
                     return imageView;
-                } catch (Exception ignored) {
+                } catch (Exception ex) {
+                    Basic.caught(ex);
                 }
             }
             if (map.get("alt") != null)
