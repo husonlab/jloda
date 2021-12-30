@@ -314,6 +314,15 @@ public class IteratorUtils {
 		return list;
 	}
 
+	public static <T> Collection<T> asCollection(Iterable<T> iterable, Collection<T> collection) {
+		if (collection == null)
+			collection = new ArrayList<>();
+		for (T t : iterable) {
+			collection.add(t);
+		}
+		return collection;
+	}
+
 	public static <T> int size(Iterable<T> values) {
 		int count = 0;
 		for (T value : values) {

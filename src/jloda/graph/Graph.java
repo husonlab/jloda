@@ -325,7 +325,6 @@ public class Graph extends GraphBase implements INamed {
     public void deleteNode(Node v) {
         // note: firstNode and lastNode are set in unregisterNode
         v.deleteNode();
-
     }
 
     /**
