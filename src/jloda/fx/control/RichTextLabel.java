@@ -78,13 +78,10 @@ public class RichTextLabel extends TextFlow {
     private ContentDisplay _contentDisplay = ContentDisplay.TOP;
     private ObjectProperty<ContentDisplay> contentDisplay;
 
-    private boolean _keepTextUpright = true;
-    private BooleanProperty keepTextUpright;
-
     private double _scale = 1.0;
     private DoubleProperty scale;
 
-    private transient boolean inUprighting = false;
+    private transient boolean _inUprighting = false;
 
     /**
      * constructor
@@ -92,29 +89,6 @@ public class RichTextLabel extends TextFlow {
     public RichTextLabel() {
         setMaxWidth(Control.USE_PREF_SIZE);
         setMaxHeight(Control.USE_PREF_SIZE);
-
-        // this only works when the label gets setup... now sure why it doesn't work later
-        boundsInParentProperty().addListener((v, o, n) -> {
-            if (isKeepTextUpright() && !inUprighting) {
-                Platform.runLater(() -> {
-                    if (!inUprighting) {
-                        inUprighting = true;
-                        try {
-                            var mirrored = BasicFX.isMirrored(this);
-                            if (mirrored.isPresent() && mirrored.get()) {
-                                setScaleX(-getScaleX());
-                            }
-                            var screenAngle = BasicFX.getAngleOnScreen(this);
-                            if (screenAngle.isPresent() && screenAngle.get() > 90 && screenAngle.get() < 270) {
-                                setRotate(GeometryUtilsFX.modulo360(getRotate() + 180.0));
-                            }
-                        } finally {
-                            inUprighting = false;
-                        }
-                    }
-                });
-            }
-        });
     }
 
     /**
@@ -139,7 +113,6 @@ public class RichTextLabel extends TextFlow {
         setRequireHTMLTag(that.isRequireHTMLTag());
         setContentDisplay(that.getContentDisplay());
         setScale(that.getScale());
-        setKeepTextUpright(that.isKeepTextUpright());
         setGraphic(that.getGraphic());
         setText(that.getText());
     }
@@ -307,29 +280,28 @@ public class RichTextLabel extends TextFlow {
         }
     }
 
-    public boolean isKeepTextUpright() {
-        return keepTextUpright == null ? _keepTextUpright : keepTextUpright.get();
-    }
-
-    public BooleanProperty keepTextUprightProperty() {
-        if (keepTextUpright == null) {
-            keepTextUpright = new SimpleBooleanProperty(_keepTextUpright);
-            keepTextUprightProperty().addListener(c -> update());
-        }
-        return keepTextUpright;
-    }
-
     /**
-     * if set,  ensures that the text is always upright, that is, never upside-down
-     *
-     * @param keepTextUpright if true, rotates text by 180, if necessary, to keep it upright
+     * ensure text is upright
      */
-    public void setKeepTextUpright(boolean keepTextUpright) {
-        if (this.keepTextUpright != null)
-            this.keepTextUpright.set(keepTextUpright);
-        else {
-            this._keepTextUpright = keepTextUpright;
-            Platform.runLater(this::update);
+    public void ensureUpright() {
+        if (!_inUprighting) {
+            Platform.runLater(() -> {
+                if (!_inUprighting) {
+                    _inUprighting = true;
+                    try {
+                        var mirrored = BasicFX.isMirrored(this);
+                        if (mirrored.isPresent() && mirrored.get()) {
+                            setScaleX(-getScaleX());
+                        }
+                        var screenAngle = BasicFX.getAngleOnScreen(this);
+                        if (screenAngle.isPresent() && screenAngle.get() > 90 && screenAngle.get() < 270) {
+                            setRotate(GeometryUtilsFX.modulo360(getRotate() + 180.0));
+                        }
+                    } finally {
+                        _inUprighting = false;
+                    }
+                }
+            });
         }
     }
 
