@@ -48,6 +48,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.LinkedList;
 import java.util.Optional;
+import java.util.function.Consumer;
 import java.util.function.Function;
 
 /**
@@ -359,5 +360,16 @@ public class BasicFX {
             return Optional.of(determinant < 0);
         } else
             return Optional.empty();
+    }
+
+    public static void preorderTraversal(Node node, Consumer<Node> apply) {
+        final var queue = new LinkedList<Node>();
+        queue.add(node);
+        while (queue.size() > 0) {
+            node = queue.pop();
+            apply.accept(node);
+            if (node instanceof Parent parent)
+                queue.addAll(parent.getChildrenUnmodifiable());
+        }
     }
 }

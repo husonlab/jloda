@@ -137,7 +137,6 @@ public class RichTextLabel extends TextFlow {
             if (text.contains("\n"))
                 text = text.replaceAll("\\n", "<br>");
         }
-
         if (this.text != null)
             this.text.set(text);
         else {
@@ -517,6 +516,9 @@ public class RichTextLabel extends TextFlow {
 
         if (getGraphic() != null && (getContentDisplay() != ContentDisplay.BOTTOM || getContentDisplay() != ContentDisplay.RIGHT))
             getChildren().add(getGraphic());
+
+        if (getChildren().size() == 0)
+            getChildren().add(new Text(" ")); // don't want this to be empty
     }
 
     private Node getImageNode(String specification) {
