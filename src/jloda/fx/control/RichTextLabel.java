@@ -118,7 +118,8 @@ public class RichTextLabel extends TextFlow {
     }
 
     public String getText() {
-        return text == null ? _text : text.get();
+        var result = (text == null ? _text : text.get());
+        return result == null ? "" : result;
     }
 
     public StringProperty textProperty() {

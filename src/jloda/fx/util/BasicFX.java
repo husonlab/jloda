@@ -20,20 +20,22 @@
 
 package jloda.fx.util;
 
+import javafx.application.Platform;
 import javafx.beans.InvalidationListener;
 import javafx.beans.property.ReadOnlyProperty;
+import javafx.beans.property.StringProperty;
 import javafx.beans.value.ChangeListener;
 import javafx.geometry.Dimension2D;
 import javafx.scene.Node;
 import javafx.scene.Parent;
-import javafx.scene.control.MenuItem;
-import javafx.scene.control.Slider;
-import javafx.scene.control.TableView;
-import javafx.scene.control.TextArea;
+import javafx.scene.control.*;
 import javafx.scene.image.Image;
 import javafx.scene.image.PixelReader;
 import javafx.scene.image.PixelWriter;
 import javafx.scene.image.WritableImage;
+import javafx.scene.input.Clipboard;
+import javafx.scene.input.ClipboardContent;
+import javafx.scene.input.DataFormat;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.Pane;
 import javafx.scene.shape.Arc;
@@ -44,10 +46,7 @@ import javafx.scene.text.FontWeight;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.LinkedList;
-import java.util.Optional;
+import java.util.*;
 import java.util.function.Consumer;
 import java.util.function.Function;
 
@@ -370,6 +369,49 @@ public class BasicFX {
             apply.accept(node);
             if (node instanceof Parent parent)
                 queue.addAll(parent.getChildrenUnmodifiable());
+        }
+    }
+
+    public static void putTextOnClipBoard(String text) {
+        if (!text.isBlank()) {
+            final ClipboardContent contents = new ClipboardContent();
+            contents.put(DataFormat.PLAIN_TEXT, text);
+            contents.putString(text);
+            Clipboard.getSystemClipboard().setContent(contents);
+        }
+    }
+
+    /**
+     * operate a toggle button as if it has multiple states
+     *
+     * @param button        the toggle button
+     * @param defaultState  the defaultState
+     * @param stateProperty the state property that should be observed to react to changes of the selected state
+     * @param states        the list of states to cycle through. The first state is the non-selected state for the toggle button
+     */
+    public static void makeMultiStateToggle(ToggleButton button, String defaultState, StringProperty stateProperty, String... states) {
+        assert (states.length > 0);
+
+        var list = List.of(states);
+
+        button.textProperty().bind(stateProperty);
+
+        button.setOnAction(e -> {
+            var index = button.getText() == null ? 0 : list.indexOf(button.getText()) + 1;
+            if (index == 0 || index >= list.size()) {
+                Platform.runLater(() -> {
+                    button.setSelected(false);
+                    stateProperty.set(list.get(0));
+                });
+            } else {
+                button.setSelected(true);
+                stateProperty.set(list.get(index));
+            }
+        });
+
+        if (defaultState != null) {
+            button.setSelected(!defaultState.equals(states[0]));
+            stateProperty.set(defaultState);
         }
     }
 }

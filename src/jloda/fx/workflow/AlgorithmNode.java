@@ -56,6 +56,10 @@ public class AlgorithmNode extends WorkflowNode {
 			if (false)
 				System.err.println("Service (" + getName() + ") " + o + " -> " + n);
 
+			if (n.equals(Worker.State.SCHEDULED)) {
+				getChildren().stream().filter(d -> d instanceof DataNode).map(d -> (DataNode) d).map(DataNode::getDataBlock).forEach(DataBlock::clear);
+			}
+
 			setValid(n.equals(Worker.State.SUCCEEDED));
 
 			if (n == Worker.State.FAILED) {

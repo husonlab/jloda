@@ -61,5 +61,6 @@ module jloda {
     exports jloda.kmers.bloomfilter;
     exports jloda.kmers.mash;
     exports jloda.fx.workflow;
+    exports jloda.phylo.algorithms;
 
 }

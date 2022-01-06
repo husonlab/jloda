@@ -1,7 +1,7 @@
 /*
- * HomoplasyScore.java Copyright (C) 2021. Daniel H. Huson
+ *  Copyright (C) 2015 Daniel H. Huson and David J. Bryant
  *
- * (Some code written by other authors, as named in code.)
+ *  (Some files contain contributions from other authors, who are then mentioned separately.)
  *
  *  This program is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -15,20 +15,20 @@
  *
  *  You should have received a copy of the GNU General Public License
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
- *
  */
 
-package jloda.phylo;
+package jloda.phylo.algorithms;
 
 import jloda.graph.Edge;
 import jloda.graph.Node;
 import jloda.graph.NodeIntArray;
+import jloda.phylo.PhyloTree;
 
 import java.io.IOException;
 import java.util.BitSet;
 
 /**
- * Compute the distortion score on a tree
+ * Compute the homoplasy score on a tree
  * Daniel Huson, 2.2006
  */
 public class HomoplasyScore {

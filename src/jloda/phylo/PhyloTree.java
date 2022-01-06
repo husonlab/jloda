@@ -582,6 +582,8 @@ public class PhyloTree extends PhyloSplitsGraph {
             // following two lines enable us to write cluster networks and reticulate networks in Newick format
             if (outputNodeReticulationNumberMap == null)
                 outputNodeReticulationNumberMap = newNodeIntArray();
+            else
+                outputNodeReticulationNumberMap.clear();
             outputReticulationNumber = 0;
         }
 
