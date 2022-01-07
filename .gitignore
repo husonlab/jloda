@@ -16,6 +16,11 @@ hs_err_pid*
 
 # MacOS
 .DS_Store
+**/.DS_Store
+
+#Mysterious out directory (from IntelliJ?)
+out/
+
 
 # LaTeX auxiliary files 
 *.aux
