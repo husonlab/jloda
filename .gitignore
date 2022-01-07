@@ -14,10 +14,6 @@ hs_err_pid*
 .classpath
 .project
 
-# MacOS
-.DS_Store
-**/.DS_Store
-
 #out directory
 out/
 
