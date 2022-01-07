@@ -101,6 +101,7 @@ public class PhyloTree extends PhyloSplitsGraph {
      * @param oldEdge2NewEdge
      */
     public void copy(PhyloTree src, NodeArray<Node> oldNode2NewNode, EdgeArray<Edge> oldEdge2NewEdge) {
+        setName(src.getName());
         if (oldEdge2NewEdge == null)
             oldEdge2NewEdge = new EdgeArray<>(src);
         oldNode2NewNode = super.copy(src, oldNode2NewNode, oldEdge2NewEdge);

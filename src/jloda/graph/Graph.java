@@ -19,6 +19,7 @@
  */
 package jloda.graph;
 
+import jloda.phylo.PhyloGraph;
 import jloda.util.Basic;
 import jloda.util.INamed;
 import jloda.util.IteratorUtils;
@@ -1738,6 +1739,10 @@ public class Graph extends GraphBase implements INamed {
                 tarEdge.setInfo(srcEdge.getInfo());
                 tarEdge.setLabel(srcEdge.getLabel());
                 tarEdge.setData(srcEdge.getData());
+                if (this instanceof PhyloGraph srcPhyloGraph && tarGraph instanceof PhyloGraph tarPhyloGraph) {
+                    tarPhyloGraph.setWeight(tarEdge, srcPhyloGraph.getWeight(srcEdge));
+                    tarPhyloGraph.setConfidence(tarEdge, srcPhyloGraph.getConfidence(srcEdge));
+                }
                 if (src2tarEdge != null)
                     src2tarEdge.put(srcEdge, tarEdge);
             }

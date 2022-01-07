@@ -73,10 +73,14 @@ public class AlgorithmNode extends WorkflowNode {
 		});
 
 		algorithm.addListener((v, o, n) -> {
-			if (o != null)
+			if (o != null) {
 				nameProperty().unbindBidirectional(o.nameProperty());
-			if (n != null)
+				shortDescriptionProperty().unbindBidirectional(o.shortDescriptionProperty());
+			}
+			if (n != null) {
 				nameProperty().bindBidirectional(n.nameProperty());
+				shortDescriptionProperty().bind(n.shortDescriptionProperty());
+			}
 		});
 	}
 
