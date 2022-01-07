@@ -16,6 +16,10 @@ hs_err_pid*
 
 # MacOS
 .DS_Store
+**/.DS_Store
+
+#out directory
+out/
 
 # LaTeX auxiliary files 
 *.aux
