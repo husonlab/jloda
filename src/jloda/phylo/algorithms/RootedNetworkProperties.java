@@ -406,7 +406,7 @@ public class RootedNetworkProperties {
      * @return info string
      */
     public static String computeInfoString(PhyloTree phyloTree) {
-        if (phyloTree.isReticulated()) {
+        if (false && phyloTree.isReticulated()) {
             var buf = new StringBuilder();
             if (isTreeBased(phyloTree))
                 buf.append(", tree-based");

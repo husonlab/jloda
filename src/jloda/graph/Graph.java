@@ -994,7 +994,7 @@ public class Graph extends GraphBase implements INamed {
             oldEdge2newEdge = src.newEdgeArray();
 
         for (var v : src.nodes()) {
-            Node w = newNode();
+            var w = newNode();
             w.setId(v.getId());
             setInfo(w, src.getInfo(v));
             setData(w, src.getData(v));
@@ -1077,7 +1077,7 @@ public class Graph extends GraphBase implements INamed {
         for (var v : srcNodes) {
             final var w = oldNode2newNode.get(v);
             final var newOrder = new ArrayList<Edge>(v.getDegree());
-            for (Edge e : v.adjacentEdges()) {
+            for (var e : v.adjacentEdges()) {
                 newOrder.add(oldEdge2newEdge.get(e));
             }
             w.rearrangeAdjacentEdges(newOrder);
@@ -1091,7 +1091,8 @@ public class Graph extends GraphBase implements INamed {
         if (nodeLabel == null) {
             if (label == null)
                 return;
-            nodeLabel = newNodeArray();
+            else
+                nodeLabel = newNodeArray();
         }
         nodeLabel.put(v, label);
         fireNodeLabelChanged(v, label);
@@ -1111,7 +1112,8 @@ public class Graph extends GraphBase implements INamed {
         if (edgeLabel == null) {
             if (label == null)
                 return;
-            edgeLabel = newEdgeArray();
+            else
+                edgeLabel = newEdgeArray();
         }
         edgeLabel.put(e, label);
         fireEdgeLabelChanged(e, label);
@@ -1132,7 +1134,8 @@ public class Graph extends GraphBase implements INamed {
         if (nodeInfo == null) {
             if (info == null)
                 return;
-            nodeInfo = newNodeArray();
+            else
+                nodeInfo = newNodeArray();
         }
         nodeInfo.put(v, info);
     }
@@ -1151,7 +1154,8 @@ public class Graph extends GraphBase implements INamed {
         if (edgeInfo == null) {
             if (info == null)
                 return;
-            edgeInfo = newEdgeArray();
+            else
+                edgeInfo = newEdgeArray();
         }
         edgeInfo.put(e, info);
     }
@@ -1173,7 +1177,8 @@ public class Graph extends GraphBase implements INamed {
         if (nodeData == null) {
             if (data == null)
                 return;
-            nodeData = newNodeArray();
+            else
+                nodeData = newNodeArray();
         }
         nodeData.put(v, data);
     }
@@ -1195,7 +1200,8 @@ public class Graph extends GraphBase implements INamed {
         if (edgeData == null) {
             if (data == null)
                 return;
-            edgeData = newEdgeArray();
+            else
+                edgeData = newEdgeArray();
         }
         edgeData.put(e, data);
     }
