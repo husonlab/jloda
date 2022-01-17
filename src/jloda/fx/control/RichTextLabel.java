@@ -58,14 +58,12 @@ public class RichTextLabel extends TextFlow {
     public final static Font DEFAULT_FONT = Font.font("Arial", 14);
     private static final Map<String, Image> file2image = new HashMap<>();
 
+    @Deprecated // want to remove this
     private Font _font = DEFAULT_FONT;
     private ObjectProperty<Font> font;
 
     private String _text;
     private StringProperty text;
-
-    private Paint _textFill = Color.BLACK;
-    private ObjectProperty<Paint> textFill;
 
     private boolean _requireHTMLTag = false;
     private BooleanProperty requireHTMLTag;
@@ -80,6 +78,16 @@ public class RichTextLabel extends TextFlow {
     private DoubleProperty scale;
 
     private transient boolean _inUprighting = false;
+
+    // global styling
+    private BooleanProperty bold;
+    private BooleanProperty italic;
+    private BooleanProperty strike;
+    private BooleanProperty subscript;
+    private BooleanProperty superscript;
+    private BooleanProperty underline;
+    private ObjectProperty<Paint> textFill;
+    private DoubleProperty fontSize;
 
     /**
      * constructor
@@ -144,10 +152,13 @@ public class RichTextLabel extends TextFlow {
         }
     }
 
+
+    @Deprecated
     public Font getFont() {
         return font == null ? _font : font.get();
     }
 
+    @Deprecated
     public ObjectProperty<Font> fontProperty() {
         if (font == null) {
             font = new SimpleObjectProperty<>(_font);
@@ -156,32 +167,12 @@ public class RichTextLabel extends TextFlow {
         return font;
     }
 
+    @Deprecated
     public void setFont(Font font) {
         if (this.font != null)
             this.font.set(font);
         else {
             this._font = font;
-            Platform.runLater(this::update);
-        }
-    }
-
-    public Paint getTextFill() {
-        return textFill == null ? _textFill : textFill.get();
-    }
-
-    public ObjectProperty<Paint> textFillProperty() {
-        if (textFill == null) {
-            textFill = new SimpleObjectProperty<>(_textFill);
-            textFillProperty().addListener(c -> update());
-        }
-        return textFill;
-    }
-
-    public void setTextFill(Paint textFill) {
-        if (this.textFill != null)
-            this.textFill.set(textFill);
-        else {
-            this._textFill = textFill;
             Platform.runLater(this::update);
         }
     }
@@ -621,36 +612,140 @@ public class RichTextLabel extends TextFlow {
         }
     }
 
+    private boolean isSet(Event.Change changeStart) {
+        return getPrefixElement(changeStart.type()) != null;
+    }
+
     public void setBold(Boolean value) {
         set(Event.Change.boldStart, value);
+    }
+
+    public boolean isBold() {
+        return isSet(Event.Change.boldStart);
+    }
+
+    public BooleanProperty boldProperty() {
+        if (bold == null)
+            bold = new SimpleBooleanProperty(isBold());
+        bold.addListener((v, o, n) -> setBold(n));
+        textProperty().addListener(e -> bold.set(isBold()));
+        return bold;
     }
 
     public void setItalic(Boolean value) {
         set(Event.Change.italicStart, value);
     }
 
+
+    public boolean isItalic() {
+        return isSet(Event.Change.italicStart);
+    }
+
+
+    public BooleanProperty italicProperty() {
+        if (italic == null)
+            italic = new SimpleBooleanProperty(isItalic());
+        italic.addListener((v, o, n) -> setItalic(n));
+        textProperty().addListener(e -> italic.set(isItalic()));
+        return italic;
+    }
+
     public void setStrike(Boolean value) {
         set(Event.Change.strikeStart, value);
     }
 
-    public void setSub(Boolean value) {
+    public boolean isStrike() {
+        return isSet(Event.Change.strikeStart);
+    }
+
+
+    public BooleanProperty strikeProperty() {
+        if (strike == null)
+            strike = new SimpleBooleanProperty(isStrike());
+        strike.addListener((v, o, n) -> setStrike(n));
+        textProperty().addListener(e -> strike.set(isStrike()));
+        return strike;
+    }
+
+    public void setSubscript(Boolean value) {
         set(Event.Change.subStart, value);
     }
 
-    public void setSup(Boolean value) {
+
+    public BooleanProperty subscriptProperty() {
+        if (subscript == null)
+            subscript = new SimpleBooleanProperty(getSubscript());
+        subscript.addListener((v, o, n) -> setSubscript(n));
+        textProperty().addListener(e -> subscript.set(getSubscript()));
+        return subscript;
+    }
+
+    public boolean getSubscript() {
+        return isSet(Event.Change.subStart);
+    }
+
+    public void setSuperscript(Boolean value) {
         set(Event.Change.supStart, value);
+    }
+
+    public boolean getSuperscript() {
+        return isSet(Event.Change.supStart);
+    }
+
+
+    public BooleanProperty superscriptProperty() {
+        if (superscript == null)
+            superscript = new SimpleBooleanProperty(getSuperscript());
+        superscript.addListener((v, o, n) -> setSuperscript(n));
+        textProperty().addListener(e -> superscript.set(getSuperscript()));
+        return superscript;
     }
 
     public void setUnderline(Boolean value) {
         set(Event.Change.underlineStart, value);
     }
 
-    public void setColor(Color color) {
+    public boolean isUnderline() {
+        return isSet(Event.Change.underlineStart);
+    }
+
+
+    public BooleanProperty underlineProperty() {
+        if (underline == null)
+            underline = new SimpleBooleanProperty(isUnderline());
+        underline.addListener((v, o, n) -> setUnderline(n));
+        textProperty().addListener(e -> underline.set(isUnderline()));
+        return underline;
+    }
+
+    public void setTextFill(Paint textFill) {
         var prefixElement = getPrefixElement(Event.Change.colorStart.type());
         if (prefixElement != null)
             removePrefixElement(prefixElement);
-        if (color != null)
-            insertPrefix(String.format("<c %s>", color));
+        if (textFill != null && !textFill.equals(Color.BLACK))
+            insertPrefix(String.format("<c %s>", textFill));
+    }
+
+    public Paint getTextFill() {
+        var prefixElement = getPrefixElement(Event.Change.colorStart.type());
+        if (prefixElement != null) {
+            final var argument = prefixElement.argument();
+            if (argument != null) {
+                try {
+                    return Color.valueOf(argument);
+                } catch (IllegalArgumentException ignored) {
+                }
+            }
+        }
+        return Color.BLACK;
+    }
+
+    public ObjectProperty<Paint> textFillProperty() {
+        if (textFill == null)
+            textFill = new SimpleObjectProperty<>(getTextFill());
+        textFill.addListener((v, o, n) -> setTextFill(n));
+        textProperty().addListener(e -> textFill.set(getTextFill()));
+        return textFill;
     }
 
     public void setFontSize(Double size) {
@@ -660,6 +755,29 @@ public class RichTextLabel extends TextFlow {
         if (size != null)
             insertPrefix(String.format("<size %.1f>", size));
     }
+
+    public double getFontSize() {
+        var prefixElement = getPrefixElement(Event.Change.fontSizeStart.type());
+        if (prefixElement != null) {
+            final var argument = prefixElement.argument();
+            if (argument != null) {
+                try {
+                    Double.valueOf(argument);
+                } catch (NumberFormatException ignored) {
+                }
+            }
+        }
+        return DEFAULT_FONT.getSize();
+    }
+
+    public DoubleProperty fontSizeProperty() {
+        if (fontSize == null)
+            fontSize = new SimpleDoubleProperty(getFontSize());
+        fontSize.addListener((v, o, n) -> setFontSize(n.doubleValue()));
+        textProperty().addListener(e -> fontSize.set(getFontSize()));
+        return fontSize;
+    }
+
 
     private final Set<String> warned = new HashSet<>();
 
@@ -680,6 +798,25 @@ public class RichTextLabel extends TextFlow {
         }
     }
 
+    public String getFontFamily() {
+        var prefixElement = getPrefixElement(Event.Change.fontFamilyStart.type());
+        if (prefixElement != null && Font.getFamilies().contains(prefixElement.argument()))
+            return prefixElement.argument();
+        else
+            return DEFAULT_FONT.getFamily();
+    }
+
+    StringProperty fontFamily;
+
+    public StringProperty fontFamilyProperty() {
+        if (fontFamily == null)
+            fontFamily = new SimpleStringProperty(getFontFamily());
+        fontFamily.addListener((v, o, n) -> setFontFamily(n));
+        textProperty().addListener(e -> fontFamily.set(getFontFamily()));
+        return fontFamily;
+    }
+
+
     public void setImage(String url, String alt, Double width, Double height) {
         var prefixElement = getPrefixElement(Event.Change.image.type());
         if (prefixElement != null)
@@ -696,7 +833,6 @@ public class RichTextLabel extends TextFlow {
             insertPrefix(text);
         }
     }
-
 
     /**
      * gets a very rough estimate of the width
