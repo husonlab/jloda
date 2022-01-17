@@ -32,11 +32,9 @@ import javafx.scene.text.*;
 import jloda.fx.util.BasicFX;
 import jloda.fx.util.GeometryUtilsFX;
 import jloda.util.Basic;
+import jloda.util.StringUtils;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Stack;
+import java.util.*;
 import java.util.concurrent.Executors;
 
 /**
@@ -585,6 +583,121 @@ public class RichTextLabel extends TextFlow {
         return null;
     }
 
+
+    public Event getPrefixElement(String changeType) {
+        var line = getText();
+        var pos = 0;
+        while (pos < line.length()) {
+            var event = Event.getEventAtPos(line, pos);
+            if (event != null) {
+                if (event.getChangeType().equals(changeType))
+                    return event;
+                else
+                    pos = event.segmentStart();
+            } else
+                break; // have hit text...
+        }
+        return null;
+    }
+
+    private void removePrefixElement(Event prefixElement) {
+        if (prefixElement != null)
+            setText(getText().substring(0, prefixElement.pos()) + getText().substring(prefixElement.segmentStart()));
+    }
+
+    private void insertPrefix(String prefix) {
+        setText(prefix + getText());
+    }
+
+    private void set(Event.Change changeStart, Boolean value) {
+        var prefixElement = getPrefixElement(changeStart.type());
+        if (value != null && value) {
+            if (prefixElement == null) {
+                insertPrefix(changeStart.tag());
+            }
+        } else {
+            if (prefixElement != null)
+                removePrefixElement(prefixElement);
+        }
+    }
+
+    public void setBold(Boolean value) {
+        set(Event.Change.boldStart, value);
+    }
+
+    public void setItalic(Boolean value) {
+        set(Event.Change.italicStart, value);
+    }
+
+    public void setStrike(Boolean value) {
+        set(Event.Change.strikeStart, value);
+    }
+
+    public void setSub(Boolean value) {
+        set(Event.Change.subStart, value);
+    }
+
+    public void setSup(Boolean value) {
+        set(Event.Change.supStart, value);
+    }
+
+    public void setUnderline(Boolean value) {
+        set(Event.Change.underlineStart, value);
+    }
+
+    public void setColor(Color color) {
+        var prefixElement = getPrefixElement(Event.Change.colorStart.type());
+        if (prefixElement != null)
+            removePrefixElement(prefixElement);
+        if (color != null)
+            insertPrefix(String.format("<c %s>", color));
+    }
+
+    public void setFontSize(Double size) {
+        var prefixElement = getPrefixElement(Event.Change.fontSizeStart.type());
+        if (prefixElement != null)
+            removePrefixElement(prefixElement);
+        if (size != null)
+            insertPrefix(String.format("<size %.1f>", size));
+    }
+
+    private final Set<String> warned = new HashSet<>();
+
+    public void setFontFamily(String fontFamily) {
+        var prefixElement = getPrefixElement(Event.Change.fontFamilyStart.type());
+        if (prefixElement != null)
+            removePrefixElement(prefixElement);
+        if (fontFamily != null && !fontFamily.isBlank()) {
+            fontFamily = fontFamily.trim();
+            if (Font.getFamilies().contains(fontFamily))
+                insertPrefix(String.format("<font \"%s\">", fontFamily));
+            else if (!warned.contains(fontFamily)) {
+                System.err.println("Unknown font family: " + fontFamily);
+                System.err.println("Known fonts: " + StringUtils.toString(Font.getFamilies(), "\n"));
+                warned.add(fontFamily);
+            }
+            insertPrefix(String.format("<font \"%s\">", fontFamily.trim()));
+        }
+    }
+
+    public void setImage(String url, String alt, Double width, Double height) {
+        var prefixElement = getPrefixElement(Event.Change.image.type());
+        if (prefixElement != null)
+            removePrefixElement(prefixElement);
+        if (url != null) {
+            var text = String.format("<image url=\"%s\"", url);
+            if (alt != null)
+                text += String.format(" alt=\"%s\"", alt);
+            if (width != null)
+                text += String.format(" width=\"%.2f\"", width);
+            if (height != null)
+                text += String.format(" height=\"%.2f\"", height);
+            text += ">";
+            insertPrefix(text);
+        }
+    }
+
+
     /**
      * gets a very rough estimate of the width
      *
@@ -594,7 +707,7 @@ public class RichTextLabel extends TextFlow {
         return getRawText().length() * 0.7 * getFont().getSize();
     }
 
-    private record Event(RichTextLabel.Event.Change change, int pos, int segmentStart, String argument) {
+    public record Event(RichTextLabel.Event.Change change, int pos, int segmentStart, String argument) {
         enum Change {
             htmlStart("<html>"), htmlEnd("</html>"),
             italicStart("<i>"), italicEnd("</i>"),
@@ -618,14 +731,31 @@ public class RichTextLabel extends TextFlow {
             public String tag() {
                 return tag;
             }
+
+            public String type() {
+                return name().replaceAll("Start$", "").replaceAll("End$", "");
+            }
+
+            public boolean isStart() {
+                return name().endsWith("Start");
+            }
         }
 
+        public static String[] listTypes() {
+            var types = new String[Change.values().length / 2];
+            for (var i = 0; i < types.length; i++) {
+                types[i] = Event.Change.values()[2 * i].type();
+            }
+            return types;
+        }
+
+
         public String getChangeType() {
-            return change().name().replaceAll("Start$", "").replaceAll("End$", "");
+            return change().type();
         }
 
         public boolean isStart() {
-            return change().name().endsWith("Start");
+            return change().isStart();
         }
 
         public static Event getEventAtPos(String line, int pos) {

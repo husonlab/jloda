@@ -104,7 +104,6 @@ public class LSAUtils {
 			tree.postorderTraversal(v, method);
 		else {
 			for (var w : tree.lsaChildren(v)) {
-				var e = v.getEdgeTo(w);
 				postorderTraversalLSA(tree, w, method);
 			}
 			method.accept(v);
