@@ -93,27 +93,37 @@ public class ArgsOptions {
 			doHelp = (args.length > 0 && args[0].equalsIgnoreCase("help")) || getOption("-h", "--help", "Show help", false, false);
 			setVerbose(getOption("-v", "--verbose", "verbose", false) && !doHelp);
 		} catch (UsageException e) {
-		}
+        }
 
-		if (verbose)
-			System.err.println(programName + " - " + getDescription() + "\nOptions:");
-	}
+        if (verbose)
+            System.err.println(programName + " - " + getDescription() + "\nOptions:");
+    }
 
-	public static Command createCommand(String name, String description) {
-		return new Command(name, description);
-	}
+    public static Command createCommand(String name, String description) {
+        return new Command(name, description);
+    }
 
-	/**
-	 * get description
-	 *
-	 * @return description
-	 */
-	public String getDescription() {
-		return description;
-	}
+    private String additionalUsage;
+
+    public String getAdditionalUsage() {
+        return additionalUsage;
+    }
+
+    public void setAdditionalUsage(String additionalUsage) {
+        this.additionalUsage = additionalUsage;
+    }
+
+    /**
+     * get description
+     *
+     * @return description
+     */
+    public String getDescription() {
+        return description;
+    }
 
     public String getUsage() {
-        StringBuilder result = new StringBuilder();
+        var result = new StringBuilder();
         result.append("SYNOPSIS\n");
         result.append("\t").append(programName).append(commandMandatory ? " command" : "").append(" [options]\n");
         result.append("DESCRIPTION\n");
@@ -136,6 +146,9 @@ public class ArgsOptions {
 
         if (license != null)
             result.append(license).append(".\n");
+
+        if (getAdditionalUsage() != null)
+            result.append(getAdditionalUsage());
 
         return result.toString();
     }

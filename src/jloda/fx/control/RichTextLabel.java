@@ -509,6 +509,8 @@ public class RichTextLabel extends TextFlow {
 
         if (getChildren().size() == 0)
             getChildren().add(new Text(" ")); // don't want this to be empty
+        if (false)
+            Platform.runLater(this::requestLayout);
     }
 
     private Node getImageNode(String specification) {
@@ -574,12 +576,10 @@ public class RichTextLabel extends TextFlow {
         return null;
     }
 
-
-    public Event getPrefixElement(String changeType) {
-        var line = getText();
+    public static Event getPrefixElement(String text, String changeType) {
         var pos = 0;
-        while (pos < line.length()) {
-            var event = Event.getEventAtPos(line, pos);
+        while (pos < text.length()) {
+            var event = Event.getEventAtPos(text, pos);
             if (event != null) {
                 if (event.getChangeType().equals(changeType))
                     return event;
@@ -591,37 +591,48 @@ public class RichTextLabel extends TextFlow {
         return null;
     }
 
-    private void removePrefixElement(Event prefixElement) {
+    private static String removePrefixElement(String text, Event prefixElement) {
         if (prefixElement != null)
-            setText(getText().substring(0, prefixElement.pos()) + getText().substring(prefixElement.segmentStart()));
+            return text.substring(0, prefixElement.pos()) + text.substring(prefixElement.segmentStart());
+        else
+            return null;
     }
 
-    private void insertPrefix(String prefix) {
-        setText(prefix + getText());
+    private static String insertPrefix(String text, String prefix) {
+        return prefix + text;
     }
 
-    private void set(Event.Change changeStart, Boolean value) {
-        var prefixElement = getPrefixElement(changeStart.type());
+    private static String set(String text, Event.Change changeStart, Boolean value) {
+        var prefixElement = getPrefixElement(text, changeStart.type());
         if (value != null && value) {
             if (prefixElement == null) {
-                insertPrefix(changeStart.tag());
+                return insertPrefix(text, changeStart.tag());
             }
         } else {
             if (prefixElement != null)
-                removePrefixElement(prefixElement);
+                return removePrefixElement(text, prefixElement);
         }
+        return text;
     }
 
-    private boolean isSet(Event.Change changeStart) {
-        return getPrefixElement(changeStart.type()) != null;
+    private static boolean isSet(String text, Event.Change changeStart) {
+        return getPrefixElement(text, changeStart.type()) != null;
+    }
+
+    public static String setBold(String text, Boolean value) {
+        return set(text, Event.Change.boldStart, value);
     }
 
     public void setBold(Boolean value) {
-        set(Event.Change.boldStart, value);
+        setText(setBold(getText(), value));
+    }
+
+    public static boolean isBold(String text) {
+        return isSet(text, Event.Change.boldStart);
     }
 
     public boolean isBold() {
-        return isSet(Event.Change.boldStart);
+        return isBold(getText());
     }
 
     public BooleanProperty boldProperty() {
@@ -632,15 +643,21 @@ public class RichTextLabel extends TextFlow {
         return bold;
     }
 
-    public void setItalic(Boolean value) {
-        set(Event.Change.italicStart, value);
+    public static String setItalic(String text, Boolean value) {
+        return set(text, Event.Change.italicStart, value);
     }
 
+    public void setItalic(Boolean value) {
+        setText(setItalic(getText(), value));
+    }
+
+    public static boolean isItalic(String text) {
+        return isSet(text, Event.Change.italicStart);
+    }
 
     public boolean isItalic() {
-        return isSet(Event.Change.italicStart);
+        return isItalic(getText());
     }
-
 
     public BooleanProperty italicProperty() {
         if (italic == null)
@@ -650,14 +667,21 @@ public class RichTextLabel extends TextFlow {
         return italic;
     }
 
+    public static String setStrike(String text, Boolean value) {
+        return set(text, Event.Change.strikeStart, value);
+    }
+
     public void setStrike(Boolean value) {
-        set(Event.Change.strikeStart, value);
+        setText(setStrike(getText(), value));
+    }
+
+    public static boolean isStrike(String text) {
+        return isSet(text, Event.Change.strikeStart);
     }
 
     public boolean isStrike() {
-        return isSet(Event.Change.strikeStart);
+        return isStrike(getText());
     }
-
 
     public BooleanProperty strikeProperty() {
         if (strike == null)
@@ -667,48 +691,70 @@ public class RichTextLabel extends TextFlow {
         return strike;
     }
 
-    public void setSubscript(Boolean value) {
-        set(Event.Change.subStart, value);
+    public static String setSubscript(String text, Boolean value) {
+        return set(text, Event.Change.subStart, value);
     }
 
+    public void setSubscript(Boolean value) {
+        setText(setSubscript(getText(), value));
+    }
+
+    public static boolean isSubscript(String text) {
+        return isSet(text, Event.Change.subStart);
+    }
+
+    public boolean isSubscript() {
+        return isSubscript(getText());
+    }
 
     public BooleanProperty subscriptProperty() {
         if (subscript == null)
-            subscript = new SimpleBooleanProperty(getSubscript());
+            subscript = new SimpleBooleanProperty(isSubscript());
         subscript.addListener((v, o, n) -> setSubscript(n));
-        textProperty().addListener(e -> subscript.set(getSubscript()));
+        textProperty().addListener(e -> subscript.set(isSubscript()));
         return subscript;
     }
 
-    public boolean getSubscript() {
-        return isSet(Event.Change.subStart);
+    public static String setSuperscript(String text, Boolean value) {
+        return set(text, Event.Change.supStart, value);
     }
 
     public void setSuperscript(Boolean value) {
-        set(Event.Change.supStart, value);
+        setText(setSuperscript(getText(), value));
     }
 
-    public boolean getSuperscript() {
-        return isSet(Event.Change.supStart);
+    public static boolean isSuperscript(String text) {
+        return isSet(text, Event.Change.supStart);
+    }
+
+    public boolean isSuperscript() {
+        return isSuperscript(getText());
     }
 
 
     public BooleanProperty superscriptProperty() {
         if (superscript == null)
-            superscript = new SimpleBooleanProperty(getSuperscript());
+            superscript = new SimpleBooleanProperty(isSuperscript());
         superscript.addListener((v, o, n) -> setSuperscript(n));
-        textProperty().addListener(e -> superscript.set(getSuperscript()));
+        textProperty().addListener(e -> superscript.set(isSuperscript()));
         return superscript;
     }
 
+    public static String setUnderline(String text, Boolean value) {
+        return set(text, Event.Change.underlineStart, value);
+    }
+
     public void setUnderline(Boolean value) {
-        set(Event.Change.underlineStart, value);
+        setText(setUnderline(getText(), value));
+    }
+
+    public static boolean isUnderline(String text) {
+        return isSet(text, Event.Change.underlineStart);
     }
 
     public boolean isUnderline() {
-        return isSet(Event.Change.underlineStart);
+        return isUnderline(getText());
     }
-
 
     public BooleanProperty underlineProperty() {
         if (underline == null)
@@ -718,16 +764,18 @@ public class RichTextLabel extends TextFlow {
         return underline;
     }
 
-    public void setTextFill(Paint textFill) {
-        var prefixElement = getPrefixElement(Event.Change.colorStart.type());
+    public static String setTextFill(String text, Paint textFill) {
+        var prefixElement = getPrefixElement(text, Event.Change.colorStart.type());
         if (prefixElement != null)
-            removePrefixElement(prefixElement);
+            text = removePrefixElement(text, prefixElement);
         if (textFill != null && !textFill.equals(Color.BLACK))
-            insertPrefix(String.format("<c %s>", textFill));
+            return insertPrefix(text, String.format("<c \"%s\">", textFill));
+        else
+            return text;
     }
 
-    public Paint getTextFill() {
-        var prefixElement = getPrefixElement(Event.Change.colorStart.type());
+    public static Paint getTextFill(String text) {
+        var prefixElement = getPrefixElement(text, Event.Change.colorStart.type());
         if (prefixElement != null) {
             final var argument = prefixElement.argument();
             if (argument != null) {
@@ -740,6 +788,14 @@ public class RichTextLabel extends TextFlow {
         return Color.BLACK;
     }
 
+    public void setTextFill(Paint textFill) {
+        setText(setTextFill(getText(), textFill));
+    }
+
+    public Paint getTextFill() {
+        return getTextFill(getText());
+    }
+
     public ObjectProperty<Paint> textFillProperty() {
         if (textFill == null)
             textFill = new SimpleObjectProperty<>(getTextFill());
@@ -748,26 +804,36 @@ public class RichTextLabel extends TextFlow {
         return textFill;
     }
 
-    public void setFontSize(Double size) {
-        var prefixElement = getPrefixElement(Event.Change.fontSizeStart.type());
+    public static String setFontSize(String text, Double size) {
+        var prefixElement = getPrefixElement(text, Event.Change.fontSizeStart.type());
         if (prefixElement != null)
-            removePrefixElement(prefixElement);
+            text = removePrefixElement(text, prefixElement);
         if (size != null)
-            insertPrefix(String.format("<size %.1f>", size));
+            return insertPrefix(text, String.format("<size \"%.1f\">", size));
+        else
+            return text;
     }
 
-    public double getFontSize() {
-        var prefixElement = getPrefixElement(Event.Change.fontSizeStart.type());
+    public void setFontSize(double size) {
+        setText(setFontSize(getText(), size));
+    }
+
+    public static double getFontSize(String text) {
+        var prefixElement = getPrefixElement(text, Event.Change.fontSizeStart.type());
         if (prefixElement != null) {
             final var argument = prefixElement.argument();
             if (argument != null) {
                 try {
-                    Double.valueOf(argument);
+                    return Double.parseDouble(argument);
                 } catch (NumberFormatException ignored) {
                 }
             }
         }
         return DEFAULT_FONT.getSize();
+    }
+
+    public double getFontSize() {
+        return getFontSize(getText());
     }
 
     public DoubleProperty fontSizeProperty() {
@@ -778,32 +844,39 @@ public class RichTextLabel extends TextFlow {
         return fontSize;
     }
 
+    private static final Set<String> warned = new HashSet<>();
 
-    private final Set<String> warned = new HashSet<>();
-
-    public void setFontFamily(String fontFamily) {
-        var prefixElement = getPrefixElement(Event.Change.fontFamilyStart.type());
+    public static String setFontFamily(String text, String fontFamily) {
+        var prefixElement = getPrefixElement(text, Event.Change.fontFamilyStart.type());
         if (prefixElement != null)
-            removePrefixElement(prefixElement);
+            text = removePrefixElement(text, prefixElement);
         if (fontFamily != null && !fontFamily.isBlank()) {
             fontFamily = fontFamily.trim();
             if (Font.getFamilies().contains(fontFamily))
-                insertPrefix(String.format("<font \"%s\">", fontFamily));
+                return insertPrefix(text, String.format("<font \"%s\">", fontFamily));
             else if (!warned.contains(fontFamily)) {
                 System.err.println("Unknown font family: " + fontFamily);
                 System.err.println("Known fonts: " + StringUtils.toString(Font.getFamilies(), "\n"));
                 warned.add(fontFamily);
             }
-            insertPrefix(String.format("<font \"%s\">", fontFamily.trim()));
         }
+        return text;
     }
 
-    public String getFontFamily() {
-        var prefixElement = getPrefixElement(Event.Change.fontFamilyStart.type());
+    public void setFontFamily(String fontFamily) {
+        setText(setFontFamily(getText(), fontFamily));
+    }
+
+    public static String getFontFamily(String text) {
+        var prefixElement = getPrefixElement(text, Event.Change.fontFamilyStart.type());
         if (prefixElement != null && Font.getFamilies().contains(prefixElement.argument()))
             return prefixElement.argument();
         else
             return DEFAULT_FONT.getFamily();
+    }
+
+    public String getFontFamily() {
+        return getFontFamily(getText());
     }
 
     StringProperty fontFamily;
@@ -816,22 +889,26 @@ public class RichTextLabel extends TextFlow {
         return fontFamily;
     }
 
+    public static String setImage(String text, String url, String alt, Double width, Double height) {
+        var prefixElement = getPrefixElement(text, Event.Change.image.type());
+        if (prefixElement != null)
+            text = removePrefixElement(text, prefixElement);
+        if (url != null) {
+            var tag = String.format("<image url=\"%s\"", url);
+            if (alt != null)
+                tag += String.format(" alt=\"%s\"", alt);
+            if (width != null)
+                tag += String.format(" width=\"%.2f\"", width);
+            if (height != null)
+                tag += String.format(" height=\"%.2f\"", height);
+            tag += ">";
+            return insertPrefix(text, tag);
+        } else
+            return text;
+    }
 
     public void setImage(String url, String alt, Double width, Double height) {
-        var prefixElement = getPrefixElement(Event.Change.image.type());
-        if (prefixElement != null)
-            removePrefixElement(prefixElement);
-        if (url != null) {
-            var text = String.format("<image url=\"%s\"", url);
-            if (alt != null)
-                text += String.format(" alt=\"%s\"", alt);
-            if (width != null)
-                text += String.format(" width=\"%.2f\"", width);
-            if (height != null)
-                text += String.format(" height=\"%.2f\"", height);
-            text += ">";
-            insertPrefix(text);
-        }
+        setText(setImage(getText(), url, alt, width, height));
     }
 
     /**
