@@ -89,10 +89,10 @@ public class ArgsOptions {
 
         usage = new LinkedList<>();
 
-		try {
-			doHelp = (args.length > 0 && args[0].equalsIgnoreCase("help")) || getOption("-h", "--help", "Show help", false, false);
-			setVerbose(getOption("-v", "--verbose", "verbose", false) && !doHelp);
-		} catch (UsageException e) {
+        try {
+            doHelp = (args.length > 0 && args[0].equalsIgnoreCase("help")) || getOption("-h", "--help", "Show help", false, false);
+            setVerbose(getOption("-v", "--verbose", "verbose", false) && !doHelp);
+        } catch (UsageException e) {
         }
 
         if (verbose)
