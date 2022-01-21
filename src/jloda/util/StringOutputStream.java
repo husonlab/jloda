@@ -1,5 +1,5 @@
 /*
- * StringOutputStream.java Copyright (C) 2022. Daniel H. Huson
+ *  StringOutputStream.java Copyright (C) 2022 Daniel H. Huson
  *
  *  (Some files contain contributions from other authors, who are then mentioned separately.)
  *
@@ -15,7 +15,6 @@
  *
  *  You should have received a copy of the GNU General Public License
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
- *
  */
 
 package jloda.util;

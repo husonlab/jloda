@@ -1,5 +1,5 @@
 /*
- *  RotateLayout.java Copyright (C) 2021.
+ *  RotateLayout.java Copyright (C) 2022 Daniel H. Huson
  *
  *  (Some files contain contributions from other authors, who are then mentioned separately.)
  *
