@@ -1145,7 +1145,7 @@ public class NexusStreamParser extends NexusStreamTokenizer implements Closeable
     }
 
     /**
-     * gets a taxon or set label
+     * gets a taxon or label
      *
      * @return a label
      */
@@ -1664,7 +1664,7 @@ public class NexusStreamParser extends NexusStreamTokenizer implements Closeable
 
     public static String getQuotedString(NexusStreamParser np) throws IOException {
         np.matchIgnoreCase("\"");
-        ArrayList<String> words = new ArrayList<>();
+        var words = new ArrayList<String>();
         while (!np.peekMatchIgnoreCase("\""))
             words.add(np.getWordRespectCase());
         np.matchIgnoreCase("\"");
