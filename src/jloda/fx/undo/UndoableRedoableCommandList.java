@@ -1,5 +1,5 @@
 /*
- * UndoableChangeList.java Copyright (C) 2022 Daniel H. Huson
+ * UndoableRedoableCommandList.java Copyright (C) 2022 Daniel H. Huson
  *
  * (Some files contain contributions from other authors, who are then mentioned separately.)
  *
@@ -19,20 +19,22 @@
 
 package jloda.fx.undo;
 
+import javafx.beans.property.Property;
+
 import java.util.ArrayList;
 import java.util.Collection;
 
 /**
- * A list of  undoable property changes
- * Daniel HUson, 6.2017
+ * A list of  undoable/redoable  commands
+ * Daniel Huson, 6.2017
  */
-public class UndoableChangeList<T> extends UndoableRedoableCommand {
+public class UndoableRedoableCommandList extends UndoableRedoableCommand {
     private final ArrayList<UndoableRedoableCommand> list = new ArrayList<>();
 
     /**
      * constructor
      */
-    public UndoableChangeList() {
+    public UndoableRedoableCommandList() {
         super("");
     }
 
@@ -41,7 +43,7 @@ public class UndoableChangeList<T> extends UndoableRedoableCommand {
      *
      * @param name
      */
-    public UndoableChangeList(String name) {
+    public UndoableRedoableCommandList(String name) {
         super(name);
     }
 
@@ -50,14 +52,21 @@ public class UndoableChangeList<T> extends UndoableRedoableCommand {
      *
      * @param name
      */
-    public UndoableChangeList(String name, Collection<UndoableRedoableCommand> list) {
+    public UndoableRedoableCommandList(String name, Collection<? extends UndoableRedoableCommand> list) {
         super(name);
         this.list.addAll(list);
     }
 
-
     public void add(UndoableRedoableCommand property) {
         list.add(property);
+    }
+
+    public  <T>  void add (Property<T> property, T oldValue, T newValue) {
+        add(new UndoableChangeProperty<T>(property,oldValue,newValue));
+    }
+
+    public void add (Runnable undo,Runnable redo) {
+        add(UndoableRedoableCommand.create("",undo,redo));
     }
 
     public int size() {
@@ -70,15 +79,27 @@ public class UndoableChangeList<T> extends UndoableRedoableCommand {
 
     @Override
     public void undo() {
-        for (UndoableRedoableCommand change : list) {
-            change.undo();
+        for (var command : list) {
+            if(command.isUndoable())
+            command.undo();
         }
     }
 
     @Override
     public void redo() {
-        for (UndoableRedoableCommand change : list) {
-            change.redo();
+        for (var command : list) {
+            if(command.isRedoable())
+                command.redo();
         }
+    }
+
+    @Override
+    public boolean isUndoable() {
+        return list.stream().anyMatch(UndoableRedoableCommand::isUndoable);
+    }
+
+    @Override
+    public boolean isRedoable() {
+        return list.stream().anyMatch(UndoableRedoableCommand::isRedoable);
     }
 }

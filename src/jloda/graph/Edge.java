@@ -19,6 +19,9 @@
 
 package jloda.graph;
 
+import java.util.Collection;
+import java.util.List;
+
 /**
  * Edge class used by graph class
  *
@@ -333,6 +336,10 @@ public class Edge extends NodeEdge implements Comparable<Edge> {
 
     public Node getTarget() {
         return target;
+    }
+
+    public Collection<Node> nodes() {
+        return List.of(source,target);
     }
 
     /**

@@ -222,6 +222,13 @@ public class EdgeArray<T> extends GraphBase implements Iterable<T>, Map<Edge, T>
             return null;
     }
 
+    public T getOrDefault(Object key, T defaultValue) {
+        if(containsKey(key))
+            return get(key);
+        else
+            return defaultValue;
+    }
+
     @Override
     public void putAll(Map<? extends Edge, ? extends T> map) {
         for (var e : map.entrySet()) {
