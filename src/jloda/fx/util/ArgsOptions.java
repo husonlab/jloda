@@ -82,6 +82,8 @@ public class ArgsOptions {
      * @param description program description
      */
     public ArgsOptions(String[] args, Object main, String programName, String description) throws CanceledException {
+        Locale.setDefault(Locale.US);
+
         if (args.length > 0 && args[args.length - 1].equals("--argsGui")) {
             args = getDialogInput(args, args.length - 1);
         }
@@ -115,6 +117,8 @@ public class ArgsOptions {
      * @param description program description
      */
     public ArgsOptions(String[] args, Class clazz, String programName, String description) throws CanceledException {
+        Locale.setDefault(Locale.US);
+
         if (args.length > 0 && args[args.length - 1].equals("--argsGui")) {
             args = getDialogInput(args, args.length - 1);
         }
