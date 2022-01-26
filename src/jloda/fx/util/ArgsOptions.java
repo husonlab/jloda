@@ -100,7 +100,7 @@ public class ArgsOptions {
         try {
             doHelp = getOption("-h", "--help", "Show help", false, false);
             setVerbose(getOption("-v", "--verbose", "verbose", false) && !doHelp);
-        } catch (UsageException e) {
+        } catch (UsageException ignored) {
         }
 
         if (verbose)
@@ -135,7 +135,7 @@ public class ArgsOptions {
         try {
             doHelp = getOption("-h", "--help", "Show help", false, false);
             setVerbose(getOption("-v", "--verbose", "verbose", false) && !doHelp);
-        } catch (UsageException e) {
+        } catch (UsageException ignored) {
         }
 
         if (verbose)
@@ -736,7 +736,7 @@ public class ArgsOptions {
      *
      * @return commands
      */
-    private String[] getDialogInput(String[] args, int argsLength) throws CanceledException {
+    private String[] getDialogInput(String[] args, int argsLength) {
         System.err.println("Not implemented");
         // todo: implement using JavaFX
         /*
