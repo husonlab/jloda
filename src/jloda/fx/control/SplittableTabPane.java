@@ -702,7 +702,6 @@ public class SplittableTabPane extends Pane {
 
     private AuxiliaryWindow createAuxiliaryWindow(final Tab tab, double screenX, double screenY, double width, double height, MenuItem redock) {
         final StackPane root = new StackPane();
-        root.getStyleClass().add("background");
         tab.setContextMenu(new ContextMenu(redock));
 
         root.getChildren().add(tab.getContent());

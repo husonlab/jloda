@@ -76,8 +76,9 @@ public class FindToolBar extends VBox {
     public FindToolBar(Stage owner, ISearcher searcher, ISearcher... additional) {
         final ExtendedFXMLLoader<FindToolBarController> extendedFXMLLoader = new ExtendedFXMLLoader<>(FindToolBar.class);
         controller = extendedFXMLLoader.getController();
+        getStyleClass().add("tool-bar");
 
-        setStyle("-fx-border-color: lightgray;");
+        //setStyle("-fx-border-color: lightgray;");
 
         showFindToolBarProperty().addListener((c, o, n) -> {
             if (getChildren().contains(controller.getReplaceToolBar()))

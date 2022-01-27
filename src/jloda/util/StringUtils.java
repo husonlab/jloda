@@ -1606,6 +1606,15 @@ public class StringUtils {
 		return pos;
 	}
 
+
+	public static String removeTrailingZerosAfterDot(double value) {
+		return removeTrailingZerosAfterDot(String.valueOf(value));
+	}
+
+	public static String removeTrailingZerosAfterDot(String format, double value) {
+		return removeTrailingZerosAfterDot(String.format(format, value));
+	}
+
 	public static String removeTrailingZerosAfterDot(String text) {
 		if (text.contains("."))
 			return text.replaceAll("\\.([0-9]+?)0*$", ".$1") // note: *? lazy, does keep trailing 0's
