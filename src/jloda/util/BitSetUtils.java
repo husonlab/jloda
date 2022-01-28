@@ -20,6 +20,7 @@
 package jloda.util;
 
 import java.util.*;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 /**
@@ -34,8 +35,8 @@ public class BitSetUtils {
      * @return union
      */
     public static BitSet union(BitSet... sets) {
-        final BitSet result = new BitSet();
-        for (BitSet a : sets)
+        final var result = new BitSet();
+        for (var a : sets)
             result.or(a);
         return result;
     }
@@ -47,8 +48,8 @@ public class BitSetUtils {
      * @return union
      */
     public static BitSet union(Collection<BitSet> sets) {
-        final BitSet result = new BitSet();
-        for (BitSet a : sets)
+        final var result = new BitSet();
+        for (var a : sets)
             result.or(a);
         return result;
     }
@@ -60,9 +61,9 @@ public class BitSetUtils {
      * @return union
      */
     public static BitSet intersection(BitSet... sets) {
-        final BitSet result = new BitSet();
-        boolean first = true;
-        for (BitSet b : sets) {
+        final var result = new BitSet();
+        var first = true;
+        for (var b : sets) {
             if (first) {
                 result.or(b);
                 first = false;
@@ -104,7 +105,7 @@ public class BitSetUtils {
 
             @Override
             public Integer next() {
-                int result = i;
+                var result = i;
                 i = set.nextSetBit(i + 1);
                 return result;
             }
@@ -116,16 +117,16 @@ public class BitSetUtils {
     }
 
     public static BitSet asBitSet(Iterable<Integer> bits) {
-        final BitSet bitSet = new BitSet();
-        for (Integer i : bits) {
+        final var bitSet = new BitSet();
+        for (var i : bits) {
             bitSet.set(i);
         }
         return bitSet;
     }
 
     public static BitSet asBitSet(int... bits) {
-        final BitSet bitSet = new BitSet();
-        for (Integer i : bits) {
+        final var bitSet = new BitSet();
+        for (var i : bits) {
             bitSet.set(i);
         }
         return bitSet;
@@ -139,8 +140,8 @@ public class BitSetUtils {
      * @return comparison
      */
     public static int compare(BitSet a, BitSet b) {
-        int i = a.nextSetBit(0);
-        int j = b.nextSetBit(0);
+        var i = a.nextSetBit(0);
+        var j = b.nextSetBit(0);
         while (i == j) {
             if (i == -1)
                 return 0;
@@ -177,8 +178,8 @@ public class BitSetUtils {
      * @return values and 0s
      */
     public static int[] asArrayWith0s(int max, BitSet bits) {
-        final int[] array = new int[max + 1];
-        for (Integer t : members(bits))
+        final var array = new int[max + 1];
+        for (var t : members(bits))
             array[t] = t;
         return array;
     }
@@ -194,20 +195,16 @@ public class BitSetUtils {
      * @return maximum member
      */
     public static int max(BitSet bits) {
-        int max = 0;
-        for (int value = bits.nextSetBit(0); value != -1; value = bits.nextSetBit(value + 1)) {
-            max = value;
-        }
-        return max;
-    }
+        return bits.stream().max().orElse(0);
+     }
 
     public static Collection<? extends Integer> asList(BitSet... sets) {
-        final BitSet set = new BitSet();
-        for (BitSet b : sets) {
+        final var set = new BitSet();
+        for (var b : sets) {
             set.or(b);
         }
-        final ArrayList<Integer> list = new ArrayList<>(set.cardinality());
-        for (Integer a : members(set)) {
+        final var list = new ArrayList<Integer>(set.cardinality());
+        for (var a : members(set)) {
             list.add(a);
         }
         return list;
@@ -230,12 +227,12 @@ public class BitSetUtils {
     }
 
     public static void addAll(BitSet bits, int... values) {
-        for (int i : values)
+        for (var i : values)
             bits.set(i);
     }
 
     public static void addAll(BitSet bits, Iterable<Integer> values) {
-        for (int i : values)
+        for (var i : values)
             bits.set(i);
     }
 
@@ -246,14 +243,14 @@ public class BitSetUtils {
      * @param setA
      */
     public static BitSet minus(BitSet setX, BitSet setA) {
-        final BitSet result = new BitSet();
+        final var result = new BitSet();
         result.or(setX);
         result.andNot(setA);
         return result;
     }
 
     public static BitSet copy(BitSet bitSet) {
-        final BitSet copy = new BitSet();
+        final var copy = new BitSet();
         copy.or(bitSet);
         return copy;
     }
@@ -266,7 +263,7 @@ public class BitSetUtils {
     public static List<Integer> asList(BitSet bits) {
         var result = new ArrayList<Integer>();
         if (bits != null) {
-            for (int i = bits.nextSetBit(0); i != -1; i = bits.nextSetBit(i + 1))
+            for(var i:members(bits))
                 result.add(i);
         }
         return result;
@@ -280,7 +277,7 @@ public class BitSetUtils {
     public static BitSet asBitSet(List<Integer> integers) {
         var bits = new BitSet();
         if (integers != null) {
-            for (Integer i : integers) {
+            for (var i : integers) {
                 bits.set(i);
             }
         }
