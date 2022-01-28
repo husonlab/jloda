@@ -211,25 +211,27 @@ public class FileUtils {
 		return file != null && file.exists() && !file.isDirectory() && file.length() > 0;
 	}
 
-	public static void checkFileReadableNonEmpty(String fileName) throws IOException {
-		final File file = new File(fileName);
-		if (!file.exists())
-			throw new IOException("No such file: " + fileName);
-		if (file.length() == 0)
-			throw new IOException("File is empty: " + fileName);
-		if (!file.canRead())
-			throw new IOException("File not readable: " + fileName);
-		if (file.getName().endsWith(".gz")) {
-			try (InputStream ins = new GZIPInputStream(new FileInputStream(file))) {
-				if ((ins.read() == -1))
-					throw new IOException("File is empty: " + fileName);
+	public static void checkFileReadableNonEmpty(String... fileNames) throws IOException {
+		for (var fileName : fileNames) {
+			final File file = new File(fileName);
+			if (!file.exists())
+				throw new IOException("No such file: " + fileName);
+			if (file.length() == 0)
+				throw new IOException("File is empty: " + fileName);
+			if (!file.canRead())
+				throw new IOException("File not readable: " + fileName);
+			if (file.getName().endsWith(".gz")) {
+				try (InputStream ins = new GZIPInputStream(new FileInputStream(file))) {
+					if ((ins.read() == -1))
+						throw new IOException("File is empty: " + fileName);
+				}
 			}
 		}
 	}
 
 	public static void checkFileWritable(String fileName, boolean allowOverwrite) throws IOException {
 		if (fileName.equalsIgnoreCase("stdout") || fileName.equalsIgnoreCase("stderr")
-			|| fileName.equalsIgnoreCase("stdout-gz"))
+				|| fileName.equalsIgnoreCase("stdout-gz"))
 			return;
 
 		final File file = new File(fileName);
