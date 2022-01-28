@@ -42,7 +42,7 @@ public class ProgressPercentage implements ProgressListener {
 	private long tenPercent = 0;
 	private long startTime;
 
-	private boolean reportedCompleted = false;
+	private boolean reportedCompleted;
 
 	/**
 	 * constructor

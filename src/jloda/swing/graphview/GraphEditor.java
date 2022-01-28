@@ -320,15 +320,15 @@ class GraphEditorActionListener implements ActionListener {
         // Basic.message("Menu action: "+ev);
 
         switch (ev.getActionCommand()) {
-            case "New":
+            case "New" -> {
 
                 // this shouldn't work! once we leave the scope of
                 // ed, you'ed expect ed to go away, but it doesn't...
                 GraphEditor ed = new GraphEditor(GE.getGraph(), "New", 400, 400);
                 ed.getFrame().setResizable(true);
                 ed.getFrame().setVisible(true);
-                break;
-            case "Print...":
+            }
+            case "Print..." -> {
                 PrinterJob job = PrinterJob.getPrinterJob();
                 // Specify the Printable is an instance of SimplePrint
                 job.setPrintable(GE);
@@ -341,86 +341,86 @@ class GraphEditorActionListener implements ActionListener {
                         Basic.caught(ex);
                     }
                 }
-                break;
-            case "Select All":
+            }
+            case "Select All" -> {
                 GE.selectAllNodes(true);
                 GE.selectAllEdges(true);
                 GE.repaint();
-                break;
-            case "Horizontal Flip":
+            }
+            case "Horizontal Flip" -> {
                 GE.horizontalFlipSelected();
                 GE.repaint();
-                break;
-            case "Vertical Flip":
+            }
+            case "Vertical Flip" -> {
                 GE.verticalFlipSelected();
                 GE.repaint();
-                break;
-            case "Close":
+            }
+            case "Close" -> {
                 GE.close();
                 GE = null;
-                break;
-            case "Quit":
-                // need to replace this by code that closes all windows
-                System.exit(0);
-            case "Delete":
+            }
+            case "Quit" ->
+                    // need to replace this by code that closes all windows
+                    System.exit(0);
+            case "Delete" -> {
                 GE.delSelectedEdges();
                 GE.delSelectedNodes();
                 GE.repaint();
-                break;
-            case "Select All Nodes":
+            }
+            case "Select All Nodes" -> {
                 GE.selectAllNodes(true);
                 GE.repaint();
-                break;
-            case "Select All Edges":
+            }
+            case "Select All Edges" -> {
                 GE.selectAllEdges(true);
                 GE.repaint();
-                break;
-            case "Zoom to Graph":
+            }
+            case "Zoom to Graph" -> {
                 GE.fitGraphToWindow();
                 GE.repaint();
-                break;
-            case "Zoom In": {
+            }
+            case "Zoom In" -> {
                 double s = 1.5;
                 GE.trans.composeScale(1.0 / s, 1.0 / s);
                 GE.repaint();
                 break;
             }
-            case "Zoom Out": {
+            case "Zoom Out" -> {
                 double s = 1.5;
                 GE.trans.composeScale(s, s);
                 GE.repaint();
                 break;
             }
-            case "Spring Embedding":
+            case "Spring Embedding" -> {
                 GE.computeSpringEmbedding(100, true);
                 GE.fitGraphToWindow();
                 GE.repaint();
-                break;
-            case "0pt":
+            }
+            case "0pt" -> {
                 GE.setLineWidthSelected(0);
                 GE.repaint();
-                break;
-            case "1pt":
+            }
+            case "1pt" -> {
                 GE.setLineWidthSelected(1);
                 GE.repaint();
-                break;
-            case "2pt":
+            }
+            case "2pt" -> {
                 GE.setLineWidthSelected(2);
                 GE.repaint();
-                break;
-            case "4pt":
+            }
+            case "4pt" -> {
                 GE.setLineWidthSelected(4);
                 GE.repaint();
-                break;
-            case "8pt":
+            }
+            case "8pt" -> {
                 GE.setLineWidthSelected(8);
                 GE.repaint();
-                break;
-            case "10pt":
+            }
+            case "10pt" -> {
                 GE.setLineWidthSelected(10);
                 GE.repaint();
-                break;
-            case "Label":
+            }
+            case "Label" -> {
                 String label = JOptionPane.showInputDialog("Enter label");
                 if (label != null) {
                     try {
@@ -439,10 +439,8 @@ class GraphEditorActionListener implements ActionListener {
                     }
                     GE.repaint();
                 }
-                break;
-            default:
-                System.err.println("Not implemented: " + ev);
-                break;
+            }
+            default -> System.err.println("Not implemented: " + ev);
         }
     }
 }
@@ -469,65 +467,63 @@ class ColorActionListener implements ActionListener {
      */
     public void actionPerformed(ActionEvent ev) {
         switch (ev.getActionCommand()) {
-            case "black":
+            case "black" -> {
                 GE.setColorSelected(Color.black, kind);
                 GE.repaint();
-                break;
-            case "blue":
+            }
+            case "blue" -> {
                 GE.setColorSelected(Color.blue, kind);
                 GE.repaint();
-                break;
-            case "cyan":
+            }
+            case "cyan" -> {
                 GE.setColorSelected(Color.cyan, kind);
                 GE.repaint();
-                break;
-            case "darkGray":
+            }
+            case "darkGray" -> {
                 GE.setColorSelected(Color.darkGray, kind);
                 GE.repaint();
-                break;
-            case "gray":
+            }
+            case "gray" -> {
                 GE.setColorSelected(Color.gray, kind);
                 GE.repaint();
-                break;
-            case "green":
+            }
+            case "green" -> {
                 GE.setColorSelected(Color.green, kind);
                 GE.repaint();
-                break;
-            case "lightGray":
+            }
+            case "lightGray" -> {
                 GE.setColorSelected(Color.lightGray, kind);
                 GE.repaint();
-                break;
-            case "magenta":
+            }
+            case "magenta" -> {
                 GE.setColorSelected(Color.magenta, kind);
                 GE.repaint();
-                break;
-            case "orange":
+            }
+            case "orange" -> {
                 GE.setColorSelected(Color.orange, kind);
                 GE.repaint();
-                break;
-            case "pink":
+            }
+            case "pink" -> {
                 GE.setColorSelected(Color.pink, kind);
                 GE.repaint();
-                break;
-            case "red":
+            }
+            case "red" -> {
                 GE.setColorSelected(Color.red, kind);
                 GE.repaint();
-                break;
-            case "white":
+            }
+            case "white" -> {
                 GE.setColorSelected(Color.white, kind);
                 GE.repaint();
-                break;
-            case "yellow":
+            }
+            case "yellow" -> {
                 GE.setColorSelected(Color.yellow, kind);
                 GE.repaint();
-                break;
-            case "none":
+            }
+            case "none" -> {
                 GE.setColorSelected(null, kind);
                 GE.repaint();
-                break;
-            default:
-                System.err.println("Not implemented: " + ev);
-                break;
+            }
+            default -> System.err.println("Not implemented: " + ev);
         }
     }
 }

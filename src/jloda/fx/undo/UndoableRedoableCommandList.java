@@ -62,7 +62,7 @@ public class UndoableRedoableCommandList extends UndoableRedoableCommand {
     }
 
     public  <T>  void add (Property<T> property, T oldValue, T newValue) {
-        add(new UndoableChangeProperty<T>(property,oldValue,newValue));
+        add(new UndoableChangeProperty<>(property, oldValue, newValue));
     }
 
     public void add (Runnable undo,Runnable redo) {

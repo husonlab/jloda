@@ -28,7 +28,6 @@ import jloda.util.parse.NexusStreamParser;
 import java.io.*;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.stream.Collectors;
 
 /**
  * i/o in GraphGML
@@ -61,10 +60,10 @@ public class GraphGML {
             w.write("\t\tid " + v.getId() + "\n");
             if((nodeLabels!=null && nodeLabels.containsKey(v)))
             w.write("\t\tlabel \"" +nodeLabels.get(v) + "\"\n");
-                for (String aLabel : labelNodeValueMap.keySet().stream().filter(a->!a.equals("label")).collect(Collectors.toList())) {
-                        var value = labelNodeValueMap.get(aLabel).get(v);
-                        w.write("\t\t" + aLabel + " \"" + value + "\"\n");
-            }
+                for (String aLabel : labelNodeValueMap.keySet().stream().filter(a -> !a.equals("label")).toList()) {
+                    var value = labelNodeValueMap.get(aLabel).get(v);
+                    w.write("\t\t" + aLabel + " \"" + value + "\"\n");
+                }
             w.write("\t]\n");
         }
         
@@ -77,7 +76,7 @@ public class GraphGML {
 
             if((edgeLabels!=null && edgeLabels.containsKey(e)))
                 w.write("\t\tlabel \"" +edgeLabels.get(e) + "\"\n");
-            for (String aLabel : labelEdgeValueMap.keySet().stream().filter(a->!a.equals("label")).collect(Collectors.toList())) {
+            for (String aLabel : labelEdgeValueMap.keySet().stream().filter(a -> !a.equals("label")).toList()) {
                 var value = labelEdgeValueMap.get(aLabel).get(e);
                 w.write("\t\t" + aLabel + " \"" + value + "\"\n");
             }

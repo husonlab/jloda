@@ -133,23 +133,19 @@ public class Graph extends GraphBase implements INamed {
      *
      * @param v    node
      * @param hide hidden state
-     * @return true, if hidden state changed
      */
-    public boolean setHidden(Node v, boolean hide) {
+    public void setHidden(Node v, boolean hide) {
         if (hide) {
             if (!v.isHidden()) {
                 v.setHidden(true);
                 numberOfNodesThatAreHidden++;
-                return true;
             }
         } else {
             if (v.isHidden()) {
                 v.setHidden(false);
                 numberOfNodesThatAreHidden--;
-                return true;
             }
         }
-        return false;
     }
 
     /**
@@ -164,25 +160,21 @@ public class Graph extends GraphBase implements INamed {
     /**
      * sets the hidden state of a edge. Hidden edges are not returned by edge iterators
      *
-     * @param e edge
+     * @param e    edge
      * @param hide hidden state
-     * @return true, if hidden state changed
      */
-    public boolean setHidden(Edge e, boolean hide) {
+    public void setHidden(Edge e, boolean hide) {
         if (hide) {
             if (!e.isHidden()) {
                 e.setHidden(true);
                 numberOfEdgesThatAreHidden++;
-                return true;
             }
         } else {
             if (e.isHidden()) {
                 e.setHidden(false);
                 numberOfEdgesThatAreHidden--;
-                return true;
             }
         }
-        return false;
     }
 
     /**
@@ -246,10 +238,9 @@ public class Graph extends GraphBase implements INamed {
      * @param dir_v before or after reference e_v
      * @param dir_w before or after reference e_w
      * @param obj   the info object
-     * @return a new edge
      */
-    public Edge newEdge(Node v, Edge e_v, Node w, Edge e_w, int dir_v, int dir_w, Object obj) throws IllegalSelfEdgeException {
-        return new Edge(this, v, e_v, w, e_w, dir_v, dir_w, obj);
+    public void newEdge(Node v, Edge e_v, Node w, Edge e_w, int dir_v, int dir_w, Object obj) throws IllegalSelfEdgeException {
+        new Edge(this, v, e_v, w, e_w, dir_v, dir_w, obj);
     }
 
     /**
@@ -470,7 +461,6 @@ public class Graph extends GraphBase implements INamed {
                 e.prev.next = e.next;
             if (e.next != null)
                 e.next.prev = e.prev;
-            e.prev = null;
             Edge f = lastEdge;
             lastEdge = f;
             e.prev = f;
@@ -971,10 +961,9 @@ public class Graph extends GraphBase implements INamed {
     /**
      * copies a graph
      */
-    public NodeArray<Node> copy(Graph src) {
+    public void copy(Graph src) {
         final NodeArray<Node> oldNode2newNode = src.newNodeArray();
         copy(src, oldNode2newNode, null);
-        return oldNode2newNode;
     }
 
     /**

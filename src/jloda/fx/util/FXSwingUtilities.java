@@ -33,565 +33,194 @@ public class FXSwingUtilities {
      * @return KeyCode
      */
     public static KeyCode getKeyCodeFX(int awtKeyCode) {
-        switch (awtKeyCode) {
-            case java.awt.event.KeyEvent.VK_A:
-                return KeyCode.A;
-
-            case java.awt.event.KeyEvent.VK_ACCEPT:
-                return KeyCode.ACCEPT;
-
-            case java.awt.event.KeyEvent.VK_ADD:
-                return KeyCode.ADD;
-
-            case java.awt.event.KeyEvent.VK_AGAIN:
-                return KeyCode.AGAIN;
-
-            case java.awt.event.KeyEvent.VK_ALL_CANDIDATES:
-                return KeyCode.ALL_CANDIDATES;
-
-            case java.awt.event.KeyEvent.VK_ALPHANUMERIC:
-                return KeyCode.ALPHANUMERIC;
-
-            case java.awt.event.KeyEvent.VK_ALT:
-                return KeyCode.ALT;
-
-            case java.awt.event.KeyEvent.VK_ALT_GRAPH:
-                return KeyCode.ALT_GRAPH;
-
-            case java.awt.event.KeyEvent.VK_AMPERSAND:
-                return KeyCode.AMPERSAND;
-
-            case java.awt.event.KeyEvent.VK_ASTERISK:
-                return KeyCode.ASTERISK;
-
-            case java.awt.event.KeyEvent.VK_AT:
-                return KeyCode.AT;
-
-            case java.awt.event.KeyEvent.VK_B:
-                return KeyCode.B;
-
-            case java.awt.event.KeyEvent.VK_BACK_QUOTE:
-                return KeyCode.BACK_QUOTE;
-
-            case java.awt.event.KeyEvent.VK_BACK_SLASH:
-                return KeyCode.BACK_SLASH;
-
-            case java.awt.event.KeyEvent.VK_BACK_SPACE:
-                return KeyCode.BACK_SPACE;
-
-            case java.awt.event.KeyEvent.VK_BEGIN:
-                return KeyCode.BEGIN;
-
-            case java.awt.event.KeyEvent.VK_BRACELEFT:
-                return KeyCode.BRACELEFT;
-
-            case java.awt.event.KeyEvent.VK_BRACERIGHT:
-                return KeyCode.BRACERIGHT;
-
-            case java.awt.event.KeyEvent.VK_C:
-                return KeyCode.C;
-
-            case java.awt.event.KeyEvent.VK_CANCEL:
-                return KeyCode.CANCEL;
-
-            case java.awt.event.KeyEvent.VK_CAPS_LOCK:
-                return KeyCode.CAPS;
-
-            case java.awt.event.KeyEvent.VK_CIRCUMFLEX:
-                return KeyCode.CIRCUMFLEX;
-
-            case java.awt.event.KeyEvent.VK_CLEAR:
-                return KeyCode.CLEAR;
-
-            case java.awt.event.KeyEvent.VK_CLOSE_BRACKET:
-                return KeyCode.CLOSE_BRACKET;
-
-            case java.awt.event.KeyEvent.VK_CODE_INPUT:
-                return KeyCode.CODE_INPUT;
-
-            case java.awt.event.KeyEvent.VK_COLON:
-                return KeyCode.COLON;
-
-            case java.awt.event.KeyEvent.VK_COMMA:
-                return KeyCode.COMMA;
-
-            case java.awt.event.KeyEvent.VK_COMPOSE:
-                return KeyCode.COMPOSE;
-
-            case java.awt.event.KeyEvent.VK_CONTEXT_MENU:
-                return KeyCode.CONTEXT_MENU;
-
-            case java.awt.event.KeyEvent.VK_CONTROL:
-                return KeyCode.CONTROL;
-
-            case java.awt.event.KeyEvent.VK_CONVERT:
-                return KeyCode.CONVERT;
-
-            case java.awt.event.KeyEvent.VK_COPY:
-                return KeyCode.COPY;
-
-            case java.awt.event.KeyEvent.VK_CUT:
-                return KeyCode.CUT;
-
-            case java.awt.event.KeyEvent.VK_D:
-                return KeyCode.D;
-
-            case java.awt.event.KeyEvent.VK_DEAD_ABOVEDOT:
-                return KeyCode.DEAD_ABOVEDOT;
-
-            case java.awt.event.KeyEvent.VK_DEAD_ABOVERING:
-                return KeyCode.DEAD_ABOVERING;
-
-            case java.awt.event.KeyEvent.VK_DEAD_ACUTE:
-                return KeyCode.DEAD_ACUTE;
-
-            case java.awt.event.KeyEvent.VK_DEAD_BREVE:
-                return KeyCode.DEAD_BREVE;
-
-            case java.awt.event.KeyEvent.VK_DEAD_CARON:
-                return KeyCode.DEAD_CARON;
-
-            case java.awt.event.KeyEvent.VK_DEAD_CEDILLA:
-                return KeyCode.DEAD_CEDILLA;
-
-            case java.awt.event.KeyEvent.VK_DEAD_CIRCUMFLEX:
-                return KeyCode.DEAD_CIRCUMFLEX;
-
-            case java.awt.event.KeyEvent.VK_DEAD_DIAERESIS:
-                return KeyCode.DEAD_DIAERESIS;
-
-            case java.awt.event.KeyEvent.VK_DEAD_DOUBLEACUTE:
-                return KeyCode.DEAD_DOUBLEACUTE;
-
-            case java.awt.event.KeyEvent.VK_DEAD_GRAVE:
-                return KeyCode.DEAD_GRAVE;
-
-            case java.awt.event.KeyEvent.VK_DEAD_IOTA:
-                return KeyCode.DEAD_IOTA;
-
-            case java.awt.event.KeyEvent.VK_DEAD_MACRON:
-                return KeyCode.DEAD_MACRON;
-
-            case java.awt.event.KeyEvent.VK_DEAD_OGONEK:
-                return KeyCode.DEAD_OGONEK;
-
-            case java.awt.event.KeyEvent.VK_DEAD_SEMIVOICED_SOUND:
-                return KeyCode.DEAD_SEMIVOICED_SOUND;
-
-            case java.awt.event.KeyEvent.VK_DEAD_TILDE:
-                return KeyCode.DEAD_TILDE;
-
-            case java.awt.event.KeyEvent.VK_DEAD_VOICED_SOUND:
-                return KeyCode.DEAD_VOICED_SOUND;
-
-            case java.awt.event.KeyEvent.VK_DECIMAL:
-                return KeyCode.DECIMAL;
-
-            case java.awt.event.KeyEvent.VK_DELETE:
-                return KeyCode.DELETE;
-
-            case java.awt.event.KeyEvent.VK_0:
-                return KeyCode.DIGIT0;
-
-            case java.awt.event.KeyEvent.VK_1:
-                return KeyCode.DIGIT1;
-
-            case java.awt.event.KeyEvent.VK_2:
-                return KeyCode.DIGIT2;
-
-            case java.awt.event.KeyEvent.VK_3:
-                return KeyCode.DIGIT3;
-
-            case java.awt.event.KeyEvent.VK_4:
-                return KeyCode.DIGIT4;
-
-            case java.awt.event.KeyEvent.VK_5:
-                return KeyCode.DIGIT5;
-
-            case java.awt.event.KeyEvent.VK_6:
-                return KeyCode.DIGIT6;
-
-            case java.awt.event.KeyEvent.VK_7:
-                return KeyCode.DIGIT7;
-
-            case java.awt.event.KeyEvent.VK_8:
-                return KeyCode.DIGIT8;
-
-            case java.awt.event.KeyEvent.VK_9:
-                return KeyCode.DIGIT9;
-
-            case java.awt.event.KeyEvent.VK_DIVIDE:
-                return KeyCode.DIVIDE;
-
-            case java.awt.event.KeyEvent.VK_DOLLAR:
-                return KeyCode.DOLLAR;
-
-            case java.awt.event.KeyEvent.VK_DOWN:
-                return KeyCode.DOWN;
-
-            case java.awt.event.KeyEvent.VK_E:
-                return KeyCode.E;
-
-            case java.awt.event.KeyEvent.VK_END:
-                return KeyCode.END;
-
-            case java.awt.event.KeyEvent.VK_ENTER:
-                return KeyCode.ENTER;
-
-            case java.awt.event.KeyEvent.VK_EQUALS:
-                return KeyCode.EQUALS;
-
-            case java.awt.event.KeyEvent.VK_ESCAPE:
-                return KeyCode.ESCAPE;
-
-            case java.awt.event.KeyEvent.VK_EURO_SIGN:
-                return KeyCode.EURO_SIGN;
-
-            case java.awt.event.KeyEvent.VK_EXCLAMATION_MARK:
-                return KeyCode.EXCLAMATION_MARK;
-
-            case java.awt.event.KeyEvent.VK_F:
-                return KeyCode.F;
-
-            case java.awt.event.KeyEvent.VK_F1:
-                return KeyCode.F1;
-
-            case java.awt.event.KeyEvent.VK_F10:
-                return KeyCode.F10;
-
-            case java.awt.event.KeyEvent.VK_F11:
-                return KeyCode.F11;
-
-            case java.awt.event.KeyEvent.VK_F12:
-                return KeyCode.F12;
-
-            case java.awt.event.KeyEvent.VK_F13:
-                return KeyCode.F13;
-
-            case java.awt.event.KeyEvent.VK_F14:
-                return KeyCode.F14;
-
-            case java.awt.event.KeyEvent.VK_F15:
-                return KeyCode.F15;
-
-            case java.awt.event.KeyEvent.VK_F16:
-                return KeyCode.F16;
-
-            case java.awt.event.KeyEvent.VK_F17:
-                return KeyCode.F17;
-
-            case java.awt.event.KeyEvent.VK_F18:
-                return KeyCode.F18;
-
-            case java.awt.event.KeyEvent.VK_F19:
-                return KeyCode.F19;
-
-            case java.awt.event.KeyEvent.VK_F2:
-                return KeyCode.F2;
-
-            case java.awt.event.KeyEvent.VK_F20:
-                return KeyCode.F20;
-
-            case java.awt.event.KeyEvent.VK_F21:
-                return KeyCode.F21;
-
-            case java.awt.event.KeyEvent.VK_F22:
-                return KeyCode.F22;
-
-            case java.awt.event.KeyEvent.VK_F23:
-                return KeyCode.F23;
-
-            case java.awt.event.KeyEvent.VK_F24:
-                return KeyCode.F24;
-
-            case java.awt.event.KeyEvent.VK_F3:
-                return KeyCode.F3;
-
-            case java.awt.event.KeyEvent.VK_F4:
-                return KeyCode.F4;
-
-            case java.awt.event.KeyEvent.VK_F5:
-                return KeyCode.F5;
-
-            case java.awt.event.KeyEvent.VK_F6:
-                return KeyCode.F6;
-
-            case java.awt.event.KeyEvent.VK_F7:
-                return KeyCode.F7;
-
-            case java.awt.event.KeyEvent.VK_F8:
-                return KeyCode.F8;
-
-            case java.awt.event.KeyEvent.VK_F9:
-                return KeyCode.F9;
-
-            case java.awt.event.KeyEvent.VK_FINAL:
-                return KeyCode.FINAL;
-
-            case java.awt.event.KeyEvent.VK_FIND:
-                return KeyCode.FIND;
-
-            case java.awt.event.KeyEvent.VK_FULL_WIDTH:
-                return KeyCode.FULL_WIDTH;
-
-            case java.awt.event.KeyEvent.VK_G:
-                return KeyCode.G;
-
-            case java.awt.event.KeyEvent.VK_GREATER:
-                return KeyCode.GREATER;
-
-            case java.awt.event.KeyEvent.VK_H:
-                return KeyCode.H;
-
-            case java.awt.event.KeyEvent.VK_HALF_WIDTH:
-                return KeyCode.HALF_WIDTH;
-
-            case java.awt.event.KeyEvent.VK_HELP:
-                return KeyCode.HELP;
-
-            case java.awt.event.KeyEvent.VK_HIRAGANA:
-                return KeyCode.HIRAGANA;
-
-            case java.awt.event.KeyEvent.VK_HOME:
-                return KeyCode.HOME;
-
-            case java.awt.event.KeyEvent.VK_I:
-                return KeyCode.I;
-
-            case java.awt.event.KeyEvent.VK_INPUT_METHOD_ON_OFF:
-                return KeyCode.INPUT_METHOD_ON_OFF;
-
-            case java.awt.event.KeyEvent.VK_INSERT:
-                return KeyCode.INSERT;
-
-            case java.awt.event.KeyEvent.VK_J:
-                return KeyCode.J;
-
-            case java.awt.event.KeyEvent.VK_JAPANESE_HIRAGANA:
-                return KeyCode.JAPANESE_HIRAGANA;
-
-            case java.awt.event.KeyEvent.VK_JAPANESE_KATAKANA:
-                return KeyCode.JAPANESE_KATAKANA;
-
-            case java.awt.event.KeyEvent.VK_JAPANESE_ROMAN:
-                return KeyCode.JAPANESE_ROMAN;
-
-            case java.awt.event.KeyEvent.VK_K:
-                return KeyCode.K;
-
-            case java.awt.event.KeyEvent.VK_KANA:
-                return KeyCode.KANA;
-
-            case java.awt.event.KeyEvent.VK_KANA_LOCK:
-                return KeyCode.KANA_LOCK;
-
-            case java.awt.event.KeyEvent.VK_KANJI:
-                return KeyCode.KANJI;
-
-            case java.awt.event.KeyEvent.VK_KATAKANA:
-                return KeyCode.KATAKANA;
-
-            case java.awt.event.KeyEvent.VK_KP_DOWN:
-                return KeyCode.KP_DOWN;
-
-            case java.awt.event.KeyEvent.VK_KP_LEFT:
-                return KeyCode.KP_LEFT;
-
-            case java.awt.event.KeyEvent.VK_KP_RIGHT:
-                return KeyCode.KP_RIGHT;
-
-            case java.awt.event.KeyEvent.VK_KP_UP:
-                return KeyCode.KP_UP;
-
-            case java.awt.event.KeyEvent.VK_L:
-                return KeyCode.L;
-
-            case java.awt.event.KeyEvent.VK_LEFT:
-                return KeyCode.LEFT;
-
-            case java.awt.event.KeyEvent.VK_LEFT_PARENTHESIS:
-                return KeyCode.LEFT_PARENTHESIS;
-
-            case java.awt.event.KeyEvent.VK_LESS:
-                return KeyCode.LESS;
-
-            case java.awt.event.KeyEvent.VK_M:
-                return KeyCode.M;
-
-            case java.awt.event.KeyEvent.VK_META:
-                return KeyCode.META;
-
-            case java.awt.event.KeyEvent.VK_MINUS:
-                return KeyCode.MINUS;
-
-            case java.awt.event.KeyEvent.VK_MODECHANGE:
-                return KeyCode.MODECHANGE;
-
-            case java.awt.event.KeyEvent.VK_MULTIPLY:
-                return KeyCode.MULTIPLY;
-
-            case java.awt.event.KeyEvent.VK_N:
-                return KeyCode.N;
-
-            case java.awt.event.KeyEvent.VK_NONCONVERT:
-                return KeyCode.NONCONVERT;
-
-            case java.awt.event.KeyEvent.VK_NUMBER_SIGN:
-                return KeyCode.NUMBER_SIGN;
-
-            case java.awt.event.KeyEvent.VK_NUMPAD0:
-                return KeyCode.NUMPAD0;
-
-            case java.awt.event.KeyEvent.VK_NUMPAD1:
-                return KeyCode.NUMPAD1;
-
-            case java.awt.event.KeyEvent.VK_NUMPAD2:
-                return KeyCode.NUMPAD2;
-
-            case java.awt.event.KeyEvent.VK_NUMPAD3:
-                return KeyCode.NUMPAD3;
-
-            case java.awt.event.KeyEvent.VK_NUMPAD4:
-                return KeyCode.NUMPAD4;
-
-            case java.awt.event.KeyEvent.VK_NUMPAD5:
-                return KeyCode.NUMPAD5;
-
-            case java.awt.event.KeyEvent.VK_NUMPAD6:
-                return KeyCode.NUMPAD6;
-
-            case java.awt.event.KeyEvent.VK_NUMPAD7:
-                return KeyCode.NUMPAD7;
-
-            case java.awt.event.KeyEvent.VK_NUMPAD8:
-                return KeyCode.NUMPAD8;
-
-            case java.awt.event.KeyEvent.VK_NUMPAD9:
-                return KeyCode.NUMPAD9;
-
-            case java.awt.event.KeyEvent.VK_NUM_LOCK:
-                return KeyCode.NUM_LOCK;
-
-            case java.awt.event.KeyEvent.VK_O:
-                return KeyCode.O;
-
-            case java.awt.event.KeyEvent.VK_OPEN_BRACKET:
-                return KeyCode.OPEN_BRACKET;
-
-            case java.awt.event.KeyEvent.VK_P:
-                return KeyCode.P;
-
-            case java.awt.event.KeyEvent.VK_PAGE_DOWN:
-                return KeyCode.PAGE_DOWN;
-
-            case java.awt.event.KeyEvent.VK_PAGE_UP:
-                return KeyCode.PAGE_UP;
-
-            case java.awt.event.KeyEvent.VK_PASTE:
-                return KeyCode.PASTE;
-
-            case java.awt.event.KeyEvent.VK_PAUSE:
-                return KeyCode.PAUSE;
-
-            case java.awt.event.KeyEvent.VK_PERIOD:
-                return KeyCode.PERIOD;
-
-            case java.awt.event.KeyEvent.VK_PLUS:
-                return KeyCode.PLUS;
-
-            case java.awt.event.KeyEvent.VK_PREVIOUS_CANDIDATE:
-                return KeyCode.PREVIOUS_CANDIDATE;
-
-            case java.awt.event.KeyEvent.VK_PRINTSCREEN:
-                return KeyCode.PRINTSCREEN;
-
-            case java.awt.event.KeyEvent.VK_PROPS:
-                return KeyCode.PROPS;
-
-            case java.awt.event.KeyEvent.VK_Q:
-                return KeyCode.Q;
-
-            case java.awt.event.KeyEvent.VK_QUOTE:
-                return KeyCode.QUOTE;
-
-            case java.awt.event.KeyEvent.VK_QUOTEDBL:
-                return KeyCode.QUOTEDBL;
-
-            case java.awt.event.KeyEvent.VK_R:
-                return KeyCode.R;
-
-            case java.awt.event.KeyEvent.VK_RIGHT:
-                return KeyCode.RIGHT;
-
-            case java.awt.event.KeyEvent.VK_RIGHT_PARENTHESIS:
-                return KeyCode.RIGHT_PARENTHESIS;
-
-            case java.awt.event.KeyEvent.VK_ROMAN_CHARACTERS:
-                return KeyCode.ROMAN_CHARACTERS;
-
-            case java.awt.event.KeyEvent.VK_S:
-                return KeyCode.S;
-
-            case java.awt.event.KeyEvent.VK_SCROLL_LOCK:
-                return KeyCode.SCROLL_LOCK;
-
-            case java.awt.event.KeyEvent.VK_SEMICOLON:
-                return KeyCode.SEMICOLON;
-
-            case java.awt.event.KeyEvent.VK_SEPARATOR:
-                return KeyCode.SEPARATOR;
-
-            case java.awt.event.KeyEvent.VK_SHIFT:
-                return KeyCode.SHIFT;
-
-            case java.awt.event.KeyEvent.VK_SLASH:
-                return KeyCode.SLASH;
-
-            case java.awt.event.KeyEvent.VK_STOP:
-                return KeyCode.STOP;
-
-            case java.awt.event.KeyEvent.VK_SUBTRACT:
-                return KeyCode.SUBTRACT;
-
-            case java.awt.event.KeyEvent.VK_T:
-                return KeyCode.T;
-
-            case java.awt.event.KeyEvent.VK_TAB:
-                return KeyCode.TAB;
-
-            case java.awt.event.KeyEvent.VK_U:
-                return KeyCode.U;
-
-            case java.awt.event.KeyEvent.VK_UNDERSCORE:
-                return KeyCode.UNDERSCORE;
-
-            case java.awt.event.KeyEvent.VK_UNDO:
-                return KeyCode.UNDO;
-
-            case java.awt.event.KeyEvent.VK_UP:
-                return KeyCode.UP;
-
-            case java.awt.event.KeyEvent.VK_V:
-                return KeyCode.V;
-
-            case java.awt.event.KeyEvent.VK_W:
-                return KeyCode.W;
-
-            case java.awt.event.KeyEvent.VK_WINDOWS:
-                return KeyCode.WINDOWS;
-
-            case java.awt.event.KeyEvent.VK_X:
-                return KeyCode.X;
-
-            case java.awt.event.KeyEvent.VK_Y:
-                return KeyCode.Y;
-
-            case java.awt.event.KeyEvent.VK_Z:
-                return KeyCode.Z;
-
-            default:
-                return KeyCode.UNDEFINED;
-        }
+        return switch (awtKeyCode) {
+            case java.awt.event.KeyEvent.VK_A -> KeyCode.A;
+            case java.awt.event.KeyEvent.VK_ACCEPT -> KeyCode.ACCEPT;
+            case java.awt.event.KeyEvent.VK_ADD -> KeyCode.ADD;
+            case java.awt.event.KeyEvent.VK_AGAIN -> KeyCode.AGAIN;
+            case java.awt.event.KeyEvent.VK_ALL_CANDIDATES -> KeyCode.ALL_CANDIDATES;
+            case java.awt.event.KeyEvent.VK_ALPHANUMERIC -> KeyCode.ALPHANUMERIC;
+            case java.awt.event.KeyEvent.VK_ALT -> KeyCode.ALT;
+            case java.awt.event.KeyEvent.VK_ALT_GRAPH -> KeyCode.ALT_GRAPH;
+            case java.awt.event.KeyEvent.VK_AMPERSAND -> KeyCode.AMPERSAND;
+            case java.awt.event.KeyEvent.VK_ASTERISK -> KeyCode.ASTERISK;
+            case java.awt.event.KeyEvent.VK_AT -> KeyCode.AT;
+            case java.awt.event.KeyEvent.VK_B -> KeyCode.B;
+            case java.awt.event.KeyEvent.VK_BACK_QUOTE -> KeyCode.BACK_QUOTE;
+            case java.awt.event.KeyEvent.VK_BACK_SLASH -> KeyCode.BACK_SLASH;
+            case java.awt.event.KeyEvent.VK_BACK_SPACE -> KeyCode.BACK_SPACE;
+            case java.awt.event.KeyEvent.VK_BEGIN -> KeyCode.BEGIN;
+            case java.awt.event.KeyEvent.VK_BRACELEFT -> KeyCode.BRACELEFT;
+            case java.awt.event.KeyEvent.VK_BRACERIGHT -> KeyCode.BRACERIGHT;
+            case java.awt.event.KeyEvent.VK_C -> KeyCode.C;
+            case java.awt.event.KeyEvent.VK_CANCEL -> KeyCode.CANCEL;
+            case java.awt.event.KeyEvent.VK_CAPS_LOCK -> KeyCode.CAPS;
+            case java.awt.event.KeyEvent.VK_CIRCUMFLEX -> KeyCode.CIRCUMFLEX;
+            case java.awt.event.KeyEvent.VK_CLEAR -> KeyCode.CLEAR;
+            case java.awt.event.KeyEvent.VK_CLOSE_BRACKET -> KeyCode.CLOSE_BRACKET;
+            case java.awt.event.KeyEvent.VK_CODE_INPUT -> KeyCode.CODE_INPUT;
+            case java.awt.event.KeyEvent.VK_COLON -> KeyCode.COLON;
+            case java.awt.event.KeyEvent.VK_COMMA -> KeyCode.COMMA;
+            case java.awt.event.KeyEvent.VK_COMPOSE -> KeyCode.COMPOSE;
+            case java.awt.event.KeyEvent.VK_CONTEXT_MENU -> KeyCode.CONTEXT_MENU;
+            case java.awt.event.KeyEvent.VK_CONTROL -> KeyCode.CONTROL;
+            case java.awt.event.KeyEvent.VK_CONVERT -> KeyCode.CONVERT;
+            case java.awt.event.KeyEvent.VK_COPY -> KeyCode.COPY;
+            case java.awt.event.KeyEvent.VK_CUT -> KeyCode.CUT;
+            case java.awt.event.KeyEvent.VK_D -> KeyCode.D;
+            case java.awt.event.KeyEvent.VK_DEAD_ABOVEDOT -> KeyCode.DEAD_ABOVEDOT;
+            case java.awt.event.KeyEvent.VK_DEAD_ABOVERING -> KeyCode.DEAD_ABOVERING;
+            case java.awt.event.KeyEvent.VK_DEAD_ACUTE -> KeyCode.DEAD_ACUTE;
+            case java.awt.event.KeyEvent.VK_DEAD_BREVE -> KeyCode.DEAD_BREVE;
+            case java.awt.event.KeyEvent.VK_DEAD_CARON -> KeyCode.DEAD_CARON;
+            case java.awt.event.KeyEvent.VK_DEAD_CEDILLA -> KeyCode.DEAD_CEDILLA;
+            case java.awt.event.KeyEvent.VK_DEAD_CIRCUMFLEX -> KeyCode.DEAD_CIRCUMFLEX;
+            case java.awt.event.KeyEvent.VK_DEAD_DIAERESIS -> KeyCode.DEAD_DIAERESIS;
+            case java.awt.event.KeyEvent.VK_DEAD_DOUBLEACUTE -> KeyCode.DEAD_DOUBLEACUTE;
+            case java.awt.event.KeyEvent.VK_DEAD_GRAVE -> KeyCode.DEAD_GRAVE;
+            case java.awt.event.KeyEvent.VK_DEAD_IOTA -> KeyCode.DEAD_IOTA;
+            case java.awt.event.KeyEvent.VK_DEAD_MACRON -> KeyCode.DEAD_MACRON;
+            case java.awt.event.KeyEvent.VK_DEAD_OGONEK -> KeyCode.DEAD_OGONEK;
+            case java.awt.event.KeyEvent.VK_DEAD_SEMIVOICED_SOUND -> KeyCode.DEAD_SEMIVOICED_SOUND;
+            case java.awt.event.KeyEvent.VK_DEAD_TILDE -> KeyCode.DEAD_TILDE;
+            case java.awt.event.KeyEvent.VK_DEAD_VOICED_SOUND -> KeyCode.DEAD_VOICED_SOUND;
+            case java.awt.event.KeyEvent.VK_DECIMAL -> KeyCode.DECIMAL;
+            case java.awt.event.KeyEvent.VK_DELETE -> KeyCode.DELETE;
+            case java.awt.event.KeyEvent.VK_0 -> KeyCode.DIGIT0;
+            case java.awt.event.KeyEvent.VK_1 -> KeyCode.DIGIT1;
+            case java.awt.event.KeyEvent.VK_2 -> KeyCode.DIGIT2;
+            case java.awt.event.KeyEvent.VK_3 -> KeyCode.DIGIT3;
+            case java.awt.event.KeyEvent.VK_4 -> KeyCode.DIGIT4;
+            case java.awt.event.KeyEvent.VK_5 -> KeyCode.DIGIT5;
+            case java.awt.event.KeyEvent.VK_6 -> KeyCode.DIGIT6;
+            case java.awt.event.KeyEvent.VK_7 -> KeyCode.DIGIT7;
+            case java.awt.event.KeyEvent.VK_8 -> KeyCode.DIGIT8;
+            case java.awt.event.KeyEvent.VK_9 -> KeyCode.DIGIT9;
+            case java.awt.event.KeyEvent.VK_DIVIDE -> KeyCode.DIVIDE;
+            case java.awt.event.KeyEvent.VK_DOLLAR -> KeyCode.DOLLAR;
+            case java.awt.event.KeyEvent.VK_DOWN -> KeyCode.DOWN;
+            case java.awt.event.KeyEvent.VK_E -> KeyCode.E;
+            case java.awt.event.KeyEvent.VK_END -> KeyCode.END;
+            case java.awt.event.KeyEvent.VK_ENTER -> KeyCode.ENTER;
+            case java.awt.event.KeyEvent.VK_EQUALS -> KeyCode.EQUALS;
+            case java.awt.event.KeyEvent.VK_ESCAPE -> KeyCode.ESCAPE;
+            case java.awt.event.KeyEvent.VK_EURO_SIGN -> KeyCode.EURO_SIGN;
+            case java.awt.event.KeyEvent.VK_EXCLAMATION_MARK -> KeyCode.EXCLAMATION_MARK;
+            case java.awt.event.KeyEvent.VK_F -> KeyCode.F;
+            case java.awt.event.KeyEvent.VK_F1 -> KeyCode.F1;
+            case java.awt.event.KeyEvent.VK_F10 -> KeyCode.F10;
+            case java.awt.event.KeyEvent.VK_F11 -> KeyCode.F11;
+            case java.awt.event.KeyEvent.VK_F12 -> KeyCode.F12;
+            case java.awt.event.KeyEvent.VK_F13 -> KeyCode.F13;
+            case java.awt.event.KeyEvent.VK_F14 -> KeyCode.F14;
+            case java.awt.event.KeyEvent.VK_F15 -> KeyCode.F15;
+            case java.awt.event.KeyEvent.VK_F16 -> KeyCode.F16;
+            case java.awt.event.KeyEvent.VK_F17 -> KeyCode.F17;
+            case java.awt.event.KeyEvent.VK_F18 -> KeyCode.F18;
+            case java.awt.event.KeyEvent.VK_F19 -> KeyCode.F19;
+            case java.awt.event.KeyEvent.VK_F2 -> KeyCode.F2;
+            case java.awt.event.KeyEvent.VK_F20 -> KeyCode.F20;
+            case java.awt.event.KeyEvent.VK_F21 -> KeyCode.F21;
+            case java.awt.event.KeyEvent.VK_F22 -> KeyCode.F22;
+            case java.awt.event.KeyEvent.VK_F23 -> KeyCode.F23;
+            case java.awt.event.KeyEvent.VK_F24 -> KeyCode.F24;
+            case java.awt.event.KeyEvent.VK_F3 -> KeyCode.F3;
+            case java.awt.event.KeyEvent.VK_F4 -> KeyCode.F4;
+            case java.awt.event.KeyEvent.VK_F5 -> KeyCode.F5;
+            case java.awt.event.KeyEvent.VK_F6 -> KeyCode.F6;
+            case java.awt.event.KeyEvent.VK_F7 -> KeyCode.F7;
+            case java.awt.event.KeyEvent.VK_F8 -> KeyCode.F8;
+            case java.awt.event.KeyEvent.VK_F9 -> KeyCode.F9;
+            case java.awt.event.KeyEvent.VK_FINAL -> KeyCode.FINAL;
+            case java.awt.event.KeyEvent.VK_FIND -> KeyCode.FIND;
+            case java.awt.event.KeyEvent.VK_FULL_WIDTH -> KeyCode.FULL_WIDTH;
+            case java.awt.event.KeyEvent.VK_G -> KeyCode.G;
+            case java.awt.event.KeyEvent.VK_GREATER -> KeyCode.GREATER;
+            case java.awt.event.KeyEvent.VK_H -> KeyCode.H;
+            case java.awt.event.KeyEvent.VK_HALF_WIDTH -> KeyCode.HALF_WIDTH;
+            case java.awt.event.KeyEvent.VK_HELP -> KeyCode.HELP;
+            case java.awt.event.KeyEvent.VK_HIRAGANA -> KeyCode.HIRAGANA;
+            case java.awt.event.KeyEvent.VK_HOME -> KeyCode.HOME;
+            case java.awt.event.KeyEvent.VK_I -> KeyCode.I;
+            case java.awt.event.KeyEvent.VK_INPUT_METHOD_ON_OFF -> KeyCode.INPUT_METHOD_ON_OFF;
+            case java.awt.event.KeyEvent.VK_INSERT -> KeyCode.INSERT;
+            case java.awt.event.KeyEvent.VK_J -> KeyCode.J;
+            case java.awt.event.KeyEvent.VK_JAPANESE_HIRAGANA -> KeyCode.JAPANESE_HIRAGANA;
+            case java.awt.event.KeyEvent.VK_JAPANESE_KATAKANA -> KeyCode.JAPANESE_KATAKANA;
+            case java.awt.event.KeyEvent.VK_JAPANESE_ROMAN -> KeyCode.JAPANESE_ROMAN;
+            case java.awt.event.KeyEvent.VK_K -> KeyCode.K;
+            case java.awt.event.KeyEvent.VK_KANA -> KeyCode.KANA;
+            case java.awt.event.KeyEvent.VK_KANA_LOCK -> KeyCode.KANA_LOCK;
+            case java.awt.event.KeyEvent.VK_KANJI -> KeyCode.KANJI;
+            case java.awt.event.KeyEvent.VK_KATAKANA -> KeyCode.KATAKANA;
+            case java.awt.event.KeyEvent.VK_KP_DOWN -> KeyCode.KP_DOWN;
+            case java.awt.event.KeyEvent.VK_KP_LEFT -> KeyCode.KP_LEFT;
+            case java.awt.event.KeyEvent.VK_KP_RIGHT -> KeyCode.KP_RIGHT;
+            case java.awt.event.KeyEvent.VK_KP_UP -> KeyCode.KP_UP;
+            case java.awt.event.KeyEvent.VK_L -> KeyCode.L;
+            case java.awt.event.KeyEvent.VK_LEFT -> KeyCode.LEFT;
+            case java.awt.event.KeyEvent.VK_LEFT_PARENTHESIS -> KeyCode.LEFT_PARENTHESIS;
+            case java.awt.event.KeyEvent.VK_LESS -> KeyCode.LESS;
+            case java.awt.event.KeyEvent.VK_M -> KeyCode.M;
+            case java.awt.event.KeyEvent.VK_META -> KeyCode.META;
+            case java.awt.event.KeyEvent.VK_MINUS -> KeyCode.MINUS;
+            case java.awt.event.KeyEvent.VK_MODECHANGE -> KeyCode.MODECHANGE;
+            case java.awt.event.KeyEvent.VK_MULTIPLY -> KeyCode.MULTIPLY;
+            case java.awt.event.KeyEvent.VK_N -> KeyCode.N;
+            case java.awt.event.KeyEvent.VK_NONCONVERT -> KeyCode.NONCONVERT;
+            case java.awt.event.KeyEvent.VK_NUMBER_SIGN -> KeyCode.NUMBER_SIGN;
+            case java.awt.event.KeyEvent.VK_NUMPAD0 -> KeyCode.NUMPAD0;
+            case java.awt.event.KeyEvent.VK_NUMPAD1 -> KeyCode.NUMPAD1;
+            case java.awt.event.KeyEvent.VK_NUMPAD2 -> KeyCode.NUMPAD2;
+            case java.awt.event.KeyEvent.VK_NUMPAD3 -> KeyCode.NUMPAD3;
+            case java.awt.event.KeyEvent.VK_NUMPAD4 -> KeyCode.NUMPAD4;
+            case java.awt.event.KeyEvent.VK_NUMPAD5 -> KeyCode.NUMPAD5;
+            case java.awt.event.KeyEvent.VK_NUMPAD6 -> KeyCode.NUMPAD6;
+            case java.awt.event.KeyEvent.VK_NUMPAD7 -> KeyCode.NUMPAD7;
+            case java.awt.event.KeyEvent.VK_NUMPAD8 -> KeyCode.NUMPAD8;
+            case java.awt.event.KeyEvent.VK_NUMPAD9 -> KeyCode.NUMPAD9;
+            case java.awt.event.KeyEvent.VK_NUM_LOCK -> KeyCode.NUM_LOCK;
+            case java.awt.event.KeyEvent.VK_O -> KeyCode.O;
+            case java.awt.event.KeyEvent.VK_OPEN_BRACKET -> KeyCode.OPEN_BRACKET;
+            case java.awt.event.KeyEvent.VK_P -> KeyCode.P;
+            case java.awt.event.KeyEvent.VK_PAGE_DOWN -> KeyCode.PAGE_DOWN;
+            case java.awt.event.KeyEvent.VK_PAGE_UP -> KeyCode.PAGE_UP;
+            case java.awt.event.KeyEvent.VK_PASTE -> KeyCode.PASTE;
+            case java.awt.event.KeyEvent.VK_PAUSE -> KeyCode.PAUSE;
+            case java.awt.event.KeyEvent.VK_PERIOD -> KeyCode.PERIOD;
+            case java.awt.event.KeyEvent.VK_PLUS -> KeyCode.PLUS;
+            case java.awt.event.KeyEvent.VK_PREVIOUS_CANDIDATE -> KeyCode.PREVIOUS_CANDIDATE;
+            case java.awt.event.KeyEvent.VK_PRINTSCREEN -> KeyCode.PRINTSCREEN;
+            case java.awt.event.KeyEvent.VK_PROPS -> KeyCode.PROPS;
+            case java.awt.event.KeyEvent.VK_Q -> KeyCode.Q;
+            case java.awt.event.KeyEvent.VK_QUOTE -> KeyCode.QUOTE;
+            case java.awt.event.KeyEvent.VK_QUOTEDBL -> KeyCode.QUOTEDBL;
+            case java.awt.event.KeyEvent.VK_R -> KeyCode.R;
+            case java.awt.event.KeyEvent.VK_RIGHT -> KeyCode.RIGHT;
+            case java.awt.event.KeyEvent.VK_RIGHT_PARENTHESIS -> KeyCode.RIGHT_PARENTHESIS;
+            case java.awt.event.KeyEvent.VK_ROMAN_CHARACTERS -> KeyCode.ROMAN_CHARACTERS;
+            case java.awt.event.KeyEvent.VK_S -> KeyCode.S;
+            case java.awt.event.KeyEvent.VK_SCROLL_LOCK -> KeyCode.SCROLL_LOCK;
+            case java.awt.event.KeyEvent.VK_SEMICOLON -> KeyCode.SEMICOLON;
+            case java.awt.event.KeyEvent.VK_SEPARATOR -> KeyCode.SEPARATOR;
+            case java.awt.event.KeyEvent.VK_SHIFT -> KeyCode.SHIFT;
+            case java.awt.event.KeyEvent.VK_SLASH -> KeyCode.SLASH;
+            case java.awt.event.KeyEvent.VK_STOP -> KeyCode.STOP;
+            case java.awt.event.KeyEvent.VK_SUBTRACT -> KeyCode.SUBTRACT;
+            case java.awt.event.KeyEvent.VK_T -> KeyCode.T;
+            case java.awt.event.KeyEvent.VK_TAB -> KeyCode.TAB;
+            case java.awt.event.KeyEvent.VK_U -> KeyCode.U;
+            case java.awt.event.KeyEvent.VK_UNDERSCORE -> KeyCode.UNDERSCORE;
+            case java.awt.event.KeyEvent.VK_UNDO -> KeyCode.UNDO;
+            case java.awt.event.KeyEvent.VK_UP -> KeyCode.UP;
+            case java.awt.event.KeyEvent.VK_V -> KeyCode.V;
+            case java.awt.event.KeyEvent.VK_W -> KeyCode.W;
+            case java.awt.event.KeyEvent.VK_WINDOWS -> KeyCode.WINDOWS;
+            case java.awt.event.KeyEvent.VK_X -> KeyCode.X;
+            case java.awt.event.KeyEvent.VK_Y -> KeyCode.Y;
+            case java.awt.event.KeyEvent.VK_Z -> KeyCode.Z;
+            default -> KeyCode.UNDEFINED;
+        };
     }
 
     /**

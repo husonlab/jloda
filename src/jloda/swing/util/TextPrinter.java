@@ -27,7 +27,6 @@ import java.awt.font.TextAttribute;
 import java.awt.font.TextLayout;
 import java.awt.print.PageFormat;
 import java.awt.print.Printable;
-import java.awt.print.PrinterException;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.StringReader;
@@ -64,7 +63,7 @@ public class TextPrinter implements Printable {
         this.font = font;
     }
 
-    public int print(Graphics graphics, PageFormat pageFormat, int pageIndex) throws PrinterException {
+    public int print(Graphics graphics, PageFormat pageFormat, int pageIndex) {
 
         Graphics2D g = (Graphics2D) graphics;
         g.setColor(Color.black);

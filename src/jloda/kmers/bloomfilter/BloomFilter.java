@@ -34,7 +34,7 @@ import java.util.Collection;
  * Daniel Huson, 1.2019
  */
 public class BloomFilter {
-    public static int MAGIC_INT = 1179405634; // BMFL
+    public static final int MAGIC_INT = 1179405634; // BMFL
     private final int bitsPerItem;
     private final int numberOfHashFunctions;
     private final LongBitSet bitSet;

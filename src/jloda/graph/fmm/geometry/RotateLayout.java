@@ -29,7 +29,7 @@ import jloda.graph.fmm.algorithm.NodeAttributes;
  * Reimplemented in Java by Daniel Huson, 3.2021
  */
 public class RotateLayout {
-    public static DRect apply(FastMultiLayerMethodOptions options, Graph graph, NodeArray<NodeAttributes> nodeAttributes) {
+    public static void apply(FastMultiLayerMethodOptions options, Graph graph, NodeArray<NodeAttributes> nodeAttributes) {
         NodeArray<DPoint> bestCoordinates = graph.newNodeArray();
         NodeArray<DPoint> originalCoordinates = graph.newNodeArray();
 
@@ -80,6 +80,5 @@ public class RotateLayout {
         for (var v : graph.nodes()) {
             nodeAttributes.get(v).setPosition(bestCoordinates.get(v));
         }
-        return r_best;
     }
 }

@@ -36,7 +36,7 @@ import java.util.TreeSet;
  * Daniel Huson, 1.2019
  */
 public class MashSketch {
-    public static int MAGIC_INT = 1213415757; // 1213415757
+    public static final int MAGIC_INT = 1213415757; // 1213415757
 
     private final int sketchSize;
     private final int kSize;

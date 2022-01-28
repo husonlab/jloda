@@ -79,7 +79,7 @@ public class Workflow extends WorkerBase implements Worker<Boolean> {
 
 		nodeValidChangeListener = (v, o, n) -> {
 			if (n)
-				valid.set(nodes.size() > 0 && nodes.stream().allMatch(a -> a.isValid()));
+				valid.set(nodes.size() > 0 && nodes.stream().allMatch(WorkflowNode::isValid));
 			else
 				valid.set(true);
 		};
@@ -155,7 +155,7 @@ public class Workflow extends WorkerBase implements Worker<Boolean> {
 	@Override
 	public boolean cancel() {
 		var canceled = 0;
-		for (var v : IteratorUtils.asStream(algorithmNodes()).filter(a -> a.getService().getState() == State.RUNNING).collect(Collectors.toList())) {
+		for (var v : IteratorUtils.asStream(algorithmNodes()).filter(a -> a.getService().getState() == State.RUNNING).toList()) {
 			if (v.getService().cancel())
 				canceled++;
 		}
@@ -314,7 +314,7 @@ public class Workflow extends WorkerBase implements Worker<Boolean> {
 				seen.add(node);
 				buf.append(node.toReportString(true));
 				buf.append("\n");
-				queue.addAll(node.getChildren().stream().filter(n -> !seen.contains(n)).collect(Collectors.toList()));
+				queue.addAll(node.getChildren().stream().filter(n -> !seen.contains(n)).toList());
 			}
 		}
 		return buf.toString();

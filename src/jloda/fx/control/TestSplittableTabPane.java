@@ -32,7 +32,7 @@ import jloda.util.Single;
 
 public class TestSplittableTabPane extends Application {
     @Override
-    public void init() throws Exception {
+    public void init() {
         ProgramProperties.setProgramName("Test");
     }
 

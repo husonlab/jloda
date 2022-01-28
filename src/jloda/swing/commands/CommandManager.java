@@ -118,9 +118,9 @@ public class CommandManager {
     public void addCommands(Object viewer, String[] commandsPaths) {
         final List<ICommand> commands = new LinkedList<>();
         for (String commandsPath : commandsPaths) {
-            for (Object obj : PluginClassLoader.getInstances(ICommand.class, commandsPath)) {
+            for (ICommand obj : PluginClassLoader.getInstances(ICommand.class, commandsPath)) {
                 if (obj instanceof ICommand)
-                    commands.add((ICommand) obj);
+                    commands.add(obj);
             }
         }
         addCommands(viewer, commands, false);

@@ -91,68 +91,27 @@ public class ProteinComplexityMeasure {
      * @return index
      */
     private static int getIndex(byte c) {
-        switch (c) {
-            default:
-            case 'a':
-            case 'A':
-                return 0;
-            case 'r':
-            case 'R':
-                return 1;
-            case 'n':
-            case 'N':
-                return 2;
-            case 'd':
-            case 'D':
-                return 3;
-            case 'c':
-            case 'C':
-                return 4;
-            case 'e':
-            case 'E':
-                return 5;
-            case 'q':
-            case 'Q':
-                return 6;
-            case 'g':
-            case 'G':
-                return 7;
-            case 'h':
-            case 'H':
-                return 8;
-            case 'i':
-            case 'I':
-                return 9;
-            case 'l':
-            case 'L':
-                return 10;
-            case 'k':
-            case 'K':
-                return 11;
-            case 'm':
-            case 'M':
-                return 12;
-            case 'f':
-            case 'F':
-                return 13;
-            case 'p':
-            case 'P':
-                return 14;
-            case 's':
-            case 'S':
-                return 15;
-            case 't':
-            case 'T':
-                return 16;
-            case 'w':
-            case 'W':
-                return 17;
-            case 'y':
-            case 'Y':
-                return 18;
-            case 'v':
-            case 'V':
-                return 19;
-        }
+        return switch (c) {
+            case 'a', 'A' -> 0;
+            case 'r', 'R' -> 1;
+            case 'n', 'N' -> 2;
+            case 'd', 'D' -> 3;
+            case 'c', 'C' -> 4;
+            case 'e', 'E' -> 5;
+            case 'q', 'Q' -> 6;
+            case 'g', 'G' -> 7;
+            case 'h', 'H' -> 8;
+            case 'i', 'I' -> 9;
+            case 'l', 'L' -> 10;
+            case 'k', 'K' -> 11;
+            case 'm', 'M' -> 12;
+            case 'f', 'F' -> 13;
+            case 'p', 'P' -> 14;
+            case 's', 'S' -> 15;
+            case 't', 'T' -> 16;
+            case 'w', 'W' -> 17;
+            case 'y', 'Y' -> 18;
+            case 'v', 'V' -> 19;
+        };
     }
 }

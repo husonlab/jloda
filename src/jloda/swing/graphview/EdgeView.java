@@ -714,47 +714,46 @@ final public class EdgeView extends ViewBase implements Cloneable { //, IEdgeVie
         Point apt = new Point(labelReferencePoint);
         Dimension size = getLabelSize();
         switch (labelLayout) {
-            case RADIAL:
-            case USER:
+            case RADIAL, USER -> {
                 apt.x += dxLabel;
                 apt.y += dyLabel;
-                break;
-            case CENTRAL:
+            }
+            case CENTRAL -> {
                 apt.x -= size.width / 2;
                 apt.y += size.height / 2;
-                break;
-            case NORTH:
+            }
+            case NORTH -> {
                 apt.x -= size.width / 2;
                 apt.y -= 3;
-                break;
-            case NORTHEAST:
+            }
+            case NORTHEAST -> {
                 apt.x += 3;
                 apt.y -= 3;
-                break;
-            case EAST:
+            }
+            case EAST -> {
                 apt.x += 3;
                 apt.y += size.height / 2;
-                break;
-            case SOUTHEAST:
+            }
+            case SOUTHEAST -> {
                 apt.x -= 3;
                 apt.y += 3 + size.height;
-                break;
-            case SOUTH:
+            }
+            case SOUTH -> {
                 apt.x -= size.width / 2;
                 apt.y += 3 + size.height;
-                break;
-            case SOUTHWEST:
+            }
+            case SOUTHWEST -> {
                 apt.x -= 3 + size.width;
                 apt.y += 3 + size.height;
-                break;
-            case WEST:
+            }
+            case WEST -> {
                 apt.x -= 3 + size.width;
                 apt.y += size.height / 2;
-                break;
-            case NORTHWEST:
+            }
+            case NORTHWEST -> {
                 apt.x -= 3 + size.width;
                 apt.y -= 3;
-                break;
+            }
         }
         return apt;
     }

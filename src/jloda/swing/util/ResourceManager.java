@@ -293,9 +293,8 @@ public class ResourceManager {
      * @param packageName
      * @param fileName
      * @return image
-     * @throws IOException
      */
-    public static Image getImage(Class clazz, String packageName, String fileName) throws IOException {
+    public static Image getImage(Class clazz, String packageName, String fileName) {
         return getImageResource(clazz, packageName, fileName);
     }
 

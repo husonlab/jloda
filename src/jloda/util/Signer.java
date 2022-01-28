@@ -163,11 +163,10 @@ public class Signer {
      * @return true, if signature is valid for data
      * @throws NoSuchProviderException
      * @throws NoSuchAlgorithmException
-     * @throws InvalidKeySpecException
      * @throws InvalidKeyException
      * @throws SignatureException
      */
-    public boolean verifySignedData(byte[] data, byte[] signature) throws NoSuchProviderException, NoSuchAlgorithmException, InvalidKeySpecException, InvalidKeyException, SignatureException {
+    public boolean verifySignedData(byte[] data, byte[] signature) throws NoSuchProviderException, NoSuchAlgorithmException, InvalidKeyException, SignatureException {
         if (publicKey == null)
             throw new NoSuchElementException("publicKey");
         Signature sig = Signature.getInstance("SHA1withDSA", "SUN");

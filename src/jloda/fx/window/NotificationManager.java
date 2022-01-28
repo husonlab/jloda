@@ -269,22 +269,12 @@ public class NotificationManager {
                 }
 
                 {
-                    final Image icon;
-                    switch (mode) {
-                        case confirmation:
-                            icon = ResourceManagerFX.getIcon("dialog/dialog-confirmation.png");
-                            break;
-                        case warning:
-                            icon = ResourceManagerFX.getIcon("dialog/dialog-warning.png");
-                            break;
-                        default:
-                        case information:
-                            icon = ResourceManagerFX.getIcon("dialog/dialog-information.png");
-                            break;
-                        case error:
-                            icon = ResourceManagerFX.getIcon("dialog/dialog-error.png");
-                            break;
-                    }
+                    final Image icon = switch (mode) {
+                        case confirmation -> ResourceManagerFX.getIcon("dialog/dialog-confirmation.png");
+                        case warning -> ResourceManagerFX.getIcon("dialog/dialog-warning.png");
+                        case information -> ResourceManagerFX.getIcon("dialog/dialog-information.png");
+                        case error -> ResourceManagerFX.getIcon("dialog/dialog-error.png");
+                    };
 
                     final ImageView imageView = new ImageView(icon);
                     imageView.setFitWidth(32);
@@ -316,20 +306,19 @@ public class NotificationManager {
 
         if (!isShowNotifications() || isEchoToConsole()) {
             switch (mode) {
-                default:
-                case information: {
+                case information -> {
                     System.err.print("Info: ");
                     break;
                 }
-                case error: {
+                case error -> {
                     System.err.print("Error: ");
                     break;
                 }
-                case warning: {
+                case warning -> {
                     System.err.print("Warning: ");
                     break;
                 }
-                case confirmation: {
+                case confirmation -> {
                     System.err.print("Confirmed: ");
                     break;
                 }

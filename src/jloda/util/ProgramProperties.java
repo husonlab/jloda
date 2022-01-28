@@ -373,19 +373,10 @@ public class ProgramProperties {
         size = Objects.requireNonNullElseGet(size0, def::getSize);
 
         switch (style) {
-            case Font.BOLD + Font.ITALIC:
-                name += "-BOLDITALIC";
-                break;
-            case Font.BOLD:
-                name += "-BOLD";
-                break;
-            case Font.ITALIC:
-                name += "-ITALIC";
-                break;
-            default:
-            case Font.PLAIN:
-                name += "-PLAIN";
-                break;
+            case Font.BOLD + Font.ITALIC -> name += "-BOLDITALIC";
+            case Font.BOLD -> name += "-BOLD";
+            case Font.ITALIC -> name += "-ITALIC";
+            case Font.PLAIN -> name += "-PLAIN";
         }
         name += "-" + size;
         props.setProperty(key, name);

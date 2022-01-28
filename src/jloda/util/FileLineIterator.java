@@ -135,9 +135,8 @@ public class FileLineIterator implements ICloseableIterator<String> {
      * constructor
      *
      * @param r
-     * @throws java.io.FileNotFoundException
      */
-    public FileLineIterator(Reader r, String fileName, boolean reportProgress) throws IOException {
+    public FileLineIterator(Reader r, String fileName, boolean reportProgress) {
         this.fileName = fileName;
 
         if (fileName.startsWith(PREFIX_TO_INDICATE_TO_PARSE_FILENAME_STRING)) {
@@ -145,8 +144,8 @@ public class FileLineIterator implements ICloseableIterator<String> {
             endOfLineBytes = 1;
             maxProgress = fileName.length() - PREFIX_TO_INDICATE_TO_PARSE_FILENAME_STRING.length();
         } else {
-			reader = new BufferedReader(r, bufferSize);
-			endOfLineBytes = FileUtils.determineEndOfLinesBytes(new File(fileName));
+            reader = new BufferedReader(r, bufferSize);
+            endOfLineBytes = FileUtils.determineEndOfLinesBytes(new File(fileName));
 
             File file = new File(fileName);
             if (file.exists())

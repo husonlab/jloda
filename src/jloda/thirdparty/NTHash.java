@@ -284,7 +284,7 @@ public class NTHash {
 	public static long NTC64(final CharSequence kmerSeq, final int k) {
 		long fhVal = getFhval(kmerSeq, k);
 		long rhVal = getRhval(kmerSeq, k);
-		return (rhVal < fhVal) ? rhVal : fhVal;
+		return Math.min(rhVal, fhVal);
 	}
 
 	/**
@@ -299,7 +299,7 @@ public class NTHash {
 	public static long NTC64(final char charOut, final char charIn, final int k, final long[] frhVals) {
 		frhVals[0] = Long.rotateLeft(frhVals[0], 1) ^ Long.rotateLeft(seedTab[charOut], k) ^ seedTab[charIn]; // forward strand
 		frhVals[1] = Long.rotateRight(frhVals[1], 1) ^ Long.rotateRight(seedTab[charOut & cpOff], 1) ^ Long.rotateLeft(seedTab[charIn & cpOff], k - 1); // reverse strand
-		return (frhVals[1] < frhVals[0]) ? frhVals[1] : frhVals[0]; // canonical
+		return Math.min(frhVals[1], frhVals[0]); // canonical
 	}
 
 	/**
@@ -314,7 +314,7 @@ public class NTHash {
 	public static long NTC64B(final char charOut, final char charIn, final int k, final long[] frhVals) {
 		frhVals[0] = Long.rotateRight(frhVals[0], 1) ^ Long.rotateRight(seedTab[charOut], 1) ^ Long.rotateLeft(seedTab[charIn], k - 1); // forward strand
 		frhVals[1] = Long.rotateLeft(frhVals[1], 1) ^ Long.rotateLeft(seedTab[charOut & cpOff], k) ^ seedTab[charIn & cpOff]; // reverse strand
-		return (frhVals[1] < frhVals[0]) ? frhVals[1] : frhVals[0]; // canonical
+		return Math.min(frhVals[1], frhVals[0]); // canonical
 	}
 
 //    /**
@@ -485,7 +485,7 @@ public class NTHash {
 			fhVal ^= msTab[kmerSeq.charAt(i)][(k - 1 - i) % 64];
 			rhVal ^= msTab[kmerSeq.charAt(i) & cpOff][i % 64];
 		}
-		return (rhVal < fhVal) ? rhVal : fhVal;
+		return Math.min(rhVal, fhVal);
 	}
 
 //    /**
@@ -517,7 +517,7 @@ public class NTHash {
 			frhVals[0] ^= msTab[kmerSeq.charAt(i)][(k - 1 - i) % 64];
 			frhVals[1] ^= msTab[kmerSeq.charAt(i) & cpOff][i % 64];
 		}
-		return (frhVals[1] < frhVals[0]) ? frhVals[1] : frhVals[0];
+		return Math.min(frhVals[1], frhVals[0]);
 	}
 
 	/**
@@ -536,7 +536,7 @@ public class NTHash {
 			frhVals[0] ^= msTab[seq.charAt(start + i)][(k - 1 - i) % 64];
 			frhVals[1] ^= msTab[seq.charAt(start + i) & cpOff][i % 64];
 		}
-		return (frhVals[1] < frhVals[0]) ? frhVals[1] : frhVals[0];
+		return Math.min(frhVals[1], frhVals[0]);
 	}
 
 	/**
@@ -551,7 +551,7 @@ public class NTHash {
 	public static long NTPC64(final char charOut, final char charIn, final int k, final long[] frhVals) {
 		frhVals[0] = Long.rotateLeft(frhVals[0], 1) ^ msTab[charOut][k % 64] ^ msTab[charIn][0]; // forward strand
 		frhVals[1] = Long.rotateRight(frhVals[1], 1) ^ msTab[charOut & cpOff][63] ^ msTab[charIn & cpOff][(k - 1) % 64]; // reverse strand
-		return (frhVals[1] < frhVals[0]) ? frhVals[1] : frhVals[0]; // canonical
+		return Math.min(frhVals[1], frhVals[0]); // canonical
 	}
 
 	/**
@@ -566,7 +566,7 @@ public class NTHash {
 	public static long NTPC64B(final char charOut, final char charIn, final int k, final long[] frhVals) {
 		frhVals[0] = Long.rotateRight(frhVals[0], 1) ^ msTab[charOut][0] ^ msTab[charIn][k % 64]; // forward strand
 		frhVals[1] = Long.rotateLeft(frhVals[1], 1) ^ msTab[charOut & cpOff][(k - 1) % 64] ^ msTab[charIn & cpOff][63]; // reverse strand
-		return (frhVals[1] < frhVals[0]) ? frhVals[1] : frhVals[0]; // canonical
+		return Math.min(frhVals[1], frhVals[0]); // canonical
 	}
 
 	/**

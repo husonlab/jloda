@@ -94,7 +94,6 @@ public class QuasiMedianClosure {
 
         while (curSequences.size() > 0) {
             String[] oldArray = (String[]) oldSequences.toArray(new String[0]);
-            newSequences.clear();
             for (String seqA : oldArray) {
                 for (String seqB : oldArray) {
                     for (Object curSequence : curSequences) {

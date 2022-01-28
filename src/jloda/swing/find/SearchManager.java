@@ -829,7 +829,7 @@ public class SearchManager implements IDirectableViewer {
     /**
      * ask tree to destroy itself
      */
-    public void destroyView() throws CanceledException {
+    public void destroyView() {
         // because the searchmanager is directed by all documents, don't want it to close when one document is closed
         //searchWindow.getFrame().setVisible(false);
     }
@@ -884,18 +884,17 @@ public class SearchManager implements IDirectableViewer {
      * chooses the current searcher by name
      *
      * @param name
-     * @return true, if found
      */
-    public boolean chooseSearcher(String name) {
-        if (findDialog != null)
-            return findDialog.selectTarget(name);
-        else  // need this in command-line mode:
+    public void chooseSearcher(String name) {
+        if (findDialog != null) {
+            findDialog.selectTarget(name);
+        } else  // need this in command-line mode:
         {
             for (ISearcher target : targets) {
                 if (target.getName().equalsIgnoreCase(name)) {
                     searcher = target;
                     updateView(IDirector.ALL);
-                    return true;
+                    return;
                 }
             }
             // if no exact match, use prefix
@@ -903,10 +902,9 @@ public class SearchManager implements IDirectableViewer {
                 if (target.getName().toLowerCase().startsWith(name.toLowerCase())) {
                     searcher = target;
                     updateView(IDirector.ALL);
-                    return true;
+                    return;
                 }
             }
-            return false;
         }
     }
 

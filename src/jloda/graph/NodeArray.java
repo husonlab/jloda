@@ -125,7 +125,7 @@ public class NodeArray<T> extends GraphBase implements Iterable<T>, Map<Node, T>
         if (isEmpty())
             return Collections.emptyIterator();
         else
-            return IteratorUtils.iteratorNonNullElements(new Iterator<T>() {
+            return IteratorUtils.iteratorNonNullElements(new Iterator<>() {
                 int i = 0;
 
                 @Override
@@ -136,8 +136,8 @@ public class NodeArray<T> extends GraphBase implements Iterable<T>, Map<Node, T>
                 @Override
                 public T next() {
                     return data[i++];
-            }
-        });
+                }
+            });
     }
 
 

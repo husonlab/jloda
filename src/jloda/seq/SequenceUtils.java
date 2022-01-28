@@ -69,227 +69,147 @@ public class SequenceUtils {
             case 'U':
                 switch (c2) {
                     case 'U':
-                        switch (c3) {
-                            case 'U':
-                            case 'C':
-                                return 'F';
-                            case 'A':
-                                return 'L';
-                            case 'G':
-                                return 'L';
-                            default:
-                                return 'X';
-                        }
+                        return switch (c3) {
+                            case 'U', 'C' -> 'F';
+                            case 'A' -> 'L';
+                            case 'G' -> 'L';
+                            default -> 'X';
+                        };
                     case 'C':
-                        switch (c3) {
-                            case 'U':
-                                return 'S';
-                            case 'C':
-                                return 'S';
-                            case 'A':
-                                return 'S';
-                            case 'G':
-                                return 'S';
-                            default:
-                                return 'S';
-                        }
+                        return switch (c3) {
+                            case 'U' -> 'S';
+                            case 'C' -> 'S';
+                            case 'A' -> 'S';
+                            case 'G' -> 'S';
+                            default -> 'S';
+                        };
                     case 'A':
-                        switch (c3) {
-                            case 'U':
-                                return 'Y';
-                            case 'C':
-                                return 'Y';
-                            case 'A':
-                                return '*';
-                            case 'G':
-                                return '*';
-                            default:
-                                return 'X';
-                        }
+                        return switch (c3) {
+                            case 'U' -> 'Y';
+                            case 'C' -> 'Y';
+                            case 'A' -> '*';
+                            case 'G' -> '*';
+                            default -> 'X';
+                        };
                     case 'G':
-                        switch (c3) {
-                            case 'U':
-                                return 'C';
-                            case 'C':
-                                return 'C';
-                            case 'A':
-                                return '*';
-                            case 'G':
-                                return 'W';
-                            default:
-                                return 'X';
-                        }
+                        return switch (c3) {
+                            case 'U' -> 'C';
+                            case 'C' -> 'C';
+                            case 'A' -> '*';
+                            case 'G' -> 'W';
+                            default -> 'X';
+                        };
                     default:
                         return 'X';
                 }
             case 'C':
                 switch (c2) {
                     case 'U':
-                        switch (c3) {
-                            case 'U':
-                                return 'L';
-                            case 'C':
-                                return 'L';
-                            case 'A':
-                                return 'L';
-                            case 'G':
-                                return 'L';
-                            default:
-                                return 'L';
-                        }
+                        return switch (c3) {
+                            case 'U' -> 'L';
+                            case 'C' -> 'L';
+                            case 'A' -> 'L';
+                            case 'G' -> 'L';
+                            default -> 'L';
+                        };
                     case 'C':
-                        switch (c3) {
-                            case 'U':
-                                return 'P';
-                            case 'C':
-                                return 'P';
-                            case 'A':
-                                return 'P';
-                            case 'G':
-                                return 'P';
-                            default:
-                                return 'P';
-                        }
+                        return switch (c3) {
+                            case 'U' -> 'P';
+                            case 'C' -> 'P';
+                            case 'A' -> 'P';
+                            case 'G' -> 'P';
+                            default -> 'P';
+                        };
                     case 'A':
-                        switch (c3) {
-                            case 'U':
-                                return 'H';
-                            case 'C':
-                                return 'H';
-                            case 'A':
-                                return 'Q';
-                            case 'G':
-                                return 'Q';
-                            default:
-                                return 'X';
-                        }
+                        return switch (c3) {
+                            case 'U' -> 'H';
+                            case 'C' -> 'H';
+                            case 'A' -> 'Q';
+                            case 'G' -> 'Q';
+                            default -> 'X';
+                        };
                     case 'G':
-                        switch (c3) {
-                            case 'U':
-                                return 'R';
-                            case 'C':
-                                return 'R';
-                            case 'A':
-                                return 'R';
-                            case 'G':
-                                return 'R';
-                            default:
-                                return 'R';
-                        }
+                        return switch (c3) {
+                            case 'U' -> 'R';
+                            case 'C' -> 'R';
+                            case 'A' -> 'R';
+                            case 'G' -> 'R';
+                            default -> 'R';
+                        };
                     default:
                         return 'X';
                 }
             case 'A':
                 switch (c2) {
                     case 'U':
-                        switch (c3) {
-                            case 'U':
-                                return 'I';
-                            case 'C':
-                                return 'I';
-                            case 'A':
-                                return 'I';
-                            case 'G':
-                                return 'M';
-                            default:
-                                return 'X';
-                        }
+                        return switch (c3) {
+                            case 'U' -> 'I';
+                            case 'C' -> 'I';
+                            case 'A' -> 'I';
+                            case 'G' -> 'M';
+                            default -> 'X';
+                        };
                     case 'C':
-                        switch (c3) {
-                            case 'U':
-                                return 'T';
-                            case 'C':
-                                return 'T';
-                            case 'A':
-                                return 'T';
-                            case 'G':
-                                return 'T';
-                            default:
-                                return 'T';
-                        }
+                        return switch (c3) {
+                            case 'U' -> 'T';
+                            case 'C' -> 'T';
+                            case 'A' -> 'T';
+                            case 'G' -> 'T';
+                            default -> 'T';
+                        };
                     case 'A':
-                        switch (c3) {
-                            case 'U':
-                                return 'N';
-                            case 'C':
-                                return 'N';
-                            case 'A':
-                                return 'K';
-                            case 'G':
-                                return 'K';
-                            default:
-                                return 'X';
-                        }
+                        return switch (c3) {
+                            case 'U' -> 'N';
+                            case 'C' -> 'N';
+                            case 'A' -> 'K';
+                            case 'G' -> 'K';
+                            default -> 'X';
+                        };
                     case 'G':
-                        switch (c3) {
-                            case 'U':
-                                return 'S';
-                            case 'C':
-                                return 'S';
-                            case 'A':
-                                return 'R';
-                            case 'G':
-                                return 'R';
-                            default:
-                                return 'X';
-                        }
+                        return switch (c3) {
+                            case 'U' -> 'S';
+                            case 'C' -> 'S';
+                            case 'A' -> 'R';
+                            case 'G' -> 'R';
+                            default -> 'X';
+                        };
                     default:
                         return 'X';
                 }
             case 'G':
                 switch (c2) {
                     case 'U':
-                        switch (c3) {
-                            case 'U':
-                                return 'V';
-                            case 'C':
-                                return 'V';
-                            case 'A':
-                                return 'V';
-                            case 'G':
-                                return 'V';
-                            default:
-                                return 'V';
-                        }
+                        return switch (c3) {
+                            case 'U' -> 'V';
+                            case 'C' -> 'V';
+                            case 'A' -> 'V';
+                            case 'G' -> 'V';
+                            default -> 'V';
+                        };
                     case 'C':
-                        switch (c3) {
-                            case 'U':
-                                return 'A';
-                            case 'C':
-                                return 'A';
-                            case 'A':
-                                return 'A';
-                            case 'G':
-                                return 'A';
-                            default:
-                                return 'A';
-                        }
+                        return switch (c3) {
+                            case 'U' -> 'A';
+                            case 'C' -> 'A';
+                            case 'A' -> 'A';
+                            case 'G' -> 'A';
+                            default -> 'A';
+                        };
                     case 'A':
-                        switch (c3) {
-                            case 'U':
-                                return 'D';
-                            case 'C':
-                                return 'D';
-                            case 'A':
-                                return 'E';
-                            case 'G':
-                                return 'E';
-                            default:
-                                return 'X';
-                        }
+                        return switch (c3) {
+                            case 'U' -> 'D';
+                            case 'C' -> 'D';
+                            case 'A' -> 'E';
+                            case 'G' -> 'E';
+                            default -> 'X';
+                        };
                     case 'G':
-                        switch (c3) {
-                            case 'U':
-                                return 'G';
-                            case 'C':
-                                return 'G';
-                            case 'A':
-                                return 'G';
-                            case 'G':
-                                return 'G';
-                            default:
-                                return 'G';
-                        }
+                        return switch (c3) {
+                            case 'U' -> 'G';
+                            case 'C' -> 'G';
+                            case 'A' -> 'G';
+                            case 'G' -> 'G';
+                            default -> 'G';
+                        };
                     default:
                         return 'X';
                 }
@@ -414,26 +334,17 @@ public class SequenceUtils {
      * @return reverse complement
      */
     public static byte getComplement(byte nucleotide) {
-        switch (nucleotide) {
-            case 'a':
-                return 't';
-            case 'A':
-                return 'T';
-            case 'c':
-                return 'g';
-            case 'C':
-                return 'G';
-            case 'g':
-                return 'c';
-            case 'G':
-                return 'C';
-            case 't':
-                return 'a';
-            case 'T':
-                return 'A';
-            default:
-                return nucleotide;
-        }
+        return switch (nucleotide) {
+            case 'a' -> 't';
+            case 'A' -> 'T';
+            case 'c' -> 'g';
+            case 'C' -> 'G';
+            case 'g' -> 'c';
+            case 'G' -> 'C';
+            case 't' -> 'a';
+            case 'T' -> 'A';
+            default -> nucleotide;
+        };
     }
 
     /**
@@ -484,22 +395,19 @@ public class SequenceUtils {
      * @param sequence
      * @param offset   start of segment
      * @param length   length of segment
-     * @return reverse complement of a segment
      */
-    public static byte[] getReverseComplement(byte[] sequence, int offset, int length, byte[] result) {
+    public static void getReverseComplement(byte[] sequence, int offset, int length, byte[] result) {
         if (result == null)
             result = new byte[length];
         for (int i = 0; i < length; i++) {
             result[i] = getComplement(sequence[length + offset - 1 - i]);
         }
-        return result;
     }
 
-    public static byte[] getSegment(byte[] sequence, int offset, int length, byte[] result) {
+    public static void getSegment(byte[] sequence, int offset, int length, byte[] result) {
         if (result == null)
             result = new byte[length];
         System.arraycopy(sequence, offset, result, 0, length);
-        return result;
 
     }
 

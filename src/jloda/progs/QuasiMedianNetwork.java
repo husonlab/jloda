@@ -114,15 +114,15 @@ public class QuasiMedianNetwork {
 
         PhyloSplitsGraph graph;
         switch (aLine) {
-            case "q":
+            case "q" -> {
                 outputSequences = computeQuasiMedianClosure(inputSequences, null, null);
                 graph = computeOneStepGraph(outputSequences);
-                break;
-            case "g":
+            }
+            case "g" -> {
                 outputSequences = computeGeodesicPrunedQuasiMedianClosure(inputSequences, sequenceLength);
                 graph = computeOneStepGraph(outputSequences);
-                break;
-            default:
+            }
+            default -> {
 // if(aLine.equals("j"))
 
                 System.err.println("Enter epsilon");
@@ -132,7 +132,7 @@ public class QuasiMedianNetwork {
                     epsilon = Integer.parseInt(aLine);
                 outputSequences = new HashSet();
                 graph = computeMedianJoiningNetwork(inputSequences, weights, epsilon);
-                break;
+            }
         }
 
         System.err.println("Closure (" + outputSequences.size() + "):");

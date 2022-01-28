@@ -37,7 +37,6 @@ public class Entry<K, V> implements Map.Entry<K, V> {
         this.value = value;
     }
 
-    @SuppressWarnings("unchecked")
     public Object clone() {
         return new Entry<>(key, value);
     }

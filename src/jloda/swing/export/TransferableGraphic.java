@@ -23,7 +23,6 @@ import jloda.swing.util.Alert;
 
 import javax.swing.*;
 import java.awt.datatransfer.*;
-import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -76,9 +75,8 @@ public class TransferableGraphic implements ClipboardOwner, Transferable {
      * @param dataFlavor the requested dataFlavor
      * @return the data to be transferred to the clipboard
      * @throws UnsupportedFlavorException
-     * @throws IOException
      */
-    public Object getTransferData(DataFlavor dataFlavor) throws UnsupportedFlavorException, IOException {
+    public Object getTransferData(DataFlavor dataFlavor) throws UnsupportedFlavorException {
 
         ExportGraphicType type = types.get(dataFlavor);
         if (type != null) {

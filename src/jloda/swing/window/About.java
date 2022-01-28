@@ -20,8 +20,6 @@
 package jloda.swing.window;
 
 import jloda.fx.util.ProgramExecutorService;
-import jloda.swing.util.BasicSwing;
-import jloda.swing.util.ResourceManager;
 import jloda.util.Basic;
 import jloda.util.ProgramProperties;
 import jloda.util.StringUtils;
@@ -103,8 +101,8 @@ public class About {
         aboutDialog.setUndecorated(true);
         aboutDialog.setTitle("About " + versionString);
         aboutDialog.setDefaultCloseOperation(closeOperation);
-        var width = (int)Math.round(scaleFactor*(aboutImage != null ? aboutImage.getWidth() : 200));
-        var height = (int)Math.round(scaleFactor*(aboutImage != null ? aboutImage.getHeight() : 200));
+        var width = Math.round(scaleFactor * (aboutImage != null ? aboutImage.getWidth() : 200));
+        var height = Math.round(scaleFactor * (aboutImage != null ? aboutImage.getHeight() : 200));
         aboutDialog.setSize(width, height);
         var d = Toolkit.getDefaultToolkit().getScreenSize();
         aboutDialog.setLocation((d.width - width) / 2, (d.height - height) / 2);

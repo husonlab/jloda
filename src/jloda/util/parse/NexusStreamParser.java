@@ -1564,13 +1564,13 @@ public class NexusStreamParser extends NexusStreamTokenizer implements Closeable
             for (int i = 0; i < 4; i++) {
                 String word = getWordRespectCase();
                 switch (i) {
-                    case 0:
+                    case 0 -> {
                         if (word.equals("null"))
                             return null;
                         if (word.startsWith("#")) // format #rrggbb
                         {
                             javafx.scene.paint.Color fx = javafx.scene.paint.Color.web(word);
-                            return new java.awt.Color((float) fx.getRed(),
+                            return new Color((float) fx.getRed(),
                                     (float) fx.getGreen(),
                                     (float) fx.getBlue(),
                                     (float) fx.getOpacity());
@@ -1583,19 +1583,15 @@ public class NexusStreamParser extends NexusStreamTokenizer implements Closeable
                         } else {
                             return Colors.parseColor(word);
                         }
-                        break;
-                    case 1:
-                        g = Integer.parseInt(word);
-                        break;
-                    case 2:
+                    }
+                    case 1 -> g = Integer.parseInt(word);
+                    case 2 -> {
                         b = Integer.parseInt(word);
                         if (!NumberUtils.isInteger(peekNextWord())) {
                             return new Color(r, g, b);
                         }
-                        break;
-                    case 3:
-                        a = Integer.parseInt(word);
-                        break;
+                    }
+                    case 3 -> a = Integer.parseInt(word);
                 }
             }
             return new Color(r, g, b, a);

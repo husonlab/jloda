@@ -108,18 +108,10 @@ public class RandomDNAGenerator {
 
         for (int i = 0; i < length; i++) {
             switch (r.nextInt(4)) {
-                case 0:
-                    sequence[i] = 'a';
-                    break;
-                case 1:
-                    sequence[i] = 'c';
-                    break;
-                case 2:
-                    sequence[i] = 'g';
-                    break;
-                case 3:
-                    sequence[i] = 't';
-                    break;
+                case 0 -> sequence[i] = 'a';
+                case 1 -> sequence[i] = 'c';
+                case 2 -> sequence[i] = 'g';
+                case 3 -> sequence[i] = 't';
             }
         }
         return sequence;

@@ -137,7 +137,7 @@ public class AnotherMultipleSelectionModel<T> extends MultipleSelectionModel<T> 
 
                     while (e.next()) {
                         if (e.wasRemoved()) {
-                            selectedIndicesSet.removeAll(e.getRemoved());
+                            e.getRemoved().forEach(selectedIndicesSet::remove);
                             if (e.getRemoved().contains(getSelectedIndex())) {
                                 setSelectedIndex(-1);
                                 setSelectedItem(null);

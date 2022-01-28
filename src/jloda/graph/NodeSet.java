@@ -208,9 +208,7 @@ public class NodeSet extends GraphBase implements Set<Node>, AutoCloseable {
      * Puts all nodes into set.
      */
     public void addAll() {
-        Iterator it = getOwner().nodes().iterator();
-        while (it.hasNext())
-            add((Node) it.next());
+        for (Node node : getOwner().nodes()) add(node);
     }
 
     /**

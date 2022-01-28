@@ -98,7 +98,7 @@ public class Transform {
      *
      * @return clone
      */
-    public Object clone() throws CloneNotSupportedException {
+    public Object clone() {
         //super.clone();
         Transform trans = new Transform();
         trans.copy(this);
@@ -454,15 +454,13 @@ public class Transform {
      * @param wp
      * @param dp
      */
-    public Rectangle w2d(Rectangle2D wp, Rectangle dp) {
+    public void w2d(Rectangle2D wp, Rectangle dp) {
         if (wp != null && dp != null) {
             Point2D anchor = w2d(new Point2D.Double(wp.getX(), wp.getY()));
             double width = scaleX * wp.getWidth();
             double height = scaleY * wp.getHeight();
             dp.setRect(anchor.getX() - (flipH ? width : 0), anchor.getY() - (flipV ? height : 0), width, height);
-            return dp;
         }
-        return null;
     }
 
     /**

@@ -169,7 +169,7 @@ public class FormatterActions {
         action = new AbstractAction() {
             public void actionPerformed(ActionEvent event) {
                 if (!ignore) {
-                    Object selectedValue = ((JComboBox) event.getSource()).getSelectedItem();
+                    Object selectedValue = ((JComboBox<?>) event.getSource()).getSelectedItem();
                     if (selectedValue != null) {
                         byte size = 1;
                         try {
@@ -228,7 +228,7 @@ public class FormatterActions {
         action = new AbstractAction() {
             public void actionPerformed(ActionEvent event) {
                 if (!ignore) {
-                    Object selectedValue = ((JComboBox) event.getSource()).getSelectedItem();
+                    Object selectedValue = ((JComboBox<?>) event.getSource()).getSelectedItem();
                     if (selectedValue != null) {
                         String family = selectedValue.toString();
                         boolean changed = setNodeFont(family, -1, -1, -1);
@@ -261,7 +261,7 @@ public class FormatterActions {
                 if (!ignore && event != null && (event.getActionCommand() == null || event.getActionCommand().equals("comboBoxChanged"))) {
                     Object source = event.getSource();
                     if (source instanceof JComboBox) {
-                        Object selectedValue = ((JComboBox) event.getSource()).getSelectedItem();
+                        Object selectedValue = ((JComboBox<?>) event.getSource()).getSelectedItem();
                         if (selectedValue != null) {
                             int size;
                             try {
@@ -269,7 +269,7 @@ public class FormatterActions {
                             } catch (NumberFormatException e) {
                                 new Alert(formatter.getFrame(), "Font Size must be an integer! Size set to 10.");
                                 size = 10;
-                                ((JComboBox) event.getSource()).setSelectedItem("10");
+                                ((JComboBox<?>) event.getSource()).setSelectedItem("10");
                             }
                             boolean changed = setNodeFont(null, -1, -1, size);
                             if (setEdgeFont(null, -1, -1, size))
@@ -356,7 +356,7 @@ public class FormatterActions {
         action = new AbstractAction() {
             public void actionPerformed(ActionEvent event) {
                 if (!ignore) {
-                    Object selectedValue = ((JComboBox) event.getSource()).getSelectedItem();
+                    Object selectedValue = ((JComboBox<?>) event.getSource()).getSelectedItem();
                     if (selectedValue != null) {
                         byte size = 1;
                         try {
@@ -390,7 +390,7 @@ public class FormatterActions {
         action = new AbstractAction() {
             public void actionPerformed(ActionEvent event) {
                 if (!ignore) {
-                    NodeShape shape = (NodeShape) ((JComboBox) event.getSource()).getSelectedItem();
+                    NodeShape shape = (NodeShape) ((JComboBox<?>) event.getSource()).getSelectedItem();
                     if (shape != null) {
                         viewer.setShapeSelectedNodes((byte) shape.ordinal());
                         formatter.fireNodeFormatChanged(viewer.getSelectedNodes());
@@ -418,7 +418,7 @@ public class FormatterActions {
         action = new AbstractAction() {
             public void actionPerformed(ActionEvent event) {
                 if (!ignore) {
-                    Object selectedValue = ((JComboBox) event.getSource()).getSelectedItem();
+                    Object selectedValue = ((JComboBox<?>) event.getSource()).getSelectedItem();
                     if (selectedValue != null) {
                         // todo: this kind of operation should only apply to uncollapsed nodes
                         byte shape = -1;

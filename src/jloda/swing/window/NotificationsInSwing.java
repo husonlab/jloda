@@ -205,22 +205,12 @@ public class NotificationsInSwing {
             mainPanel.setLayout(new BorderLayout());
             mainPanel.add(label, BorderLayout.CENTER);
 
-            ImageIcon icon;
-            switch (mode) {
-                case confirmation:
-                    icon = ResourceManager.getIcon("dialog/dialog-confirmation.png");
-                    break;
-                case warning:
-                    icon = ResourceManager.getIcon("dialog/dialog-warning.png");
-                    break;
-                default:
-                case information:
-                    icon = ResourceManager.getIcon("dialog/dialog-information.png");
-                    break;
-                case error:
-                    icon = ResourceManager.getIcon("dialog/dialog-error.png");
-                    break;
-            }
+            ImageIcon icon = switch (mode) {
+                case confirmation -> ResourceManager.getIcon("dialog/dialog-confirmation.png");
+                case warning -> ResourceManager.getIcon("dialog/dialog-warning.png");
+                case information -> ResourceManager.getIcon("dialog/dialog-information.png");
+                case error -> ResourceManager.getIcon("dialog/dialog-error.png");
+            };
             if (icon != null)
                 icon = new ImageIcon(icon.getImage().getScaledInstance(32, 32, Image.SCALE_SMOOTH));
 
@@ -279,20 +269,19 @@ public class NotificationsInSwing {
 
         if (!isShowNotifications() || isEchoToConsole()) {
             switch (mode) {
-                default:
-                case information: {
+                case information -> {
                     System.err.print("Info: ");
                     break;
                 }
-                case error: {
+                case error -> {
                     System.err.print("Error: ");
                     break;
                 }
-                case warning: {
+                case warning -> {
                     System.err.print("Warning: ");
                     break;
                 }
-                case confirmation: {
+                case confirmation -> {
                     System.err.print("Confirmed: ");
                     break;
                 }

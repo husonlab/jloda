@@ -119,41 +119,38 @@ public class NodeImage {
                         useLayout = ViewBase.EAST;
                 }
                 switch (useLayout) {
-                    case ViewBase.NORTHWEST:
+                    case ViewBase.NORTHWEST -> {
                         x = (int) (rect.getX() - scaledImage.getWidth(observer) - 5);
                         y = (int) (rect.getY() - scaledImage.getHeight(observer) - 3);
-                        break;
-                    case ViewBase.NORTHEAST:
+                    }
+                    case ViewBase.NORTHEAST -> {
                         x = (int) (rect.getX() + rect.getWidth() + 5);
                         y = (int) (rect.getY() - scaledImage.getHeight(observer) - 3);
-                        break;
-                    case ViewBase.NORTH:
+                    }
+                    case ViewBase.NORTH -> {
                         x = (int) (rect.getX() + 0.5 * (rect.getWidth() - scaledImage.getWidth(observer)));
                         y = (int) (rect.getY() - scaledImage.getHeight(observer) - 3);
-                        break;
-                    case ViewBase.SOUTHWEST:
+                    }
+                    case ViewBase.SOUTHWEST -> {
                         x = (int) (rect.getX() - scaledImage.getWidth(observer) - 5);
                         y = (int) (rect.getY() + rect.getHeight() + 3);
-                        break;
-                    case ViewBase.SOUTHEAST:
+                    }
+                    case ViewBase.SOUTHEAST -> {
                         x = (int) (rect.getX() + rect.getWidth() + 5);
                         y = (int) (rect.getY() + rect.getHeight() + 3);
-                        break;
-
-                    case ViewBase.SOUTH:
+                    }
+                    case ViewBase.SOUTH -> {
                         x = (int) (rect.getX() + 0.5 * (rect.getWidth() - scaledImage.getWidth(observer)));
                         y = (int) (rect.getY() + rect.getHeight() + 3);
-                        break;
-                    case ViewBase.WEST:
+                    }
+                    case ViewBase.WEST -> {
                         x = (int) (rect.getX() - scaledImage.getWidth(observer) - 5);
                         y = (int) (rect.getY() + 0.5 * (rect.getHeight() - scaledImage.getHeight(observer)));
-                        break;
-                    default:
-                    case ViewBase.EAST:
+                    }
+                    case ViewBase.EAST -> {
                         x = (int) (rect.getX() + rect.getWidth() + 5);
                         y = (int) (rect.getY() + 0.5 * (rect.getHeight() - scaledImage.getHeight(observer)));
-                        break;
-
+                    }
                 }
                 gc.drawImage(scaledImage, x, y, observer);
                 boundingBox.setRect(x, y, scaledImage.getWidth(observer), scaledImage.getHeight(observer));

@@ -84,12 +84,10 @@ public class PhyloTree extends PhyloSplitsGraph {
      * copies a phylogenetic tree
      *
      * @param src original tree
-     * @return mapping of old nodes to new nodes
      */
-    public NodeArray<Node> copy(PhyloTree src) {
+    public void copy(PhyloTree src) {
         NodeArray<Node> oldNode2NewNode = src.newNodeArray();
         copy(src, oldNode2NewNode, null);
-        return oldNode2NewNode;
     }
 
     /**

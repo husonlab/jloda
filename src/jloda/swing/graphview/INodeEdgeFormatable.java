@@ -134,9 +134,9 @@ public interface INodeEdgeFormatable {
 
     EdgeSet getSelectedEdges();
 
-    boolean selectAllNodes(boolean select);
+    void selectAllNodes(boolean select);
 
-    boolean selectAllEdges(boolean select);
+    void selectAllEdges(boolean select);
 
     JFrame getFrame();
 

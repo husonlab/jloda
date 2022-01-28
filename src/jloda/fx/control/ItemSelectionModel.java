@@ -133,7 +133,7 @@ public class ItemSelectionModel<T> {
 
     public void invertSelection(Collection<T> all) {
         final Set<T> toSelect = new HashSet<>(all);
-        toSelect.removeAll(getSelectedItems());
+        getSelectedItems().forEach(toSelect::remove);
         clearSelection();
         selectItems(toSelect);
     }

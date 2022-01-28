@@ -173,8 +173,8 @@ public class LinearProgramming {
 		int p = -1;
 		for (int i = 0; i < m; i++) {
 			// if (a[i][q] <= 0) continue;
-			if (a[i][q] <= EPSILON) continue;
-			else if (p == -1) p = i;
+			if (a[i][q] <= EPSILON) {
+			} else if (p == -1) p = i;
 			else if ((a[i][m + n] / a[i][q]) < (a[p][m + n] / a[p][q])) p = i;
 		}
 		return p;

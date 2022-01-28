@@ -1070,9 +1070,9 @@ public class StringUtils {
 		for (var i = 0; i < str.length(); i++) {
 			var ch = str.charAt(i);
 			if (Character.isWhitespace(ch) || ".:".contains("" + ch)) {
-				buf.append(ch);
+                buf.append(ch);
                 previousWasSpaceOrPunctuation = true;
-			} else {
+            } else {
 				if (previousWasSpaceOrPunctuation && Character.isLetter(ch))
                     buf.append(Character.toUpperCase(ch));
 				else if (Character.isLetter(ch))

@@ -120,31 +120,30 @@ public class MultiLevel {
 		var sunNodes = new ArrayList<Node>();
 
 		while (!nodeSet.isEmpty()) { // randomly select a sun node
-			Node sunNode;
-			switch (options.getGalaxyChoice()) {
-				default:
-				case UniformProb: {
-					sunNode = nodeSet.getRandomNode();
-					break;
-				}
-				case NonUniformProbLowerMass: {
-					sunNode = nodeSet.getRandomNodeWithLowestStarMass(options.getNumberRandomTries());
-					break;
-				}
-				case NonUniformProbHigherMass: {
-					sunNode = nodeSet.getRandomNodeWithHighestStarMass(options.getNumberRandomTries());
-					break;
-				}
-			}
-			sunNodes.add(sunNode);
+            Node sunNode;
+            switch (options.getGalaxyChoice()) {
+                case UniformProb -> {
+                    sunNode = nodeSet.getRandomNode();
+                    break;
+                }
+                case NonUniformProbLowerMass -> {
+                    sunNode = nodeSet.getRandomNodeWithLowestStarMass(options.getNumberRandomTries());
+                    break;
+                }
+                case NonUniformProbHigherMass -> {
+                    sunNode = nodeSet.getRandomNodeWithHighestStarMass(options.getNumberRandomTries());
+                    break;
+                }
+            }
+            sunNodes.add(sunNode);
 
-			//create new node at higher level that represents the collapsed solar_system
-			var newNode = multiLevelGraph[level + 1].newNode();
-			{
-				var na = new NodeAttributes();
-				na.initMultiLevelValues();
-				multiLevelNodeAttributes[level + 1].put(newNode, na);
-			}
+            //create new node at higher level that represents the collapsed solar_system
+            var newNode = multiLevelGraph[level + 1].newNode();
+            {
+                var na = new NodeAttributes();
+                na.initMultiLevelValues();
+                multiLevelNodeAttributes[level + 1].put(newNode, na);
+            }
 
 			//update information for sun_node
 			{

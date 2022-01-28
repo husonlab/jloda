@@ -119,10 +119,10 @@ public class ExecuteInParallel {
     }
 
     public interface FunctionWithException<S, T> {
-        T apply(S input) throws Exception;
+        T apply(S input);
     }
 
     public interface ConsumerWithException<S> {
-        void accept(S input) throws Exception;
+        void accept(S input);
     }
 }

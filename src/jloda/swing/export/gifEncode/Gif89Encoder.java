@@ -641,7 +641,7 @@ class GifColorTable {
 
     //----------------------------------------------------------------------------
 
-    private void trackPixelUsage(IndexGif89Frame igf) throws IOException {
+    private void trackPixelUsage(IndexGif89Frame igf) {
         byte[] ci_pixels = (byte[]) igf.getPixelSource();
         int npixels = ci_pixels.length;
         for (byte ci_pixel : ci_pixels)

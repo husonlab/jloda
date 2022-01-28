@@ -45,7 +45,7 @@ public class FastMultiLayerMethodLayout {
      * @param result      the resulting node coordinates
      */
     public static Rectangle apply(FastMultiLayerMethodOptions options, Graph graph, Function<Edge, ? extends Number> edgeWeights,
-                                  BiConsumer<Node, Point> result) throws Exception {
+                                  BiConsumer<Node, Point> result) {
         if (!graph.isSimple())
             throw new IllegalArgumentException("graph is not simple");
         if (!graph.isConnected())
@@ -495,15 +495,15 @@ public class FastMultiLayerMethodLayout {
 
     private static void calculateRepulsiveForces(FastMultiLayerMethodOptions options, Graph graph, LayoutBox layoutBox, NodeArray<NodeAttributes> nodeAttributes, EdgeArray<EdgeAttributes> edgeAttributes, NodeArray<DPoint> force) {
         switch (options.getRepulsiveForcesCalculation()) {
-            case Exact: {
+            case Exact -> {
                 FruchtermanReingold.calculateExactRepulsiveForces(graph, nodeAttributes, force);
                 break;
             }
-            default:
-            case GridApproximation: {
+            case GridApproximation -> {
                 FruchtermanReingold.calculateApproxRepulsiveForces(options, graph, layoutBox, nodeAttributes, force);
                 break;
             }
+
             /*
             default:
                 MultipoleMethod.calculate_repulsive_forces(options,graph,box, nodeAttributes, force);
@@ -684,12 +684,11 @@ public class FastMultiLayerMethodLayout {
     private static double attractionScalar(FastMultiLayerMethodOptions options, double d, double ind_ideal_edge_length) {
         double s;
         switch (options.getForceModel()) {
-            default:
-            case FruchtermanReingold: {
+            case FruchtermanReingold -> {
                 s = d * d / (ind_ideal_edge_length * ind_ideal_edge_length * ind_ideal_edge_length);
                 break;
             }
-            case Eades: {
+            case Eades -> {
                 double c = 10;
                 if (d == 0)
                     s = -1e10;
@@ -697,7 +696,7 @@ public class FastMultiLayerMethodLayout {
                     s = c * Math.log(d / ind_ideal_edge_length) / (Math.log(2) * ind_ideal_edge_length);
                 break;
             }
-            case New: {
+            case New -> {
                 double c = Math.log(d / ind_ideal_edge_length) / Math.log(2);
                 if (d > 0)
                     s = c * d * d / (ind_ideal_edge_length * ind_ideal_edge_length * ind_ideal_edge_length);

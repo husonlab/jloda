@@ -20,8 +20,6 @@
 package jloda.util.progress;
 
 
-import jloda.util.CanceledException;
-
 /**
  * progress listener that writes only to the command line
  *
@@ -61,7 +59,7 @@ public class ProgressCmdLine implements ProgressListener {
 	 *
 	 * @param steps
 	 */
-	public void setProgress(final long steps) throws CanceledException {
+	public void setProgress(final long steps) {
 		this.steps = steps;
 	}
 
@@ -91,10 +89,8 @@ public class ProgressCmdLine implements ProgressListener {
 
 	/**
 	 * has user canceled?
-	 *
-	 * @throws jloda.util.CanceledException
 	 */
-	public void checkForCancel() throws CanceledException {
+	public void checkForCancel() {
 	}
 
 	/**

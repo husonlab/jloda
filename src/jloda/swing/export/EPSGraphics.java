@@ -510,29 +510,20 @@ public class EPSGraphics extends Graphics2D {
 
         // endcap
         int endCap = stroke.getEndCap();
-        int psEndCap = -1;
-        switch (endCap) {
-            case BasicStroke.CAP_BUTT:
-                psEndCap = 0;
-                break;
-            case BasicStroke.CAP_ROUND:
-                psEndCap = 1;
-                break;
-            case BasicStroke.CAP_SQUARE:
-                psEndCap = 2;
-                break;
-        }
+        int psEndCap = switch (endCap) {
+            case BasicStroke.CAP_BUTT -> 0;
+            case BasicStroke.CAP_ROUND -> 1;
+            case BasicStroke.CAP_SQUARE -> 2;
+            default -> -1;
+        };
         if (-1 != psEndCap) writeToFile(psEndCap + " setlinecap\r\n");
 
         // line join
         int lineJoin = stroke.getLineJoin();
-        int psLineJoin = -1;
-        switch (lineJoin) {
-            case BasicStroke.JOIN_BEVEL:
-            case BasicStroke.JOIN_MITER:
-            case BasicStroke.JOIN_ROUND:
-                psLineJoin = 1;
-        }
+        int psLineJoin = switch (lineJoin) {
+            case BasicStroke.JOIN_BEVEL, BasicStroke.JOIN_MITER, BasicStroke.JOIN_ROUND -> 1;
+            default -> -1;
+        };
         if (-1 != psLineJoin) writeToFile(psLineJoin + " setlinejoin\r\n");
         if (1 <= stroke.getMiterLimit()) writeToFile(stroke.getMiterLimit() + " setmiterlimit\r\n");
         writeToFile(stroke.getLineWidth() + " setlinewidth\r\n");
@@ -672,61 +663,42 @@ public class EPSGraphics extends Graphics2D {
             float p3y = height - pts[5];
 
             switch (type) {
-
-                case PathIterator.SEG_MOVETO:
-
+                case PathIterator.SEG_MOVETO -> {
                     writeToFile(p1x + " " + p1y + " m\r\n");
                     p0x = p1x;
                     p0y = p1y;
-                    break;
-
-                case PathIterator.SEG_LINETO:
-
+                }
+                case PathIterator.SEG_LINETO -> {
                     writeToFile(p1x + " " + p1y + " l\r\n");
                     p0x = p1x;
                     p0y = p1y;
-                    break;
-
-                case PathIterator.SEG_CUBICTO:
-
+                }
+                case PathIterator.SEG_CUBICTO -> {
                     writeToFile(p1x + " " + p1y + " " + p2x + " " + p2y + " " + p3x + " " + p3y + " c\r\n");
                     p0x = p3x;
                     p0y = p3y;
-                    break;
-
-                case PathIterator.SEG_QUADTO: // @todo
+                }
+                case PathIterator.SEG_QUADTO -> { // @todo
 
 
                     float c1x = p0x + 2f / 3f * (p1x - p0x);
                     float c1y = p0y + 2f / 3f * (p1y - p0y);
                     float c2x = p1x + 1f / 3f * (p2x - p1x);
                     float c2y = p1y + 1f / 3f * (p2y - p1y);
-
                     writeToFile(c1x + " " + c1y + " " + c2x + " " + c2y + " " + p2x + " " + p2y + " c\r\n");
                     p0x = p2x;
                     p0y = p2y;
-
-                    break;
-
-                case PathIterator.SEG_CLOSE:
-                    writeToFile("closepath\r\n");
-                    break;
-
+                }
+                case PathIterator.SEG_CLOSE -> writeToFile("closepath\r\n");
             }
 
             it.next();
 
         }
         switch (operator) {
-            case DRAW_SHAPE:
-                writeToFile("stroke\r\n");
-                break;
-            case FILL_SHAPE:
-                writeToFile("fill\r\n");
-                break;
-            case CLIP_SHAPE:
-                writeToFile("clip\r\n");
-                break;
+            case DRAW_SHAPE -> writeToFile("stroke\r\n");
+            case FILL_SHAPE -> writeToFile("fill\r\n");
+            case CLIP_SHAPE -> writeToFile("clip\r\n");
         }
     }
 

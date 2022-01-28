@@ -624,48 +624,46 @@ final public class NodeView extends ViewBase implements Cloneable {
         Point apt = trans.w2d(location);
         Dimension size = getLabelSize();
         switch (labelLayout) {
-            case RADIAL:
-            case USER:
-            case LAYOUT:
+            case RADIAL, USER, LAYOUT -> {
                 apt.x += dxLabel;
                 apt.y += dyLabel;
-                break;
-            case CENTRAL:
+            }
+            case CENTRAL -> {
                 apt.x -= size.width / 2;
                 apt.y += size.height / 2;
-                break;
-            case NORTH:
+            }
+            case NORTH -> {
                 apt.x -= size.width / 2;
                 apt.y -= (scaledHeight / 2 + 3);
-                break;
-            case NORTHEAST:
+            }
+            case NORTHEAST -> {
                 apt.x += (scaledWidth / 2 + 3);
                 apt.y -= (scaledHeight / 2 + 3);
-                break;
-            case EAST:
+            }
+            case EAST -> {
                 apt.x += (scaledWidth / 2 + 3);
                 apt.y += size.height / 2;
-                break;
-            case SOUTHEAST:
+            }
+            case SOUTHEAST -> {
                 apt.x -= (scaledWidth / 2 + 3);
                 apt.y += (scaledHeight / 2 + 3) + size.height;
-                break;
-            case SOUTH:
+            }
+            case SOUTH -> {
                 apt.x -= size.width / 2;
                 apt.y += (scaledHeight / 2 + 3) + size.height;
-                break;
-            case SOUTHWEST:
+            }
+            case SOUTHWEST -> {
                 apt.x -= (scaledWidth / 2 + size.width + 3);
                 apt.y += (scaledHeight / 2 + 3) + size.height;
-                break;
-            case WEST:
+            }
+            case WEST -> {
                 apt.x -= (scaledWidth / 2 + size.width + 3);
                 apt.y += size.height / 2;
-                break;
-            case NORTHWEST:
+            }
+            case NORTHWEST -> {
                 apt.x -= (scaledWidth / 2 + size.width + 3);
                 apt.y -= (scaledHeight / 2 + 3);
-                break;
+            }
         }
         return apt;
     }

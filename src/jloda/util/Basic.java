@@ -75,13 +75,10 @@ public class Basic {
 
     /**
      * Ignore all output written to System.err
-     *
-     * @return the current PrintStream connected to System.err
      */
-    public static PrintStream hideSystemErr() {
+    public static void hideSystemErr() {
         PrintStream current = System.err;
         System.setErr(nullOut);
-        return current;
     }
 
     /**
@@ -126,12 +123,10 @@ public class Basic {
     /**
      * Ignore all output written to System.out
      *
-     * @return the current PrintStream connected to System.out
      */
-    public static PrintStream hideSystemOut() {
+    public static void hideSystemOut() {
         PrintStream current = System.out;
         System.setOut(nullOut);
-        return current;
     }
 
     /**
@@ -372,7 +367,7 @@ class CollectOutStream extends OutputStream {
     private final StringBuilder buf = new StringBuilder();
 
     @Override
-    public void write(int b) throws IOException {
+    public void write(int b) {
         Basic.origErr.write(b);
         buf.append((char) b);
     }

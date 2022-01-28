@@ -25,7 +25,6 @@ import jloda.util.FileUtils;
 import javax.swing.*;
 import java.awt.datatransfer.DataFlavor;
 import java.io.File;
-import java.io.IOException;
 import java.io.OutputStream;
 
 /**
@@ -60,10 +59,10 @@ public class SVGStringExportType implements ExportGraphicType {
         return null;
     }
 
-    public void stream(JPanel imagePanel, JScrollPane imageScrollPane, boolean showWholeImage, OutputStream out) throws IOException {
+    public void stream(JPanel imagePanel, JScrollPane imageScrollPane, boolean showWholeImage, OutputStream out) {
     }
 
-    public void writeToFile(File file, JPanel imagePanel, JScrollPane imageScrollPane, boolean showWholeImage) throws IOException {
+    public void writeToFile(File file, JPanel imagePanel, JScrollPane imageScrollPane, boolean showWholeImage) {
         writeToFile(file, imagePanel);
     }
 

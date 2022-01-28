@@ -76,12 +76,10 @@ public class PhyloGraph extends Graph {
      * copies one phylo graph to another
      *
      * @param src the source graph
-     * @return old node to new node mapping
      */
-    public NodeArray<Node> copy(PhyloGraph src) {
+    public void copy(PhyloGraph src) {
         final NodeArray<Node> oldNode2NewNode = new NodeArray<>(src);
         copy(src, oldNode2NewNode, null);
-        return oldNode2NewNode;
     }
 
     /**
@@ -90,9 +88,8 @@ public class PhyloGraph extends Graph {
      * @param src             the source graph
      * @param oldNode2NewNode if non-null, will contain mapping of old nodes to new nodes
      * @param oldEdge2NewEdge if non-null, will contain mapping of old edges to new edges
-     * @return old node to new node mapping
      */
-    public NodeArray<Node> copy(PhyloGraph src, NodeArray<Node> oldNode2NewNode, EdgeArray<Edge> oldEdge2NewEdge) {
+    public void copy(PhyloGraph src, NodeArray<Node> oldNode2NewNode, EdgeArray<Edge> oldEdge2NewEdge) {
         clear();
         if (oldNode2NewNode == null)
             oldNode2NewNode = new NodeArray<>(src);
@@ -123,7 +120,6 @@ public class PhyloGraph extends Graph {
                 setConfidence(oldEdge2NewEdge.get(e), src.getConfidence(e));
             }
         }
-        return oldNode2NewNode;
     }
 
 

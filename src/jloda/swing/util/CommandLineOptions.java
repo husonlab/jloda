@@ -483,8 +483,7 @@ public class CommandLineOptions {
      * @param def   the default value
      * @return the tokens following the label
      */
-    public String[] getOption(String label, String describe, String[] def)
-            throws UsageException {
+    public String[] getOption(String label, String describe, String[] def) {
         List<String> result = getOption(label, describe, Arrays.asList(def));
         if (result == null)
             return null;
@@ -602,7 +601,7 @@ public class CommandLineOptions {
      * Call this after processing all options to check for superfluous
      * options
      */
-    public boolean done() throws UsageException {
+    public void done() throws UsageException {
         if (stage == 0 || stage == 2) {
             try {
                 boolean help = getOption("-h", "Show usage", true, false);
@@ -633,11 +632,9 @@ public class CommandLineOptions {
                 if (stage == 2) {
                     new Alert(null, "Usage exception: " + ex);
                     stage = 1;
-                    return false;
                 } else
                     throw ex;
             }
-            return true;
         } else // stage==1: have setup GUI, now show the GUI, get the values, modify the arg string and rerun
         {
             gui.finishAndShow();
@@ -658,7 +655,6 @@ public class CommandLineOptions {
             settings.clear();
             options.clear();
 
-            return false;
         }
     }
 
@@ -804,7 +800,7 @@ public class CommandLineOptions {
                 }
 
                 public Object getValueAt(int row, int col) {
-                    return ((Vector) data.elementAt(row)).elementAt(col);
+                    return ((Vector<?>) data.elementAt(row)).elementAt(col);
                 }
 
                 public Class getColumnClass(int c) {

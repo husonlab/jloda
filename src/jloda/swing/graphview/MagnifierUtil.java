@@ -50,9 +50,8 @@ public class MagnifierUtil {
      * add internal points to approximate curved adjacentEdges
      *
      * @param e
-     * @return original internal points
      */
-    public List addInternalPoints(Edge e) {
+    public void addInternalPoints(Edge e) {
 
         // TODO: add additional points between existing ones!
         oldInternalPoints = graphView.getInternalPoints(e);
@@ -72,7 +71,6 @@ public class MagnifierUtil {
             addInternalPoints(prevPt, graphView.getNV(e.getTarget()).getLocation(), internalPoints);
             graphView.setInternalPoints(e, internalPoints);
         }
-        return oldInternalPoints;
     }
 
     /**

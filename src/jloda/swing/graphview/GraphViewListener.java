@@ -561,8 +561,8 @@ public class GraphViewListener implements IGraphViewListener {
                     if (viewer.getSelected(e.getSource()) && viewer.getSelected(e.getTarget())) {
                         final java.util.List<Point2D> internalPoints = viewer.getInternalPoints(e);
                         if (internalPoints != null) {
-                            for (Object internalPoint : internalPoints) {
-                                Point2D apt = (Point2D) internalPoint;
+                            for (Point2D internalPoint : internalPoints) {
+                                Point2D apt = internalPoint;
                                 apt.setLocation(apt.getX() + diff.getX(), apt.getY() + diff.getY());
                             }
                         }

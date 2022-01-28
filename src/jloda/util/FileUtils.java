@@ -439,9 +439,8 @@ public class FileUtils {
 	 * @param target the target directory
 	 * @param base   the base directory
 	 * @return target's path relative to the base directory
-	 * @throws IOException if an error occurs while resolving the files' canonical names
 	 */
-	public static File getRelativeFile(File target, File base) throws IOException {
+	public static File getRelativeFile(File target, File base) {
 		if (target.equals(base))
 			return new File(".");
 

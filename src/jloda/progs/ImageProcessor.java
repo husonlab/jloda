@@ -72,10 +72,8 @@ public class ImageProcessor extends Component {
      *
      * @param originalImage
      * @return new image
-     * @throws IOException
-     * @throws InterruptedException
      */
-    public BufferedImage filterGreen(BufferedImage originalImage, int patchSize) throws IOException, InterruptedException {
+    public BufferedImage filterGreen(BufferedImage originalImage, int patchSize) {
         int width = originalImage.getWidth(this);
         int height = originalImage.getHeight(this);
 

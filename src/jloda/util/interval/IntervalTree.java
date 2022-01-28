@@ -249,11 +249,12 @@ public class IntervalTree<T> implements Iterable<Interval<T>> {
      * Will not rebuild until the next query or call to build
      *
      * @param data
-     * @return true, if was contained
      */
-    public boolean remove(T data) {
+    public void remove(T data) {
         Interval<T> interval = find(data);
-        return interval != null && remove(interval);
+        if (interval != null) {
+            remove(interval);
+        }
     }
 
     /**
@@ -276,15 +277,13 @@ public class IntervalTree<T> implements Iterable<Interval<T>> {
      * Will not rebuild until the next query or call to build
      *
      * @param intervals
-     * @return true, if something was contained
      */
-    public boolean removeAll(Collection<Interval<T>> intervals) {
+    public void removeAll(Collection<Interval<T>> intervals) {
         boolean removed = intervalList.removeAll(intervals);
         if (removed) {
             inSync = false;
             covered = -1;
         }
-        return removed;
     }
 
     /**

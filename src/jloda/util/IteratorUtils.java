@@ -110,7 +110,7 @@ public class IteratorUtils {
     }
 
     public static <T> Iterator<T> iteratorNonNullElements(Iterator<T> it) {
-        return new Iterator<T>() {
+        return new Iterator<>() {
             T next = getNextNonNull();
 
             @Override
@@ -331,18 +331,18 @@ public class IteratorUtils {
 	}
 
 	public static <T> Iterator<T> emptyIterator() {
-		return new Iterator<T>() {
-			@Override
-			public boolean hasNext() {
-				return false;
-			}
+        return new Iterator<>() {
+            @Override
+            public boolean hasNext() {
+                return false;
+            }
 
-			@Override
-			public T next() {
-				return null;
-			}
-		};
-	}
+            @Override
+            public T next() {
+                return null;
+            }
+        };
+    }
 
 	/**
 	 * iterates over items in sorted order

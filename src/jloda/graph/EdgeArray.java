@@ -114,7 +114,7 @@ public class EdgeArray<T> extends GraphBase implements Iterable<T>, Map<Edge, T>
         if (isEmpty())
             return Collections.emptyIterator();
         else
-            return IteratorUtils.iteratorNonNullElements(new Iterator<T>() {
+            return IteratorUtils.iteratorNonNullElements(new Iterator<>() {
                 int i = 0;
 
                 @Override

@@ -81,9 +81,7 @@ public class ScaleBar extends AnchorPane {
             e.consume();
         });
 
-        pane.setOnMouseReleased(e -> {
-            pane.setCursor(Cursor.DEFAULT);
-        });
+        pane.setOnMouseReleased(e -> pane.setCursor(Cursor.DEFAULT));
 
         update();
 

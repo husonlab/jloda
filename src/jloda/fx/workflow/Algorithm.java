@@ -21,7 +21,6 @@ package jloda.fx.workflow;
 
 import jloda.util.progress.ProgressListener;
 
-import java.io.IOException;
 import java.util.Collection;
 
 /**
@@ -29,7 +28,7 @@ import java.util.Collection;
  * Daniel Huson, 10.2021
  */
 public abstract class Algorithm extends NamedBase {
-	public abstract void compute(ProgressListener progress, Collection<DataBlock> inputData, Collection<DataBlock> outputData) throws IOException;
+	public abstract void compute(ProgressListener progress, Collection<DataBlock> inputData, Collection<DataBlock> outputData);
 
 	public boolean isApplicable(Collection<DataNode> inputNodes) {
 		return inputNodes.stream().allMatch(WorkflowNode::isValid);

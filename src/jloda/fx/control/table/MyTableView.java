@@ -860,15 +860,15 @@ public class MyTableView extends Pane {
                 pausePostingUpdates();
 
                 final PickResult pickResult = e.getPickResult();
-                if (pickResult != null && (pickResult.getIntersectedNode() instanceof ListCell && ((ListCell) pickResult.getIntersectedNode()).getItem() != null
+                if (pickResult != null && (pickResult.getIntersectedNode() instanceof ListCell && ((ListCell<?>) pickResult.getIntersectedNode()).getItem() != null
                         || pickResult.getIntersectedNode() instanceof Text)) {
                     final Dragboard dragboard = rowHeaderView.startDragAndDrop(TransferMode.MOVE);
                     final ClipboardContent content = new ClipboardContent();
-					content.put(DataFormat.PLAIN_TEXT, StringUtils.toString(new ArrayList<>(rowHeaderView.getSelectionModel().getSelectedItems()), "\n"));
-					dragboard.setDragView(dragImage);
+                    content.put(DataFormat.PLAIN_TEXT, StringUtils.toString(new ArrayList<>(rowHeaderView.getSelectionModel().getSelectedItems()), "\n"));
+                    dragboard.setDragView(dragImage);
 
-					content.putString(StringUtils.toString(rowHeaderView.getSelectionModel().getSelectedItems(), "\n"));
-					dragboard.setContent(content);
+                    content.putString(StringUtils.toString(rowHeaderView.getSelectionModel().getSelectedItems(), "\n"));
+                    dragboard.setContent(content);
 
                     tableView.getSelectionModel().clearSelection();
                     for (String row : rowHeaderView.getSelectionModel().getSelectedItems())
@@ -893,12 +893,12 @@ public class MyTableView extends Pane {
                 String hitRowName = null;
                 {
                     final PickResult pickResult = e.getPickResult();
-                    if (pickResult != null && (pickResult.getIntersectedNode() instanceof ListCell && ((ListCell) pickResult.getIntersectedNode()).getItem() != null
+                    if (pickResult != null && (pickResult.getIntersectedNode() instanceof ListCell && ((ListCell<?>) pickResult.getIntersectedNode()).getItem() != null
                             || pickResult.getIntersectedNode() instanceof Text)) {
                         final String name;
 
                         if (pickResult.getIntersectedNode() instanceof ListCell)
-                            name = ((ListCell) pickResult.getIntersectedNode()).getText();
+                            name = ((ListCell<?>) pickResult.getIntersectedNode()).getText();
                         else
                             name = ((Text) pickResult.getIntersectedNode()).getText();
 

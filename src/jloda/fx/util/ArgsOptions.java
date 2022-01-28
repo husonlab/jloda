@@ -81,7 +81,7 @@ public class ArgsOptions {
      * @param programName
      * @param description program description
      */
-    public ArgsOptions(String[] args, Object main, String programName, String description) throws CanceledException {
+    public ArgsOptions(String[] args, Object main, String programName, String description) {
         Locale.setDefault(Locale.US);
 
         if (args.length > 0 && args[args.length - 1].equals("--argsGui")) {
@@ -116,7 +116,7 @@ public class ArgsOptions {
      * @param programName
      * @param description program description
      */
-    public ArgsOptions(String[] args, Class clazz, String programName, String description) throws CanceledException {
+    public ArgsOptions(String[] args, Class clazz, String programName, String description) {
         Locale.setDefault(Locale.US);
 
         if (args.length > 0 && args[args.length - 1].equals("--argsGui")) {

@@ -687,8 +687,8 @@ public class Formatter implements IDirectableViewer {
      */
     void fireNodeFormatChanged(NodeSet nodes) {
         if (nodes != null && nodes.size() > 0) {
-            for (Object formatterListener : formatterListeners) {
-                IFormatterListener listener = (IFormatterListener) formatterListener;
+            for (IFormatterListener formatterListener : formatterListeners) {
+                IFormatterListener listener = formatterListener;
                 listener.nodeFormatChanged(nodes);
             }
         }
@@ -701,8 +701,8 @@ public class Formatter implements IDirectableViewer {
      */
     void fireEdgeFormatChanged(EdgeSet edges) {
         if (edges != null && edges.size() > 0) {
-            for (Object formatterListener : formatterListeners) {
-                IFormatterListener listener = (IFormatterListener) formatterListener;
+            for (IFormatterListener formatterListener : formatterListeners) {
+                IFormatterListener listener = formatterListener;
                 listener.edgeFormatChanged(edges);
             }
         }

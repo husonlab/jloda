@@ -55,7 +55,7 @@ public class LSAUtils {
 					} else
 						edges.add(v.getEdgeTo(w));
 				}
-				var toDelete = v.outEdgesStream(false).filter(e -> !edges.contains(e)).collect(Collectors.toList());
+				var toDelete = v.outEdgesStream(false).filter(e -> !edges.contains(e)).toList();
 				toDelete.forEach(lsaTree::deleteEdge);
 				v.rearrangeAdjacentEdges(edges);
 			}

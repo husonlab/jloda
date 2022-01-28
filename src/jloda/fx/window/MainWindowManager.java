@@ -134,28 +134,28 @@ public class MainWindowManager {
         if (mainWindows.size() == 0) {
             ProgramProperties.store();
             Platform.exit();
-			System.exit(0);
-		}
+            System.exit(0);
+        }
 
-		if (lastFocusedMainWindow == mainWindow) {
-			lastFocusedMainWindow = mainWindows.get(mainWindows.size() - 1);
-		}
-		return true;
-	}
+        if (lastFocusedMainWindow == mainWindow) {
+            lastFocusedMainWindow = mainWindows.get(mainWindows.size() - 1);
+        }
+        return true;
+    }
 
-	public IMainWindow createAndShowWindow(boolean useExistingEmpty) {
-		return createAndShowWindow(useExistingEmpty ? getLastFocusedMainWindow() : null);
-	}
+    public void createAndShowWindow(boolean useExistingEmpty) {
+        createAndShowWindow(useExistingEmpty ? getLastFocusedMainWindow() : null);
+    }
 
-	/**
-	 * create and show window
-	 *
-	 * @param existingWindow an existing window or null
-	 * @return the new window, or the existing window, if it is non-null and empty
-	 */
-	public IMainWindow createAndShowWindow(IMainWindow existingWindow) {
-		if (existingWindow != null && existingWindow.isEmpty())
-			return existingWindow;
+    /**
+     * create and show window
+     *
+     * @param existingWindow an existing window or null
+     * @return the new window, or the existing window, if it is non-null and empty
+     */
+    public IMainWindow createAndShowWindow(IMainWindow existingWindow) {
+        if (existingWindow != null && existingWindow.isEmpty())
+            return existingWindow;
 		else {
 			try {
 				final WindowGeometry windowGeometry = new WindowGeometry();

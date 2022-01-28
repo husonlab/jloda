@@ -1313,7 +1313,7 @@ public class GraphView extends JPanel implements Printable, Scrollable, INodeEdg
      * @param a    color
      * @param kind "line", "fill" or "label"
      */
-    public boolean setColorSelected(Color a, String kind) {
+    public void setColorSelected(Color a, String kind) {
         boolean changed = false;
         switch (kind) {
             case "line":
@@ -1329,7 +1329,6 @@ public class GraphView extends JPanel implements Printable, Scrollable, INodeEdg
                 if (setLabelColorSelectedEdges(a)) changed = true;
                 break;
         }
-        return changed;
     }
 
     /**
@@ -1654,24 +1653,20 @@ public class GraphView extends JPanel implements Printable, Scrollable, INodeEdg
      * Select all nodes.
      *
      * @param select value to set selection states to
-     * @return true, if selection state of at least one node changed
      */
-    public boolean selectAllNodes(boolean select) {
+    public void selectAllNodes(boolean select) {
         if (!select) {
             if (selectedNodes.size() > 0) {
                 NodeSet oldSelected = (NodeSet) selectedNodes.clone();
                 selectedNodes.clear();
                 fireDoDeselect(oldSelected);
-                return true;
             }
         } else {
             if (selectedNodes.size() < getGraph().getNumberOfNodes()) {
                 selectedNodes.addAll();
                 fireDoSelect(selectedNodes);
-                return true;
             }
         }
-        return false;
     }
 
     /**
@@ -1728,24 +1723,20 @@ public class GraphView extends JPanel implements Printable, Scrollable, INodeEdg
      * Select all adjacentEdges.
      *
      * @param select value to set selection states to
-     * @return true, if selection state of at least one edge changed
      */
-    public boolean selectAllEdges(boolean select) {
+    public void selectAllEdges(boolean select) {
         if (!select) {
             if (selectedEdges.size() > 0) {
                 EdgeSet oldSelected = (EdgeSet) selectedEdges.clone();
                 selectedEdges.clear();
                 fireDoDeselect(oldSelected);
-                return true;
             }
         } else {
             if (selectedEdges.size() < getGraph().getNumberOfEdges()) {
                 selectedEdges.addAll();
                 fireDoSelect(selectedEdges);
-                return true;
             }
         }
-        return false;
     }
 
 

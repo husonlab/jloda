@@ -162,9 +162,8 @@ public class Table<R, C, V> {
      * @param rowKey
      * @param columnKey
      * @param value
-     * @return old value, if present, otherwise new value
      */
-    public V put(R rowKey, C columnKey, V value) {
+    public void put(R rowKey, C columnKey, V value) {
         if (rowKey != null && columnKey != null) {
             Map<C, V> row = row(rowKey);
             if (row == null) {
@@ -173,12 +172,9 @@ public class Table<R, C, V> {
             }
             V oldValue = row.get(columnKey);
             row.put(columnKey, value);
-            if (oldValue != null)
-                return oldValue;
-            else
-                return value;
+            if (oldValue != null) {
+            }
         }
-        return null;
     }
 
     /**
@@ -207,22 +203,20 @@ public class Table<R, C, V> {
 		}
 	}
 
-	/**
-	 * removes the given cell, returns the old value or null
-	 *
-	 * @param rowKey
-	 * @param columnKey
-	 * @return
-	 */
-	public V remove(R rowKey, C columnKey) {
-		if (rowKey == null || columnKey == null)
-            return null;
+    /**
+     * removes the given cell, returns the old value or null
+     *
+     * @param rowKey
+     * @param columnKey
+     */
+    public void remove(R rowKey, C columnKey) {
+        if (rowKey == null || columnKey == null)
+            return;
         final Map<C, V> row = row(rowKey);
         if (row == null)
-            return null;
+            return;
         final V oldValue = get(rowKey, columnKey);
         row.remove(columnKey);
-        return oldValue;
     }
 
     // Views
@@ -281,22 +275,19 @@ public class Table<R, C, V> {
             set.addAll(row.keySet());
         }
 		return set;
-	}
+    }
 
 
-	/**
-	 * remove a given column
-	 *
-	 * @return true, if something removed
-	 */
-	public boolean removeColumn(C columnKey) {
-		var changed = false;
-		for (var rowKey : column(columnKey).keySet()) {
-			remove(rowKey, columnKey);
-			changed = true;
+    /**
+     * remove a given column
+     */
+    public void removeColumn(C columnKey) {
+        var changed = false;
+        for (var rowKey : column(columnKey).keySet()) {
+            remove(rowKey, columnKey);
+            changed = true;
 		}
-		return changed;
-	}
+    }
 
 	public boolean removeRow(R rowKey) {
 		var changed = row(rowKey).size() > 0;

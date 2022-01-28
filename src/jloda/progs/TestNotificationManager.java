@@ -31,7 +31,7 @@ import java.util.Random;
 
 public class TestNotificationManager extends Application {
     @Override
-    public void start(Stage stage) throws Exception {
+    public void start(Stage stage) {
 
         ProgramProperties.setUseGUI(true);
         ProgramProperties.setProgramName("TEST");
@@ -40,15 +40,9 @@ public class TestNotificationManager extends Application {
 
         click.setOnAction((e) -> {
             switch ((new Random()).nextInt(3)) {
-                case 0:
-                    NotificationManager.showError(stage, "Good morning! THis is a lot of stuff.\nI loaded one tree\nI did!");
-                    break;
-                case 1:
-                    NotificationManager.showInformation(stage, "Good morning! THis is a lot of stuff. I loaded one tree");
-                    break;
-                case 2:
-                    NotificationManager.showWarning(stage, "Good morning! THis is a lot of stuff. I loaded one tree");
-                    break;
+                case 0 -> NotificationManager.showError(stage, "Good morning! THis is a lot of stuff.\nI loaded one tree\nI did!");
+                case 1 -> NotificationManager.showInformation(stage, "Good morning! THis is a lot of stuff. I loaded one tree");
+                case 2 -> NotificationManager.showWarning(stage, "Good morning! THis is a lot of stuff. I loaded one tree");
             }
         });
 

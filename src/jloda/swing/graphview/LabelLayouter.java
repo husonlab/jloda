@@ -218,16 +218,16 @@ public class LabelLayouter {
             }
 
             int cost = 0;
-			for (Iterator it = IteratorUtils.randomize(nodes.iterator(), 17 * i); it.hasNext(); ) {
-				Node v = (Node) it.next();
-				NodeView nv = graphView.getNV(v);
-				if (nv.getLabelColor() != null && nv.getLabel() != null && nv.getLabel().length() > 0) {
+			for (Iterator it = IteratorUtils.randomize(nodes.iterator(), 17L * i); it.hasNext(); ) {
+                Node v = (Node) it.next();
+                NodeView nv = graphView.getNV(v);
+                if (nv.getLabelColor() != null && nv.getLabel() != null && nv.getLabel().length() > 0) {
 
-					if (nv.getLabelLayout() == NodeView.LAYOUT) {
-						cost += layout(graphView, v, false);
-					}
-				}
-			}
+                    if (nv.getLabelLayout() == NodeView.LAYOUT) {
+                        cost += layout(graphView, v, false);
+                    }
+                }
+            }
 
             if (cost < bestCost) {
                 //System.err.println("Cost: " + bestCost+" -> "+cost);
@@ -253,15 +253,15 @@ public class LabelLayouter {
             }
         }
 
-		for (Iterator it = IteratorUtils.randomize(nodes.iterator(), 17 * bestRun); it.hasNext(); ) {
-			Node v = (Node) it.next();
-			NodeView nv = graphView.getNV(v);
-			if (nv.getLabelColor() != null && nv.getLabel() != null && nv.getLabel().length() > 0) {
+        for (Iterator it = IteratorUtils.randomize(nodes.iterator(), 17L * bestRun); it.hasNext(); ) {
+            Node v = (Node) it.next();
+            NodeView nv = graphView.getNV(v);
+            if (nv.getLabelColor() != null && nv.getLabel() != null && nv.getLabel().length() > 0) {
 
-				if (nv.getLabelLayout() == NodeView.LAYOUT) {
-					layout(graphView, v, true);
-				}
-			}
-		}
+                if (nv.getLabelLayout() == NodeView.LAYOUT) {
+                    layout(graphView, v, true);
+                }
+            }
+        }
     }
 }

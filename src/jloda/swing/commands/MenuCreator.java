@@ -146,7 +146,7 @@ public class MenuCreator {
                     boolean done = false;
                     if (ProgramProperties.isMacOS()) {
                         switch (label) {
-                            case "Quit": {
+                            case "Quit" -> {
                                 if (AppleSystemMenuItems.setQuitAction(createAction(command))) {
                                     if (menu.getItemCount() > 0 && menu.getItem(menu.getItemCount() - 1) == null) {
                                         skipNextSeparator = true;
@@ -155,8 +155,7 @@ public class MenuCreator {
                                 }
                                 break;
                             }
-                            case "About":
-                            case "About...": {
+                            case "About", "About..." -> {
                                 if (AppleSystemMenuItems.setAboutAction(createAction(command))) {
                                     if (menu.getItemCount() > 0 && menu.getItem(menu.getItemCount() - 1) == null) {
                                         skipNextSeparator = true;
@@ -165,8 +164,7 @@ public class MenuCreator {
                                 }
                                 break;
                             }
-                            case "Preferences":
-                            case "Preferences...": {
+                            case "Preferences", "Preferences..." -> {
                                 if (AppleSystemMenuItems.setPreferencesAction(createAction(command))) {
                                     if (menu.getItemCount() > 0 && menu.getItem(menu.getItemCount() - 1) == null) {
                                         skipNextSeparator = true;

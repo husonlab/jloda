@@ -87,7 +87,7 @@ public class ProjectManager {
      * @param dir    director
      * @param viewer the main viewer associated with the director
      */
-    static public IDirector addProject(final IDirector dir, final IMainViewer viewer) {
+    static public void addProject(final IDirector dir, final IMainViewer viewer) {
         try {
             synchronized (projects) {
                 final int id = getNextID();
@@ -115,7 +115,6 @@ public class ProjectManager {
         } catch (Exception ex) {
             Basic.caught(ex);
         }
-        return dir;
     }
 
     /**

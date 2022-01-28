@@ -41,9 +41,7 @@ public class MyTextFieldTableCell<S, T> extends TableCell<S, T> {
 	}
 
 	public static <S, T> Callback<TableColumn<S, T>, TableCell<S, T>> forTableColumn(StringConverter<T> var0) {
-		return (var1) -> {
-			return new javafx.scene.control.cell.TextFieldTableCell(var0);
-		};
+		return (var1) -> new javafx.scene.control.cell.TextFieldTableCell(var0);
 	}
 
 	public MyTextFieldTableCell() {

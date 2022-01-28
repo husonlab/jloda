@@ -91,7 +91,6 @@ public class FruchtermanReingoldLayout {
      */
     public FruchtermanReingoldLayout(Graph graph, NodeSet fixedNodes, NodeArray<APoint2D<?>> node2start) {
         this.graph = graph;
-        //noinspection unchecked
         nodes = new Node[graph.getMaxNodeId()];
         {
             int i = 0;
