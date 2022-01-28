@@ -19,6 +19,7 @@
 
 package jloda.swing.window;
 
+import jloda.fx.util.ProgramExecutorService;
 import jloda.swing.util.BasicSwing;
 import jloda.swing.util.ResourceManager;
 import jloda.util.Basic;
@@ -29,8 +30,6 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
 import java.awt.image.BufferedImage;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 
 /**
  * splashes an about window on the screen
@@ -66,7 +65,17 @@ public class About {
      * @param closeOperation
      */
     public static void setAbout(String fileName, String version, int closeOperation) {
-        instance = new About(fileName, version, closeOperation);
+        instance = new About(fileName, version, closeOperation,1f);
+    }
+    /**
+     * set the current about window
+     *
+     * @param fileName
+     * @param version
+     * @param closeOperation
+     */
+    public static void setAbout(String fileName, String version, int closeOperation,float scaleFactor) {
+        instance = new About(fileName, version, closeOperation,scaleFactor);
     }
 
     /**
@@ -76,9 +85,10 @@ public class About {
      * @param version0       version string to include in message
      * @param closeOperation default close operation, e.g. JDialog.HIDE_ON_CLOSE
      */
-    private About(String fileName, String version0, int closeOperation) {
+    private About(String fileName, String version0, int closeOperation,float scaleFactor) {
         this.versionString = version0;
         aboutImage = ResourceManager.getImage(fileName);
+
 
         //if this fails with null, check whether the resources are in place
 //                File file = Basic.getFileInPackage(packageName, fileName);
@@ -93,34 +103,34 @@ public class About {
         aboutDialog.setUndecorated(true);
         aboutDialog.setTitle("About " + versionString);
         aboutDialog.setDefaultCloseOperation(closeOperation);
-        int width = (aboutImage != null ? aboutImage.getWidth() : 200);
-        int height = (aboutImage != null ? aboutImage.getHeight() : 200);
+        var width = (int)Math.round(scaleFactor*(aboutImage != null ? aboutImage.getWidth() : 200));
+        var height = (int)Math.round(scaleFactor*(aboutImage != null ? aboutImage.getHeight() : 200));
         aboutDialog.setSize(width, height);
-        Dimension d = Toolkit.getDefaultToolkit().getScreenSize();
+        var d = Toolkit.getDefaultToolkit().getScreenSize();
         aboutDialog.setLocation((d.width - width) / 2, (d.height - height) / 2);
 
-        JPanel pane = new JPanel();
+        var pane = new JPanel();
         pane.setBorder(BorderFactory.createLineBorder(Color.GRAY, 1));
         pane.setLayout(new BorderLayout());
         pane.add(new Component() {
             public void paint(Graphics gc) {
                 gc.setFont(new Font(Font.DIALOG, Font.PLAIN, 11));
                 if (aboutImage != null)
-                    gc.drawImage(aboutImage, 0, 0, this);
+                    gc.drawImage(aboutImage.getScaledInstance(width,height,Image.SCALE_SMOOTH), 0, 0, this);
                 else {
                     gc.setColor(Color.WHITE);
                     ((Graphics2D) gc).fill(this.getBounds());
                 }
-                gc.setColor(Color.BLACK);
+                gc.setColor(Color.DARK_GRAY);
+                var line=0;
                 if (versionString != null) {
-                    String[] tokens = StringUtils.split(versionString, '\n');
-                    for (int i = 0; i < tokens.length; i++) {
-                        gc.drawString(tokens[i], versionStringOffset.x, versionStringOffset.y + 14 * i);
+                    var tokens = StringUtils.split(versionString, '\n');
+                    for (line = 0; line < tokens.length; line++) {
+                        gc.drawString(tokens[line], versionStringOffset.x, versionStringOffset.y + 15 * line);
                     }
                 }
                 if (additionalString != null) {
-                    Dimension labelSize = BasicSwing.getStringSize(gc, additionalString, gc.getFont()).getSize();
-                    gc.drawString(additionalString, (getWidth() - labelSize.width) / 2, additionalStringVerticalPosition);
+                    gc.drawString(additionalString, versionStringOffset.x,versionStringOffset.y + 15 * line);
                 }
                 if (!hasPainted) {
                     hasPainted = true;
@@ -242,15 +252,6 @@ public class About {
      * @param millis time to wait before hiding
      */
     public void hideAfter(final int millis) {
-        final ExecutorService executor = Executors.newSingleThreadExecutor();
-        executor.execute(() -> {
-            try {
-                Thread.sleep(millis);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-            hideSplash();
-            executor.shutdown();
-        });
+        ProgramExecutorService.submit(millis, this::hideSplash);
     }
 }
