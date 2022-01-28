@@ -121,7 +121,7 @@ public class FileUtils {
 	/**
 	 * write lines to file
 	 */
-	public static void writeLinesToFile(Collection<String> lines, String file, boolean showProgress) throws IOException, CanceledException {
+	public static void writeLinesToFile(Collection<String> lines, String file, boolean showProgress) throws IOException {
 		try (var progress = (showProgress ? new ProgressPercentage("Writing " + file + ":", lines.size()) : new ProgressSilent())) {
 			try (var w = new BufferedWriter(new OutputStreamWriter(getOutputStreamPossiblyZIPorGZIP(file)))) {
 				for (var line : lines) {

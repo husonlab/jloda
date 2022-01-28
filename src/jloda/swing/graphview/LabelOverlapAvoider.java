@@ -120,7 +120,7 @@ public class LabelOverlapAvoider {
             firstShape = shape;
 
         if (v instanceof Node)
-            visibleNodeLabels.add((Node) v);
+            visibleNodeLabels.add(v);
         return true;
     }
 

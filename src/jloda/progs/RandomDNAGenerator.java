@@ -92,7 +92,7 @@ public class RandomDNAGenerator {
         fastA.add("Genome", new String(sequence));
         StringWriter w = new StringWriter();
         fastA.write(w);
-        System.out.println(w.toString());
+        System.out.println(w);
     }
 
     /**

@@ -31,7 +31,7 @@ import java.util.List;
  */
 public class ProgressPercentage implements ProgressListener {
 
-	private List<ProgressObserver> observers = new ArrayList<>();
+	private final List<ProgressObserver> observers = new ArrayList<>();
 
 	private long steps = 0;
 

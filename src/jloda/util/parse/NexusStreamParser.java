@@ -58,7 +58,7 @@ public class NexusStreamParser extends NexusStreamTokenizer implements Closeable
             while (sst.nextToken() != NexusStreamParser.TT_EOF) {
                 nextToken();
                 if (!toString().equalsIgnoreCase(sst.toString())) {
-                    throw new IOExceptionWithLineNumber("'" + sst.toString() + "' expected, got: '" + toString() + "'", lineno());
+                    throw new IOExceptionWithLineNumber("'" + sst + "' expected, got: '" + this + "'", lineno());
                 }
             }
         } catch (IOException ex) {
@@ -79,7 +79,7 @@ public class NexusStreamParser extends NexusStreamTokenizer implements Closeable
             while (sst.nextToken() != NexusStreamParser.TT_EOF) {
                 nextToken();
                 if (!toString().equals(sst.toString())) {
-                    throw new IOExceptionWithLineNumber(sst.toString() + "' expected, got: '" + toString() + "'", lineno());
+                    throw new IOExceptionWithLineNumber(sst + "' expected, got: '" + this + "'", lineno());
                 }
             }
         } catch (IOException ex) {
@@ -101,7 +101,7 @@ public class NexusStreamParser extends NexusStreamTokenizer implements Closeable
         }
 
         if (!toString().equalsIgnoreCase(str)) {
-            throw new IOExceptionWithLineNumber(str + "' expected, got: '" + toString() + "'", lineno());
+            throw new IOExceptionWithLineNumber(str + "' expected, got: '" + this + "'", lineno());
         }
     }
 
@@ -118,7 +118,7 @@ public class NexusStreamParser extends NexusStreamTokenizer implements Closeable
             throw new IOExceptionWithLineNumber(lineno(), ex);
         }
         if (!toString().equals(str)) {
-            throw new IOExceptionWithLineNumber(str + "' expected, got: '" + toString() + "'", lineno());
+            throw new IOExceptionWithLineNumber(str + "' expected, got: '" + this + "'", lineno());
         }
     }
 
@@ -155,7 +155,7 @@ public class NexusStreamParser extends NexusStreamTokenizer implements Closeable
                 throw new IOExceptionWithLineNumber(lineno(), ex);
             }
             if (!toString().equalsIgnoreCase(str)) {
-                throw new IOExceptionWithLineNumber(str + "' expected, got: '" + toString() + "'", lineno());
+                throw new IOExceptionWithLineNumber(str + "' expected, got: '" + this + "'", lineno());
             }
         } finally {
             popPunctuationCharacters();
@@ -177,7 +177,7 @@ public class NexusStreamParser extends NexusStreamTokenizer implements Closeable
                 throw new IOExceptionWithLineNumber(lineno(), ex);
             }
             if (!toString().equals(str)) {
-                throw new IOExceptionWithLineNumber(str + "' expected, got: '" + toString() + "'", lineno());
+                throw new IOExceptionWithLineNumber(str + "' expected, got: '" + this + "'", lineno());
             }
         } finally {
             popPunctuationCharacters();
@@ -455,7 +455,7 @@ public class NexusStreamParser extends NexusStreamTokenizer implements Closeable
                 matchIgnoreCase(first);
             nextToken();
             while (!toString().equals(last)) {
-                result.append(" ").append(toString());
+                result.append(" ").append(this);
                 if (ttype == TT_EOF)
                     throw new IOExceptionWithLineNumber("'" + last + "' expected, got EOF", lineno());
                 nextToken();
@@ -488,7 +488,7 @@ public class NexusStreamParser extends NexusStreamTokenizer implements Closeable
         try {
             nextToken();
             while (!toString().equals(last)) {
-                buf.append("'").append(toString()).append("'");
+                buf.append("'").append(this).append("'");
                 if (ttype == TT_EOF)
                     throw new IOExceptionWithLineNumber("'" + last + "' expected, got EOF", lineno());
                 nextToken();
@@ -562,7 +562,7 @@ public class NexusStreamParser extends NexusStreamTokenizer implements Closeable
         try {
             nextToken();
             while (!toString().equals(last)) {
-                result.append(" ").append(toString());
+                result.append(" ").append(this);
                 if (ttype == TT_EOF)
                     throw new IOExceptionWithLineNumber("'" + last + "' expected, got EOF", lineno());
                 nextToken();

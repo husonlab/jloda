@@ -231,9 +231,7 @@ public class FormatterActions {
                     Object selectedValue = ((JComboBox) event.getSource()).getSelectedItem();
                     if (selectedValue != null) {
                         String family = selectedValue.toString();
-                        boolean changed = false;
-                        if (setNodeFont(family, -1, -1, -1))
-                            changed = true;
+                        boolean changed = setNodeFont(family, -1, -1, -1);
                         if (setEdgeFont(family, -1, -1, -1))
                             changed = true;
                         if (changed) {
@@ -273,9 +271,7 @@ public class FormatterActions {
                                 size = 10;
                                 ((JComboBox) event.getSource()).setSelectedItem("10");
                             }
-                            boolean changed = false;
-                            if (setNodeFont(null, -1, -1, size))
-                                changed = true;
+                            boolean changed = setNodeFont(null, -1, -1, size);
                             if (setEdgeFont(null, -1, -1, size))
                                 changed = true;
                             if (changed) {
@@ -305,9 +301,7 @@ public class FormatterActions {
             public void actionPerformed(ActionEvent event) {
                 if (!ignore) {
                     int state = ((JCheckBox) event.getSource()).isSelected() ? 1 : 0;
-                    boolean changed = false;
-                    if (setNodeFont(null, state, -1, -1))
-                        changed = true;
+                    boolean changed = setNodeFont(null, state, -1, -1);
                     if (setEdgeFont(null, state, -1, -1))
                         changed = true;
                     if (changed) {
@@ -335,9 +329,7 @@ public class FormatterActions {
             public void actionPerformed(ActionEvent event) {
                 if (!ignore) {
                     int state = ((JCheckBox) event.getSource()).isSelected() ? 1 : 0;
-                    boolean changed = false;
-                    if (setNodeFont(null, -1, state, -1))
-                        changed = true;
+                    boolean changed = setNodeFont(null, -1, state, -1);
                     if (setEdgeFont(null, -1, state, -1))
                         changed = true;
                     if (changed) {

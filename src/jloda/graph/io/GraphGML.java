@@ -19,7 +19,10 @@
 
 package jloda.graph.io;
 
-import jloda.graph.*;
+import jloda.graph.EdgeArray;
+import jloda.graph.Graph;
+import jloda.graph.Node;
+import jloda.graph.NodeArray;
 import jloda.util.parse.NexusStreamParser;
 
 import java.io.*;
@@ -167,7 +170,8 @@ public class GraphGML {
         return new GMLInfo(graphComment,graphDirected,graphId,graphLabel);
     }
 
-    public static record  GMLInfo(String comment,boolean directed, int id, String label) {}
+    public record GMLInfo(String comment, boolean directed, int id, String label) {
+    }
 
     public static void main(String[] args) throws IOException {
         var input = """
@@ -215,8 +219,8 @@ public class GraphGML {
         var gmlInfo=GraphGML.readGML(new StringReader(input),graph,labelNodeValueMap,labelEdgeValueMap);
 
         try(var w=new StringWriter()) {
-            GraphGML.writeGML(graph,gmlInfo.comment(), gmlInfo.label(), gmlInfo.directed(), gmlInfo.id(),w,labelNodeValueMap,labelEdgeValueMap);
-            System.out.println(w.toString());
+            GraphGML.writeGML(graph, gmlInfo.comment(), gmlInfo.label(), gmlInfo.directed(), gmlInfo.id(), w, labelNodeValueMap, labelEdgeValueMap);
+            System.out.println(w);
         }
     }
 }

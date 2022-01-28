@@ -810,7 +810,7 @@ public class NTHash {
 
 	public static void main(String[] args) {
 		for (char n : new char[]{'A', 'C', 'G', 'T', 'U', 'a', 'c', 'g', 't', 'u'}) {
-			System.out.println(n + ":" + (int) (n) + "," + (int) (n & cpOff));
+			System.out.println(n + ":" + (int) (n) + "," + (n & cpOff));
 		}
 
 		String seq = "ACGTACGTACGTACGT";

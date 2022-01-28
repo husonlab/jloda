@@ -894,7 +894,7 @@ public class PhyloTree extends PhyloSplitsGraph {
     public void print(PrintStream out, boolean wgts) throws Exception {
         StringWriter st = new StringWriter();
         write(st, wgts);
-        out.println(st.toString());
+        out.println(st);
     }
 
 

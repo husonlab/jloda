@@ -192,7 +192,7 @@ public class IntervalNode<Type> {
     public String toStringRec(int level) {
         final StringBuilder sb = new StringBuilder();
         sb.append("\t".repeat(Math.max(0, level)));
-        sb.append(toString()).append("\n");
+        sb.append(this).append("\n");
         if (leftNode != null)
             sb.append(leftNode.toStringRec(level + 1));
         if (rightNode != null)

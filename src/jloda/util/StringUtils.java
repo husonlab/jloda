@@ -1070,15 +1070,15 @@ public class StringUtils {
 		for (var i = 0; i < str.length(); i++) {
 			var ch = str.charAt(i);
 			if (Character.isWhitespace(ch) || ".:".contains("" + ch)) {
-				buf.append((char) ch);
-				previousWasSpaceOrPunctuation = true;
+				buf.append(ch);
+                previousWasSpaceOrPunctuation = true;
 			} else {
 				if (previousWasSpaceOrPunctuation && Character.isLetter(ch))
-					buf.append((char) Character.toUpperCase(ch));
+                    buf.append(Character.toUpperCase(ch));
 				else if (Character.isLetter(ch))
-					buf.append((char) Character.toLowerCase(ch));
+                    buf.append(Character.toLowerCase(ch));
 				else
-					buf.append((char) ch);
+                    buf.append(ch);
 				previousWasSpaceOrPunctuation = false;
 			}
 		}

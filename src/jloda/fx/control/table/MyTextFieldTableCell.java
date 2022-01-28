@@ -34,7 +34,7 @@ import javafx.util.converter.DefaultStringConverter;
 
 public class MyTextFieldTableCell<S, T> extends TableCell<S, T> {
 	private TextField textField;
-	private ObjectProperty<StringConverter<T>> converter;
+	private final ObjectProperty<StringConverter<T>> converter;
 
 	public static <S> Callback<TableColumn<S, String>, TableCell<S, String>> forTableColumn() {
 		return forTableColumn(new DefaultStringConverter());
@@ -47,7 +47,7 @@ public class MyTextFieldTableCell<S, T> extends TableCell<S, T> {
 	}
 
 	public MyTextFieldTableCell() {
-		this((StringConverter) null);
+		this(null);
 	}
 
 	public MyTextFieldTableCell(StringConverter<T> var1) {
@@ -65,7 +65,7 @@ public class MyTextFieldTableCell<S, T> extends TableCell<S, T> {
 	}
 
 	public final StringConverter<T> getConverter() {
-		return (StringConverter) this.converterProperty().get();
+		return this.converterProperty().get();
 	}
 
 	public void startEdit() {
@@ -76,7 +76,7 @@ public class MyTextFieldTableCell<S, T> extends TableCell<S, T> {
 					this.textField = createTextField(this, this.getConverter());
 				}
 
-				startEdit(this, this.getConverter(), (HBox) null, (Node) null, this.textField);
+				startEdit(this, this.getConverter(), null, null, this.textField);
 			}
 
 		}
@@ -87,9 +87,9 @@ public class MyTextFieldTableCell<S, T> extends TableCell<S, T> {
 			var4.setText(getItemText(var0, var1));
 		}
 
-		var0.setText((String) null);
+		var0.setText(null);
 		if (var3 != null) {
-			var2.getChildren().setAll(new Node[]{var3, var4});
+			var2.getChildren().setAll(var3, var4);
 			var0.setGraphic(var2);
 		} else {
 			var0.setGraphic(var4);
@@ -101,12 +101,12 @@ public class MyTextFieldTableCell<S, T> extends TableCell<S, T> {
 
 	public void cancelEdit() {
 		super.cancelEdit();
-		cancelEdit(this, this.getConverter(), (Node) null);
+		cancelEdit(this, this.getConverter(), null);
 	}
 
 	public void updateItem(T var1, boolean var2) {
 		super.updateItem(var1, var2);
-		updateItem(this, this.getConverter(), (HBox) null, (Node) null, this.textField);
+		updateItem(this, this.getConverter(), null, null, this.textField);
 	}
 
 	static <T> void cancelEdit(Cell<T> var0, StringConverter<T> var1, Node var2) {
@@ -140,16 +140,16 @@ public class MyTextFieldTableCell<S, T> extends TableCell<S, T> {
 
 	static <T> void updateItem(Cell<T> var0, StringConverter<T> var1, HBox var2, Node var3, TextField var4) {
 		if (var0.isEmpty()) {
-			var0.setText((String) null);
-			var0.setGraphic((Node) null);
+			var0.setText(null);
+			var0.setGraphic(null);
 		} else if (var0.isEditing()) {
 			if (var4 != null) {
 				var4.setText(getItemText(var0, var1));
 			}
 
-			var0.setText((String) null);
+			var0.setText(null);
 			if (var3 != null) {
-				var2.getChildren().setAll(new Node[]{var3, var4});
+				var2.getChildren().setAll(var3, var4);
 				var0.setGraphic(var2);
 			} else {
 				var0.setGraphic(var4);

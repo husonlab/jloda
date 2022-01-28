@@ -117,7 +117,7 @@ public class FileLineIterator implements ICloseableIterator<String> {
      * @throws java.io.FileNotFoundException
      */
     public FileLineIterator(String fileName, boolean reportProgress) throws IOException {
-        this(fileName, (ProgressListener) null);
+        this(fileName, null);
         setReportProgress(true);
     }
 

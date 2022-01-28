@@ -315,7 +315,7 @@ public class ProgramProperties {
     public static void put(String key, int[] value) {
         StringBuilder buf = new StringBuilder();
         for (int aValue : value) buf.append(aValue).append(";");
-        props.setProperty(key, "" + buf.toString());
+        props.setProperty(key, "" + buf);
     }
 
     /**
@@ -584,7 +584,7 @@ public class ProgramProperties {
         if (colorFX == null)
             props.setProperty(key, "null");
         else
-            props.setProperty(key, "" + colorFX.toString());
+            props.setProperty(key, "" + colorFX);
     }
 
     public static javafx.scene.text.Font getDefaultFontFX() {

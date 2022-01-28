@@ -725,6 +725,6 @@ public class SplittableTabPane extends Pane {
         return new AuxiliaryWindow(stage, tab);
     }
 
-    private static record AuxiliaryWindow(Stage stage, Tab tab) {
+    private record AuxiliaryWindow(Stage stage, Tab tab) {
     }
 }

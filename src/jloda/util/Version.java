@@ -67,7 +67,7 @@ public class Version {
             }
         } catch (Exception e) {
             //Basic.caught(e);
-            version = name + " $ " + e.toString();
+            version = name + " $ " + e;
         }
         return version;
     }

@@ -37,7 +37,7 @@ public class SequenceUtils {
                 char b = nucleotides.charAt(j);
                 for (int k = 0; k < nucleotides.length(); k++) {
                     char c = nucleotides.charAt(k);
-                    codon2aminoAcid[(int) a][(int) b][(int) c] = getAminoAcidInit(a, b, c);
+                    codon2aminoAcid[a][b][c] = getAminoAcidInit(a, b, c);
                 }
             }
         }
