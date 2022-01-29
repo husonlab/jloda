@@ -92,6 +92,8 @@ public class ProteinComplexityMeasure {
      */
     private static int getIndex(byte c) {
         return switch (c) {
+            default -> 0;
+
             case 'a', 'A' -> 0;
             case 'r', 'R' -> 1;
             case 'n', 'N' -> 2;

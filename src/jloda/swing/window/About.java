@@ -20,6 +20,7 @@
 package jloda.swing.window;
 
 import jloda.fx.util.ProgramExecutorService;
+import jloda.swing.util.ResourceManager;
 import jloda.util.Basic;
 import jloda.util.ProgramProperties;
 import jloda.util.StringUtils;

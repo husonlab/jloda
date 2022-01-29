@@ -92,8 +92,8 @@ public class NodeImage {
                     Point location = nv.getLabelPosition(trans);
                     rect = new Rectangle(location.x, location.y, 0, 0);
                 }
-                int x;
-                int y;
+                int x = 0;
+                int y = 0;
                 byte useLayout = layout;
                 if (layout == ViewBase.RADIAL) {
                     double useAngle = Geometry.moduloTwoPI(nv.getLabelAngle());

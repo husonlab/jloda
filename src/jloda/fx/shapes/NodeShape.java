@@ -115,7 +115,7 @@ public enum NodeShape {
         return switch (nodeShape) {
             case Square -> new SquareShape(width);
             case Rectangle -> new RectangleShape(width, height);
-            case Circle -> new CircleShape(width);
+            default /* case Circle */ -> new CircleShape(width);
             case Oval -> new OvalShape(width, height);
             case TriangleUp -> new TriangleUpShape(width, height);
             case TriangleDown -> new TriangleDownShape(width, height);

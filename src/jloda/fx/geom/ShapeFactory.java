@@ -43,7 +43,7 @@ public class ShapeFactory {
     public static Shape3D makeShape(float size, Type type) {
         Shape3D shape;
         switch (type) {
-            case Ball -> shape = new Sphere(size);
+            default /* case Ball */ -> shape = new Sphere(size);
             case Cube -> shape = new Cube(1.7f * size, 1.7f * size, 1.7f * size);
             case Octahedron -> shape = new Octahedron(1.4f * size);
             case Tetrahedron -> shape = new Tetrahedron(1.4f * size);
@@ -53,7 +53,6 @@ public class ShapeFactory {
                 if (random == null)
                     random = new Random();
                 shape = makeShape(size, Type.values()[random.nextInt(Type.values().length - 1)]); // length-1 so that we don't choose "Random"
-                break;
             }
         }
         return shape;
@@ -64,7 +63,7 @@ public class ShapeFactory {
             case Diamond -> makeShape(size, Type.Octahedron);
             case Triangle -> makeShape(size, Type.Tetrahedron);
             case Rectangle -> makeShape(size, Type.Cube);
-            case Oval -> makeShape(size, Type.Ball);
+            default /* case Oval */ -> makeShape(size, Type.Ball);
         };
     }
 }

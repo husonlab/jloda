@@ -684,9 +684,8 @@ public class FastMultiLayerMethodLayout {
     private static double attractionScalar(FastMultiLayerMethodOptions options, double d, double ind_ideal_edge_length) {
         double s;
         switch (options.getForceModel()) {
-            case FruchtermanReingold -> {
+            default /* includes  FruchtermanReingold */ -> {
                 s = d * d / (ind_ideal_edge_length * ind_ideal_edge_length * ind_ideal_edge_length);
-                break;
             }
             case Eades -> {
                 double c = 10;
@@ -694,7 +693,6 @@ public class FastMultiLayerMethodLayout {
                     s = -1e10;
                 else
                     s = c * Math.log(d / ind_ideal_edge_length) / (Math.log(2) * ind_ideal_edge_length);
-                break;
             }
             case New -> {
                 double c = Math.log(d / ind_ideal_edge_length) / Math.log(2);
@@ -702,7 +700,6 @@ public class FastMultiLayerMethodLayout {
                     s = c * d * d / (ind_ideal_edge_length * ind_ideal_edge_length * ind_ideal_edge_length);
                 else
                     s = -1e10;
-                break;
             }
         }
         return s;

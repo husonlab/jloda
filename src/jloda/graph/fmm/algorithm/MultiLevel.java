@@ -122,19 +122,13 @@ public class MultiLevel {
 		while (!nodeSet.isEmpty()) { // randomly select a sun node
             Node sunNode;
             switch (options.getGalaxyChoice()) {
-                case UniformProb -> {
-                    sunNode = nodeSet.getRandomNode();
-                    break;
-                }
-                case NonUniformProbLowerMass -> {
-                    sunNode = nodeSet.getRandomNodeWithLowestStarMass(options.getNumberRandomTries());
-                    break;
-                }
-                case NonUniformProbHigherMass -> {
-                    sunNode = nodeSet.getRandomNodeWithHighestStarMass(options.getNumberRandomTries());
-                    break;
-                }
-            }
+				default -> sunNode = nodeSet.getRandomNode();
+
+				case NonUniformProbLowerMass -> sunNode = nodeSet.getRandomNodeWithLowestStarMass(options.getNumberRandomTries());
+
+				case NonUniformProbHigherMass -> sunNode = nodeSet.getRandomNodeWithHighestStarMass(options.getNumberRandomTries());
+
+			}
             sunNodes.add(sunNode);
 
             //create new node at higher level that represents the collapsed solar_system
