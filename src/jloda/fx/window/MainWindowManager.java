@@ -143,8 +143,8 @@ public class MainWindowManager {
         return true;
     }
 
-    public void createAndShowWindow(boolean useExistingEmpty) {
-        createAndShowWindow(useExistingEmpty ? getLastFocusedMainWindow() : null);
+    public IMainWindow createAndShowWindow(boolean useExistingEmpty) {
+        return createAndShowWindow(useExistingEmpty ? getLastFocusedMainWindow() : null);
     }
 
     /**

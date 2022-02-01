@@ -23,10 +23,8 @@ import java.io.*;
 import java.net.URI;
 import java.net.URL;
 import java.text.SimpleDateFormat;
-import java.util.Collection;
-import java.util.Date;
-import java.util.HashSet;
-import java.util.LinkedList;
+import java.util.*;
+import java.util.function.BinaryOperator;
 import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
 
@@ -76,9 +74,10 @@ public class Basic {
     /**
      * Ignore all output written to System.err
      */
-    public static void hideSystemErr() {
-        PrintStream current = System.err;
+    public static PrintStream hideSystemErr() {
+        var current = System.err;
         System.setErr(nullOut);
+        return current;
     }
 
     /**
@@ -122,11 +121,11 @@ public class Basic {
 
     /**
      * Ignore all output written to System.out
-     *
      */
-    public static void hideSystemOut() {
-        PrintStream current = System.out;
+    public static PrintStream hideSystemOut() {
+        var current = System.out;
         System.setOut(nullOut);
+        return current;
     }
 
     /**
@@ -352,6 +351,10 @@ public class Basic {
             return false;
         b.removeAll(a);
         return b.isEmpty();
+    }
+
+    public static <T> T getAnyMostFrequent(ArrayList<T> list) {
+        return list.stream().reduce(BinaryOperator.maxBy(Comparator.comparingInt(o -> Collections.frequency(list, o)))).orElse(null);
     }
 }
 

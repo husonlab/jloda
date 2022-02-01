@@ -2133,4 +2133,21 @@ public class StringUtils {
 	public static String toLowerCaseWithUnderScores(String label) {
 		return label.toLowerCase().replaceAll("\s+", "_");
 	}
+
+	public static BitSet indicesOf(String[] array, Collection<String> queries) {
+		var result = new BitSet();
+		for (var i = 0; i < array.length; i++)
+			if (queries.contains(array[i]))
+				result.set(i);
+		return result;
+	}
+
+	public static int countDigits(String name) {
+		var count = 0;
+		for (var i = 0; i < name.length(); i++) {
+			if (Character.isDigit(name.charAt(i)))
+				count++;
+		}
+		return count;
+	}
 }

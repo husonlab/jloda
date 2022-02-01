@@ -123,7 +123,7 @@ public class FileUtils {
 	 */
 	public static void writeLinesToFile(Collection<String> lines, String file, boolean showProgress) throws IOException {
 		try (var progress = (showProgress ? new ProgressPercentage("Writing " + file + ":", lines.size()) : new ProgressSilent())) {
-			try (var w = new BufferedWriter(new OutputStreamWriter(getOutputStreamPossiblyZIPorGZIP(file)))) {
+			try (var w = getOutputWriterPossiblyZIPorGZIP(file)) {
 				for (var line : lines) {
 					w.write(line);
 					w.write("\n");
@@ -343,6 +343,10 @@ public class FileUtils {
 		} else if (fileName.toLowerCase().endsWith(".gz")) {
 			return new GZIPInputStream(ins);
 		} else return ins;
+	}
+
+	public static Writer getOutputWriterPossiblyZIPorGZIP(String fileName) throws IOException {
+		return new BufferedWriter(new OutputStreamWriter(getOutputStreamPossiblyZIPorGZIP(fileName)));
 	}
 
 	/**
@@ -731,5 +735,9 @@ public class FileUtils {
 			Basic.caught(ex);
 			return 0;
 		}
+	}
+
+	public static String getFileName(String directory, String name) {
+		return (new File(directory, name)).getPath();
 	}
 }

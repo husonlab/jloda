@@ -239,8 +239,8 @@ public class Graph extends GraphBase implements INamed {
      * @param dir_w before or after reference e_w
      * @param obj   the info object
      */
-    public void newEdge(Node v, Edge e_v, Node w, Edge e_w, int dir_v, int dir_w, Object obj) throws IllegalSelfEdgeException {
-        new Edge(this, v, e_v, w, e_w, dir_v, dir_w, obj);
+    public Edge newEdge(Node v, Edge e_v, Node w, Edge e_w, int dir_v, int dir_w, Object obj) throws IllegalSelfEdgeException {
+        return new Edge(this, v, e_v, w, e_w, dir_v, dir_w, obj);
     }
 
     /**
