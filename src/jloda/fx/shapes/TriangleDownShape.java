@@ -32,9 +32,7 @@ public class TriangleDownShape extends Polygon implements ISized {
     /**
      * constructor
      *
-     * @param width
-     * @param height
-     */
+	 */
     public TriangleDownShape(double width, double height) {
         setSize(width, height);
     }

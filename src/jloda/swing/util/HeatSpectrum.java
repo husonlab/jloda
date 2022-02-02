@@ -532,7 +532,6 @@ public class HeatSpectrum {
     /**
      * get the color for a specific value
      *
-     * @param value
      * @return color
      */
     public static Color getColor(int value) {
@@ -542,9 +541,7 @@ public class HeatSpectrum {
     /**
      * change the color associated with the given value
      *
-     * @param value
-     * @param color
-     */
+	 */
     public static void setColor(int value, Color color) {
         spectrum[value] = color;
     }

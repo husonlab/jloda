@@ -31,7 +31,6 @@ public enum NodeShape {
     /**
      * determines the node shape of a shape
      *
-     * @param shape
      * @return node shape
      */
     public static NodeShape valueOf(Shape shape) {
@@ -58,9 +57,7 @@ public enum NodeShape {
     /**
      * gets the short code for this shape, which consists only of the capital letters appearing in the name
      *
-     * @param shape
-     * @return
-     */
+	 */
     public static String getCode(Shape shape) {
         return valueOf(shape).toString().replaceAll("[a-z]", "");
     }
@@ -68,8 +65,6 @@ public enum NodeShape {
     /**
      * creates a shape
      *
-     * @param name
-     * @param size
      * @return shape
      */
     public static Shape create(String name, int size) {
@@ -79,8 +74,6 @@ public enum NodeShape {
     /**
      * creates a shape
      *
-     * @param nodeShape
-     * @param size
      * @return shape
      */
     public static Shape create(NodeShape nodeShape, int size) {
@@ -90,11 +83,7 @@ public enum NodeShape {
     /**
      * creates a shape
      *
-     * @param name
-     * @param width
-     * @param height
-     * @return
-     */
+	 */
     public static Shape create(String name, double width, double height) {
 		final NodeShape nodeShape = StringUtils.valueOfIgnoreCase(NodeShape.class, name);
         if (nodeShape != null)
@@ -106,9 +95,6 @@ public enum NodeShape {
     /**
      * create a shape for a node shape
      *
-     * @param nodeShape
-     * @param width
-     * @param height
      * @return shape
      */
     public static Shape create(NodeShape nodeShape, double width, double height) {

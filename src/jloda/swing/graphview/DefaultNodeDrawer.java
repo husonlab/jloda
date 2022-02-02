@@ -42,8 +42,7 @@ public class DefaultNodeDrawer implements INodeDrawer {
     /**
      * constructor
      *
-     * @param graphView
-     */
+	 */
     public DefaultNodeDrawer(GraphView graphView) {
         this.graphView = graphView;
         if (graphView != null)
@@ -53,9 +52,7 @@ public class DefaultNodeDrawer implements INodeDrawer {
     /**
      * setup data
      *
-     * @param graphView
-     * @param gc
-     */
+	 */
     public void setup(GraphView graphView, Graphics2D gc) {
         this.graphView = graphView;
         if (graphView != null)
@@ -66,8 +63,7 @@ public class DefaultNodeDrawer implements INodeDrawer {
     /**
      * draw the node
      *
-     * @param selected
-     */
+	 */
     public void draw(Node v, boolean selected) {
         NodeView nv = graphView.getNV(v);
         if (selected)
@@ -78,8 +74,7 @@ public class DefaultNodeDrawer implements INodeDrawer {
     /**
      * draw the label of the node
      *
-     * @param selected
-     */
+	 */
     public void drawLabel(Node v, boolean selected) {
         NodeView nv = graphView.getNV(v);
         drawLabel(nv, graphView.getFont(), selected);
@@ -88,8 +83,7 @@ public class DefaultNodeDrawer implements INodeDrawer {
     /**
      * draw the node and the label
      *
-     * @param hilited
-     */
+	 */
     public void drawNodeAndLabel(Node v, boolean hilited) {
         NodeView nv = graphView.getNV(v);
         draw(nv, hilited);
@@ -99,8 +93,7 @@ public class DefaultNodeDrawer implements INodeDrawer {
     /**
      * Draw the node.
      *
-     * @param hilited
-     */
+	 */
     private void draw(NodeView nv, boolean hilited) {
         if (hilited)
             hilite(nv);

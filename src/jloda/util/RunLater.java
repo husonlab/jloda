@@ -27,9 +27,7 @@ public class RunLater {
     /**
      * wait the given amount of milli-seconds and then call the run method of the runnable object
      *
-     * @param waitMilliSeconds
-     * @param runnable
-     */
+	 */
     public void apply(final long waitMilliSeconds, final Runnable runnable) {
 
         System.err.println("In:");

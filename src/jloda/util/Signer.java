@@ -46,10 +46,7 @@ public class Signer {
     /**
      * Construct a signer and generate a private key and public key
      *
-     * @param seed
-     * @throws NoSuchProviderException
-     * @throws NoSuchAlgorithmException
-     */
+	 */
     public Signer(int seed) throws NoSuchProviderException, NoSuchAlgorithmException {
         SecureRandom random = SecureRandom.getInstance("SHA1PRNG", "SUN");
         KeyPairGenerator keyGen = KeyPairGenerator.getInstance("DSA", "SUN");
@@ -67,13 +64,7 @@ public class Signer {
     /**
      * load public key from a file
      *
-     * @param fileName
-     * @return public key
-     * @throws IOException
-     * @throws InvalidKeySpecException
-     * @throws NoSuchProviderException
-     * @throws NoSuchAlgorithmException
-     */
+	 */
     public void loadPublicKey(String fileName) throws IOException, InvalidKeySpecException, NoSuchProviderException, NoSuchAlgorithmException {
         InputStream fs = ResourceManager.getFileAsStream(fileName);
         byte[] encKey = new byte[fs.available()];
@@ -92,9 +83,7 @@ public class Signer {
     /**
      * save the public key
      *
-     * @param fileName
-     * @throws IOException
-     */
+	 */
     public void savePublicKey(String fileName) throws IOException {
         if (publicKey == null)
             throw new NoSuchElementException("publicKey");
@@ -109,9 +98,7 @@ public class Signer {
     /**
      * save the public key
      *
-     * @param fileName
-     * @throws IOException
-     */
+	 */
     public void savePrivateKey(String fileName) throws IOException {
         if (privateKey == null)
             throw new NoSuchElementException("privateKey");
@@ -125,13 +112,8 @@ public class Signer {
     /**
      * generate a signature
      *
-     * @param data
      * @return signature
-     * @throws NoSuchProviderException
-     * @throws NoSuchAlgorithmException
-     * @throws InvalidKeyException
-     * @throws SignatureException
-     */
+	 */
     public byte[] generateSignature(String data) throws NoSuchProviderException, NoSuchAlgorithmException, InvalidKeyException, SignatureException {
         return generateSignature(data.getBytes());
     }
@@ -139,13 +121,8 @@ public class Signer {
     /**
      * generate a signature
      *
-     * @param data
      * @return signature
-     * @throws NoSuchProviderException
-     * @throws NoSuchAlgorithmException
-     * @throws InvalidKeyException
-     * @throws SignatureException
-     */
+	 */
     public byte[] generateSignature(byte[] data) throws NoSuchProviderException, NoSuchAlgorithmException, InvalidKeyException, SignatureException {
         if (privateKey == null)
             throw new NoSuchElementException("privateKey");
@@ -158,14 +135,8 @@ public class Signer {
     /**
      * verify that signature matches data
      *
-     * @param data
-     * @param signature
      * @return true, if signature is valid for data
-     * @throws NoSuchProviderException
-     * @throws NoSuchAlgorithmException
-     * @throws InvalidKeyException
-     * @throws SignatureException
-     */
+	 */
     public boolean verifySignedData(byte[] data, byte[] signature) throws NoSuchProviderException, NoSuchAlgorithmException, InvalidKeyException, SignatureException {
         if (publicKey == null)
             throw new NoSuchElementException("publicKey");
@@ -178,7 +149,6 @@ public class Signer {
     /**
      * convert signature bytes to hex string
      *
-     * @param signature
      * @return hex string
      */
     public static String signatureBytesToHexString(byte[] signature) {
@@ -192,7 +162,6 @@ public class Signer {
     /**
      * converts signature hex string to bytes
      *
-     * @param signature
      * @return bytes
      */
     public static byte[] signatureHexStringToBytes(String signature) {
@@ -219,8 +188,7 @@ public class Signer {
     /**
      * set public key
      *
-     * @param publicKey
-     */
+	 */
     public void setPublicKey(PublicKey publicKey) {
         this.publicKey = publicKey;
     }
@@ -237,8 +205,7 @@ public class Signer {
     /**
      * set private key
      *
-     * @param privateKey
-     */
+	 */
     public void setPrivateKey(PrivateKey privateKey) {
         this.privateKey = privateKey;
     }

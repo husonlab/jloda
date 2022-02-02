@@ -74,7 +74,6 @@ public class BipartiteMatching {
     /**
      * find an alternating path
      *
-     * @param matching
      * @param uncovered - methods removes nodes that will become covered through path augmentation
      * @return augmenting path
      */
@@ -114,7 +113,6 @@ public class BipartiteMatching {
     /**
      * computes one set of nodes, if graph is bipartite, or null, else
      *
-     * @param graph
      * @return one side or null
      */
     public static NodeSet computeBipartite(Graph graph) {
@@ -135,9 +133,6 @@ public class BipartiteMatching {
     /**
      * recursively dones the work
      *
-     * @param v
-     * @param oneSide
-     * @param visited
      * @return true, if graph is bipartite
      */
     private static boolean computeBipartiteRec(Node v, NodeSet oneSide, NodeSet visited) {

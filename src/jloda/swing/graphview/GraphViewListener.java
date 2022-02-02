@@ -19,13 +19,6 @@
 
 package jloda.swing.graphview;
 
-/**
- * @version $Id: GraphViewListener.java,v 1.100 2010-06-14 13:34:40 huson Exp $
- * <p>
- * Listener for all graphview events.
- * @author Daniel Huson
- */
-
 import jloda.fx.util.ProgramExecutorService;
 import jloda.graph.*;
 import jloda.phylo.PhyloTree;
@@ -1153,8 +1146,7 @@ public class GraphViewListener implements IGraphViewListener {
     /**
      * react to a mouse wheel event
      *
-     * @param e
-     */
+	 */
     public void mouseWheelMoved(MouseWheelEvent e) {
         if (e.getScrollType() == MouseWheelEvent.WHEEL_UNIT_SCROLL) {
             boolean xyLocked = viewer.isKeepAspectRatio();
@@ -1230,8 +1222,7 @@ public class GraphViewListener implements IGraphViewListener {
     /**
      * is user allowed to deselect all by mouse click off graph?
      *
-     * @param allowDeselectAllByMouseClick
-     */
+	 */
     public void setAllowDeselectAllByMouseClick(boolean allowDeselectAllByMouseClick) {
         this.allowDeselectAllByMouseClick = allowDeselectAllByMouseClick;
     }

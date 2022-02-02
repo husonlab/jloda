@@ -56,8 +56,7 @@ public class NotificationsInSwing {
     /**
      * show an information notification
      *
-     * @param message
-     */
+	 */
     public static void showInformation(String message) {
         showNotification(title, message, Mode.information, 10000);
     }
@@ -65,8 +64,7 @@ public class NotificationsInSwing {
     /**
      * show an information notification
      *
-     * @param message
-     */
+	 */
     public static void showInformation(String message, long milliseconds) {
         showNotification(title, message, Mode.information, milliseconds);
     }
@@ -74,8 +72,7 @@ public class NotificationsInSwing {
     /**
      * show an information notification
      *
-     * @param message
-     */
+	 */
     public static void showInformation(Object parentIgnored, String message) {
         showNotification(title, message, Mode.information, 10000);
     }
@@ -83,8 +80,7 @@ public class NotificationsInSwing {
     /**
      * show an error notification
      *
-     * @param message
-     */
+	 */
     public static void showError(String message) {
         showNotification(title, message, Mode.error, 60000);
     }
@@ -92,8 +88,7 @@ public class NotificationsInSwing {
     /**
      * show an error notification
      *
-     * @param message
-     */
+	 */
     public static void showError(Object parentIgnored, String message) {
         showNotification(title, message, Mode.error, 60000);
     }
@@ -101,8 +96,7 @@ public class NotificationsInSwing {
     /**
      * show an error notification
      *
-     * @param message
-     */
+	 */
     public static void showInternalError(String message) {
         showNotification(title, "Internal error: " + message, Mode.error, 60000);
     }
@@ -110,8 +104,7 @@ public class NotificationsInSwing {
     /**
      * show an error notification
      *
-     * @param message
-     */
+	 */
     public static void showInternalError(Object parentIgnored, String message) {
         showNotification(title, "Internal error: " + message, Mode.error, 60000);
     }
@@ -119,8 +112,7 @@ public class NotificationsInSwing {
     /**
      * show an error notification
      *
-     * @param message
-     */
+	 */
     public static void showError(String message, long milliseconds) {
         showNotification(title, message, Mode.error, milliseconds);
     }
@@ -128,8 +120,7 @@ public class NotificationsInSwing {
     /**
      * show an error notification
      *
-     * @param message
-     */
+	 */
     public static void showError(Object parentIgnored, String message, long milliseconds) {
         showNotification(title, message, Mode.error, milliseconds);
     }
@@ -137,8 +128,7 @@ public class NotificationsInSwing {
     /**
      * show a warning notification
      *
-     * @param message
-     */
+	 */
     public static void showWarning(String message) {
         showWarning(null, message);
     }
@@ -146,8 +136,7 @@ public class NotificationsInSwing {
     /**
      * show a warning notification
      *
-     * @param message
-     */
+	 */
     public static void showWarning(Object parentIgnored, String message) {
         showWarning(parentIgnored, message, 60000);
     }
@@ -155,8 +144,7 @@ public class NotificationsInSwing {
     /**
      * show a warning notification
      *
-     * @param message
-     */
+	 */
     public static void showWarning(Object parentIgnored, String message, long milliseconds) {
         showNotification(title, message, Mode.warning, milliseconds);
     }
@@ -164,11 +152,7 @@ public class NotificationsInSwing {
     /**
      * show a notification
      *
-     * @param title
-     * @param message0
-     * @param mode
-     * @param milliseconds
-     */
+	 */
     public static void showNotification(String title, final String message0, final Mode mode, final long milliseconds) {
         final String message = (message0.length() > maxLength + 3 ? (message0.substring(0, maxLength) + "...") : message0);
 
@@ -271,20 +255,16 @@ public class NotificationsInSwing {
             switch (mode) {
                 case information -> {
                     System.err.print("Info: ");
-                    break;
-                }
+				}
                 case error -> {
                     System.err.print("Error: ");
-                    break;
-                }
+				}
                 case warning -> {
                     System.err.print("Warning: ");
-                    break;
-                }
+				}
                 case confirmation -> {
                     System.err.print("Confirmed: ");
-                    break;
-                }
+				}
             }
             System.err.println(message);
         }

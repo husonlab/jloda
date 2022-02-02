@@ -35,8 +35,6 @@ public class Version {
     /**
      * gets the compile time version of the given class
      *
-     * @param clazz
-     * @param name
      * @return compile time version
      */
     public static String getVersion(final Class clazz, final String name) {

@@ -79,8 +79,7 @@ public class EmptySearcher implements ISearcher {
     /**
      * set select state of all objects
      *
-     * @param select
-     */
+	 */
     @Override
     public void selectAll(boolean select) {
 

@@ -19,11 +19,6 @@
 
 package jloda.seq;
 
-/**
- * Fasta i/o
- * Daniel Huson, 12.10.2003
- */
-
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -59,9 +54,7 @@ public class FastA {
     /**
      * add a header and sequence
      *
-     * @param header
-     * @param sequence
-     */
+	 */
     public void add(String header, String sequence) {
         set(getSize(), header, sequence);
     }
@@ -89,8 +82,7 @@ public class FastA {
      * sets the header and sequence
      *
      * @param i      the index
-     * @param header
-     */
+	 */
     public void set(int i, String header, String sequence) {
         if (header.startsWith(">"))
             header = header.substring(1);
@@ -191,9 +183,7 @@ public class FastA {
     /**
      * write header and sequence in fastA format
      *
-     * @param w
-     * @throws IOException
-     */
+	 */
     public void write(Writer w) throws IOException {
         for (int i = 0; i < getSize(); i++) {
             if (getHeader(i) != null) {

@@ -19,13 +19,6 @@
 
 package jloda.swing.graphview;
 
-/**
- * @version $Id: GraphEditor.java,v 1.10 2006-01-19 12:00:33 huson Exp $
- * <p>
- * Graph editor class.
- * @author Daniel Huson
- */
-
 import jloda.graph.Edge;
 import jloda.graph.Graph;
 import jloda.graph.Node;
@@ -383,14 +376,12 @@ class GraphEditorActionListener implements ActionListener {
                 double s = 1.5;
                 GE.trans.composeScale(1.0 / s, 1.0 / s);
                 GE.repaint();
-                break;
-            }
+			}
             case "Zoom Out" -> {
                 double s = 1.5;
                 GE.trans.composeScale(s, s);
                 GE.repaint();
-                break;
-            }
+			}
             case "Spring Embedding" -> {
                 GE.computeSpringEmbedding(100, true);
                 GE.fitGraphToWindow();

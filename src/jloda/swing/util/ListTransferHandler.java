@@ -43,7 +43,6 @@ public class ListTransferHandler extends TransferHandler {
     /**
      * export string
      *
-     * @param component
      * @return string
      */
     protected String exportString(JComponent component) {
@@ -61,9 +60,7 @@ public class ListTransferHandler extends TransferHandler {
     /**
      * import a string
      *
-     * @param component
-     * @param str
-     */
+	 */
     protected void importString(JComponent component, String str) {
         JList target = (JList) component;
         DefaultListModel listModel = (DefaultListModel) target.getModel();
@@ -101,9 +98,7 @@ public class ListTransferHandler extends TransferHandler {
     /**
      * cleanup
      *
-     * @param component
-     * @param remove
-     */
+	 */
     protected void cleanup(JComponent component, boolean remove) {
 
         if (remove && this.indices != null) {
@@ -151,12 +146,12 @@ public class ListTransferHandler extends TransferHandler {
     @Override
     public boolean importData(JComponent component, Transferable t) {
         if (this.canImport(component, t.getTransferDataFlavors())) {
-            try {
-                String str = (String) t.getTransferData(DataFlavor.stringFlavor);
-                this.importString(component, str);
-                return true;
-            } catch (UnsupportedFlavorException | IOException ufe) {
-            }
+			try {
+				String str = (String) t.getTransferData(DataFlavor.stringFlavor);
+				this.importString(component, str);
+				return true;
+			} catch (UnsupportedFlavorException | IOException ignored) {
+			}
         }
         return false;
     }

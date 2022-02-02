@@ -43,8 +43,7 @@ public class NodeSet extends GraphBase implements Set<Node>, AutoCloseable {
     /**
      * copy constructor
      *
-     * @param other
-     */
+	 */
     public NodeSet(NodeSet other) {
         this(other.getOwner());
         this.bits.or(other.bits);
@@ -92,7 +91,6 @@ public class NodeSet extends GraphBase implements Set<Node>, AutoCloseable {
     /**
      * set all nodes
      *
-     * @param collection
      * @return true, if some element added
      */
     public boolean setAll(final Iterable<? extends Node> collection) {
@@ -104,7 +102,6 @@ public class NodeSet extends GraphBase implements Set<Node>, AutoCloseable {
     /**
      * adds all nodes in the given collection
      *
-     * @param collection
      * @return true, if some element is new
      */
     public boolean addAll(final Collection<? extends Node> collection) {
@@ -114,7 +111,6 @@ public class NodeSet extends GraphBase implements Set<Node>, AutoCloseable {
     /**
      * adds all nodes in the given collection
      *
-     * @param collection
      * @return true, if some element is new
      */
     public boolean addAll(final Iterable<? extends Node> collection) {
@@ -129,7 +125,6 @@ public class NodeSet extends GraphBase implements Set<Node>, AutoCloseable {
     /**
      * returns true if all elements of collection are contained in this set
      *
-     * @param collection
      * @return all contained?
      */
     public boolean containsAll(final Collection<?> collection) {
@@ -143,7 +138,6 @@ public class NodeSet extends GraphBase implements Set<Node>, AutoCloseable {
     /**
      * equals
      *
-     * @param obj
      * @return true, if equals
      */
     public boolean equals(Object obj) {
@@ -157,7 +151,6 @@ public class NodeSet extends GraphBase implements Set<Node>, AutoCloseable {
     /**
      * removes all nodes in the collection
      *
-     * @param collection
      * @return true, if something actually removed
      */
     public boolean removeAll(final Collection<?> collection) {
@@ -172,7 +165,6 @@ public class NodeSet extends GraphBase implements Set<Node>, AutoCloseable {
     /**
      * keep only those elements contained in the collection
      *
-     * @param collection
      * @return true, if set changes
      */
     public boolean retainAll(final Collection<?> collection) {
@@ -256,10 +248,7 @@ public class NodeSet extends GraphBase implements Set<Node>, AutoCloseable {
     /**
      * copy to array
      *
-     * @param objects
-     * @param <T>
-     * @return
-     */
+	 */
     public <T> T[] toArray(T[] objects) {
         if (objects.length < size())
             objects = Arrays.copyOf(objects, size());
@@ -363,7 +352,6 @@ public class NodeSet extends GraphBase implements Set<Node>, AutoCloseable {
 	/**
 	 * do the two sets have a non-empty intersection?
 	 *
-	 * @param aset
 	 * @return true, if intersection is non-empty
 	 */
 	public boolean intersects(NodeSet aset) {

@@ -31,7 +31,6 @@ public class AppleSystemMenuItems {
     /**
      * sets the quit menu action
      *
-     * @param action
      * @return true if set
      */
     public static boolean setQuitAction(final Action action) {
@@ -49,7 +48,6 @@ public class AppleSystemMenuItems {
     /**
      * set the about menu action
      *
-     * @param action
      * @return true if set
      */
     public static boolean setAboutAction(final Action action) {
@@ -64,7 +62,6 @@ public class AppleSystemMenuItems {
     /**
      * set the preferences menu action
      *
-     * @param action
      * @return true if set
      */
     public static boolean setPreferencesAction(final Action action) {

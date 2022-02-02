@@ -31,8 +31,6 @@ import javafx.scene.text.Font;
 import jloda.fx.util.ExtendedFXMLLoader;
 import jloda.util.StringUtils;
 
-import java.io.IOException;
-
 /**
  * a pane showing a scale
  * Daniel Huson, 3.2019
@@ -48,8 +46,7 @@ public class ColorScalePane extends Pane {
     /**
      * constructor
      *
-     * @throws IOException
-     */
+	 */
     public ColorScalePane() {
         final ExtendedFXMLLoader<ColorScalePaneController> extendedFXMLLoader = new ExtendedFXMLLoader<>(this.getClass());
         root = extendedFXMLLoader.getRoot();

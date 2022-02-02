@@ -29,7 +29,6 @@ public class FXSwingUtilities {
     /**
      * convert awt key code to KeyCode
      *
-     * @param awtKeyCode
      * @return KeyCode
      */
     public static KeyCode getKeyCodeFX(int awtKeyCode) {
@@ -226,7 +225,6 @@ public class FXSwingUtilities {
     /**
      * convert to AWT color
      *
-     * @param colorFX
      * @return AWT color
      */
     public static java.awt.Color getColorAWT(javafx.scene.paint.Color colorFX) {
@@ -236,7 +234,6 @@ public class FXSwingUtilities {
     /**
      * convert to FX color
      *
-     * @param colorAWT
      * @return AWT color
      */
     public static javafx.scene.paint.Color getColorFX(java.awt.Color colorAWT) {
@@ -246,7 +243,6 @@ public class FXSwingUtilities {
     /**
      * convert to FX color
      *
-     * @param colorAWT
      * @return AWT color
      */
     public static javafx.scene.paint.Color getColorFX(java.awt.Color colorAWT, double opacity) {

@@ -95,8 +95,6 @@ public class ExportManager {
     /**
      * creates a panel whose paint method draws only what is currently visible in the given scrollpane
      *
-     * @param imagePanel
-     * @param imageScrollPane
      * @return panel clipped to region visible in scroll pane
      */
     public static JPanel makePanelFromScrollPane(final JPanel imagePanel, JScrollPane imageScrollPane) {

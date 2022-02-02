@@ -37,9 +37,6 @@ public class ChooseColorLineWidthDialog {
     /**
      * show a choose color dialog
      *
-     * @param parent
-     * @param title
-     * @param defaultColor
      * @return color chosen or null
      */
     public static Pair<Integer, Color> showDialog(JFrame parent, String title, int defaultLineWidth, Color defaultColor) {

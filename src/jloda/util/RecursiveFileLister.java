@@ -33,10 +33,7 @@ public class RecursiveFileLister {
     /**
      * apply
      *
-     * @param name
-     * @param fileFilters
-     * @return
-     */
+	 */
     public static List<String> apply(String name, FileFilterBase... fileFilters) {
         final ArrayList<String> list = new ArrayList<>();
         applyRec(new File(name), list, fileFilters);
@@ -46,10 +43,7 @@ public class RecursiveFileLister {
     /**
      * recursively does the work
      *
-     * @param file
-     * @param list
-     * @param fileFilters
-     */
+	 */
     private static void applyRec(File file, ArrayList<String> list, FileFilterBase... fileFilters) {
         if (file.isFile()) {
             if (fileFilters.length == 0) {

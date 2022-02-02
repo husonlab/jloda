@@ -97,17 +97,14 @@ public class NodeActionAdapter implements NodeActionListener {
     /**
      * called when node label is clicked on
      *
-     * @param nodes
-     * @param clicks
-     */
+	 */
     public void doClickLabel(NodeSet nodes, int clicks) {
     }
 
     /**
      * called when node label was moved
      *
-     * @param nodes
-     */
+	 */
     public void doMoveLabel(NodeSet nodes) {
     }
 

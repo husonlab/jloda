@@ -60,7 +60,6 @@ public class DefaultGraphDrawer implements IGraphDrawer {
     /**
      * constructor. Call only after graph and trans have been set for GraphView
      *
-     * @param graphView
      */
     public DefaultGraphDrawer(GraphView graphView) {
         this.graphView = graphView;
@@ -79,7 +78,6 @@ public class DefaultGraphDrawer implements IGraphDrawer {
     /**
      * setd up the graphview
      *
-     * @param graphView
      */
     public void setupGraphView(GraphView graphView) {
         graphView.setAllowInternalEdgePoints(false);
@@ -93,8 +91,6 @@ public class DefaultGraphDrawer implements IGraphDrawer {
     /**
      * paint the graph
      *
-     * @param gc0
-     * @param rect
      */
     public void paint(Graphics gc0, Rectangle rect) {
         final Graphics2D gc = (Graphics2D) gc0;
@@ -275,7 +271,7 @@ public class DefaultGraphDrawer implements IGraphDrawer {
                 gc.setColor(ProgramProperties.SELECTION_COLOR_DARKER);
                 nodeDrawer.drawNodeAndLabel(v, false);
             }
-        } catch (NotOwnerException ex) {
+        } catch (NotOwnerException ignored) {
 
         }
     }
@@ -292,8 +288,6 @@ public class DefaultGraphDrawer implements IGraphDrawer {
     /**
      * get all nodes hit by mouse at (x,y)
      *
-     * @param x
-     * @param y
      * @return nodes hit
      */
     public NodeSet getHitNodes(int x, int y) {
@@ -309,8 +303,6 @@ public class DefaultGraphDrawer implements IGraphDrawer {
     /**
      * get all nodes hit by mouse at (x,y) with tolerance of d pixels
      *
-     * @param x
-     * @param y
      * @param d tolerance
      * @return nodes hit
      */
@@ -330,8 +322,6 @@ public class DefaultGraphDrawer implements IGraphDrawer {
     /**
      * get all node labels hit by mouse at (x,y)
      *
-     * @param x
-     * @param y
      * @return node labels
      */
     public NodeSet getHitNodeLabels(int x, int y) {
@@ -349,7 +339,6 @@ public class DefaultGraphDrawer implements IGraphDrawer {
     /**
      * get all nodes contained in rect
      *
-     * @param rect
      * @return nodes contained in rect
      */
     public NodeSet getHitNodes(Rectangle rect) {
@@ -369,7 +358,6 @@ public class DefaultGraphDrawer implements IGraphDrawer {
     /**
      * get all node labels contained in rect
      *
-     * @param rect
      * @return node labels contained in rect
      */
     public NodeSet getHitNodeLabels(Rectangle rect) {
@@ -391,8 +379,6 @@ public class DefaultGraphDrawer implements IGraphDrawer {
     /**
      * get all adjacentEdges hit by mouse at (x,y)
      *
-     * @param x
-     * @param y
      * @return adjacentEdges hits
      */
     public EdgeSet getHitEdges(int x, int y) {
@@ -428,8 +414,6 @@ public class DefaultGraphDrawer implements IGraphDrawer {
     /**
      * get all edge labels hit by mouse at (x,y)
      *
-     * @param x
-     * @param y
      * @return edge labels
      */
     public EdgeSet getHitEdgeLabels(int x, int y) {
@@ -451,7 +435,6 @@ public class DefaultGraphDrawer implements IGraphDrawer {
     /**
      * get all adjacentEdges contained in rect
      *
-     * @param rect
      * @return adjacentEdges contained in rect
      */
     public EdgeSet getHitEdges(Rectangle rect) {
@@ -468,7 +451,6 @@ public class DefaultGraphDrawer implements IGraphDrawer {
     /**
      * get all edge labels contained in rect
      *
-     * @param rect
      * @return adjacentEdges contained in rect
      */
     public EdgeSet getHitEdgeLabels(Rectangle rect) {
@@ -558,7 +540,6 @@ public class DefaultGraphDrawer implements IGraphDrawer {
     /**
      * to support bounding-box oriented drawers, report any node whose label has been interactively moved
      *
-     * @param v
      */
     public void setNodeHasMovedLabel(Node v) {
     }
@@ -566,7 +547,6 @@ public class DefaultGraphDrawer implements IGraphDrawer {
     /**
      * to support bounding-box oriented drawers, report any edge whose label has been interactively moved
      *
-     * @param e
      */
     public void setEdgesHasMovedLabel(Edge e) {
     }
@@ -602,7 +582,6 @@ public class DefaultGraphDrawer implements IGraphDrawer {
     /**
      * rotate node labels to match edge directions?
      *
-     * @param radialLabels
      */
     public void setRadialLabels(boolean radialLabels) {
     }
@@ -619,7 +598,6 @@ public class DefaultGraphDrawer implements IGraphDrawer {
     /**
      * node found by search, must be drawn if !=null
      *
-     * @param foundNode
      */
     public void setFoundNode(Node foundNode) {
         this.foundNode = foundNode;
@@ -628,7 +606,6 @@ public class DefaultGraphDrawer implements IGraphDrawer {
     /**
      * set the auxilary parameter
      *
-     * @param parameter
      */
     public void setAuxilaryParameter(int parameter) {
     }

@@ -27,7 +27,6 @@ public class DefaultLabelGetter implements ILabelGetter {
     /**
      * returns name as label
      *
-     * @param name
      * @return label
      */
     @Override

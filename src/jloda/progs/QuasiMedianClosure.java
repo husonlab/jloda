@@ -154,8 +154,6 @@ public class QuasiMedianClosure {
     /**
      * if two sequences differ at exactly one position, gets position
      *
-     * @param seqa
-     * @param seqb
      * @return single difference position or -1
      */
     private static int computeOneStep(String seqa, String seqb) {
@@ -174,9 +172,6 @@ public class QuasiMedianClosure {
     /**
      * computes the quasi median for three sequences
      *
-     * @param seqA
-     * @param seqB
-     * @param seqC
      * @return quasi median
      */
     private static String[] computeQuasiMedian(String seqA, String seqB, String seqC) {

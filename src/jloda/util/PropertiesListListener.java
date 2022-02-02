@@ -31,14 +31,12 @@ public interface PropertiesListListener {
     /**
      * gets the new list of values after the change
      *
-     * @param values
-     */
+	 */
     void hasChanged(List<String> values);
 
     /**
      * is this listener interesed in the named property?
      *
-     * @param name
      * @return is interested
      */
     boolean isInterested(String name);

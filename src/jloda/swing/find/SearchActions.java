@@ -52,8 +52,7 @@ public class SearchActions {
     /**
      * constructor
      *
-     * @param searchManager
-     */
+	 */
     SearchActions(SearchManager searchManager) {
         this.searchManager = searchManager;
         this.all = new LinkedList<>();
@@ -62,8 +61,7 @@ public class SearchActions {
     /**
      * enable and disable critical actions
      *
-     * @param enable
-     */
+	 */
     public void setEnableCritical(boolean enable) {
         if (enable && searchManager.getSearcher() != null && searchManager.getSearcher().getAdditionalButtons() != null) {
             for (AbstractButton abstractButton : searchManager.getSearcher().getAdditionalButtons()) {

@@ -431,8 +431,7 @@ public class NexusStreamTokenizer extends StreamTokenizer implements Closeable {
      * if set, getComment will return all comments encountered since last call of getComment, otherwise
      * will only return last comment
      *
-     * @param collectAllComments
-     */
+	 */
     public void setCollectAllComments(boolean collectAllComments) {
         this.collectAllComments = collectAllComments;
     }

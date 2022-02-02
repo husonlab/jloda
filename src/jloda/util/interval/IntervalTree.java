@@ -91,7 +91,6 @@ public class IntervalTree<T> implements Iterable<Interval<T>> {
     /**
      * gets an interval that has highest coverage of the given interval, and among those, is longest
      *
-     * @param target
      * @param minCoverageProportion amount of target of interval that must be covered
      * @return best interval
      */
@@ -205,8 +204,7 @@ public class IntervalTree<T> implements Iterable<Interval<T>> {
      * adds a list of intervals
      * Will not rebuild until the next query or call to build
      *
-     * @param intervals
-     */
+	 */
     public void addAll(Collection<Interval<T>> intervals) {
         intervalList.addAll(intervals); // don't add one by one as this will lead to an unbalanced tree
         inSync = false;
@@ -218,8 +216,7 @@ public class IntervalTree<T> implements Iterable<Interval<T>> {
      * sets a list of intervals
      * Will not rebuild until the next query or call to build
      *
-     * @param intervals
-     */
+	 */
     public void setAll(Collection<Interval<T>> intervals) {
         clear();
         intervalList.addAll(intervals);
@@ -232,7 +229,6 @@ public class IntervalTree<T> implements Iterable<Interval<T>> {
      * remove an interval
      * Will not rebuild until the next query or call to build
      *
-     * @param interval
      * @return true, if was contained
      */
     public boolean remove(Interval<T> interval) {
@@ -248,8 +244,7 @@ public class IntervalTree<T> implements Iterable<Interval<T>> {
      * remove an interval associated with the given data
      * Will not rebuild until the next query or call to build
      *
-     * @param data
-     */
+	 */
     public void remove(T data) {
         Interval<T> interval = find(data);
         if (interval != null) {
@@ -276,8 +271,7 @@ public class IntervalTree<T> implements Iterable<Interval<T>> {
      * remove a collection of intervals
      * Will not rebuild until the next query or call to build
      *
-     * @param intervals
-     */
+	 */
     public void removeAll(Collection<Interval<T>> intervals) {
         boolean removed = intervalList.removeAll(intervals);
         if (removed) {
@@ -412,8 +406,6 @@ public class IntervalTree<T> implements Iterable<Interval<T>> {
     /**
      * get intervals sorted by decreasing amount of interval a,b covered
      *
-     * @param a
-     * @param b
      * @return list
      */
     public Interval<T>[] getIntervalsSortedByDecreasingIntersectionLength(final int a, final int b) {

@@ -29,8 +29,7 @@ public interface IMainWindow {
     /**
      * get the stage for this window
      *
-     * @return
-     */
+	 */
     Stage getStage();
 
     /**
@@ -43,19 +42,13 @@ public interface IMainWindow {
     /**
      * show this window in the given stage
      *
-     * @param stage
-     * @param screenX
-     * @param screenY
-     * @param width
-     * @param height
-     */
+	 */
     void show(Stage stage, double screenX, double screenY, double width, double height);
 
     /**
      * is this window empty?
      *
-     * @return
-     */
+	 */
     boolean isEmpty();
 
     /**

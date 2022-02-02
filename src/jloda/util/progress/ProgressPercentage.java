@@ -19,8 +19,6 @@
 
 package jloda.util.progress;
 
-import jloda.util.CanceledException;
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -54,7 +52,6 @@ public class ProgressPercentage implements ProgressListener {
 	/**
 	 * constructor
 	 *
-	 * @param maxSteps
 	 */
 	public ProgressPercentage(long maxSteps) {
 		startTime = System.currentTimeMillis();
@@ -66,7 +63,6 @@ public class ProgressPercentage implements ProgressListener {
 	/**
 	 * constructor
 	 *
-	 * @param taskName
 	 */
 	public ProgressPercentage(final String taskName) {
 		this(0);
@@ -76,8 +72,6 @@ public class ProgressPercentage implements ProgressListener {
 	/**
 	 * constructor
 	 *
-	 * @param taskName
-	 * @param maxSteps
 	 */
 	public ProgressPercentage(final String taskName, long maxSteps) {
 		this(maxSteps);
@@ -87,8 +81,6 @@ public class ProgressPercentage implements ProgressListener {
 	/**
 	 * constructor
 	 *
-	 * @param taskName
-	 * @param subtaskName
 	 */
 	public ProgressPercentage(final String taskName, final String subtaskName) {
 		this(0);
@@ -99,7 +91,6 @@ public class ProgressPercentage implements ProgressListener {
 	 * sets the steps number of steps to be done. By default, the maximum is set to
 	 * 100
 	 *
-	 * @param maxSteps
 	 */
 	public void setMaximum(final long maxSteps) {
 		tenPercent = maxSteps / 10;
@@ -112,7 +103,6 @@ public class ProgressPercentage implements ProgressListener {
 	/**
 	 * sets the progress
 	 *
-	 * @param steps
 	 */
 	public void setProgress(final long steps) {
 		setProgressIgnoreCancel(steps);
@@ -173,7 +163,6 @@ public class ProgressPercentage implements ProgressListener {
 	/**
 	 * has user canceled?
 	 *
-	 * @throws CanceledException
 	 */
 	public void checkForCancel() {
 	}
@@ -181,8 +170,6 @@ public class ProgressPercentage implements ProgressListener {
 	/**
 	 * Sets the Task and subtask names, for use in progress bar displays
 	 *
-	 * @param taskName
-	 * @param subtaskName
 	 */
 	public void setTasks(String taskName, String subtaskName) {
 		setSubtask(taskName + " " + subtaskName);
@@ -191,7 +178,6 @@ public class ProgressPercentage implements ProgressListener {
 	/**
 	 * Sets just the subtask
 	 *
-	 * @param subtaskName
 	 */
 	public void setSubtask(String subtaskName) {
 		if (!reportedCompleted && steps > 0)

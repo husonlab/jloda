@@ -51,8 +51,7 @@ public class ProgressPane extends StackPane {
     /**
      * a progress pane with cancel button
      *
-     * @param service
-     */
+	 */
     public ProgressPane(Service service) {
         this(service.titleProperty(), service.messageProperty(), service.progressProperty(), service.runningProperty(), service::cancel);
     }
@@ -60,12 +59,7 @@ public class ProgressPane extends StackPane {
     /**
      * a progress pane with cancel button
      *
-     * @param titleProperty
-     * @param messageProperty
-     * @param progressProperty
-     * @param isRunning
-     * @param cancelRunnable
-     */
+	 */
     public ProgressPane(ReadOnlyStringProperty titleProperty, ReadOnlyStringProperty messageProperty, ReadOnlyDoubleProperty progressProperty, ReadOnlyBooleanProperty isRunning, Runnable cancelRunnable) {
         setPrefHeight(30);
         setMinHeight(Pane.USE_PREF_SIZE);
@@ -115,10 +109,10 @@ public class ProgressPane extends StackPane {
         });
 
         final Thread thread = new Thread(() -> { // wait one second before showing the progress pane
-            try {
-                Thread.sleep(1000);
-            } catch (InterruptedException e) {
-            }
+			try {
+				Thread.sleep(1000);
+			} catch (InterruptedException ignored) {
+			}
             Platform.runLater(() -> {
                 if (!removed && isRunning.getValue()) {
                     setVisible(true);

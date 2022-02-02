@@ -39,9 +39,7 @@ public class NodeData {
     /**
      * constructor
      *
-     * @param assigned
-     * @param summarized
-     */
+	 */
     public NodeData(float[] assigned, float[] summarized) {
         setAssigned(assigned);
         setSummarized(summarized);

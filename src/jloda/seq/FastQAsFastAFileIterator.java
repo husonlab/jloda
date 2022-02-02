@@ -51,9 +51,7 @@ public class FastQAsFastAFileIterator implements IFastAIterator {
     /**
      * constructor
      *
-     * @param fileName
-     * @throws java.io.IOException
-     */
+	 */
     public FastQAsFastAFileIterator(String fileName) throws IOException {
         File file = new File(fileName);
         fileLength = file.length();

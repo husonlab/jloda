@@ -17,11 +17,6 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-/**
- * @version $Id: GraphUpdateListener.java,v 1.4 2005-01-07 14:23:05 huson Exp $
- * @author Daniel Huson
- * 11.02
- */
 package jloda.graph;
 
 /**
@@ -67,17 +62,13 @@ public interface GraphUpdateListener {
     /**
      * node label changed
      *
-     * @param v
-     * @param newLabel
-     */
+	 */
     void nodeLabelChanged(Node v, String newLabel);
 
     /**
      * edge label changed
      *
-     * @param e
-     * @param newLabel
-     */
+	 */
     void edgeLabelChanged(Edge e, String newLabel);
 
 }

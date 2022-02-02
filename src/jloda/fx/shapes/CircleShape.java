@@ -29,8 +29,7 @@ public class CircleShape extends Circle implements ISized {
     /**
      * constructor
      *
-     * @param width
-     */
+	 */
     public CircleShape(double width) {
         setSize(width, width);
     }

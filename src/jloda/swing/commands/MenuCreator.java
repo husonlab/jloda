@@ -57,11 +57,7 @@ public class MenuCreator {
      * MenuBar.menuBarLabel=item;item;item...;item, where menuBarLabel must match the
      * given name and each item is of the form Menu.menuBarLabel or simply menuBarLabel,
      *
-     * @param menuBarLabel
-     * @param descriptions
-     * @param menuBar
-     * @throws Exception
-     */
+	 */
     public void buildMenuBar(String menuBarLabel, Hashtable<String, String> descriptions, JMenuBar menuBar) throws Exception {
         /*
         System.err.println("Known actions:");
@@ -95,12 +91,8 @@ public class MenuCreator {
      * and item is either the menuLabel of an action, | to indicate a separator
      * or @menuLabel to indicate menuLabel name of a submenu
      *
-     * @param menuBarConfiguration
-     * @param menusConfigurations
-     * @param addEmptyIcon
      * @return menu
-     * @throws Exception
-     */
+	 */
     private JMenu buildMenu(String menuBarConfiguration, Hashtable<String, String> menusConfigurations, boolean addEmptyIcon) throws Exception {
         if (!menuBarConfiguration.startsWith("Menu."))
             menuBarConfiguration = "Menu." + menuBarConfiguration;
@@ -153,8 +145,7 @@ public class MenuCreator {
                                     }
                                     done = true;
                                 }
-                                break;
-                            }
+							}
                             case "About", "About..." -> {
                                 if (AppleSystemMenuItems.setAboutAction(createAction(command))) {
                                     if (menu.getItemCount() > 0 && menu.getItem(menu.getItemCount() - 1) == null) {
@@ -162,8 +153,7 @@ public class MenuCreator {
                                     }
                                     done = true;
                                 }
-                                break;
-                            }
+							}
                             case "Preferences", "Preferences..." -> {
                                 if (AppleSystemMenuItems.setPreferencesAction(createAction(command))) {
                                     if (menu.getItemCount() > 0 && menu.getItem(menu.getItemCount() - 1) == null) {
@@ -171,8 +161,7 @@ public class MenuCreator {
                                     }
                                     done = true;
                                 }
-                                break;
-                            }
+							}
                         }
                     }
                     if (!done) {
@@ -204,11 +193,7 @@ public class MenuCreator {
     /**
      * adds submenus to a menu
      *
-     * @param depth
-     * @param menu
-     * @param descriptions
-     * @throws Exception
-     */
+	 */
     private void addSubMenus(int depth, JMenu menu, Hashtable<String, String> descriptions) throws Exception {
         if (depth > 5)
             throw new Exception("Submenus: too deep: " + depth);
@@ -230,8 +215,6 @@ public class MenuCreator {
     /**
      * find named menu
      *
-     * @param name
-     * @param menuBar
      * @param mayBeSubmenu also search for sub menu
      * @return menu or null
      */
@@ -248,9 +231,6 @@ public class MenuCreator {
     /**
      * searches for menu by name
      *
-     * @param name
-     * @param menu
-     * @param mayBeSubmenu
      * @return menu or null
      */
     public static JMenu findMenu(String name, JMenu menu, boolean mayBeSubmenu) {
@@ -278,10 +258,8 @@ public class MenuCreator {
     /**
      * get the list of tokens in a description
      *
-     * @param str
      * @return list of tokens
-     * @throws Exception
-     */
+	 */
     static public List<String> getTokens(String str) throws Exception {
         try {
             int pos = str.indexOf("=");
@@ -299,7 +277,6 @@ public class MenuCreator {
     /**
      * create an action for the given command
      *
-     * @param command
      * @return action
      */
     private AbstractAction createAction(final ICommand command) {
@@ -324,8 +301,7 @@ public class MenuCreator {
     /**
      * if set, the menu modifier is applied to each menu after it is built
      *
-     * @param menuModifier
-     */
+	 */
     public static void setMenuModifier(IMenuModifier menuModifier) {
         menuModifer = menuModifier;
     }

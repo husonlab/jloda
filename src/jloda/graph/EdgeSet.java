@@ -17,11 +17,6 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-/**
- * Edge set
- *
- * @author Daniel Huson, 2003
- */
 package jloda.graph;
 
 import java.util.*;
@@ -85,7 +80,6 @@ public class EdgeSet extends GraphBase implements Iterable<Edge>, Set<Edge>, Aut
     /**
      * adds all edges in the given collection
      *
-     * @param collection
      * @return true, if some element is new
      */
     public boolean addAll(Collection<? extends Edge> collection) {
@@ -96,7 +90,6 @@ public class EdgeSet extends GraphBase implements Iterable<Edge>, Set<Edge>, Aut
     /**
      * adds all nodes in the given collection
      *
-     * @param collection
      * @return true, if some element is new
      */
     public boolean addAll(final Iterable<? extends Edge> collection) {
@@ -112,7 +105,6 @@ public class EdgeSet extends GraphBase implements Iterable<Edge>, Set<Edge>, Aut
     /**
      * returns true if all elements of collection are contained in this set
      *
-     * @param collection
      * @return all contained?
      */
     public boolean containsAll(Collection collection) {
@@ -126,7 +118,6 @@ public class EdgeSet extends GraphBase implements Iterable<Edge>, Set<Edge>, Aut
     /**
      * removes all edges in the collection
      *
-     * @param collection
      * @return true, if something actually removed
      */
     public boolean removeAll(Collection collection) {
@@ -141,7 +132,6 @@ public class EdgeSet extends GraphBase implements Iterable<Edge>, Set<Edge>, Aut
     /**
      * keep only those elements contained in the collection
      *
-     * @param collection
      * @return true, if set changes
      */
     public boolean retainAll(Collection collection) {
@@ -221,7 +211,6 @@ public class EdgeSet extends GraphBase implements Iterable<Edge>, Set<Edge>, Aut
     /**
      * gets all successors
      *
-     * @param afterMe
      * @return all successors
      */
     public Iterable<Edge> successors(final Edge afterMe) {
@@ -271,7 +260,6 @@ public class EdgeSet extends GraphBase implements Iterable<Edge>, Set<Edge>, Aut
     /**
      * do the two sets have a non-empty intersection?
      *
-     * @param aset
      * @return true, if intersection is non-empty
      */
     public boolean intersects(EdgeSet aset) {

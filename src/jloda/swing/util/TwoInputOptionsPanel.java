@@ -33,11 +33,6 @@ public class TwoInputOptionsPanel<T, S> {
     /**
      * show a two value input dialog
      *
-     * @param title
-     * @param label1
-     * @param value1
-     * @param label2
-     * @param value2
      * @return true, if not canceled
      */
     public static String[] show(Component parent, String title, String label1, String value1, String toolTip1, String label2, String value2, String toolTip2) {

@@ -85,7 +85,6 @@ public class ColorSchemeManager {
     /**
      * parse the definition of tables
      *
-     * @param tables
      */
     public void parseTables(String... tables) {
         int alpha = Math.max(0, Math.min(255, ProgramProperties.get("ColorAlpha", 255)));

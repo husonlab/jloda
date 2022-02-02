@@ -27,11 +27,6 @@ public class Shapes {
     /**
      * create n-pointed star
      *
-     * @param x
-     * @param y
-     * @param width
-     * @param height
-     * @param n
      * @return coordinates
      */
     public static float[][] createStar(int x, int y, int width, int height, int n) {
@@ -52,11 +47,6 @@ public class Shapes {
     /**
      * create n-sided regular polygon
      *
-     * @param x
-     * @param y
-     * @param width
-     * @param height
-     * @param n
      * @return coordinates
      */
     public static float[][] createRegularPolygon(int x, int y, int width, int height, int n) {
@@ -75,10 +65,6 @@ public class Shapes {
     /**
      * create a cross +
      *
-     * @param x
-     * @param y
-     * @param width
-     * @param height
      * @return coordinates
      */
     public static float[][] createCrossPlus(int x, int y, int width, int height) {
@@ -94,10 +80,6 @@ public class Shapes {
     /**
      * create a cross X
      *
-     * @param x
-     * @param y
-     * @param width
-     * @param height
      * @return coordinates
      */
     public static float[][] createCrossX(int x, int y, int width, int height) {

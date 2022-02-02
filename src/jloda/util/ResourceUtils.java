@@ -39,10 +39,8 @@ public class ResourceUtils {
     /**
      * Fetch all resources (i.e. files) that are directly under the specified package structure.
      *
-     * @param pckg
      * @return files in given package
-     * @throws IOException
-     */
+	 */
     public static String[] fetchResources(Class clazz, String pckg) throws IOException {
         return fetchResources(pckg, clazz);
     }
@@ -51,11 +49,8 @@ public class ResourceUtils {
     /**
      * get all resources under the given package name
      *
-     * @param packageName
-     * @param clazz
      * @return list of resources
-     * @throws IOException
-     */
+	 */
     static String[] fetchResources(String packageName, Class clazz) throws IOException {
         packageName = packageName.replaceAll("\\.", "/").concat("/");
 

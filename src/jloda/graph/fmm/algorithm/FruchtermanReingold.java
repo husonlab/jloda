@@ -39,10 +39,7 @@ public class FruchtermanReingold {
     /**
      * calculate exact repulsive forces using Fruchterman-Reingold
      *
-     * @param graph
-     * @param nodeAttributes
-     * @param force
-     */
+	 */
     public static void calculateExactRepulsiveForces(Graph graph, NodeArray<NodeAttributes> nodeAttributes, NodeArray<DPoint> force) {
         for (var v : graph.nodes()) {
             force.put(v, DPoint.ORIGIN);

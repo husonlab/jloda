@@ -17,13 +17,6 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-/**
- * @version $Id: CommandLineOptions.java,v 1.22 2007-07-15 11:02:36 huson Exp $
- * <p>
- * Unix style command line option handling
- * @author Daniel Huson
- * 11.02
- */
 package jloda.swing.util;
 
 import jloda.util.StringUtils;
@@ -69,8 +62,7 @@ public class CommandLineOptions {
     /**
      * construct a command line options parser
      *
-     * @param args
-     */
+	 */
     public CommandLineOptions(String[] args) {
         this(args, true);
     }
@@ -78,9 +70,7 @@ public class CommandLineOptions {
     /**
      * construct a command line options parser
      *
-     * @param args
-     * @param exitOnHelp
-     */
+	 */
     public CommandLineOptions(String[] args, boolean exitOnHelp) {
         description = "Main program";
         this.args = args;
@@ -371,7 +361,6 @@ public class CommandLineOptions {
      * If description label starts with !, then this is a secret and undocumented option
      *
      * @param label    the option label
-     * @param describe
      * @param result   the result returned if the option is present
      * @param def      the default value
      * @return the value following the label
@@ -700,8 +689,7 @@ public class CommandLineOptions {
     /**
      * exit after displaying program help?
      *
-     * @param exitOnHelp
-     */
+	 */
     public void setExitOnHelp(boolean exitOnHelp) {
         this.exitOnHelp = exitOnHelp;
     }
@@ -709,8 +697,7 @@ public class CommandLineOptions {
     /**
      * add a label to the usage message
      *
-     * @param label
-     */
+	 */
     public void addLabel(String label) {
         options.add(null);
         usage.add("\n  " + label);
@@ -722,7 +709,6 @@ public class CommandLineOptions {
     /**
      * grow a label to length 20
      *
-     * @param label
      * @return label of length at least 20
      */
     private String grow20(String label) {

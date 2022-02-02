@@ -31,9 +31,7 @@ public class IOExceptionWithLineNumber extends IOException {
     /**
      * constructor
      *
-     * @param message
-     * @param lineNumber
-     */
+	 */
     public IOExceptionWithLineNumber(String message, long lineNumber) {
         super("Line " + lineNumber + ": " + message);
         setLineNumber(lineNumber);
@@ -42,9 +40,7 @@ public class IOExceptionWithLineNumber extends IOException {
     /**
      * constructor
      *
-     * @param message
-     * @param lineNumber
-     */
+	 */
     public IOExceptionWithLineNumber(long lineNumber, String message) {
         this(message, lineNumber);
     }

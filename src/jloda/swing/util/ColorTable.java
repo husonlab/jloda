@@ -35,9 +35,7 @@ public class ColorTable {
     /**
      * constructor
      *
-     * @param name
-     * @param colors
-     */
+	 */
     public ColorTable(String name, Color... colors) {
         this.name = name;
         this.colors = colors;
@@ -46,9 +44,7 @@ public class ColorTable {
     /**
      * constructor
      *
-     * @param name
-     * @param colors
-     */
+	 */
     public ColorTable(String name, Collection<Color> colors) {
         this.name = name;
         this.colors = colors.toArray(new Color[0]);
@@ -76,8 +72,6 @@ public class ColorTable {
     /**
      * get the i-th color
      *
-     * @param i
-     * @param alpha
      * @return color
      */
     public Color getWithAlpha(int i, int alpha) {
@@ -145,8 +139,6 @@ public class ColorTable {
     /**
      * this is used in the node drawer of the main viewer
      *
-     * @param count
-     * @param inverseLogMaxReads
      * @return color on a log scale
      */
     public Color getColorLogScale(int count, double inverseLogMaxReads) {
@@ -157,8 +149,6 @@ public class ColorTable {
     /**
      * this is used in the node drawer of the main viewer
      *
-     * @param count
-     * @param inverseSqrtMaxReads
      * @return color on a log scale
      */
     public Color getColorSqrtScale(int count, double inverseSqrtMaxReads) {
@@ -169,7 +159,6 @@ public class ColorTable {
     /**
      * get color on linear scale
      *
-     * @param count
      * @return color
      */
     public Color getColor(int count, int maxCount) {

@@ -41,8 +41,7 @@ public class WrappedCommand implements ICommand {
     /**
      * constructor
      *
-     * @param command
-     */
+	 */
     public WrappedCommand(ICommand command) {
         this.command = command;
     }
@@ -50,8 +49,7 @@ public class WrappedCommand implements ICommand {
     /**
      * set the director
      *
-     * @param dir
-     */
+	 */
     @Override
     public void setDir(IDirector dir) {
         this.dir = dir;
@@ -61,8 +59,7 @@ public class WrappedCommand implements ICommand {
     /**
      * get the director
      *
-     * @return
-     */
+	 */
     @Override
     public IDirector getDir() {
         return dir;
@@ -71,8 +68,7 @@ public class WrappedCommand implements ICommand {
     /**
      * set the command manager. This is required for all commands that call the "execute" method
      *
-     * @param commandManager
-     */
+	 */
     @Override
     public void setCommandManager(CommandManager commandManager) {
         this.commandManager = commandManager;
@@ -161,8 +157,7 @@ public class WrappedCommand implements ICommand {
     /**
      * action to be performed
      *
-     * @param ev
-     */
+	 */
     @Override
     public void actionPerformed(ActionEvent ev) {
         synchronized (command) {
@@ -203,9 +198,7 @@ public class WrappedCommand implements ICommand {
     /**
      * parses the given command and executes it
      *
-     * @param np
-     * @throws Exception
-     */
+	 */
     @Override
     public void apply(NexusStreamParser np) throws Exception {
         synchronized (command) {
@@ -230,8 +223,7 @@ public class WrappedCommand implements ICommand {
     /**
      * sets the  viewer
      *
-     * @param viewer
-     */
+	 */
     @Override
     public void setViewer(IDirectableViewer viewer) {
         this.viewer = viewer;
@@ -250,8 +242,7 @@ public class WrappedCommand implements ICommand {
     /**
      * sets the viewer in the case that the viewer is not an  IDirectableViewer
      *
-     * @param parent
-     */
+	 */
     @Override
     public void setParent(Object parent) {
         this.parent = parent;
@@ -270,8 +261,7 @@ public class WrappedCommand implements ICommand {
     /**
      * get the autorepeat interval. 0 means no autorepeat
      *
-     * @return
-     */
+	 */
     @Override
     public int getAutoRepeatInterval() {
         return command.getAutoRepeatInterval();
@@ -280,8 +270,7 @@ public class WrappedCommand implements ICommand {
     /**
      * set  the autorepeat interval. 0 means no autorepeat
      *
-     * @param autoRepeatInterval
-     */
+	 */
     @Override
     public void setAutoRepeatInterval(int autoRepeatInterval) {
         command.setAutoRepeatInterval(autoRepeatInterval);
@@ -290,8 +279,7 @@ public class WrappedCommand implements ICommand {
     /**
      * Action to be performed in case of autorepeat
      *
-     * @param ev
-     */
+	 */
     @Override
     public void actionPerformedAutoRepeat(ActionEvent ev) {
         synchronized (command) {

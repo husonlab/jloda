@@ -53,8 +53,7 @@ public abstract class CommandBase {
     /**
      * constructor
      *
-     * @param commandManager
-     */
+	 */
     public CommandBase(CommandManager commandManager) {
         setCommandManager(commandManager);
         setDir(commandManager.getDir());
@@ -66,8 +65,7 @@ public abstract class CommandBase {
     /**
      * set the director
      *
-     * @param dir
-     */
+	 */
     public void setDir(IDirector dir) {
         this.dir = dir;
     }
@@ -84,8 +82,7 @@ public abstract class CommandBase {
     /**
      * set the command manager. This is required for all commands that call the "execute" method
      *
-     * @param commandManager
-     */
+	 */
     public void setCommandManager(CommandManager commandManager) {
         this.commandManager = commandManager;
     }
@@ -114,8 +111,7 @@ public abstract class CommandBase {
     /**
      * sets the viewer in the case that the viewer is not an  IDirectableViewer
      *
-     * @param viewer
-     */
+	 */
     public void setParent(Object viewer) {
         theParent = viewer;
     }
@@ -141,17 +137,13 @@ public abstract class CommandBase {
     /**
      * parses the given command and executes it
      *
-     * @param np
-     * @throws java.io.IOException
-     */
+	 */
     abstract public void apply(NexusStreamParser np) throws Exception;
 
     /**
      * parses the given command and executes it
      *
-     * @param command
-     * @throws java.io.IOException
-     */
+	 */
     public void apply(String command) throws Exception {
         apply(new NexusStreamParser(new StringReader(command)));
     }
@@ -196,8 +188,7 @@ public abstract class CommandBase {
     /**
      * execute a command in a separate thread
      *
-     * @param command
-     */
+	 */
     public void execute(String command) {
 
         if (getViewer() != null) {
@@ -209,8 +200,7 @@ public abstract class CommandBase {
     /**
      * execute a command in the current thread
      *
-     * @param command
-     */
+	 */
     public void executeImmediately(String command) {
         dir.executeImmediately(command, commandManager);
     }
@@ -218,8 +208,7 @@ public abstract class CommandBase {
     /**
      * set the selected status
      *
-     * @param selected
-     */
+	 */
     public void setSelected(boolean selected) {
         this.selected = selected;
     }
@@ -234,8 +223,7 @@ public abstract class CommandBase {
     /**
      * action to be performed
      *
-     * @param ev
-     */
+	 */
     abstract public void actionPerformed(ActionEvent ev);
 
     /**
@@ -250,8 +238,7 @@ public abstract class CommandBase {
     /**
      * set  the autorepeat interval. 0 means no autorepeat
      *
-     * @param autoRepeatInterval
-     */
+	 */
     public void setAutoRepeatInterval(int autoRepeatInterval) {
         this.autoRepeatInterval = autoRepeatInterval;
     }
@@ -259,8 +246,7 @@ public abstract class CommandBase {
     /**
      * Action to be performed in case of autorepeat
      *
-     * @param ev
-     */
+	 */
     public void actionPerformedAutoRepeat(ActionEvent ev) {
         actionPerformed(ev);
         if (getAutoRepeatInterval() > 0) {

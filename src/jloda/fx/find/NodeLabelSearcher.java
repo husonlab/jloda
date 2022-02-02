@@ -52,8 +52,7 @@ public class NodeLabelSearcher implements IObjectSearcher<Node> {
      * constructor
      *
      * @param
-     * @param graph
-     */
+	 */
     public NodeLabelSearcher(PhyloSplitsGraph graph, ItemSelectionModel<Node> nodeSelectionModel) {
         this(SEARCHER_NAME, graph, nodeSelectionModel);
     }
@@ -62,8 +61,7 @@ public class NodeLabelSearcher implements IObjectSearcher<Node> {
      * constructor
      *
      * @param
-     * @param graph
-     */
+	 */
     public NodeLabelSearcher(String name, Graph graph, ItemSelectionModel<Node> nodeSelectionModel) {
         this.graph = graph;
         this.name = name;
@@ -131,8 +129,7 @@ public class NodeLabelSearcher implements IObjectSearcher<Node> {
     /**
      * set selection state of current object
      *
-     * @param select
-     */
+	 */
     public void setCurrentSelected(boolean select) {
         if (current != null) {
             final Node toSelect = current;
@@ -151,8 +148,7 @@ public class NodeLabelSearcher implements IObjectSearcher<Node> {
     /**
      * set select state of all objects
      *
-     * @param select
-     */
+	 */
     public void selectAll(boolean select) {
         Platform.runLater(() -> {
             if (select)
@@ -182,8 +178,7 @@ public class NodeLabelSearcher implements IObjectSearcher<Node> {
     /**
      * set the label of the current object
      *
-     * @param newLabel
-     */
+	 */
     public void setCurrentLabel(String newLabel) {
         if (current != null && !Objects.equals(newLabel, graph.getLabel(current))) {
             if (newLabel == null || newLabel.length() == 0) {
@@ -242,8 +237,7 @@ public class NodeLabelSearcher implements IObjectSearcher<Node> {
     /**
      * fire the label changed listener
      *
-     * @param v
-     */
+	 */
     private void fireLabelChangedListeners(Node v) {
         for (LabelChangedListener listener : labelChangedListeners) {
             listener.doLabelHasChanged(v);
@@ -253,8 +247,7 @@ public class NodeLabelSearcher implements IObjectSearcher<Node> {
     /**
      * add a label changed listener
      *
-     * @param listener
-     */
+	 */
     public void addLabelChangedListener(LabelChangedListener listener) {
         labelChangedListeners.add(listener);
     }
@@ -262,8 +255,7 @@ public class NodeLabelSearcher implements IObjectSearcher<Node> {
     /**
      * remove a label changed listener
      *
-     * @param listener
-     */
+	 */
     public void removeLabelChangedListener(LabelChangedListener listener) {
         labelChangedListeners.remove(listener);
     }

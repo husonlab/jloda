@@ -86,8 +86,7 @@ public class Transform {
     /**
      * constructor with given magnifier
      *
-     * @param graphView
-     */
+	 */
     public Transform(GraphView graphView) {
         this();
         this.magnifier = new Magnifier(graphView, this);
@@ -108,8 +107,7 @@ public class Transform {
     /**
      * copies a transform (except for its listeners)
      *
-     * @param src
-     */
+	 */
     public void copy(Transform src) {
         coordRect.setRect(src.coordRect);
         rotatedCoordRect.setRect(src.rotatedCoordRect);
@@ -168,9 +166,7 @@ public class Transform {
     /**
      * writes the object
      *
-     * @param w
-     * @throws IOException
-     */
+	 */
     public void write(Writer w) throws IOException {
         w.write("angle:" + (float) angle + " scaleX:" + (float) scaleX + " scaleY:" + (float) scaleY + " flipH:" + (flipH ? 1 : 0) + " flipV:" + (flipV ? 1 : 0) +
                 " leftMargin:" + leftMargin +
@@ -183,9 +179,7 @@ public class Transform {
     /**
      * read the object
      *
-     * @param r
-     * @throws IOException
-     */
+	 */
     public void read(Reader r) throws IOException {
         read(new NexusStreamParser(r));
 
@@ -194,9 +188,7 @@ public class Transform {
     /**
      * read the object
      *
-     * @param np
-     * @throws IOException
-     */
+	 */
     public void read(NexusStreamParser np) throws IOException {
         java.util.List<String> tokens = np.getTokensLowerCase(null, ";");
         angle = np.findIgnoreCase(tokens, "angle:", (float) angle);
@@ -218,11 +210,7 @@ public class Transform {
     /**
      * tell the transformation what the current bounding box for user coordinates is
      *
-     * @param x
-     * @param y
-     * @param width
-     * @param height
-     */
+	 */
     public void setCoordinateRect(double x, double y, double width, double height) {
         coordRect.setRect(x, y, width, height);
         centerOfCoordRect.setLocation(coordRect.getCenterX(), coordRect.getCenterY());
@@ -233,8 +221,7 @@ public class Transform {
     /**
      * tell the transformation what the current bounding box for user coordinates is
      *
-     * @param rect
-     */
+	 */
     public void setCoordinateRect(Rectangle2D rect) {
         coordRect.setRect(rect.getX(), rect.getY(), rect.getWidth(), rect.getHeight());
         centerOfCoordRect.setLocation(coordRect.getCenterX(), coordRect.getCenterY());
@@ -301,11 +288,7 @@ public class Transform {
     /**
      * Computes the angle between a and b as observed from the center from device to world coordiante system
      *
-     * @param deviceCenter
-     * @param a
-     * @param b
-     * @return
-     */
+	 */
     public double computeObservedWorldAngle(Point2D deviceCenter, Point2D a, Point2D b) {
         Point2D wC = d2w(deviceCenter);
         Point2D wA = d2w(a);
@@ -316,9 +299,7 @@ public class Transform {
     /**
      * transform from world coordinates to device coordinates
      *
-     * @param wp
-     * @param dp
-     */
+	 */
     public void w2d(Point2D wp, Point dp) {
         w2d(wp.getX(), wp.getY(), dp);
     }
@@ -326,10 +307,7 @@ public class Transform {
     /**
      * transform from world coordinates to device coordinates
      *
-     * @param x
-     * @param y
-     * @param dp
-     */
+	 */
     public void w2d(double x, double y, Point2D dp) {
         Point2D wp = new Point2D.Double(x,
                 y);
@@ -384,9 +362,7 @@ public class Transform {
     /**
      * transform from device coordinates to world coordinates
      *
-     * @param dp
-     * @param wp
-     */
+	 */
     public void d2w(Point2D dp, Point2D wp) {
         double x = dp.getX() - leftMargin;
         double y = dp.getY() - topMargin;
@@ -451,9 +427,7 @@ public class Transform {
      * Note that the location and the size of the rectangle are modified, but not
      * not its orientation, that is, the rectangle is NOT rotated
      *
-     * @param wp
-     * @param dp
-     */
+	 */
     public void w2d(Rectangle2D wp, Rectangle dp) {
         if (wp != null && dp != null) {
             Point2D anchor = w2d(new Point2D.Double(wp.getX(), wp.getY()));
@@ -479,9 +453,7 @@ public class Transform {
     /**
      * transform from device coordinates to world coordinates. Note that the rectangle is not rotated
      *
-     * @param dp
-     * @param wp
-     */
+	 */
     public void d2w(Rectangle2D dp, Rectangle2D wp) {
         Point2D anchor = d2w(new Point2D.Double(dp.getX(), dp.getY()));
         wp.setRect(anchor.getX(), anchor.getY(), dp.getWidth() / scaleX, dp.getHeight() / scaleY);
@@ -595,8 +567,7 @@ public class Transform {
     /**
      * register a new change listener
      *
-     * @param listener
-     */
+	 */
     public void addChangeListener(ITransformChangeListener listener) {
         changeListeners.add(listener);
     }
@@ -604,8 +575,7 @@ public class Transform {
     /**
      * remove a registered change listener
      *
-     * @param listener
-     */
+	 */
     public void removeChangeListener(ITransformChangeListener listener) {
         changeListeners.remove(listener);
     }
@@ -709,8 +679,7 @@ public class Transform {
     /**
      * set scale so that  the rotated coordinate rectangle has the given size
      *
-     * @param size
-     */
+	 */
     public void fitToSize(Dimension size) {
         fitToSize(rotatedCoordRect, size);
     }
@@ -747,7 +716,6 @@ public class Transform {
     /**
      * transforms a world polygon into a device polygon
      *
-     * @param wp
      * @return device polygon
      */
     public Polygon w2d(PolygonDouble wp) {

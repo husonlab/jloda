@@ -43,9 +43,7 @@ public class MenuBar extends JMenuBar {
     /**
      * creates the window menu bar
      *
-     * @param viewer
-     * @param commandManager
-     */
+	 */
     public MenuBar(Object viewer, MenuConfiguration configuration, CommandManager commandManager) {
         MenuCreator menuCreator = new MenuCreator(viewer, commandManager);
         try {
@@ -123,8 +121,7 @@ public class MenuBar extends JMenuBar {
     /**
      * turn all recent file menu items on or off
      *
-     * @param state
-     */
+	 */
     public void setEnableRecentFileMenuItems(boolean state) {
         if (recentFilesMenu != null)
             for (Component component : recentFilesMenu.getMenuComponents()) {
@@ -137,7 +134,6 @@ public class MenuBar extends JMenuBar {
     /**
      * find the named top-level menu
      *
-     * @param name
      * @return menu or null
      */
     public JMenu findMenu(String name) {

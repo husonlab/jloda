@@ -97,8 +97,6 @@ public class LabeledArrow extends Group {
     /**
      * make an arrow along the x-axis
      *
-     * @param length
-     * @param color
      * @return arrow along x-axis
      */
     private Group makeXArrow(double length, Color color) {

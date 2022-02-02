@@ -36,8 +36,7 @@ public class Statistics {
     /**
      * computes simple statistics for given collection of numbers
      *
-     * @param data
-     */
+	 */
     public Statistics(Iterable<? extends Number> data) {
         int count = 0;
         for (Number number : data) {
@@ -66,8 +65,7 @@ public class Statistics {
     /**
      * computes simple statistics for given collection of numbers
      *
-     * @param data
-     */
+	 */
     public Statistics(int[] data) {
         count = data.length;
         if (count > 0) {
@@ -94,8 +92,7 @@ public class Statistics {
     /**
      * computes simple statistics for given collection of numbers
      *
-     * @param data
-     */
+	 */
     public Statistics(float[] data) {
         count = data.length;
         if (count > 0) {
@@ -122,8 +119,7 @@ public class Statistics {
     /**
      * computes simple statistics for given collection of numbers
      *
-     * @param data
-     */
+	 */
     public Statistics(double[] data) {
         count = data.length;
         if (count > 0) {

@@ -29,11 +29,6 @@ import java.awt.*;
 import java.util.*;
 
 /**
- * jTree searcher
- * Daniel Huson, 2.2012
- */
-
-/**
  * Class for finding labels in a jTree
  * Daniel Huson, 2.2012
  */
@@ -50,8 +45,7 @@ public class JTreeSearcher implements IObjectSearcher {
     /**
      * constructor
      *
-     * @param jTree
-     */
+	 */
     public JTreeSearcher(JTree jTree) {
         this(null, SEARCHER_NAME, jTree);
     }
@@ -59,9 +53,7 @@ public class JTreeSearcher implements IObjectSearcher {
     /**
      * constructor
      *
-     * @param frame
-     * @param jTree
-     */
+	 */
     public JTreeSearcher(Frame frame, JTree jTree) {
         this(frame, SEARCHER_NAME, jTree);
     }
@@ -70,8 +62,7 @@ public class JTreeSearcher implements IObjectSearcher {
      * constructor
      *
      * @param
-     * @param jTree
-     */
+	 */
     public JTreeSearcher(Frame frame, String name, JTree jTree) {
         this.frame = frame;
         this.name = name;
@@ -162,8 +153,7 @@ public class JTreeSearcher implements IObjectSearcher {
     /**
      * set selection state of current object
      *
-     * @param select
-     */
+	 */
     public void setCurrentSelected(boolean select) {
         if (current != null) {
             if (select)
@@ -176,8 +166,7 @@ public class JTreeSearcher implements IObjectSearcher {
     /**
      * set select state of all objects
      *
-     * @param select
-     */
+	 */
     public void selectAll(boolean select) {
         if (select) {
             int count = jTree.getRowCount();
@@ -206,8 +195,7 @@ public class JTreeSearcher implements IObjectSearcher {
     /**
      * set the label of the current object
      *
-     * @param newLabel
-     */
+	 */
     public void setCurrentLabel(String newLabel) {
     }
 

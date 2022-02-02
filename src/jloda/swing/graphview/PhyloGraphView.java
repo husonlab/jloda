@@ -267,8 +267,7 @@ public class PhyloGraphView extends GraphView {
     /**
      * set or unset use of split selection model
      *
-     * @param useSplitSelectionModel
-     */
+	 */
     public void setUseSplitSelectionModel(boolean useSplitSelectionModel) {
         this.useSplitSelectionModel = useSplitSelectionModel;
     }
@@ -277,8 +276,7 @@ public class PhyloGraphView extends GraphView {
      * removes the given split from the graph by contracting all adjacentEdges representing
      * the split
      *
-     * @param splitId
-     */
+	 */
     public void removeSplit(int splitId, boolean updateNodePositions) {
         PhyloSplitsGraph graph = getPhyloGraph();
         try {
@@ -322,8 +320,7 @@ public class PhyloGraphView extends GraphView {
      * @param v       current node
      * @param e       current edge
      * @param seen    set of nodes already visited
-     * @throws NotOwnerException
-     */
+	 */
     private void moveNodes(int splitId, Point2D offset, Node v, Edge e, NodeSet seen) throws NotOwnerException {
         if (!seen.contains(v)) {
             seen.add(v);
@@ -364,10 +361,10 @@ public class PhyloGraphView extends GraphView {
                 ok = writeRec(seen, out, v, e, wgts);
                 if (wgts) {
                     double weight = getPhyloGraph().getWeight(e);
-                    try {
-                        weight = Double.parseDouble(this.getLabel(e));
-                    } catch (Exception ex) {
-                    }
+					try {
+						weight = Double.parseDouble(this.getLabel(e));
+					} catch (Exception ignored) {
+					}
                     out.write(":" + (float) (weight / 2.0));
                 }
                 out.write(",");
@@ -375,10 +372,10 @@ public class PhyloGraphView extends GraphView {
                     ok = writeRec(seen, out, u, e, wgts);
                 if (wgts) {
                     double weight = getPhyloGraph().getWeight(e);
-                    try {
-                        weight = Double.parseDouble(this.getLabel(e));
-                    } catch (Exception ex) {
-                    }
+					try {
+						weight = Double.parseDouble(this.getLabel(e));
+					} catch (Exception ignored) {
+					}
 
                     out.write(":" + (float) (weight / 2.0) + "):0;");
                 } else
@@ -430,10 +427,10 @@ public class PhyloGraphView extends GraphView {
                         return false;
                     if (wgts) {
                         double weight = getPhyloGraph().getWeight(f);
-                        try {
-                            weight = Double.parseDouble(this.getLabel(f));
-                        } catch (Exception ex) {
-                        }
+						try {
+							weight = Double.parseDouble(this.getLabel(f));
+						} catch (Exception ignored) {
+						}
                         out.write(":" + (float) (weight));
                     }
                 }
@@ -576,7 +573,6 @@ public class PhyloGraphView extends GraphView {
     /**
 	 * contract all given edges
 	 *
-	 * @param edges
 	 * @return number of edges successfully removed
 	 */
     public boolean contractAll(Set<Edge> edges) {

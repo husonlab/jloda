@@ -51,7 +51,6 @@ public class NameNormalizer {
     /**
      * apply replaceAll(A,B) to name
      *
-     * @param name
      * @return modified name
      */
     public String apply(String name) {

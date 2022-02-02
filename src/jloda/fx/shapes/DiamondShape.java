@@ -32,9 +32,7 @@ public class DiamondShape extends Polygon implements ISized {
     /**
      * constructor
      *
-     * @param width
-     * @param height
-     */
+	 */
     public DiamondShape(double width, double height) {
         setSize(width, height);
     }

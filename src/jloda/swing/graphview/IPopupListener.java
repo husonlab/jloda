@@ -31,40 +31,31 @@ public interface IPopupListener {
     /**
      * popup menu on node
      *
-     * @param me
-     * @param nodes
-     */
+	 */
     void doNodePopup(MouseEvent me, NodeSet nodes);
 
     /**
      * popup menu on node label
      *
-     * @param me
-     * @param nodes
-     */
+	 */
     void doNodeLabelPopup(MouseEvent me, NodeSet nodes);
 
     /**
      * popup menu on edge
      *
-     * @param me
-     * @param edges
-     */
+	 */
     void doEdgePopup(MouseEvent me, EdgeSet edges);
 
     /**
      * popup menu on edge
      *
-     * @param me
-     * @param edges
-     */
+	 */
     void doEdgeLabelPopup(MouseEvent me, EdgeSet edges);
 
     /**
      * popup menu not on graph
      *
-     * @param me
-     */
+	 */
     void doPanelPopup(MouseEvent me);
 
 }

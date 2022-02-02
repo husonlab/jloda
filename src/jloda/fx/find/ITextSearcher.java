@@ -28,7 +28,6 @@ public interface ITextSearcher extends ISearcher {
     /**
      * Find first instance
      *
-     * @param regularExpression
      * @return - returns boolean: true if text found, false otherwise
      */
     boolean findFirst(String regularExpression);
@@ -36,7 +35,6 @@ public interface ITextSearcher extends ISearcher {
     /**
      * Find next instance
      *
-     * @param regularExpression
      * @return - returns boolean: true if text found, false otherwise
      */
     boolean findNext(String regularExpression);
@@ -45,7 +43,6 @@ public interface ITextSearcher extends ISearcher {
     /**
      * Find previous instance
      *
-     * @param regularExpression
      * @return - returns boolean: true if text found, false otherwise
      */
     boolean findPrevious(String regularExpression);
@@ -53,17 +50,13 @@ public interface ITextSearcher extends ISearcher {
     /**
      * Replace the next instance with current. Does nothing if selection invalid.
      *
-     * @param regularExpression
-     */
+	 */
     boolean replaceNext(String regularExpression, String replaceText);
 
 
     /**
      * Replace all occurrences of text in document, subject to options.
      *
-     * @param regularExpression
-     * @param replaceText
-     * @param selectionOnly
      * @return number of instances replaced
      */
     int replaceAll(String regularExpression, String replaceText, boolean selectionOnly);
@@ -71,15 +64,13 @@ public interface ITextSearcher extends ISearcher {
     /**
      * Selects all occurrences of text in document, subject to options and constraints of document type
      *
-     * @param regularExpression
-     */
+	 */
     int findAll(String regularExpression);
 
     /**
      * set scope global rather than selected
      *
-     * @param globalScope
-     */
+	 */
     void setGlobalScope(boolean globalScope);
 
     /**

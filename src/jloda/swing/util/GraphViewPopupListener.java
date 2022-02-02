@@ -43,12 +43,7 @@ public class GraphViewPopupListener implements IPopupListener {
     /**
      * construct the popup menus
      *
-     * @param viewer
-     * @param nodeConfig
-     * @param edgeConfig
-     * @param panelConfig
-     * @param commandManager
-     */
+	 */
     public GraphViewPopupListener(GraphView viewer, String nodeConfig, String edgeConfig, String panelConfig, CommandManager commandManager) {
         this.viewer = viewer;
         nodeMenu = new PopupMenu(viewer, nodeConfig, commandManager, false, true, false);
@@ -59,9 +54,7 @@ public class GraphViewPopupListener implements IPopupListener {
     /**
      * popup menu on node
      *
-     * @param me
-     * @param nodes
-     */
+	 */
     public void doNodePopup(MouseEvent me, NodeSet nodes) {
         if (nodes.size() != 0) {
             /*
@@ -80,9 +73,7 @@ public class GraphViewPopupListener implements IPopupListener {
     /**
      * popup menu on node label
      *
-     * @param me
-     * @param nodes
-     */
+	 */
     public void doNodeLabelPopup(MouseEvent me, NodeSet nodes) {
         doNodePopup(me, nodes);
     }
@@ -90,9 +81,7 @@ public class GraphViewPopupListener implements IPopupListener {
     /**
      * popup menu on edge
      *
-     * @param me
-     * @param edges
-     */
+	 */
     public void doEdgePopup(MouseEvent me, EdgeSet edges) {
         if (edges.size() != 0) {
             /*
@@ -111,9 +100,7 @@ public class GraphViewPopupListener implements IPopupListener {
     /**
      * popup menu on edge
      *
-     * @param me
-     * @param edges
-     */
+	 */
     public void doEdgeLabelPopup(MouseEvent me, EdgeSet edges) {
         doEdgePopup(me, edges);
     }
@@ -121,8 +108,7 @@ public class GraphViewPopupListener implements IPopupListener {
     /**
      * popup menu not on graph
      *
-     * @param me
-     */
+	 */
     public void doPanelPopup(MouseEvent me) {
         panelMenu.show(me.getComponent(), me.getX(), me.getY());
     }

@@ -30,8 +30,7 @@ public class Tetrahedron extends MeshView {
     /**
      * constructor
      *
-     * @param length
-     */
+	 */
     public Tetrahedron(float length) {
         final TriangleMesh mesh = new TriangleMesh();
         final float p1 = 0.0f;

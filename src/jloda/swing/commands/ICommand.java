@@ -25,7 +25,6 @@ import jloda.util.parse.NexusStreamParser;
 
 import javax.swing.*;
 import java.awt.event.ActionEvent;
-import java.io.IOException;
 
 /**
  * basic command interface
@@ -35,22 +34,19 @@ public interface ICommand {
     /**
      * set the director
      *
-     * @param dir
-     */
+	 */
     void setDir(IDirector dir);
 
     /**
      * get the director
      *
-     * @return
-     */
+	 */
     IDirector getDir();
 
     /**
      * set the command manager. This is required for all commands that call the "execute" method
      *
-     * @param commandManager
-     */
+	 */
     void setCommandManager(CommandManager commandManager);
 
     /**
@@ -112,8 +108,7 @@ public interface ICommand {
     /**
      * action to be performed
      *
-     * @param ev
-     */
+	 */
     void actionPerformed(ActionEvent ev);
 
     /**
@@ -133,9 +128,7 @@ public interface ICommand {
     /**
      * parses the given command and executes it
      *
-     * @param np
-     * @throws IOException
-     */
+	 */
     void apply(NexusStreamParser np) throws Exception;
 
     /**
@@ -148,8 +141,7 @@ public interface ICommand {
     /**
      * sets the  viewer
      *
-     * @param viewer
-     */
+	 */
     void setViewer(IDirectableViewer viewer);
 
     /**
@@ -163,8 +155,7 @@ public interface ICommand {
     /**
      * sets the viewer in the case that the viewer is not an  IDirectableViewer
      *
-     * @param viewer
-     */
+	 */
     void setParent(Object viewer);
 
     /**
@@ -177,23 +168,20 @@ public interface ICommand {
     /**
      * get the autorepeat interval. 0 means no autorepeat
      *
-     * @return
-     */
+	 */
     int getAutoRepeatInterval();
 
 
     /**
      * set  the autorepeat interval. 0 means no autorepeat
      *
-     * @param autoRepeatInterval
-     */
+	 */
     void setAutoRepeatInterval(int autoRepeatInterval);
 
 
     /**
      * Action to be performed in case of autorepeat
      *
-     * @param ev
-     */
+	 */
     void actionPerformedAutoRepeat(ActionEvent ev);
 }

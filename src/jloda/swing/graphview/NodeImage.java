@@ -45,8 +45,7 @@ public class NodeImage {
     /**
      * constructor
      *
-     * @param observer
-     */
+	 */
     public NodeImage(ImageObserver observer) {
         this.observer = observer;
     }
@@ -54,10 +53,7 @@ public class NodeImage {
     /**
      * construct from file
      *
-     * @param file
-     * @param observer
-     * @throws IOException
-     */
+	 */
     public NodeImage(File file, ImageObserver observer) throws IOException {
         this(observer);
         read(file);
@@ -66,9 +62,7 @@ public class NodeImage {
     /**
      * read image from a file
      *
-     * @param file
-     * @throws IOException
-     */
+	 */
     public void read(File file) throws IOException {
         setImage(ImageIO.read(file));
     }
@@ -76,11 +70,7 @@ public class NodeImage {
     /**
      * draw the image
      *
-     * @param nv
-     * @param trans
-     * @param gc
-     * @param hilite
-     */
+	 */
     public void draw(NodeView nv, Transform trans, Graphics2D gc, boolean hilite) {
         // draw the image:
         Image scaledImage = getScaledImage();
@@ -166,8 +156,6 @@ public class NodeImage {
     /**
      * does point hit this?
      *
-     * @param x
-     * @param y
      * @return true, if hit
      * todo: this is broken
      */
@@ -189,8 +177,7 @@ public class NodeImage {
     /**
      * set the image and the scaled image
      *
-     * @param image
-     */
+	 */
     public void setImage(Image image) {
         this.image = image;
         if (image != null)
@@ -222,8 +209,7 @@ public class NodeImage {
     /**
      * set the width. use -1 for no constraint
      *
-     * @param width
-     */
+	 */
     public void setWidth(int width) {
         this.width = width;
         setImage(image);

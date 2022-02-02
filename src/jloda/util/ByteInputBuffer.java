@@ -48,8 +48,7 @@ public class ByteInputBuffer {
     /**
      * set the size of the buffer
      *
-     * @param size
-     */
+	 */
     public void setSize(int size) {
         ensureSize(size);
         this.size = size;

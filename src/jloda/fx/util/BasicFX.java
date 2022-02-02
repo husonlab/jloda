@@ -126,9 +126,6 @@ public class BasicFX {
     /**
      * get the best font size to fit the given width
      *
-     * @param title
-     * @param font
-     * @param width
      * @return best font size to fit
      */
     public static double fitFontSizeToWidthAndHeight(String title, Font font, double width, double height) {
@@ -143,8 +140,6 @@ public class BasicFX {
     /**
      * get the dimension of a text
      *
-     * @param string
-     * @param font
      * @return text dimension
      */
     public static Dimension2D getTextDimension(String string, Font font) {
@@ -156,8 +151,7 @@ public class BasicFX {
     /**
      * permanentally hide column headers
      *
-     * @param tableView
-     */
+	 */
     public static void hideColumnHeaders(TableView tableView) {
         final InvalidationListener tableResizeListener = (e) -> {
             final Pane header = (Pane) tableView.lookup("TableHeaderRow");
@@ -204,8 +198,7 @@ public class BasicFX {
     /**
      * ensures that clicking on the slider also generates  value changing events
      *
-     * @param slider
-     */
+	 */
     public static void ensureClickGeneratesValueChangingEvents(Slider slider) {
         slider.addEventFilter(MouseEvent.MOUSE_PRESSED, e -> slider.setValueChanging(true));
         slider.addEventFilter(MouseEvent.MOUSE_RELEASED, e -> slider.setValueChanging(false));
@@ -214,8 +207,7 @@ public class BasicFX {
     /**
      * adds full screen support
      *
-     * @param stage
-     */
+	 */
     public static void setupFullScreenMenuSupport(Stage stage, MenuItem menuItem) {
         stage.fullScreenProperty().addListener((c, o, n) -> menuItem.setText(n ? "Exit Full Screen" : "Enter Full Screen"));
         menuItem.setOnAction((e) -> stage.setFullScreen(!stage.isFullScreen()));
@@ -231,7 +223,6 @@ public class BasicFX {
     /**
      * copy and remove white background
      *
-     * @param image
      * @param threshold   between 0 and 255
      * @param outsideOnly only remove white pixels that are accessible from the outside
      * @return image with white removed

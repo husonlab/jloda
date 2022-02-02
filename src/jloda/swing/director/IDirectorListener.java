@@ -17,12 +17,6 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-/**
- * director events that viewers listen to
- *
- * @author huson
- * 11.03
- */
 package jloda.swing.director;
 
 import jloda.util.CanceledException;
@@ -67,7 +61,6 @@ public interface IDirectorListener extends IUpdateableView {
     /**
      * set uptodate state
      *
-     * @param flag
-     */
+	 */
     void setUptoDate(boolean flag);
 }

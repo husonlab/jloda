@@ -169,8 +169,7 @@ public class AnotherMultipleSelectionModel<T> extends MultipleSelectionModel<T> 
      * set the set of items. Indices refer to the ordering defined in the collection.
      * Assumes all items are distinct
      *
-     * @param items
-     */
+	 */
     public void setItems(Collection<? extends T> items) {
         selectedIndicesSet.clear();
         this.items.setAll(items);
@@ -185,8 +184,7 @@ public class AnotherMultipleSelectionModel<T> extends MultipleSelectionModel<T> 
      * set the set of items. Indices refer to the ordering defined in the collection.
      * Assumes all items are distinct
      *
-     * @param items
-     */
+	 */
     @SafeVarargs
     public final void setItems(T... items) {
         setItems(Arrays.asList(items));

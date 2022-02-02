@@ -112,9 +112,7 @@ public class AMultipleSelectionModel<T> extends MultipleSelectionModel<T> {
     /**
      * update the selection
      *
-     * @param update
-     * @param additional
-     */
+	 */
     private void update(Update update, int... additional) {
         final BitSet selection = new BitSet();
         for (int i : additional) {
@@ -126,9 +124,7 @@ public class AMultipleSelectionModel<T> extends MultipleSelectionModel<T> {
     /**
      * update the selection
      *
-     * @param update
-     * @param selection
-     */
+	 */
     private void update(Update update, BitSet selection) {
         try {
             synchronized (selectedIndicesList) {
@@ -311,8 +307,7 @@ public class AMultipleSelectionModel<T> extends MultipleSelectionModel<T> {
     /**
      * clear selection and set list of items
      *
-     * @param items
-     */
+	 */
     @SafeVarargs
     public final void setItems(T... items) {
         clearSelection();
@@ -326,8 +321,7 @@ public class AMultipleSelectionModel<T> extends MultipleSelectionModel<T> {
     /**
      * clear selection and set list of items
      *
-     * @param items
-     */
+	 */
     public void setItems(Collection<T> items) {
         clearSelection();
         this.items = (T[]) items.toArray();

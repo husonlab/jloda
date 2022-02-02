@@ -52,8 +52,7 @@ public class Magnifier {
     /**
      * constructor
      *
-     * @param graphView
-     */
+	 */
     public Magnifier(GraphView graphView, Transform trans) {
         this.graphView = graphView;
         this.trans = trans;
@@ -64,8 +63,6 @@ public class Magnifier {
     /**
      * does mouse click hit magnifier?
      *
-     * @param x
-     * @param y
      * @return what was hit
      */
     public int hit(int x, int y) {
@@ -120,11 +117,7 @@ public class Magnifier {
     /**
      * move the magnification center by the given difference of coordinates
      *
-     * @param xOld
-     * @param yOld
-     * @param xNew
-     * @param yNew
-     */
+	 */
     public void move(int xOld, int yOld, int xNew, int yNew) {
         double dXPercent = 0;
         if (!isInRectilinearMode())
@@ -140,9 +133,7 @@ public class Magnifier {
     /**
      * resize the magnification center by the given difference of coordinates
      *
-     * @param yOld
-     * @param yNew
-     */
+	 */
     public void resize(int yOld, int yNew) {
         double dYPercent = 200.0 * (yOld - yNew) / (double) scrollBarY.getVisibleAmount();
         setRadius(Math.max(0, Math.min(100, getRadius() + dYPercent)));
@@ -161,8 +152,7 @@ public class Magnifier {
     /**
      * set the magnification radius between 0 and 100 %
      *
-     * @param radiusPercent
-     */
+	 */
     public void setRadius(double radiusPercent) {
         this.radiusPercent = Math.max(0, Math.min(100, radiusPercent));
 
@@ -175,9 +165,7 @@ public class Magnifier {
     /**
      * set the magnification center in percent of window width and height
      *
-     * @param xPercent
-     * @param yPercent
-     */
+	 */
     public void setCenter(double xPercent, double yPercent) {
         centerXpercent = xPercent;
         centerYpercent = yPercent;
@@ -253,8 +241,7 @@ public class Magnifier {
     /**
      * set the magnifier on or off
      *
-     * @param active
-     */
+	 */
     public void setActive(boolean active) {
         this.active = active;
         if (active)
@@ -362,8 +349,7 @@ public class Magnifier {
     /**
      * set rectilinear mode
      *
-     * @param inRectilinearMode
-     */
+	 */
     public void setInRectilinearMode(boolean inRectilinearMode) {
         this.inRectilinearMode = inRectilinearMode;
     }
@@ -371,8 +357,7 @@ public class Magnifier {
     /**
      * draw the magnifier
      *
-     * @param gc
-     */
+	 */
     public void draw(Graphics2D gc) {
         if (isActive()) {
             gc.setColor(Color.GREEN);
@@ -483,8 +468,7 @@ public class Magnifier {
     /**
      * set hyperbolic mode
      *
-     * @param hyperbolicMode
-     */
+	 */
     public void setHyperbolicMode(boolean hyperbolicMode) {
         this.hyperbolicMode = hyperbolicMode;
     }

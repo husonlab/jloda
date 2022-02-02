@@ -59,9 +59,7 @@ public class GIFExportType extends FileFilter implements ExportGraphicType {
      * <code>getData</code>: <i>currently not implemented since clipboard export of
      * gif images is not intended.</i>
      *
-     * @param panel
-     * @return
-     */
+	 */
     public Object getData(JPanel panel) {
         return null;
     }
@@ -75,12 +73,7 @@ public class GIFExportType extends FileFilter implements ExportGraphicType {
      * writes image to a stream. If scrollPane given and showWholeImage=true, draws only visible portion
      * of panel
      *
-     * @param imagePanel
-     * @param imageScrollPane
-     * @param showWholeImage
-     * @param out
-     * @throws IOException
-     */
+	 */
     public void stream(JPanel imagePanel, JScrollPane imageScrollPane, boolean showWholeImage, OutputStream out) throws IOException {
         JPanel panel;
         if (showWholeImage || imageScrollPane == null)

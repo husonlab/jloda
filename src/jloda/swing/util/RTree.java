@@ -54,9 +54,7 @@ public class RTree<T> {
     /**
      * add a rectangle and associated data to the RTree
      *
-     * @param rect
-     * @param data
-     */
+	 */
     public void add(Rectangle2D rect, T data) {
         if (root == null) {
             root = new RNode(rect);
@@ -82,10 +80,7 @@ public class RTree<T> {
     /**
      * add data as close as possible to the given location without overlapping an data already contained in the RTree
      *
-     * @param location
-     * @param dimension
-     * @param data
-     */
+	 */
     public Point addCloseTo(int seed, Point location, int minDx, int minDy, boolean left, Dimension dimension, T data) {
         int x = location.x;
         int y = location.y;
@@ -147,9 +142,7 @@ public class RTree<T> {
     /**
      * add the node v below the given node
      *
-     * @param parent
-     * @param v
-     */
+	 */
     private RNode addBelowRec(RNode parent, RNode v) {
         parent.rect.add(v.rect);
         if (parent.data != null)
@@ -169,7 +162,6 @@ public class RTree<T> {
     /**
      * get a hit data item, if one exists
      *
-     * @param rect
      * @return data item
      */
     public T getHitData(Rectangle2D rect) {
@@ -192,7 +184,6 @@ public class RTree<T> {
     /**
      * determines whether given rect overlaps with any of the contained rectangles
      *
-     * @param rect
      * @return true, if an overlap was detected
      */
     public boolean overlaps(Rectangle2D rect) {
@@ -206,8 +197,6 @@ public class RTree<T> {
     /**
      * recursively do the work
      *
-     * @param node
-     * @param rect
      * @return hit data item or null
      */
     private RNode getHitRec(RNode node, Rectangle2D rect) {

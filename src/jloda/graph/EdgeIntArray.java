@@ -45,7 +45,6 @@ public class EdgeIntArray extends EdgeArray<Integer> {
     /**
      * get the entry for edge e
      *
-     * @param e
      * @return integer or 0
      */
     public int getInt(Edge e) {
@@ -60,8 +59,7 @@ public class EdgeIntArray extends EdgeArray<Integer> {
     /**
      * increase the count by one.
      *
-     * @param e
-     */
+	 */
     public void increment(Edge e) {
         set(e, getInt(e) + 1);
     }
@@ -69,8 +67,7 @@ public class EdgeIntArray extends EdgeArray<Integer> {
     /**
      * increase the count by the given value
      *
-     * @param e
-     */
+	 */
     public void increment(Edge e, int value) {
         set(e, getInt(e) + value);
     }
@@ -78,8 +75,7 @@ public class EdgeIntArray extends EdgeArray<Integer> {
     /**
      * decrease the count by one.
      *
-     * @param e
-     */
+	 */
     public void decrement(Edge e) {
         set(e, getInt(e) - 1);
     }
@@ -87,8 +83,7 @@ public class EdgeIntArray extends EdgeArray<Integer> {
     /**
      * decrease the count by the given value
      *
-     * @param e
-     */
+	 */
     public void decrement(Edge e, int value) {
         set(e, getInt(e) - value);
     }

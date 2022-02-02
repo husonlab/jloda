@@ -70,9 +70,7 @@ public class FindToolBar extends VBox {
     /**
      * constructor
      *
-     * @param owner
-     * @param searcher
-     */
+	 */
     public FindToolBar(Stage owner, ISearcher searcher, ISearcher... additional) {
         final ExtendedFXMLLoader<FindToolBarController> extendedFXMLLoader = new ExtendedFXMLLoader<>(FindToolBar.class);
         controller = extendedFXMLLoader.getController();
@@ -359,8 +357,7 @@ public class FindToolBar extends VBox {
     /**
      * add the searcher to the list of available searchers. It will be represented by a toggle button
      *
-     * @param other
-     */
+	 */
     public void addSearcher(ISearcher other) {
         if (searchers.size() == 0) {
             final ISearcher searcher = searchManager.getSearcher();
@@ -392,8 +389,7 @@ public class FindToolBar extends VBox {
     /**
      * set the searcher to use, first adding it, if necessary
      *
-     * @param searcher
-     */
+	 */
     public void setSearcher(ISearcher searcher) {
         addSearcher(searcher);
         searchManager.setSearcher(searcher);
@@ -402,8 +398,7 @@ public class FindToolBar extends VBox {
     /**
      * change the set of searchers, setting the first one
      *
-     * @param searcher
-     */
+	 */
     public void setSearchers(ISearcher searcher, ISearcher... others) {
         searchers.setAll(searcher);
         searchers.addAll(others);

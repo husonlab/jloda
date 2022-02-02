@@ -30,8 +30,6 @@ public class AutoCompleteComboBox {
 	/**
 	 * creates a handler for key release events
 	 *
-	 * @param comboBox
-	 * @param <T>
 	 * @return the handler
 	 */
 	private static <T> EventHandler<KeyEvent> createKeyReleasedHandler(ComboBox<T> comboBox) {

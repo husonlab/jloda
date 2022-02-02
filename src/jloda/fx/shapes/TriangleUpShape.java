@@ -33,9 +33,7 @@ public class TriangleUpShape extends Polygon implements ISized {
     /**
      * constructor
      *
-     * @param width
-     * @param height
-     */
+	 */
     public TriangleUpShape(double width, double height) {
         setSize(width, height);
     }

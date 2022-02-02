@@ -51,8 +51,7 @@ public class JavaFX2PDF {
     /**
      * use root as node
      *
-     * @param owner
-     */
+	 */
     public JavaFX2PDF(Stage owner) {
         this.printImage = owner.getScene().getRoot();
         this.owner = owner;

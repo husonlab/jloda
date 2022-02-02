@@ -167,9 +167,7 @@ public class FruchtermanReingoldLayout {
     /**
      * apply the algorithm
      *
-     * @param numberOfIterations
-     * @return
-     */
+	 */
     public NodeArray<APoint2D<?>> apply(int numberOfIterations) {
         final NodeArray<APoint2D<?>> result = graph.newNodeArray();
         try {
@@ -182,9 +180,7 @@ public class FruchtermanReingoldLayout {
     /**
      * apply the algorithm
      *
-     * @param numberOfIterations
-     * @param result
-     */
+	 */
     public void apply(int numberOfIterations, NodeArray<APoint2D<?>> result) {
         try {
             apply(numberOfIterations, result, new ProgressSilent(), ProgramExecutorService.getNumberOfCoresToUse());
@@ -195,9 +191,7 @@ public class FruchtermanReingoldLayout {
     /**
      * apply the algorithm
      *
-     * @param numberOfIterations
-     * @param result
-     */
+	 */
     public void apply(int numberOfIterations, NodeArray<APoint2D<?>> result, ProgressListener progress, int numberOfThreads) throws CanceledException {
         progress.setMaximum(numberOfIterations);
         progress.setProgress(0);

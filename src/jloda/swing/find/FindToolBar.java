@@ -70,11 +70,7 @@ public class FindToolBar extends JPanel implements IFindDialog {
     /**
      * constructor
      *
-     * @param searchManager
-     * @param viewer
-     * @param actions
-     * @param additionalButtons
-     */
+	 */
     public FindToolBar(SearchManager searchManager, IViewerWithFindToolBar viewer, SearchActions actions, Collection<AbstractButton> additionalButtons) {
         this(searchManager, viewer, actions, false, additionalButtons);
     }
@@ -82,12 +78,7 @@ public class FindToolBar extends JPanel implements IFindDialog {
     /**
      * constructor
      *
-     * @param searchManager
-     * @param viewer
-     * @param actions
-     * @param showReplaceBar
-     * @param additionalButtons
-     */
+	 */
     public FindToolBar(SearchManager searchManager, IViewerWithFindToolBar viewer, SearchActions actions, boolean showReplaceBar,
                        Collection<AbstractButton> additionalButtons) {
         this.searchManager = searchManager;
@@ -269,8 +260,7 @@ public class FindToolBar extends JPanel implements IFindDialog {
     /**
      * show or hide the replace bar
      *
-     * @param showReplaceBar
-     */
+	 */
     public void setShowReplaceBar(boolean showReplaceBar) {
         if (this.showReplaceBar != showReplaceBar) {
             removeAll();
@@ -342,8 +332,7 @@ public class FindToolBar extends JPanel implements IFindDialog {
     /**
      * when activating a window, call this method to revert to the last used searcher for this window
      *
-     * @param parent
-     */
+	 */
     public void chooseTargetForFrame(Component parent) {
         if (parent != null) {
             ISearcher searcher = parent2active.get(parent);
@@ -364,8 +353,7 @@ public class FindToolBar extends JPanel implements IFindDialog {
     /**
      * once closed, client show set closing to false
      *
-     * @param closing
-     */
+	 */
     public void setClosing(boolean closing) {
         this.closing = closing;
     }
@@ -394,8 +382,7 @@ public class FindToolBar extends JPanel implements IFindDialog {
     /**
      * sets the message
      *
-     * @param message
-     */
+	 */
     public void setMessage(String message) {
         if (message.contains("No matches") || message.contains("Found: 0"))
             findCBox.setBackground(LIGHT_RED);

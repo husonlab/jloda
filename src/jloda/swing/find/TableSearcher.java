@@ -134,8 +134,7 @@ public class TableSearcher implements IObjectSearcher {
     /**
      * set selection state of current object
      *
-     * @param select
-     */
+	 */
     public void setCurrentSelected(boolean select) {
         if (isCurrentSet()) {
             table.setRowSelectionInterval(row, row);
@@ -158,8 +157,7 @@ public class TableSearcher implements IObjectSearcher {
     /**
      * set the label of the current object
      *
-     * @param newLabel
-     */
+	 */
     public void setCurrentLabel(String newLabel) {
         if (isCurrentSet())
             table.setValueAt(newLabel, row, col);
@@ -219,8 +217,7 @@ public class TableSearcher implements IObjectSearcher {
     /**
      * set select state of all objects
      *
-     * @param select
-     */
+	 */
     public void selectAll(boolean select) {
         if (select)
             table.selectAll();

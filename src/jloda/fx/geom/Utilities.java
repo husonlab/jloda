@@ -57,10 +57,7 @@ public class Utilities {
     /**
      * relocate all bodies so that they lie between the given bounds
      *
-     * @param bodies
-     * @param min
-     * @param max
-     */
+	 */
     public static void relocate(Body3D[] bodies, double min, double max) {
         // scale
         {
@@ -215,7 +212,6 @@ public class Utilities {
     /**
      * creates bounding box binding
      *
-     * @param node
      * @return binding
      */
     private static ObjectBinding<Rectangle> createBoundingBoxBinding(final Node node, final ReadOnlyProperty... properties) {

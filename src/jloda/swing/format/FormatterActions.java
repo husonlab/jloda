@@ -58,9 +58,7 @@ public class FormatterActions {
     /**
      * constructor
      *
-     * @param formatter
-     * @param dir
-     */
+	 */
     FormatterActions(Formatter formatter, IDirector dir, INodeEdgeFormatable viewer) {
         this.formatter = formatter;
         this.dir = dir;
@@ -172,10 +170,10 @@ public class FormatterActions {
                     Object selectedValue = ((JComboBox<?>) event.getSource()).getSelectedItem();
                     if (selectedValue != null) {
                         byte size = 1;
-                        try {
-                            size = Byte.parseByte((String) selectedValue);
-                        } catch (Exception ex) {
-                        }
+						try {
+							size = Byte.parseByte((String) selectedValue);
+						} catch (Exception ignored) {
+						}
                         viewer.setLineWidthSelectedEdges(size);
                         dir.setDirty(true);
                         formatter.fireEdgeFormatChanged(viewer.getSelectedEdges());
@@ -359,10 +357,10 @@ public class FormatterActions {
                     Object selectedValue = ((JComboBox<?>) event.getSource()).getSelectedItem();
                     if (selectedValue != null) {
                         byte size = 1;
-                        try {
-                            size = Byte.parseByte((String) selectedValue);
-                        } catch (Exception ex) {
-                        }
+						try {
+							size = Byte.parseByte((String) selectedValue);
+						} catch (Exception ignored) {
+						}
                         viewer.setWidthSelectedNodes(size);
                         viewer.setHeightSelectedNodes(size);
                         formatter.fireNodeFormatChanged(viewer.getSelectedNodes());
@@ -505,8 +503,7 @@ public class FormatterActions {
     /**
      * set ignore firing of events
      *
-     * @param ignore
-     */
+	 */
     public void setIgnore(boolean ignore) {
         this.ignore = ignore;
     }
@@ -514,10 +511,6 @@ public class FormatterActions {
     /**
      * set the edge font
      *
-     * @param family
-     * @param bold
-     * @param italics
-     * @param size
      * @return true, if anything changed
      */
     public boolean setEdgeFont(String family, int bold, int italics, int size) {
@@ -531,10 +524,6 @@ public class FormatterActions {
     /**
      * set the node font
      *
-     * @param family
-     * @param bold
-     * @param italics
-     * @param size
      * @return true, if anything changed
      */
     public boolean setNodeFont(String family, int bold, int italics, final int size) {

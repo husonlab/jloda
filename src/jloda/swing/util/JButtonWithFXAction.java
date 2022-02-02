@@ -33,9 +33,7 @@ public class JButtonWithFXAction extends JButton {
     /**
      * constructor
      *
-     * @param name
-     * @param eventHandler
-     */
+	 */
     public JButtonWithFXAction(String name, final EventHandler<ActionEvent> eventHandler) {
         this.setAction(new AbstractAction(name) {
             @Override

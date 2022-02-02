@@ -41,8 +41,7 @@ public class CompositeObjectSearcher implements IObjectSearcher {
     /**
      * constructor
      *
-     * @param searchers
-     */
+	 */
     public CompositeObjectSearcher(String name, Component frame, IObjectSearcher... searchers) {
         this.name = name;
         this.frame = frame;
@@ -148,8 +147,7 @@ public class CompositeObjectSearcher implements IObjectSearcher {
     /**
      * set selection state of current object
      *
-     * @param select
-     */
+	 */
     public void setCurrentSelected(boolean select) {
         if (whichSearcher != None)
             searchers[whichSearcher].setCurrentSelected(select);
@@ -158,8 +156,7 @@ public class CompositeObjectSearcher implements IObjectSearcher {
     /**
      * set select state of all objects
      *
-     * @param select
-     */
+	 */
     public void selectAll(boolean select) {
         for (IObjectSearcher searcher : searchers) {
             searcher.selectAll(select);
@@ -181,8 +178,7 @@ public class CompositeObjectSearcher implements IObjectSearcher {
     /**
      * set the label of the current object
      *
-     * @param newLabel
-     */
+	 */
     public void setCurrentLabel(String newLabel) {
     }
 
@@ -261,8 +257,7 @@ public class CompositeObjectSearcher implements IObjectSearcher {
     /**
      * set the searchers
      *
-     * @param searchers
-     */
+	 */
     public void setSearchers(IObjectSearcher... searchers) {
         whichSearcher = None;
         this.searchers = searchers;

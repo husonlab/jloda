@@ -17,12 +17,6 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-/**
- * @version $Id: UsageException.java,v 1.3 2006-06-06 18:56:04 huson Exp $
- * <p>
- * Command line options usage exception
- * @author Daniel Huson
- */
 package jloda.util;
 
 /**

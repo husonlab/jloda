@@ -50,9 +50,7 @@ public class ConnectedComponents {
     /**
      * visit all nodes in a connected component
      *
-     * @param v
-     * @param used
-     */
+	 */
     public static void collect(Node v, Set<Node> used) {
         used.add(v);
         for (var e : v.adjacentEdges()) {

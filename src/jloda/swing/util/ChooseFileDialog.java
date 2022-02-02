@@ -39,12 +39,6 @@ public class ChooseFileDialog {
     /**
      * choose file to open dialog
      *
-     * @param parent
-     * @param lastOpenFile
-     * @param fileFilter
-     * @param fileNameFilter
-     * @param event
-     * @param message
      * @return file or null
      */
     public static File chooseFileToOpen(Component parent, File lastOpenFile, FileFilter fileFilter, FilenameFilter fileNameFilter, ActionEvent event, String message) {
@@ -96,12 +90,6 @@ public class ChooseFileDialog {
     /**
      * choose file to open dialog
      *
-     * @param parent
-     * @param lastOpenFile
-     * @param fileFilter
-     * @param fileNameFilter
-     * @param event
-     * @param message
      * @return file or null
      */
     public static java.util.List<File> chooseFilesToOpen(Component parent, File lastOpenFile, FileFilter fileFilter, FilenameFilter fileNameFilter, ActionEvent event, String message) {
@@ -162,12 +150,6 @@ public class ChooseFileDialog {
     /**
      * choose file to save dialog
      *
-     * @param frame
-     * @param lastOpenFile
-     * @param fileFilter
-     * @param fileNameFilter
-     * @param event
-     * @param message
      * @return file or null
      */
     public static File chooseFileToSave(JFrame frame, File lastOpenFile, FileFilter fileFilter, FilenameFilter fileNameFilter, ActionEvent event, String message) {
@@ -177,12 +159,6 @@ public class ChooseFileDialog {
     /**
      * choose file to save dialog
      *
-     * @param parent
-     * @param lastOpenFile
-     * @param fileFilter
-     * @param fileNameFilter
-     * @param event
-     * @param message
      * @param defaultSuffix  .suff or null
      * @return file or null
      */

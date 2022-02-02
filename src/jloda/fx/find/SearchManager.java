@@ -379,8 +379,6 @@ public class SearchManager {
     /**
      * does label match pattern?
      *
-     * @param pattern
-     * @param label
      * @return true, if match
      */
     private boolean matches(Pattern pattern, String label) {
@@ -393,9 +391,6 @@ public class SearchManager {
     /**
      * determines whether pattern matches label.
      *
-     * @param pattern
-     * @param replacement
-     * @param label
      * @return result of replacing query by replace string in label
      */
     private String getReplacement(Pattern pattern, String replacement, String label) {
@@ -411,7 +406,6 @@ public class SearchManager {
     /**
      * prepares the regular expression that reflects the chosen find options
      *
-     * @param query
      * @return regular expression
      */
     private String prepareRegularExpression(String query) {

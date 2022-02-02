@@ -19,11 +19,6 @@
 
 package jloda.swing.format;
 
-/**
- * format nodes and adjacentEdges
- * Daniel Huson, 2.2007
- */
-
 import jloda.graph.EdgeSet;
 import jloda.graph.NodeSet;
 import jloda.swing.commands.CommandManager;
@@ -161,9 +156,7 @@ public class Formatter implements IDirectableViewer {
      * set the viewer to a new viewer.
      * If this is used, frame is set not to destroy itself
      *
-     * @param dir
-     * @param viewer
-     */
+	 */
     public void setViewer(IDirector dir, INodeEdgeFormatable viewer) {
         this.frame.setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
         this.viewer = viewer;
@@ -410,8 +403,7 @@ public class Formatter implements IDirectableViewer {
     /**
      * set uptodate state
      *
-     * @param flag
-     */
+	 */
     public void setUptoDate(boolean flag) {
         uptodate = flag;
     }
@@ -683,8 +675,7 @@ public class Formatter implements IDirectableViewer {
     /**
      * fire node format changed
      *
-     * @param nodes
-     */
+	 */
     void fireNodeFormatChanged(NodeSet nodes) {
         if (nodes != null && nodes.size() > 0) {
             for (IFormatterListener formatterListener : formatterListeners) {
@@ -697,8 +688,7 @@ public class Formatter implements IDirectableViewer {
     /**
      * fire edge format changed
      *
-     * @param edges
-     */
+	 */
     void fireEdgeFormatChanged(EdgeSet edges) {
         if (edges != null && edges.size() > 0) {
             for (IFormatterListener formatterListener : formatterListeners) {
@@ -711,8 +701,7 @@ public class Formatter implements IDirectableViewer {
     /**
      * add a formatter listener
      *
-     * @param listener
-     */
+	 */
     public void addFormatterListener(IFormatterListener listener) {
         formatterListeners.add(listener);
     }
@@ -720,8 +709,7 @@ public class Formatter implements IDirectableViewer {
     /**
      * remove a formatter listener
      *
-     * @param listener
-     */
+	 */
     public void removeFormatterListener(IFormatterListener listener) {
         formatterListeners.remove(listener);
     }
@@ -730,18 +718,18 @@ public class Formatter implements IDirectableViewer {
         try {
             String family = fontName.getSelectedItem().toString();
             int size = Integer.parseInt(fontSize.getSelectedItem().toString());
-            if (size > 0) {
-                boolean bold = boldFont.isSelected();
-                boolean italics = italicFont.isSelected();
-                int style = 0;
-                if (bold)
-                    style += Font.BOLD;
-                if (italics)
-                    style += Font.ITALIC;
-                ProgramProperties.put(ProgramProperties.DEFAULT_FONT, family, style, size);
-            }
-        } catch (Exception ex) {
-        }
+			if (size > 0) {
+				boolean bold = boldFont.isSelected();
+				boolean italics = italicFont.isSelected();
+				int style = 0;
+				if (bold)
+					style += Font.BOLD;
+				if (italics)
+					style += Font.ITALIC;
+				ProgramProperties.put(ProgramProperties.DEFAULT_FONT, family, style, size);
+			}
+		} catch (Exception ignored) {
+		}
     }
 
     public JColorChooser getColorChooser() {

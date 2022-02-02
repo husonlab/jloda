@@ -55,40 +55,39 @@ public class RTFFileFilter implements FilenameFilter {
     public boolean accept(File dir, String name) {
         FileLineIterator it;
         try {
-            it = new FileLineIterator(new File(dir, name));
-            try {
-                if (it.next().startsWith("{\\rtf"))
-                    return true;
-            } finally {
-                it.close();
-            }
-        } catch (IOException e) {
-        }
+			it = new FileLineIterator(new File(dir, name));
+			try {
+				if (it.next().startsWith("{\\rtf"))
+					return true;
+			} finally {
+				it.close();
+			}
+		} catch (IOException ignored) {
+		}
         return false;
     }
 
     /**
      * returns all stripped lines from an rtf file
      *
-     * @param file
      * @return stripped files
      */
     public static String[] getStrippedLines(File file) {
         if (getInstance().accept(file.getParentFile(), file.getName())) {
             try {
                 List<String> lines = new LinkedList<>();
-                try (FileLineIterator it = new FileLineIterator(file)) {
-                    while (it.hasNext()) {
-                        String aLine = it.next().replaceAll("\\{\\*?\\\\[^{}]+}|[{}]|\\\\\\n?[A-Za-z]+\\n?(?:-?\\d+)?[ ]?", "").replaceAll("\\\\", "").trim();
-                        if (aLine.contains("Email:") && aLine.contains("mailto:"))
-                            aLine = aLine.replaceAll(".*mailto:", "Email: ").replaceAll("\"", "").trim();
-                        if (aLine.length() > 0)
-                            lines.add(aLine);
-                    }
-                    return lines.toArray(new String[0]);
-                }
-            } catch (Exception e) {
-            }
+				try (FileLineIterator it = new FileLineIterator(file)) {
+					while (it.hasNext()) {
+						String aLine = it.next().replaceAll("\\{\\*?\\\\[^{}]+}|[{}]|\\\\\\n?[A-Za-z]+\\n?(?:-?\\d+)?[ ]?", "").replaceAll("\\\\", "").trim();
+						if (aLine.contains("Email:") && aLine.contains("mailto:"))
+							aLine = aLine.replaceAll(".*mailto:", "Email: ").replaceAll("\"", "").trim();
+						if (aLine.length() > 0)
+							lines.add(aLine);
+					}
+					return lines.toArray(new String[0]);
+				}
+			} catch (Exception ignored) {
+			}
         }
         return new String[0];
     }

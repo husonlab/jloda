@@ -30,8 +30,7 @@ public class MenuConfiguration extends Hashtable<String, String> {
      * Put the menu bar configuration.
      * Example: "File;Edit;Select;Options;Tree;View;Window;"
      *
-     * @param menuNames
-     */
+	 */
     public void defineMenuBar(String menuNames) {
         put("MenuBar.main", menuNames);
 
@@ -41,9 +40,7 @@ public class MenuConfiguration extends Hashtable<String, String> {
      * Configure a menu.
      * Example: "Select", "All Panels;No Panels;Invert Panels;|;"
      *
-     * @param name
-     * @param menuItemNames
-     */
+	 */
     public void defineMenu(String name, String menuItemNames) {
         put("Menu." + name, name + ";" + menuItemNames);
     }
@@ -51,8 +48,7 @@ public class MenuConfiguration extends Hashtable<String, String> {
     /**
      * gets the menu bar description
      *
-     * @return
-     */
+	 */
     public String getMenuBar() {
         return get("MenuBar.main");
     }
@@ -60,9 +56,7 @@ public class MenuConfiguration extends Hashtable<String, String> {
     /**
      * gets a menu description
      *
-     * @param name
-     * @return
-     */
+	 */
     public String getMenu(String name) {
         return get(name).replace("name;", "");
     }

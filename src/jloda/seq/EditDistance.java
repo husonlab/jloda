@@ -35,8 +35,6 @@ public class EditDistance {
     /**
      * compute the edit distance between two sequences
      *
-     * @param seq1
-     * @param seq2
      * @return edit distance
      */
     static public int compute(String seq1, String seq2) {
@@ -139,8 +137,7 @@ public class EditDistance {
     /**
      * set sequence 1
      *
-     * @param sequence1
-     */
+	 */
     public void setSequence1(String sequence1) {
         this.sequence1 = sequence1;
     }
@@ -157,8 +154,7 @@ public class EditDistance {
     /**
      * set sequence 2
      *
-     * @param sequence2
-     */
+	 */
     public void setSequence2(String sequence2) {
         this.sequence2 = sequence2;
     }
@@ -175,8 +171,7 @@ public class EditDistance {
     /**
      * set aligned sequence 1
      *
-     * @param aligned1
-     */
+	 */
     protected void setAligned1(String aligned1) {
         this.aligned1 = aligned1;
     }
@@ -193,8 +188,7 @@ public class EditDistance {
     /**
      * set aligned sequence 2
      *
-     * @param aligned2
-     */
+	 */
     protected void setAligned2(String aligned2) {
         this.aligned2 = aligned2;
     }
@@ -211,8 +205,7 @@ public class EditDistance {
     /**
      * set the computed score
      *
-     * @param score
-     */
+	 */
     protected void setScore(int score) {
         this.score = score;
     }
@@ -220,8 +213,6 @@ public class EditDistance {
     /**
      * returns 0, if a=b, 1, else
      *
-     * @param a
-     * @param b
      * @return 0, if a=b, 1, else
      */
     static private int match(char a, char b) {
@@ -234,9 +225,6 @@ public class EditDistance {
     /**
      * returns minimum of three numbers
      *
-     * @param a
-     * @param b
-     * @param c
      * @return minimum
      */
     static private int min(int a, int b, int c) {

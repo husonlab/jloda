@@ -36,10 +36,7 @@ public class ShapeFactory {
     /**
      * creates a shape
      *
-     * @param size
-     * @param type
-     * @return
-     */
+	 */
     public static Shape3D makeShape(float size, Type type) {
         Shape3D shape;
         switch (type) {

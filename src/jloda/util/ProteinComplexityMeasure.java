@@ -32,7 +32,6 @@ public class ProteinComplexityMeasure {
     /**
      * uses Wootten and Federhen to compute the complexity of a sequence
      *
-     * @param sequence
      * @return average complexity
      */
     public static float getMinimumProteinComplexityWoottenFederhen(byte[] sequence, int length) {
@@ -64,7 +63,6 @@ public class ProteinComplexityMeasure {
     /**
      * computes the produce of factorials (of values up to L)
      *
-     * @param counts
      * @return produce of factorials
      */
     private static double computeProductOfFactorials(int[] counts) {
@@ -87,7 +85,6 @@ public class ProteinComplexityMeasure {
     /**
      * gets the index
      *
-     * @param c
      * @return index
      */
     private static int getIndex(byte c) {

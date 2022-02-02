@@ -27,7 +27,6 @@ public interface INormalizer {
     /**
      * returns normalized letter
      *
-     * @param letter
      * @return normalized letter
      */
     byte getNormalized(byte letter);

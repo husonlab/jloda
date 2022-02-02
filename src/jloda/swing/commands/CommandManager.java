@@ -60,8 +60,7 @@ public class CommandManager {
     /**
      * construct a parser
      *
-     * @param dir
-     */
+	 */
     public CommandManager(IDirector dir, List<ICommand> commands) {
         this.dir = dir;
         this.parent = null;
@@ -112,9 +111,7 @@ public class CommandManager {
     /**
      * add more commands
      *
-     * @param viewer
-     * @param commandsPaths
-     */
+	 */
     public void addCommands(Object viewer, String[] commandsPaths) {
         final List<ICommand> commands = new LinkedList<>();
         for (String commandsPath : commandsPaths) {
@@ -176,10 +173,7 @@ public class CommandManager {
     /**
      * execute
      *
-     * @param commandString
-     * @throws IOException
-     * @throws CanceledException
-     */
+	 */
     public void execute(String commandString) throws IOException, CanceledException {
 		commandString = StringUtils.protectBackSlashes(commandString);  // need this for windows paths
         NexusStreamParser np = new NexusStreamParser(new StringReader(commandString));
@@ -189,8 +183,7 @@ public class CommandManager {
     /**
      * execute a stream of commands
      *
-     * @param np
-     */
+	 */
     public void execute(NexusStreamParser np) throws IOException {
         while (np.peekNextToken() != NexusStreamParser.TT_EOF) {
             if (np.peekMatchIgnoreCase(";")) {
@@ -238,7 +231,6 @@ public class CommandManager {
     /**
      * get the named command
      *
-     * @param name
      * @return command
      */
     public ICommand getCommand(String name) {
@@ -248,8 +240,7 @@ public class CommandManager {
     /**
      * enable or disable all critical actions
      *
-     * @param on
-     */
+	 */
     public void setEnableCritical(boolean on) {
         /*
          * update selection state of all menu items
@@ -277,33 +268,27 @@ public class CommandManager {
      * update the enable state
      */
     public void updateEnableState() {
-        /**
-         * update selection state of all menu items
-         */
-        try {
-            for (JMenuItem menuItem : menuItem2Command.keySet()) {
-                ICommand command = menuItem2Command.get(menuItem);
-                if (command != null) {
-                    menuItem.setEnabled(command.isApplicable());
-                    if (command instanceof ICheckBoxCommand)
-                        menuItem.setSelected(((ICheckBoxCommand) command).isSelected());
-                }
-            }
+		try {
+			for (JMenuItem menuItem : menuItem2Command.keySet()) {
+				ICommand command = menuItem2Command.get(menuItem);
+				if (command != null) {
+					menuItem.setEnabled(command.isApplicable());
+					if (command instanceof ICheckBoxCommand)
+						menuItem.setSelected(((ICheckBoxCommand) command).isSelected());
+				}
+			}
 
-            /**
-             * update selection state of all check boxes
-             */
-            for (AbstractButton button : button2Command.keySet()) {
-                ICommand command = button2Command.get(button);
-                if (button.getAction() != null)
-                    button.getAction().setEnabled(command.isApplicable());
-                else
-                    button.setEnabled(command.isApplicable());
-                if (command instanceof ICheckBoxCommand) {
-                    button.setSelected(((ICheckBoxCommand) command).isSelected());
-                    if (((ICheckBoxCommand) command).isSelected())
-                        button.setBorder(BorderFactory.createBevelBorder(1));
-                    else
+			for (AbstractButton button : button2Command.keySet()) {
+				ICommand command = button2Command.get(button);
+				if (button.getAction() != null)
+					button.getAction().setEnabled(command.isApplicable());
+				else
+					button.setEnabled(command.isApplicable());
+				if (command instanceof ICheckBoxCommand) {
+					button.setSelected(((ICheckBoxCommand) command).isSelected());
+					if (((ICheckBoxCommand) command).isSelected())
+						button.setBorder(BorderFactory.createBevelBorder(1));
+					else
                         button.setBorder(BorderFactory.createEtchedBorder());
                     button.repaint();
 
@@ -327,20 +312,17 @@ public class CommandManager {
             }
         }
 
-        /**
-         * update selection state of all check boxes
-         */
-        for (AbstractButton button : button2Command.keySet()) {
-            ICommand command = button2Command.get(button);
-            if (command.getName().equals(commandName)) {
-                if (button.getAction() != null)
-                    button.getAction().setEnabled(command.isApplicable());
-                else
-                    button.setEnabled(command.isApplicable());
-                if (command instanceof ICheckBoxCommand) {
-                    button.setSelected(((ICheckBoxCommand) command).isSelected());
-                    if (((ICheckBoxCommand) command).isSelected())
-                        button.setBorder(BorderFactory.createBevelBorder(1));
+		for (AbstractButton button : button2Command.keySet()) {
+			ICommand command = button2Command.get(button);
+			if (command.getName().equals(commandName)) {
+				if (button.getAction() != null)
+					button.getAction().setEnabled(command.isApplicable());
+				else
+					button.setEnabled(command.isApplicable());
+				if (command instanceof ICheckBoxCommand) {
+					button.setSelected(((ICheckBoxCommand) command).isSelected());
+					if (((ICheckBoxCommand) command).isSelected())
+						button.setBorder(BorderFactory.createBevelBorder(1));
                     else
                         button.setBorder(BorderFactory.createEtchedBorder());
                 }
@@ -351,7 +333,6 @@ public class CommandManager {
     /**
      * gets the usage of all commands, ordered by menu
      *
-     * @param menuBar
      * @return usage
      */
     public String getUsage(JMenuBar menuBar) {
@@ -394,9 +375,6 @@ public class CommandManager {
     /**
      * writes the description of a menu and returns all hierachical menus below it
      *
-     * @param menu
-     * @param buf
-     * @param seen
      * @return list of sub menus
      */
     private List<JMenu> getUsageMenu(String label, JMenu menu, StringBuilder buf, Set<ICommand> seen) {
@@ -521,7 +499,6 @@ public class CommandManager {
     /**
      * get a menu item for the named command
      *
-     * @param commandName
      * @return menu item
      */
     public JMenuItem getJMenuItem(String commandName) {
@@ -539,8 +516,6 @@ public class CommandManager {
     /**
      * get a menu item for the named command
      *
-     * @param commandName
-     * @param enabled
      * @return menu item
      */
     public JMenuItem getJMenuItem(String commandName, boolean enabled) {
@@ -554,7 +529,6 @@ public class CommandManager {
     /**
      * creates a menu item for the given command
      *
-     * @param command
      * @return menu item
      */
     public JMenuItem getJMenuItem(final ICommand command) {
@@ -614,7 +588,6 @@ public class CommandManager {
     /**
      * creates a button for the command
      *
-     * @param commandName
      * @return button
      */
     public AbstractButton getButton(String commandName) {
@@ -626,8 +599,6 @@ public class CommandManager {
     /**
      * creates a button for the command
      *
-     * @param commandName
-     * @param enabled
      * @return button
      */
     public AbstractButton getButton(String commandName, boolean enabled) {
@@ -650,7 +621,6 @@ public class CommandManager {
     /**
      * creates a button for the command
      *
-     * @param command
      * @return button
      */
     public AbstractButton getButtonForToolBar(final ICommand command) {
@@ -695,7 +665,6 @@ public class CommandManager {
     /**
      * creates a button for the command
      *
-     * @param command
      * @return button
      */
     public AbstractButton getButton(final ICommand command) {
@@ -764,7 +733,6 @@ public class CommandManager {
     /**
      * creates a button for the command
      *
-     * @param command
      * @return button
      */
     public AbstractButton getRadioButton(final ICommand command) {
@@ -809,8 +777,7 @@ public class CommandManager {
     /**
      * get the director
      *
-     * @return
-     */
+	 */
     public IDirector getDir() {
         return dir;
     }
@@ -851,8 +818,7 @@ public class CommandManager {
     /**
      * should execute command return when unable to match a token?
      *
-     * @return
-     */
+	 */
     public boolean isReturnOnCommandNotFound() {
         return returnOnCommandNotFound;
     }

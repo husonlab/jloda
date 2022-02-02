@@ -101,9 +101,6 @@ public class IntervalChain {
     /**
      * does interval overlap with [a,b]?
      *
-     * @param interval
-     * @param a
-     * @param b
      * @return true, if overlaps
      */
     private boolean overlaps(Interval interval, int a, int b) {

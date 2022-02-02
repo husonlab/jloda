@@ -62,7 +62,6 @@ public interface ISearcher {
     /**
      * set select state of all objects
      *
-     * @param select
-     */
+	 */
     void selectAll(boolean select);
 }

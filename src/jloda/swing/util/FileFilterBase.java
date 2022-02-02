@@ -54,8 +54,7 @@ public abstract class FileFilterBase extends FileFilter implements FilenameFilte
     /**
      * set brief description (without list of extensions
      *
-     * @return
-     */
+	 */
     abstract public String getBriefDescription();
 
     /**
@@ -101,8 +100,7 @@ public abstract class FileFilterBase extends FileFilter implements FilenameFilte
     /**
      * add another possible extension
      *
-     * @param extension
-     */
+	 */
     public void add(String extension) {
         if (!extension.startsWith("."))
             extension = "." + extension;
@@ -113,8 +111,7 @@ public abstract class FileFilterBase extends FileFilter implements FilenameFilte
     /**
      * add another file filter
      *
-     * @param fileFilter
-     */
+	 */
     public void add(FileFilterBase fileFilter) {
         if (!others.contains(fileFilter))
             others.add(fileFilter);
@@ -123,9 +120,7 @@ public abstract class FileFilterBase extends FileFilter implements FilenameFilte
     /**
      * Tests if a specified file should be included in a file list.
      *
-     * @param fileName
-     * @return
-     */
+	 */
     public boolean accept(String fileName) {
         return accept(null, fileName);
     }
@@ -133,7 +128,6 @@ public abstract class FileFilterBase extends FileFilter implements FilenameFilte
     /**
      * Tests if a specified file should be included in a file list.
      *
-     * @param file
      * @return true if acceptable
      */
     public boolean accept(File file) {

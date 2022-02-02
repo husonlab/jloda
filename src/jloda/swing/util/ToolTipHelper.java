@@ -52,8 +52,7 @@ public abstract class ToolTipHelper {
     /**
      * call this whenever mouse has moved
      *
-     * @param newMousePosition
-     */
+	 */
     public void mouseMoved(final Point newMousePosition) {
         if (future != null) {
             future.cancel(true);

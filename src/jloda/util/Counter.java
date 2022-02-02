@@ -36,8 +36,7 @@ public class Counter {
     /**
      * constructor
      *
-     * @param value
-     */
+	 */
     public Counter(long value) {
         this.value = value;
     }
@@ -54,8 +53,7 @@ public class Counter {
     /**
      * settter
      *
-     * @param value
-     */
+	 */
     public void set(long value) {
         synchronized (this) {
             this.value = value;
@@ -95,8 +93,7 @@ public class Counter {
     /**
      * increment by value, not synchronized
      *
-     * @param add
-     */
+	 */
     public void addNotSynchronized(long add) {
         value += add;
     }

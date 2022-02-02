@@ -110,7 +110,6 @@ public class DRect implements FastMultiLayerMethodLayout.Point, FastMultiLayerMe
     /**
      * computes the bounding box of all locations
      *
-     * @param points
      * @return bounding box
      */
     public static DRect computeBBox(Collection<? extends FastMultiLayerMethodLayout.Point> points) {

@@ -43,8 +43,7 @@ public class DirectedCycleDetector {
     /**
      * constructor
      *
-     * @param graph
-     */
+	 */
     public DirectedCycleDetector(Graph graph) {
         this.graph = graph;
         onStack = new NodeSet(graph);
@@ -74,8 +73,7 @@ public class DirectedCycleDetector {
     /**
      * recursively does the work
      *
-     * @param v
-     */
+	 */
     private void detectRec(Node v) {
         onStack.add(v);
         marked.add(v);

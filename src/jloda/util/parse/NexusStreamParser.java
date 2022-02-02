@@ -301,16 +301,16 @@ public class NexusStreamParser extends NexusStreamTokenizer implements Closeable
 
             String result = null;
             try {
-                nextToken();
-                svals.add(sval);
-                nvals.add(nval);
-                ttypes.add(ttype);
-                lines.add(lineno());
-                result = toString();
-                pushBack(svals, nvals, ttypes, lines);
-                nextToken();
-            } catch (IOException ex) {
-            }
+				nextToken();
+				svals.add(sval);
+				nvals.add(nval);
+				ttypes.add(ttype);
+				lines.add(lineno());
+				result = toString();
+				pushBack(svals, nvals, ttypes, lines);
+				nextToken();
+			} catch (IOException ignored) {
+			}
             return result;
         } finally {
             setEchoCommentsWithExclamationMark(echo);
@@ -321,7 +321,6 @@ public class NexusStreamParser extends NexusStreamTokenizer implements Closeable
     /**
      * do the next tokens match 'begin NAME;'
      *
-     * @param blockName
      * @return true, if begin of named block
      */
     public boolean peekMatchBeginBlock(String blockName) {
@@ -990,9 +989,7 @@ public class NexusStreamParser extends NexusStreamTokenizer implements Closeable
     /**
      * check that find has exhausted all tokens
      *
-     * @param tokens
-     * @throws IOExceptionWithLineNumber
-     */
+	 */
     public void checkFindDone(List<String> tokens) throws IOExceptionWithLineNumber {
         if (tokens.size() != 0)
             throw new IOExceptionWithLineNumber("unexpected tokens: " + tokens, lineno());
@@ -1337,8 +1334,6 @@ public class NexusStreamParser extends NexusStreamTokenizer implements Closeable
      * returns the list of all positive integers found between first and last token.
      * Integers are separated by commas. A range of positive integers is specified as i - j
      *
-     * @param firstToken
-     * @param lastToken
      * @return all integers
      */
     public List<Integer> getIntegerList(String firstToken, String lastToken) throws IOExceptionWithLineNumber {
@@ -1431,25 +1426,23 @@ public class NexusStreamParser extends NexusStreamTokenizer implements Closeable
      * @return line number or 0
      */
     static public int getLineNumber(Exception ex) {
-        try {
-            final NexusStreamParser np = new NexusStreamParser(new StringReader(ex.toString()));
-            while (np.peekNextToken() != NexusStreamParser.TT_EOF
-                    && !np.peekMatchIgnoreCase("line"))
-                np.getWordRespectCase();
-            np.getWordRespectCase();
-            return np.getInt();
-        } catch (Exception ex2) {
-        }
+		try {
+			final NexusStreamParser np = new NexusStreamParser(new StringReader(ex.toString()));
+			while (np.peekNextToken() != NexusStreamParser.TT_EOF
+				   && !np.peekMatchIgnoreCase("line"))
+				np.getWordRespectCase();
+			np.getWordRespectCase();
+			return np.getInt();
+		} catch (Exception ignored) {
+		}
         return 0;
     }
 
     /**
      * gets the legal token matched by next word in stream
      *
-     * @param legalTokens
      * @return matched token
-     * @throws IOExceptionWithLineNumber
-     */
+	 */
     public String getWordMatchesIgnoringCase(String legalTokens) throws IOExceptionWithLineNumber {
         final String word = getWordRespectCase();
         final NexusStreamParser np = new NexusStreamParser(new StringReader(legalTokens));
@@ -1469,10 +1462,8 @@ public class NexusStreamParser extends NexusStreamTokenizer implements Closeable
     /**
      * gets the legal token matched by next word in stream
      *
-     * @param legalTokens
      * @return matched token
-     * @throws IOExceptionWithLineNumber
-     */
+	 */
     public String getWordMatchesRespectingCase(String legalTokens) throws IOExceptionWithLineNumber {
         final String word = getWordRespectCase();
         final NexusStreamParser np = new NexusStreamParser(new StringReader(legalTokens));
@@ -1492,10 +1483,8 @@ public class NexusStreamParser extends NexusStreamTokenizer implements Closeable
     /**
      * gets the legal token matched by next word in stream
      *
-     * @param legalTokens
      * @return matched token
-     * @throws IOExceptionWithLineNumber
-     */
+	 */
     public String getWordMatchesRespectingCase(Collection<String> legalTokens) throws IOExceptionWithLineNumber {
         final String word = getWordRespectCase();
         for (String legalToken : legalTokens)
@@ -1508,10 +1497,8 @@ public class NexusStreamParser extends NexusStreamTokenizer implements Closeable
     /**
      * gets the legal token matched by next word in stream
      *
-     * @param legalTokens
      * @return matched token
-     * @throws IOExceptionWithLineNumber
-     */
+	 */
     public String getWordMatchesRespectingCase(String[] legalTokens) throws IOExceptionWithLineNumber {
         final String word = getWordRespectCase();
         for (String legalToken : legalTokens)
@@ -1523,10 +1510,8 @@ public class NexusStreamParser extends NexusStreamTokenizer implements Closeable
     /**
      * gets the legal token matched by next word in stream
      *
-     * @param legalTokens
      * @return matched token
-     * @throws IOExceptionWithLineNumber
-     */
+	 */
     public String getWordMatchesIgnoringCase(Collection<String> legalTokens) throws IOExceptionWithLineNumber {
         final String word = getWordRespectCase();
         for (String legalToken : legalTokens)
@@ -1538,10 +1523,8 @@ public class NexusStreamParser extends NexusStreamTokenizer implements Closeable
     /**
      * gets the legal token matched by next word in stream
      *
-     * @param legalTokens
      * @return matched token
-     * @throws IOExceptionWithLineNumber
-     */
+	 */
     public String getWordMatchesIgnoringCase(String[] legalTokens) throws IOExceptionWithLineNumber {
         final String word = getWordRespectCase();
         for (String legalToken : legalTokens)
@@ -1555,8 +1538,7 @@ public class NexusStreamParser extends NexusStreamTokenizer implements Closeable
      * get a color, either from a name or from r g b
      *
      * @return color
-     * @throws IOException
-     */
+	 */
     public Color getColor() throws IOException {
 
         try {
@@ -1628,8 +1610,7 @@ public class NexusStreamParser extends NexusStreamTokenizer implements Closeable
      * attempts to skip a block. If successful, returns the name of the block
      *
      * @return name of block skipped or null
-     * @throws IOExceptionWithLineNumber
-     */
+	 */
     public String skipBlock() throws IOExceptionWithLineNumber {
         final boolean echo = isEchoCommentsWithExclamationMark();
         setEchoCommentsWithExclamationMark(false);

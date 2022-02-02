@@ -72,8 +72,7 @@ public class NotificationManager {
     /**
      * show an information notification
      *
-     * @param message
-     */
+	 */
     public static void showInformation(String message) {
         showNotification(null, title, message, NotificationManager.Mode.information, 10000);
     }
@@ -81,8 +80,7 @@ public class NotificationManager {
     /**
      * show an information notification
      *
-     * @param message
-     */
+	 */
     public static void showInformation(String message, long milliseconds) {
         showNotification(null, title, message, NotificationManager.Mode.information, milliseconds);
     }
@@ -90,8 +88,7 @@ public class NotificationManager {
     /**
      * show an information notification
      *
-     * @param message
-     */
+	 */
     public static void showInformation(Stage owner, String message) {
         showNotification(owner, title, message, NotificationManager.Mode.information, 10000);
     }
@@ -99,8 +96,7 @@ public class NotificationManager {
     /**
      * show an error notification
      *
-     * @param message
-     */
+	 */
     public static void showError(String message) {
         showNotification(null, title, message, NotificationManager.Mode.error, 60000);
     }
@@ -108,8 +104,7 @@ public class NotificationManager {
     /**
      * show an error notification
      *
-     * @param message
-     */
+	 */
     public static void showError(Stage owner, String message) {
         showNotification(owner, title, message, NotificationManager.Mode.error, 60000);
     }
@@ -117,8 +112,7 @@ public class NotificationManager {
     /**
      * show an error notification
      *
-     * @param message
-     */
+	 */
     public static void showInternalError(String message) {
         showNotification(null, title, "Internal error: " + message, NotificationManager.Mode.error, 60000);
     }
@@ -126,8 +120,7 @@ public class NotificationManager {
     /**
      * show an error notification
      *
-     * @param message
-     */
+	 */
     public static void showInternalError(Stage owner, String message) {
         showNotification(owner, title, "Internal error: " + message, NotificationManager.Mode.error, 60000);
     }
@@ -135,8 +128,7 @@ public class NotificationManager {
     /**
      * show an error notification
      *
-     * @param message
-     */
+	 */
     public static void showError(String message, long milliseconds) {
         showNotification(null, title, message, NotificationManager.Mode.error, milliseconds);
     }
@@ -144,8 +136,7 @@ public class NotificationManager {
     /**
      * show an error notification
      *
-     * @param message
-     */
+	 */
     public static void showError(Stage owner, String message, long milliseconds) {
         showNotification(owner, title, message, NotificationManager.Mode.error, milliseconds);
     }
@@ -153,8 +144,7 @@ public class NotificationManager {
     /**
      * show a warning notification
      *
-     * @param message
-     */
+	 */
     public static void showWarning(String message) {
         showWarning(null, message);
     }
@@ -162,8 +152,7 @@ public class NotificationManager {
     /**
      * show a warning notification
      *
-     * @param message
-     */
+	 */
     public static void showWarning(Stage owner, String message) {
         showWarning(owner, message, 60000);
     }
@@ -171,8 +160,7 @@ public class NotificationManager {
     /**
      * show a warning notification
      *
-     * @param message
-     */
+	 */
     public static void showWarning(Stage owner, String message, long milliseconds) {
         showNotification(owner, title, message, NotificationManager.Mode.warning, milliseconds);
     }
@@ -180,12 +168,7 @@ public class NotificationManager {
     /**
      * show a notification
      *
-     * @param owner
-     * @param title
-     * @param message0
-     * @param mode
-     * @param milliseconds
-     */
+	 */
     public static void showNotification(Stage owner, String title, final String message0, final NotificationManager.Mode mode, final long milliseconds) {
         final String message = (message0.length() > maxLength + 3 ? (message0.substring(0, maxLength) + "...") : message0).replaceAll("\\s+", " ");
 
@@ -308,20 +291,16 @@ public class NotificationManager {
             switch (mode) {
                 case information -> {
                     System.err.print("Info: ");
-                    break;
-                }
+				}
                 case error -> {
                     System.err.print("Error: ");
-                    break;
-                }
+				}
                 case warning -> {
                     System.err.print("Warning: ");
-                    break;
-                }
+				}
                 case confirmation -> {
                     System.err.print("Confirmed: ");
-                    break;
-                }
+				}
             }
             System.err.println(message);
         }

@@ -74,9 +74,6 @@ public class MultiLevel {
 	/**
 	 * determines whether edge number of sum of all levels can be considered linear
 	 *
-	 * @param multiLevelGraph
-	 * @param activeLevel
-	 * @param badEdgeNrCounter
 	 * @return true, if linear
 	 */
 	private static boolean edgeNumberSumOfAllLevelsIsLinear(Graph[] multiLevelGraph, int activeLevel, Counter badEdgeNrCounter) {
@@ -99,10 +96,6 @@ public class MultiLevel {
 	/**
 	 * create suns and planets
 	 *
-	 * @param multiLevelGraph
-	 * @param multiLevelNodeAttributes
-	 * @param multiLevelEdgeAttributes
-	 * @param level
 	 */
 	private static void createSunsAndPlanets(FastMultiLayerMethodOptions options, Graph[] multiLevelGraph, NodeArray<NodeAttributes>[] multiLevelNodeAttributes, EdgeArray<EdgeAttributes>[] multiLevelEdgeAttributes, int level) {
 		if (level == 0) {
@@ -192,10 +185,6 @@ public class MultiLevel {
 	/**
 	 * create moon nodes and possibly moon nodes
 	 *
-	 * @param multiLevelGraph
-	 * @param multiLevelNodeAttributes
-	 * @param multiLevelEdgeAttributes
-	 * @param level
 	 */
 	private static void createMoonNodesAndPMNodes(Graph[] multiLevelGraph, NodeArray<NodeAttributes>[] multiLevelNodeAttributes, EdgeArray<EdgeAttributes>[] multiLevelEdgeAttributes, int level) {
 		for (var v : multiLevelGraph[level].nodes()) {
@@ -236,10 +225,6 @@ public class MultiLevel {
 	/**
 	 * collapse solar systems
 	 *
-	 * @param multiLevelGraph
-	 * @param multiLevelNodeAttributes
-	 * @param multiLevelEdgeAttributes
-	 * @param level
 	 */
 	private static void collapseSolarSystems(Graph[] multiLevelGraph, NodeArray<NodeAttributes>[] multiLevelNodeAttributes, EdgeArray<EdgeAttributes>[] multiLevelEdgeAttributes, int level) {
 		calculateMassOfCollapsedNodes(multiLevelGraph, multiLevelNodeAttributes, level);
@@ -250,9 +235,6 @@ public class MultiLevel {
 	/**
 	 * calculate mass of collapsed nodes
 	 *
-	 * @param multiLevelGraph
-	 * @param multiLevelNodeAttributes
-	 * @param level
 	 */
 	private static void calculateMassOfCollapsedNodes(Graph[] multiLevelGraph, NodeArray<NodeAttributes>[] multiLevelNodeAttributes, int level) {
 		for (var v : multiLevelGraph[level].nodes()) {
@@ -266,10 +248,6 @@ public class MultiLevel {
 	/**
 	 * create edge distances and lambda lists, also sets the edge attributes for the next level
 	 *
-	 * @param multiLevelGraph
-	 * @param multiLevelNodeAttributes
-	 * @param multiLevelEdgeAttributes
-	 * @param level
 	 */
 	private static EdgeDoubleArray createEdgesEdgeDistancesAndLambdaLists(Graph[] multiLevelGraph, NodeArray<NodeAttributes>[] multiLevelNodeAttributes, EdgeArray<EdgeAttributes>[] multiLevelEdgeAttributes, int level) {
 		var interSolarSystemEdges = new ArrayList<Edge>();
@@ -320,10 +298,6 @@ public class MultiLevel {
 	/**
 	 * delete parallel edges and update edge lengths
 	 *
-	 * @param multiLevelGraph
-	 * @param multiLevelEdgeAttributes
-	 * @param newEdgeLengths
-	 * @param level
 	 */
 	private static void deleteParallelEdgesAndUpdateEdgeLength(Graph[] multiLevelGraph, EdgeArray<EdgeAttributes>[] multiLevelEdgeAttributes, EdgeDoubleArray newEdgeLengths, int level) {
 		var nextGraph = multiLevelGraph[level + 1];

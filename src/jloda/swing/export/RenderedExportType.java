@@ -81,12 +81,7 @@ public class RenderedExportType extends FileFilter implements ExportGraphicType 
      * writes image to a stream. If scrollPane given and showWholeImage=true, draws only visible portion
      * of panel
      *
-     * @param imagePanel
-     * @param imageScrollPane
-     * @param showWholeImage
-     * @param out
-     * @throws IOException
-     */
+	 */
     public void stream(JPanel imagePanel, JScrollPane imageScrollPane, boolean showWholeImage, OutputStream out) throws IOException {
         final JPanel panel;
         if (showWholeImage || imageScrollPane == null)
@@ -120,9 +115,7 @@ public class RenderedExportType extends FileFilter implements ExportGraphicType 
     /**
      * writes the image in the bmp file format.
      *
-     * @param file
-     * @param panel
-     */
+	 */
     public void writeToFile(File file, JPanel panel) throws IOException {
         (new RenderedExportType()).writeToFile(file, panel, null, false);
     }

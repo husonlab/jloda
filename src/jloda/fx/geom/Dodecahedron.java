@@ -30,8 +30,7 @@ public class Dodecahedron extends MeshView {
     /**
      * constructor
      *
-     * @param length
-     */
+	 */
     public Dodecahedron(float length) {
         final TriangleMesh mesh = new TriangleMesh();
         final float p0 = (float) (length / Math.sqrt(3.0f));

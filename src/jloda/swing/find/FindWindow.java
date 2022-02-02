@@ -53,10 +53,7 @@ public class FindWindow extends JFrame implements IFindDialog {
     /**
      * constructor
      *
-     * @param parent
-     * @param title
-     * @param searchManager
-     */
+	 */
     public FindWindow(Component parent, String title, SearchManager searchManager, SearchActions actions) {
         this.searchManager = searchManager;
 
@@ -300,8 +297,7 @@ public class FindWindow extends JFrame implements IFindDialog {
     /**
      * when activating a window, call this method to revert to the last used searcher for this window
      *
-     * @param parent
-     */
+	 */
     public void chooseTargetForFrame(Component parent) {
         if (parent != null) {
             ISearcher searcher = parent2active.get(parent);
@@ -334,8 +330,7 @@ public class FindWindow extends JFrame implements IFindDialog {
     /**
      * sets the message
      *
-     * @param message
-     */
+	 */
     public void setMessage(String message) {
         messageLabel.setText(message);
     }

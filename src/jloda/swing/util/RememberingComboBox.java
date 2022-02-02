@@ -89,7 +89,6 @@ public class RememberingComboBox extends JComboBox<String> {
      * Gets the current typed text. If save is true, then this is inserted into the list, after removing any
      * duplicate entries.
      *
-     * @param save
      * @return current text
      */
     public String getCurrentText(boolean save) {
@@ -133,7 +132,6 @@ public class RememberingComboBox extends JComboBox<String> {
     /**
      * gets the list of items
      *
-     * @param maxNumber
      * @return first maxNumber items
      */
     public List<String> getItems(int maxNumber) {
@@ -149,9 +147,7 @@ public class RememberingComboBox extends JComboBox<String> {
     /**
      * add a list of sep-separated items
      *
-     * @param str
-     * @param sep
-     */
+	 */
     public void addItemsFromString(String str, String sep) {
         if (str != null && str.length() > 0)
             for (StringTokenizer tok = new StringTokenizer(str, sep); tok.hasMoreElements(); ) {
@@ -166,8 +162,6 @@ public class RememberingComboBox extends JComboBox<String> {
     /**
      * gets the list of items as a sep-separated string
      *
-     * @param maxNumber
-     * @param sep
      * @return first maxNumber items
      */
     public String getItemsAsString(int maxNumber, String sep) {

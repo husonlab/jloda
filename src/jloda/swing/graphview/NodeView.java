@@ -17,12 +17,6 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-/**
- * Node visualization
- *
- * @version $Id: NodeView.java,v 1.82 2010-05-27 14:17:33 huson Exp $
- * @author Daniel Huson
- */
 package jloda.swing.graphview;
 
 import jloda.swing.util.BasicSwing;
@@ -37,17 +31,17 @@ import java.io.IOException;
 import java.io.StringReader;
 import java.io.Writer;
 
-final public class NodeView extends ViewBase implements Cloneable {
-    private int height = 2;
-    private int width = 2;
+final public class NodeView extends ViewBase {
+	private int height = 2;
+	private int width = 2;
 
-    private Color borderColor = null;
-    private NodeShape nodeShape = NodeShape.None;
-    //private byte imageLayout = NORTH;
-    protected Point2D location = null;
-    boolean fixedSize = true;
+	private Color borderColor = null;
+	private NodeShape nodeShape = NodeShape.None;
+	//private byte imageLayout = NORTH;
+	private Point2D location = null;
+	boolean fixedSize = true;
 
-    // legacy implementation of node shape:
+	// legacy implementation of node shape:
     public static final byte NONE_NODE = 0;
     public static final byte RECT_NODE = 1;
     public static final byte OVAL_NODE = 2;
@@ -85,8 +79,7 @@ final public class NodeView extends ViewBase implements Cloneable {
     /**
      * copies the values of the source node tree
      *
-     * @param src
-     */
+	 */
     public void copy(NodeView src) {
         super.copy(src);
         setLocation(src.getLocation());
@@ -290,8 +283,7 @@ final public class NodeView extends ViewBase implements Cloneable {
     /**
      * Sets the border color
      *
-     * @param borderColor
-     */
+	 */
     public void setBorderColor(Color borderColor) {
         this.borderColor = borderColor;
     }
@@ -301,8 +293,7 @@ final public class NodeView extends ViewBase implements Cloneable {
      *
      * @param gc      Graphics
      * @param trans   Transform
-     * @param hilited
-     */
+	 */
     public void draw(Graphics gc, Transform trans, boolean hilited) {
         if (hilited)
             hilite(gc, trans);
@@ -377,8 +368,6 @@ final public class NodeView extends ViewBase implements Cloneable {
     /**
      * gets the scaled width
      *
-     * @param trans
-     * @param width
      * @return scaled width
      */
     public static int computeScaledWidth(Transform trans, int width) {
@@ -391,8 +380,6 @@ final public class NodeView extends ViewBase implements Cloneable {
     /**
      * gets the scaled height
      *
-     * @param trans
-     * @param height
      * @return scaled height
      */
     public static int computeScaledHeight(Transform trans, int height) {
@@ -671,7 +658,6 @@ final public class NodeView extends ViewBase implements Cloneable {
     /**
      * gets the bounding box of the label in device coordinates
      *
-     * @param trans
      * @return bounding box
      */
     public Rectangle getLabelRect(Transform trans) {
@@ -686,7 +672,6 @@ final public class NodeView extends ViewBase implements Cloneable {
     /**
      * gets the bounding box of the label in device coordinates as a shape (rectangle or polygon)
      *
-     * @param trans
      * @return bounding box
      */
     public Shape getLabelShape(Transform trans) {
@@ -731,9 +716,7 @@ final public class NodeView extends ViewBase implements Cloneable {
     /**
      * Sets the location
      *
-     * @param x
-     * @param y
-     */
+	 */
     public void setLocation(double x, double y) {
         location = new Point2D.Double(x, y);
     }
@@ -750,8 +733,7 @@ final public class NodeView extends ViewBase implements Cloneable {
     /**
      * draw this node at a fixed size?
      *
-     * @param fixedSize
-     */
+	 */
     public void setFixedSize(boolean fixedSize) {
         this.fixedSize = fixedSize;
     }
@@ -759,8 +741,7 @@ final public class NodeView extends ViewBase implements Cloneable {
     /**
      * writes this node tree
      *
-     * @param w
-     */
+	 */
     public void write(Writer w) throws IOException {
         w.write(toString(null));
         w.write("\n");
@@ -789,7 +770,6 @@ final public class NodeView extends ViewBase implements Cloneable {
     /**
      * writes this node tree
      *
-     * @param w
      * @param previousNV if not null, only write those fields that differ from the values in previousNV
      */
     public void write(Writer w, NodeView previousNV) throws IOException {
@@ -866,9 +846,7 @@ final public class NodeView extends ViewBase implements Cloneable {
     /**
      * read node format from a string
      *
-     * @param src
-     * @throws IOException
-     */
+	 */
     public void read(String src) throws IOException {
         read(src, this);
     }
@@ -876,10 +854,7 @@ final public class NodeView extends ViewBase implements Cloneable {
     /**
      * read node format from a string. Use prevNV for defaults
      *
-     * @param src
-     * @param prevNV
-     * @throws IOException
-     */
+	 */
     public void read(String src, NodeView prevNV) throws IOException {
         NexusStreamParser np = new NexusStreamParser(new StringReader(src));
         java.util.List<String> tokens = np.getTokensRespectCase(null, ";");
@@ -889,7 +864,6 @@ final public class NodeView extends ViewBase implements Cloneable {
     /**
      * reads a node tree from a line
      *
-     * @param tokens
      * @param prevNV this must be !=null, for example can be set to graphView.defaultNodeView
      */
     public void read(NexusStreamParser np, java.util.List<String> tokens, NodeView prevNV) throws IOException {
@@ -941,8 +915,7 @@ final public class NodeView extends ViewBase implements Cloneable {
     /**
      * get the image associated with this node
      *
-     * @return
-     */
+	 */
     public NodeImage getImage() {
         return image;
     }
@@ -950,8 +923,7 @@ final public class NodeView extends ViewBase implements Cloneable {
     /**
      * set the image associated with this node
      *
-     * @param image
-     */
+	 */
     public void setImage(NodeImage image) {
         this.image = image;
     }
@@ -959,9 +931,6 @@ final public class NodeView extends ViewBase implements Cloneable {
     /**
      * does node contain mouse click
      *
-     * @param trans
-     * @param x
-     * @param y
      * @return true, if hit
      */
     public boolean contains(Transform trans, int x, int y) {
@@ -972,10 +941,7 @@ final public class NodeView extends ViewBase implements Cloneable {
     /**
      * does node intersect rectangle?
      *
-     * @param trans
-     * @param rect
-     * @return
-     */
+	 */
     public boolean intersects(Transform trans, Rectangle rect) {
         Rectangle box = getBox(trans);
 

@@ -29,8 +29,7 @@ public class ReusableByteBuffer {
     /**
      * constructor
      *
-     * @param size
-     */
+	 */
     public ReusableByteBuffer(int size) {
         bytes = new byte[size];
     }
@@ -38,8 +37,7 @@ public class ReusableByteBuffer {
     /**
      * write string
      *
-     * @param str
-     */
+	 */
     public void writeAsAscii(String str) {
         if (pos + str.length() >= bytes.length) {
             bytes = resize(bytes, pos + str.length() + 1024);
@@ -52,8 +50,7 @@ public class ReusableByteBuffer {
     /**
      * write bytes
      *
-     * @param add
-     */
+	 */
     public void write(byte[] add) {
         if (pos + add.length >= bytes.length) {
             bytes = resize(bytes, pos + add.length + 1024);
@@ -65,8 +62,7 @@ public class ReusableByteBuffer {
     /**
      * write char as byte
      *
-     * @param add
-     */
+	 */
     public void write(char add) {
         if (pos + 1 >= bytes.length) {
             bytes = resize(bytes, pos + 1024);
@@ -77,8 +73,7 @@ public class ReusableByteBuffer {
     /**
      * write byte
      *
-     * @param add
-     */
+	 */
     public void write(byte add) {
         if (pos + 1 >= bytes.length) {
             bytes = resize(bytes, pos + 1024);
@@ -89,10 +84,7 @@ public class ReusableByteBuffer {
     /**
      * write bytes
      *
-     * @param add
-     * @param offset
-     * @param length
-     */
+	 */
     public void write(byte[] add, int offset, int length) {
         if (pos + length >= bytes.length) {
             bytes = resize(bytes, pos + length + 1024);

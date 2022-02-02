@@ -34,9 +34,7 @@ public class HexagonShape extends Polygon implements ISized {
     /**
      * constructor
      *
-     * @param width
-     * @param height
-     */
+	 */
     public HexagonShape(double width, double height) {
         setSize(width, height);
     }

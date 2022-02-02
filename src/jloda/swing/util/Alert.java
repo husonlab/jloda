@@ -35,8 +35,7 @@ public class Alert {
     /**
      * create an Alert window with the given message and display it
      *
-     * @param message
-     */
+	 */
     public Alert(String message) {
         this(null, message);
     }
@@ -45,8 +44,7 @@ public class Alert {
      * create an Alert window with the given message and display it
      *
      * @param parent  parent window
-     * @param message
-     */
+	 */
     public Alert(Component parent, final String message) {
         if (ProgramProperties.isUseGUI()) {
             String label;

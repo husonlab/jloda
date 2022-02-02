@@ -48,10 +48,7 @@ public class StringParser implements Iterator {
     /**
      * assumes the next entry is label=int
      *
-     * @param label
-     * @return
-     * @throws IOException
-     */
+	 */
     public int getInt(final String label) throws IOException {
         matchLabel(label);
         try {
@@ -64,10 +61,7 @@ public class StringParser implements Iterator {
     /**
      * assumes the next entry is label=byte
      *
-     * @param label
-     * @return
-     * @throws IOException
-     */
+	 */
     public byte getByte(final String label) throws IOException {
         matchLabel(label);
         try {
@@ -80,10 +74,7 @@ public class StringParser implements Iterator {
     /**
      * assumes the next entry is label=byte
      *
-     * @param label
-     * @return
-     * @throws IOException
-     */
+	 */
     public double getDouble(final String label) throws IOException {
         matchLabel(label);
         try {
@@ -96,10 +87,7 @@ public class StringParser implements Iterator {
     /**
      * assumes the next entry is label=color
      *
-     * @param label
-     * @return
-     * @throws IOException
-     */
+	 */
     public Color getColor(final String label) throws IOException {
         matchLabel(label);
         try {

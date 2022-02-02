@@ -692,7 +692,6 @@ public class Colors {
     /**
      * parse a color
      *
-     * @param name
      * @return color or null
      */
     public static Color parseColor(String name) {

@@ -139,7 +139,6 @@ public class BoyerMoore {
     /**
      * get an interator over all occurrences
      *
-     * @param text
      * @return iterator
      */
     public Iterator<Integer> iterator(final byte[] text) {

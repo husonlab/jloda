@@ -53,10 +53,7 @@ public class Body3D extends TransformableGroup {
     /**
      * constructor
      *
-     * @param text
-     * @param shape
-     * @param color
-     */
+	 */
     public Body3D(String name, String text, Shape3D shape, Color color, Object userData) {
         this.name = name;
         this.text = text;
@@ -78,11 +75,6 @@ public class Body3D extends TransformableGroup {
     /**
      * make body for datapoint
      *
-     * @param name
-     * @param text
-     * @param vector
-     * @param color
-     * @param nodeShape
      * @return body
      */
     public static Body3D makeBody(String name, String text, Point3D vector, java.awt.Color color, NodeShape nodeShape, Object userData) {

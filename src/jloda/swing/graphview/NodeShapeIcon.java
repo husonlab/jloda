@@ -31,9 +31,7 @@ public class NodeShapeIcon extends ImageIcon {
     /**
      * constructor
      *
-     * @param shape
-     * @param bgColor
-     */
+	 */
     public NodeShapeIcon(NodeShape shape, int size, Color bgColor) {
         final DefaultNodeDrawer drawer = new DefaultNodeDrawer(null);
         final NodeView nodeView = new NodeView();

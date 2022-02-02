@@ -43,11 +43,7 @@ public class ToolBar extends JToolBar {
      * To add a button with text label, tooltip and popup menu, use this syntax:
      * {;label(tooltip);command1;command2;command3;};
      *
-     * @param viewer
-     * @param configuration
-     * @param commandManager
-     * @throws Exception
-     */
+	 */
     public ToolBar(Object viewer, String configuration, CommandManager commandManager) {
         super();
         this.setRollover(true);

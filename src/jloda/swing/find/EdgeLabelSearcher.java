@@ -49,8 +49,7 @@ public class EdgeLabelSearcher implements IObjectSearcher {
     /**
      * constructor
      *
-     * @param viewer
-     */
+	 */
     public EdgeLabelSearcher(GraphView viewer) {
         this(null, SEARCHER_NAME, viewer);
     }
@@ -58,8 +57,7 @@ public class EdgeLabelSearcher implements IObjectSearcher {
     /**
      * constructor
      *
-     * @param viewer
-     */
+	 */
     public EdgeLabelSearcher(Frame frame, GraphView viewer) {
         this(frame, SEARCHER_NAME, viewer);
     }
@@ -67,9 +65,7 @@ public class EdgeLabelSearcher implements IObjectSearcher {
     /**
      * constructor
      *
-     * @param name
-     * @param viewer
-     */
+	 */
     public EdgeLabelSearcher(Frame frame, String name, GraphView viewer) {
         this.frame = frame;
         this.name = name;
@@ -148,8 +144,7 @@ public class EdgeLabelSearcher implements IObjectSearcher {
     /**
      * set selection state of current object
      *
-     * @param select
-     */
+	 */
     public void setCurrentSelected(boolean select) {
         if (current != null) {
             if (select)
@@ -162,8 +157,7 @@ public class EdgeLabelSearcher implements IObjectSearcher {
     /**
      * set select state of all objects
      *
-     * @param select
-     */
+	 */
     public void selectAll(boolean select) {
         viewer.selectAllEdges(select);
         viewer.repaint();
@@ -184,8 +178,7 @@ public class EdgeLabelSearcher implements IObjectSearcher {
     /**
      * set the label of the current object
      *
-     * @param newLabel
-     */
+	 */
     public void setCurrentLabel(String newLabel) {
         if (current != null && !Objects.equals(newLabel, viewer.getLabel(current))) {
             if (newLabel == null || newLabel.length() == 0) {
@@ -267,8 +260,7 @@ public class EdgeLabelSearcher implements IObjectSearcher {
     /**
      * fire the label changed listener
      *
-     * @param e
-     */
+	 */
     private void fireLabelChangedListeners(Edge e) {
         for (Object labelChangedListener : labelChangedListeners) {
             LabelChangedListener listener = (LabelChangedListener) labelChangedListener;
@@ -279,8 +271,7 @@ public class EdgeLabelSearcher implements IObjectSearcher {
     /**
      * add a label changed listener
      *
-     * @param listener
-     */
+	 */
     public void addLabelChangedListener(LabelChangedListener listener) {
         labelChangedListeners.add(listener);
     }
@@ -288,8 +279,7 @@ public class EdgeLabelSearcher implements IObjectSearcher {
     /**
      * remove a label changed listener
      *
-     * @param listener
-     */
+	 */
     public void removeLabelChangedListener(LabelChangedListener listener) {
         labelChangedListeners.remove(listener);
     }

@@ -60,7 +60,6 @@ public class ZoomableScrollPane extends ScrollPane {
     /**
      * constructor
      *
-     * @param content
      */
     public ZoomableScrollPane(Node content) {
         super();
@@ -241,7 +240,6 @@ public class ZoomableScrollPane extends ScrollPane {
     /**
      * ensure the node is showing
      *
-     * @param node
      */
     public void ensureVisible(Node node) {
         final Bounds viewportBounds = getViewportBounds();

@@ -29,11 +29,6 @@ import java.util.HashSet;
 import java.util.Set;
 
 /**
- * JTable searcher
- * Daniel Huson, 9.2012
- */
-
-/**
  * Class for finding labels in a JTable
  * Daniel Huson, 2.2012
  */
@@ -50,8 +45,7 @@ public class JTableSearcher implements IObjectSearcher {
     /**
      * constructor
      *
-     * @param table
-     */
+	 */
     public JTableSearcher(JTable table) {
         this(null, SEARCHER_NAME, table);
     }
@@ -59,9 +53,7 @@ public class JTableSearcher implements IObjectSearcher {
     /**
      * constructor
      *
-     * @param frame
-     * @param table
-     */
+	 */
     public JTableSearcher(Frame frame, JTable table) {
         this(frame, SEARCHER_NAME, table);
     }
@@ -70,8 +62,7 @@ public class JTableSearcher implements IObjectSearcher {
      * constructor
      *
      * @param
-     * @param table
-     */
+	 */
     public JTableSearcher(Frame frame, String name, JTable table) {
         this.frame = frame;
         this.name = name;
@@ -204,8 +195,7 @@ public class JTableSearcher implements IObjectSearcher {
     /**
      * set selection state of current object
      *
-     * @param select
-     */
+	 */
     public void setCurrentSelected(boolean select) {
         if (select)
             toSelect.add(new Pair<>(current.getFirst(), current.getSecond()));
@@ -216,8 +206,7 @@ public class JTableSearcher implements IObjectSearcher {
     /**
      * set select state of all objects
      *
-     * @param select
-     */
+	 */
     public void selectAll(boolean select) {
         if (select) {
             table.selectAll();
@@ -241,8 +230,7 @@ public class JTableSearcher implements IObjectSearcher {
     /**
      * set the label of the current object
      *
-     * @param newLabel
-     */
+	 */
     public void setCurrentLabel(String newLabel) {
     }
 

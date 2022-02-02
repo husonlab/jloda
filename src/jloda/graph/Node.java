@@ -41,8 +41,7 @@ public class Node extends NodeEdge implements Comparable<Node> {
      * construct a new node for the given graph. The information in the node is replaced with obj. The node
      * is added to the end of the list of nodes. Any NewNode listeners are fired.
      *
-     * @param G
-     */
+	 */
     public Node(Graph G) {
         super();
         G.registerNewNode(null, this);
@@ -54,8 +53,7 @@ public class Node extends NodeEdge implements Comparable<Node> {
      * construct a new node for the given graph. The information in the node is replaced with obj. The node
      * is added to the end of the list of nodes. Any NewNode listeners are fired.
      *
-     * @param G
-     */
+	 */
     public Node(Graph G, Object info) {
         super();
         G.registerNewNode(info, this);
@@ -167,7 +165,6 @@ public class Node extends NodeEdge implements Comparable<Node> {
     /**
      * get node on opposite end of edge
      *
-     * @param e
      * @return node
      */
     public Node getOpposite(Edge e) throws NotOwnerException {
@@ -219,7 +216,6 @@ public class Node extends NodeEdge implements Comparable<Node> {
     /**
      * get next adjacent edge
      *
-     * @param e
      * @return next adjacent edge
      */
     public Edge getNextAdjacentEdge(Edge e) {
@@ -235,7 +231,6 @@ public class Node extends NodeEdge implements Comparable<Node> {
     /**
      * get previous adjacent edge
      *
-     * @param e
      * @return previous adjacent edge or null
      */
     public Edge getPrevAdjacentEdge(Edge e) {
@@ -251,7 +246,6 @@ public class Node extends NodeEdge implements Comparable<Node> {
     /**
      * get next adjacent edge in cyclic ordering
      *
-     * @param e
      * @return next adjacent edge in cyclic ordering
      */
     public Edge getNextAdjacentEdgeCyclic(Edge e) {
@@ -266,7 +260,6 @@ public class Node extends NodeEdge implements Comparable<Node> {
     /**
      * get previous adjacent edge in cyclic ordering
      *
-     * @param e
      * @return previous adjacent edge in cyclic ordering
      */
     public Edge getPrevAdjacentEdgeCyclic(Edge e) {
@@ -293,7 +286,6 @@ public class Node extends NodeEdge implements Comparable<Node> {
     /**
      * gets the next out edge
      *
-     * @param e
      * @return next out edge or null
      */
     public Edge getNextOutEdge(Edge e) {
@@ -318,7 +310,6 @@ public class Node extends NodeEdge implements Comparable<Node> {
     /**
      * gets the previous out edge
      *
-     * @param e
      * @return previous out edge or null
      */
     public Edge getPrevOutEdge(Edge e) {
@@ -343,7 +334,6 @@ public class Node extends NodeEdge implements Comparable<Node> {
     /**
      * gets the next in edge
      *
-     * @param e
      * @return next in edge or null
      */
     public Edge getNextInEdge(Edge e) {
@@ -368,7 +358,6 @@ public class Node extends NodeEdge implements Comparable<Node> {
     /**
      * gets the previous in edge
      *
-     * @param e
      * @return previous in edge or null
      */
     public Edge getPrevInEdge(Edge e) {
@@ -381,7 +370,6 @@ public class Node extends NodeEdge implements Comparable<Node> {
     /**
      * get common edge between this node and w, or null
      *
-     * @param w
      * @return common edge between this node and w, or null
      */
     public Edge getCommonEdge(Node w) {
@@ -396,7 +384,6 @@ public class Node extends NodeEdge implements Comparable<Node> {
     /**
      * get  edge from this node to w, or null
      *
-     * @param w
      * @return common edge from this node to w, or null
      */
     public Edge getEdgeTo(Node w) {
@@ -411,7 +398,6 @@ public class Node extends NodeEdge implements Comparable<Node> {
     /**
      * get  edge to this node from w, or null
      *
-     * @param w
      * @return common edge from this node to w, or null
      */
     public Edge getEdgeFrom(Node w) {
@@ -472,7 +458,6 @@ public class Node extends NodeEdge implements Comparable<Node> {
     /**
      * get a directed edge from this node to w, or null
      *
-     * @param w
      * @return directed edge from this node to w, or null
      */
     public Edge findDirectedEdge(Node w) throws NotOwnerException {
@@ -487,7 +472,6 @@ public class Node extends NodeEdge implements Comparable<Node> {
     /**
      * compares with another node of the same graph
      *
-     * @param v
      * @return -1, 1 or 0
      */
     public int compareTo(Node v) {

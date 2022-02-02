@@ -36,11 +36,8 @@ public class TeXGenerator {
      * and item is either the menuLabel of an action, | to indicate a separator
      * or @menuLabel to indicate menuLabel name of a submenu
      *
-     * @param menuBarLayout
-     * @param menusConfigurations
      * @return menu description in LaTeX
-     * @throws Exception
-     */
+	 */
     public static String getMenuLaTeX(CommandManager commandManager, String menuBarLayout, Hashtable<String, String> menusConfigurations) throws Exception {
         StringWriter w = new StringWriter();
 
@@ -89,8 +86,6 @@ public class TeXGenerator {
     /**
      * get a laTeX description of a tool bar
      *
-     * @param configuration
-     * @param commandManager
      * @return LaTeX
      */
     public static String getToolBarLaTeX(String configuration, CommandManager commandManager) {
@@ -124,8 +119,6 @@ public class TeXGenerator {
     /**
      * get a laTeX description of a tool bar
      *
-     * @param configuration
-     * @param commandManager
      * @return LaTeX
      */
     public static String getPopupMenuLaTeX(String configuration, CommandManager commandManager) {

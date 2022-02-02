@@ -19,13 +19,6 @@
 
 package jloda.swing.util;
 
-/**
- * Some useful geometry stuff.
- *
- * @author Daniel Huson
- * 7.01
- */
-
 import java.awt.*;
 import java.awt.geom.Line2D;
 import java.awt.geom.Point2D;
@@ -132,9 +125,6 @@ public class Geometry {
     /**
      * computes the angle difference between a and b as viewed from center
      *
-     * @param center
-     * @param a
-     * @param b
      * @return angle
      */
     public static double computeObservedAngle(Point2D center, Point2D a, Point2D b) {
@@ -233,7 +223,6 @@ public class Geometry {
     /**
      * clamp to range 0..2PI
      *
-     * @param x
      * @return modulo 2PI
      */
     static public double moduloTwoPI(double x) {
@@ -247,8 +236,6 @@ public class Geometry {
     /**
      * gets the difference of two points
      *
-     * @param tar
-     * @param src
      * @return difference
      */
     public static Point2D diff(Point2D tar, Point2D src) {
@@ -260,11 +247,7 @@ public class Geometry {
     /**
      * gets the intersection between two secant segments [O,T] qnd [P,S]
      *
-     * @param PointO
-     * @param PointP
-     * @param PointS
-     * @param PointT
-     */
+	 */
     public static Point2D intersect(Point2D PointO, Point2D PointP, Point2D PointS, Point2D PointT) {
         double xo = PointO.getX();
         double yo = PointO.getY();
@@ -289,9 +272,7 @@ public class Geometry {
     /**
      * returns the scalar product O.P
      *
-     * @param PointO
-     * @param PointP
-     */
+	 */
     public static double scalar(Point2D PointO, Point2D PointP) {
         return PointP.getX() * PointO.getX() + PointP.getY() * PointO.getY();
     }
@@ -300,9 +281,7 @@ public class Geometry {
     /**
      * returns the average of angles A and B
      *
-     * @param AngleA
-     * @param AngleB
-     */
+	 */
     public static double midAngle(double AngleA, double AngleB) {
         if (moduloTwoPI(AngleA - AngleB) < Math.PI) {
             return moduloTwoPI(AngleB + (moduloTwoPI(AngleA - AngleB)) / 2);
@@ -315,9 +294,7 @@ public class Geometry {
     /**
      * returns the difference of angles A and B
      *
-     * @param AngleA
-     * @param AngleB
-     */
+	 */
     public static double diffAngle(double AngleA, double AngleB) {
         if (moduloTwoPI(AngleA - AngleB) > Math.PI) {
             return 2 * Math.PI - moduloTwoPI(AngleA - AngleB);
@@ -330,9 +307,7 @@ public class Geometry {
     /**
      * returns the difference of angles A and B
      *
-     * @param AngleA
-     * @param AngleB
-     */
+	 */
     public static double signedDiffAngle(double AngleA, double AngleB) {
         if (moduloTwoPI(AngleA - AngleB) > Math.PI) {
             return -(2 * Math.PI - moduloTwoPI(AngleA - AngleB));
@@ -345,9 +320,7 @@ public class Geometry {
     /**
      * returns the difference of angles A and B
      *
-     * @param A
-     * @param B
-     */
+	 */
     public static double squaredDistance(Point2D A, Point2D B) {
 
         return (B.getX() - A.getX()) * (B.getX() - A.getX()) + (B.getY() - A.getY()) * (B.getY() - A.getY());
@@ -356,9 +329,6 @@ public class Geometry {
     /**
      * computes the angle difference between a and b as viewed from center
      *
-     * @param center
-     * @param a
-     * @param b
      * @return angle
      */
     public static double basicComputeAngle(Point2D center, Point2D a, Point2D b) {
@@ -394,10 +364,6 @@ public class Geometry {
     /**
      * computes the squared distance between points (x1,y1) and (x2,y2)
      *
-     * @param x1
-     * @param y1
-     * @param x2
-     * @param y2
      * @return squared distance
      */
     public static double squaredDistance(double x1, double y1, double x2, double y2) {
@@ -407,7 +373,6 @@ public class Geometry {
     /**
      * gets the length of a vector
      *
-     * @param vector
      * @return length
      */
     public static double length(Point2D vector) {

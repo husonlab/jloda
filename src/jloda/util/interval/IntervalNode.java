@@ -39,8 +39,7 @@ public class IntervalNode<Type> {
     /**
      * create node for a collection of intervals
      *
-     * @param intervals
-     */
+	 */
     IntervalNode(Collection<Interval<Type>> intervals) {
         if (intervals.size() == 0) {
             this.intervals = new TreeMap<>();
@@ -90,8 +89,7 @@ public class IntervalNode<Type> {
     /**
      * create node with single interval
      *
-     * @param interval
-     */
+	 */
     IntervalNode(Interval<Type> interval) {
         intervals = new TreeMap<>();
         center = (interval.getStart() + interval.getEnd()) / 2;
@@ -104,8 +102,7 @@ public class IntervalNode<Type> {
     /**
      * add a node to an existing tree
      *
-     * @param interval
-     */
+	 */
     void add(Interval<Type> interval) {
         if (interval.getEnd() < center) {
             if (leftNode == null)
@@ -186,7 +183,6 @@ public class IntervalNode<Type> {
     /**
      * recursively creates string that describes this node and subtree below
      *
-     * @param level
      * @return string
      */
     public String toStringRec(int level) {

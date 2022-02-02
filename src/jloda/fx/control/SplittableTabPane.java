@@ -458,10 +458,7 @@ public class SplittableTabPane extends Pane {
     /**
      * setup the menu when inserting a tab
      *
-     * @param tab
-     * @param tabPane
-     * @param splitPane
-     */
+	 */
     private void setupMenu(Tab tab, TabPane tabPane, SplitPane splitPane) {
         final ArrayList<MenuItem> menuItems = new ArrayList<>();
 

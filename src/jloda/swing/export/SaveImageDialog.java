@@ -60,11 +60,7 @@ public class SaveImageDialog extends JDialog {
      * creates and displays a save image dialog and saves image, if desired. If performSave is true, saves image, other
      * not, in which case a command string is returned via the getCommand method
      *
-     * @param parent
-     * @param imagePanel
-     * @param imageScrollPane
-     * @param fileBaseName
-     */
+	 */
     public SaveImageDialog(JFrame parent, JPanel imagePanel, JScrollPane imageScrollPane, String fileBaseName) {
         super(parent, "Export Image");
         this.parent = parent;
@@ -183,8 +179,7 @@ public class SaveImageDialog extends JDialog {
     /**
      * displays the file chooser and saves
      *
-     * @param parent
-     */
+	 */
     private void doSaveDialog(JFrame parent) {
         final ExportGraphicType graphicsType = (ExportGraphicType) formatComboBox.getSelectedItem();
 

@@ -30,8 +30,7 @@ public class Cube extends MeshView {
     /**
      * constructor
      *
-     * @param width
-     */
+	 */
     public Cube(float width, float height, float depth) {
         final TriangleMesh mesh = new TriangleMesh();
         final float w = width / 2.0f;

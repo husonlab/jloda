@@ -31,9 +31,6 @@ public class Correlation {
     /**
      * compute Pearson's correlation coefficient
      *
-     * @param n
-     * @param x
-     * @param y
      * @return correlation coefficient between -1 and 1
      */
     public static double computePersonsCorrelationCoefficent(int n, double[] x, double[] y) {
@@ -61,9 +58,6 @@ public class Correlation {
     /**
      * compute Pearson's correlation coefficient
      *
-     * @param n
-     * @param x
-     * @param y
      * @return correlation coefficient between -1 and 1
      */
     public static float computePersonsCorrelationCoefficent(int n, float[] x, float[] y) {
@@ -91,9 +85,6 @@ public class Correlation {
     /**
      * compute Pearson's correlation coefficient
      *
-     * @param n
-     * @param xValues
-     * @param yValues
      * @return correlation coefficient between -1 and 1
      */
     public static <T extends Number> double computePersonsCorrelationCoefficent(int n, Collection<T> xValues, Collection<T> yValues) {

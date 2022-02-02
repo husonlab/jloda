@@ -30,8 +30,7 @@ public class Icosahedron extends MeshView {
     /**
      * constructor
      *
-     * @param length
-     */
+	 */
     public Icosahedron(float length) {
         final TriangleMesh mesh = new TriangleMesh();
         final float p0 = 0.5f * length;

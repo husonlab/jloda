@@ -37,9 +37,7 @@ public class Table<R, C, V> {
     /**
      * does table contain cell
      *
-     * @param rowKey
-     * @param columnKey
-     */
+	 */
     public boolean contains(R rowKey, C columnKey) {
         if (rowKey == null || columnKey == null)
             return false;
@@ -50,9 +48,7 @@ public class Table<R, C, V> {
     /**
      * row contained?
      *
-     * @param rowKey
-     * @return
-     */
+	 */
     public boolean containsRow(R rowKey) {
         return dataMap.containsKey(rowKey);
     }
@@ -60,9 +56,7 @@ public class Table<R, C, V> {
     /**
      * column contained?
      *
-     * @param columnKey
-     * @return
-     */
+	 */
     public boolean containsColumn(C columnKey) {
         if (columnKey == null)
             return false;
@@ -76,9 +70,7 @@ public class Table<R, C, V> {
     /**
      * does table contain given value
      *
-     * @param value
-     * @return
-     */
+	 */
     public boolean containsValue(V value) {
         if (value == null)
             return false;
@@ -93,10 +85,7 @@ public class Table<R, C, V> {
     /**
      * get the value or null
      *
-     * @param rowKey
-     * @param columnKey
-     * @return
-     */
+	 */
     public V get(R rowKey, C columnKey) {
         if (rowKey == null || columnKey == null)
             return null;
@@ -109,8 +98,7 @@ public class Table<R, C, V> {
     /**
      * is table empty?
      *
-     * @return
-     */
+	 */
     public boolean isEmpty() {
         return dataMap.isEmpty();
     }
@@ -118,8 +106,7 @@ public class Table<R, C, V> {
     /**
      * get the size of the table
      *
-     * @return
-     */
+	 */
     public int size() {
         int size = 0;
         for (Map<C, V> row : dataMap.values()) {
@@ -132,9 +119,7 @@ public class Table<R, C, V> {
      * compares equality
      * todo: this needs to be fixed
      *
-     * @param obj
-     * @return
-     */
+	 */
     public boolean equals(Object obj) {
         return (obj instanceof Table) && dataMap.equals(obj);
     }
@@ -159,10 +144,7 @@ public class Table<R, C, V> {
     /**
      * put the value for a cell
      *
-     * @param rowKey
-     * @param columnKey
-     * @param value
-     */
+	 */
     public void put(R rowKey, C columnKey, V value) {
         if (rowKey != null && columnKey != null) {
             Map<C, V> row = row(rowKey);
@@ -180,7 +162,6 @@ public class Table<R, C, V> {
     /**
      * put all values
      *
-     * @param table
 	 */
 	public void putAll(Table<R, C, V> table) {
 		for (R rowKey : table.rowKeySet()) {
@@ -206,9 +187,7 @@ public class Table<R, C, V> {
     /**
      * removes the given cell, returns the old value or null
      *
-     * @param rowKey
-     * @param columnKey
-     */
+	 */
     public void remove(R rowKey, C columnKey) {
         if (rowKey == null || columnKey == null)
             return;

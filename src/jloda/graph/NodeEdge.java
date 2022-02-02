@@ -17,10 +17,6 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-/**
- * @version $Id:
- * @author Daniel Huson
- */
 package jloda.graph;
 
 /**
@@ -82,8 +78,7 @@ abstract class NodeEdge extends GraphBase {
     /**
      * sets the id
      *
-     * @param id
-     */
+	 */
     void setId(int id) {
         this.id = id & ID_MASK;
     }
@@ -100,8 +95,7 @@ abstract class NodeEdge extends GraphBase {
     /**
      * set the hidden state of this node
      *
-     * @param hidden
-     */
+	 */
     void setHidden(boolean hidden) {
         if (hidden)
             id |= HIDDEN_MASK;

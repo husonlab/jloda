@@ -146,7 +146,6 @@ public class QuasiMedianNetwork {
     /**
      * compute the quasi median closure for the given set of sequences
      *
-     * @param sequences
      * @param refA      if !=null, use this reference sequence in computation of quasi median
      * @param refB      if !=null, use this reference sequence in computation of quasi median
      * @return quasi median closure
@@ -190,8 +189,6 @@ public class QuasiMedianNetwork {
     /**
      * compute the quasi median closure for the given set of sequences
      *
-     * @param sequences
-     * @param sequenceLength
      * @return quasi median closure
      */
     public static Set computeGeodesicPrunedQuasiMedianClosure(Set sequences, int sequenceLength) {
@@ -281,10 +278,6 @@ public class QuasiMedianNetwork {
     /**
      * compute the best geodesic between two nodes
      *
-     * @param seqA
-     * @param seqB
-     * @param expanded
-     * @param scores
      * @return geodesic
      */
     private static Set computeGeodesic(String seqA, String seqB, Set expanded, double[][] scores) {
@@ -322,13 +315,7 @@ public class QuasiMedianNetwork {
     /**
      * get the best path from start to end
      *
-     * @param end
-     * @param v
-     * @param e
-     * @param currentScore
-     * @param currentPath
-     * @param bestPath
-     */
+	 */
     private static void computeBestPathRec(Graph graph, Node end, Node v, Edge e, NodeDoubleArray bestScore, NodeSet inPath, double currentScore,
                                            HashSet currentPath,
                                            Set bestPath, double[][] scores) {
@@ -363,8 +350,6 @@ public class QuasiMedianNetwork {
     /**
      * computes a log score for each state at each   position of the alignment
      *
-     * @param input
-     * @param sequenceLength
      * @return scores
      */
     private static double[][] computeScores(String[] input, int sequenceLength) {
@@ -388,8 +373,6 @@ public class QuasiMedianNetwork {
     /**
      * get the log score of a sequence
      *
-     * @param seq
-     * @param scores
      * @return log score
      */
     private static double getScore(String seq, double[][] scores) {
@@ -403,8 +386,6 @@ public class QuasiMedianNetwork {
     /**
      * if two sequences differ at exactly one position, gets position
      *
-     * @param seqa
-     * @param seqb
      * @return single difference position or -1
      */
     private static int computeOneStep(String seqa, String seqb) {
@@ -423,9 +404,6 @@ public class QuasiMedianNetwork {
     /**
      * computes the quasi median for three sequences
      *
-     * @param seqA
-     * @param seqB
-     * @param seqC
      * @return quasi median
      */
     private static String[] computeQuasiMedian(String seqA, String seqB, String seqC) {
@@ -470,11 +448,6 @@ public class QuasiMedianNetwork {
     /**
      * computes the quasi median for three sequences. When resolving a three-way median, use only states in reference sequences
      *
-     * @param seqA
-     * @param seqB
-     * @param seqC
-     * @param refA
-     * @param refB
      * @return quasi median
      */
     private static String[] computeQuasiMedian(String seqA, String seqB, String seqC, String refA, String refB) {
@@ -521,7 +494,6 @@ public class QuasiMedianNetwork {
     /**
      * computes the one-step graph
      *
-     * @param sequences
      * @return one-step graph
      */
     public static PhyloSplitsGraph computeOneStepGraph(Set sequences) {
@@ -546,8 +518,7 @@ public class QuasiMedianNetwork {
     /**
      * display the computed graph
      *
-     * @param graph
-     */
+	 */
     private static void showGraph(PhyloSplitsGraph graph) {
         JFrame frame = new JFrame("quasi-median network");
         frame.setSize(400, 400);
@@ -605,9 +576,6 @@ public class QuasiMedianNetwork {
     /**
      * runs the median joining algorithm
      *
-     * @param inputSequences
-     * @param weights
-     * @param epsilon
      * @return median joining network
      */
     public static PhyloSplitsGraph computeMedianJoiningNetwork(Set inputSequences, double[] weights, int epsilon) {
@@ -634,8 +602,6 @@ public class QuasiMedianNetwork {
     /**
      * Main loop of the median joining algorithm
      *
-     * @param input
-     * @param epsilon
      * @return sequences present in the median joining network
      */
     private static Set<String> computeMedianJoiningMainLoop(Set<String> input, double[] weights, int epsilon) {
@@ -708,12 +674,7 @@ public class QuasiMedianNetwork {
     /**
      * computes the minimum spanning network upto a tolerance of epsilon
      *
-     * @param sequences
-     * @param weights
-     * @param epsilon
-     * @param graph
-     * @param feasibleLinks
-     */
+	 */
     private static void computeMinimumSpanningNetwork(Set sequences, double[] weights, int epsilon, PhyloSplitsGraph graph, EdgeSet feasibleLinks) {
         String[] array = (String[]) sequences.toArray(new String[0]);
         // compute a distance matrix between all sequences:
@@ -798,9 +759,6 @@ public class QuasiMedianNetwork {
     /**
      * iteratively removes all nodes that are connected to only two other and are not part of the original input
      *
-     * @param graph
-     * @param input
-     * @param sequences
      * @return true, if anything was removed
      */
     private static boolean removeObsoleteNodes(PhyloSplitsGraph graph, Set<String> input, Set<String> sequences) {
@@ -831,10 +789,6 @@ public class QuasiMedianNetwork {
     /**
      * compute the cost of connecting seqM to the other three sequences
      *
-     * @param seqU
-     * @param seqV
-     * @param seqW
-     * @param seqM
      * @return cost
      */
     private static double computeConnectionCost(String seqU, String seqV, String seqW, String seqM, double[] weights) {
@@ -844,8 +798,6 @@ public class QuasiMedianNetwork {
     /**
      * compute weighted distance between two sequences
      *
-     * @param seqA
-     * @param seqB
      * @return distance
      */
     private static double computeDistance(String seqA, String seqB, double[] weights) {

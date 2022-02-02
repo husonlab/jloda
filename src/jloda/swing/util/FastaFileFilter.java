@@ -82,7 +82,6 @@ public class FastaFileFilter extends FileFilterBase implements FilenameFilter {
     /**
      * does this look like a FastA file name?
      *
-     * @param fileName
      * @return true, if fastA file name
      */
     public static boolean accept(String fileName, boolean allowGZipped) {

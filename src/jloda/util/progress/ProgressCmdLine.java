@@ -38,8 +38,6 @@ public class ProgressCmdLine implements ProgressListener {
 	/**
 	 * constructor
 	 *
-	 * @param taskName
-	 * @param subtaskName
 	 */
 	public ProgressCmdLine(final String taskName, final String subtaskName) {
 		setTasks(taskName, subtaskName);
@@ -48,7 +46,6 @@ public class ProgressCmdLine implements ProgressListener {
 	/**
 	 * sets the steps number of steps to be done. By default, the maximum is set to 100
 	 *
-	 * @param steps
 	 */
 	public void setMaximum(final long steps) {
 
@@ -57,7 +54,6 @@ public class ProgressCmdLine implements ProgressListener {
 	/**
 	 * sets the progress
 	 *
-	 * @param steps
 	 */
 	public void setProgress(final long steps) {
 		this.steps = steps;
@@ -96,8 +92,6 @@ public class ProgressCmdLine implements ProgressListener {
 	/**
 	 * Sets the Task and subtask names, for use in progress bar displays
 	 *
-	 * @param taskName
-	 * @param subtaskName
 	 */
 	public void setTasks(String taskName, String subtaskName) {
 		System.err.println(taskName + (subtaskName != null ? (": " + subtaskName) : ""));
@@ -106,7 +100,6 @@ public class ProgressCmdLine implements ProgressListener {
 	/**
 	 * Sets just the subtask
 	 *
-	 * @param subtaskName
 	 */
 	public void setSubtask(String subtaskName) {
 		if (subtaskName != null)

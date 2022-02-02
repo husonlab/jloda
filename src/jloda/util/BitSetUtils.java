@@ -30,7 +30,6 @@ public class BitSetUtils {
     /**
      * get the union of some bit sets
      *
-     * @param sets
      * @return union
      */
     public static BitSet union(BitSet... sets) {
@@ -43,7 +42,6 @@ public class BitSetUtils {
     /**
      * get the union of some bit sets
      *
-     * @param sets
      * @return union
      */
     public static BitSet union(Collection<BitSet> sets) {
@@ -56,7 +54,6 @@ public class BitSetUtils {
     /**
      * get the intersection of some bit sets
      *
-     * @param sets
      * @return union
      */
     public static BitSet intersection(BitSet... sets) {
@@ -75,8 +72,6 @@ public class BitSetUtils {
     /**
      * does first set contain second set?
      *
-     * @param set
-     * @param subset
      * @return true first set contains second set
      */
     public static boolean contains(BitSet set, BitSet subset) {
@@ -134,8 +129,6 @@ public class BitSetUtils {
     /**
      * compare two bit sets
      *
-     * @param a
-     * @param b
      * @return comparison
      */
     public static int compare(BitSet a, BitSet b) {
@@ -173,7 +166,6 @@ public class BitSetUtils {
      * gets an array in which the i-th component has value i, if and only if i is contained in bits
      *
      * @param max  maximum value
-     * @param bits
      * @return values and 0s
      */
     public static int[] asArrayWith0s(int max, BitSet bits) {
@@ -190,7 +182,6 @@ public class BitSetUtils {
     /**
      * get the largest member of the set
      *
-     * @param bits
      * @return maximum member
      */
     public static int max(BitSet bits) {
@@ -238,9 +229,7 @@ public class BitSetUtils {
     /**
      * the set X - A
      *
-     * @param setX
-     * @param setA
-     */
+	 */
     public static BitSet minus(BitSet setX, BitSet setA) {
         final var result = new BitSet();
         result.or(setX);

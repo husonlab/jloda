@@ -52,7 +52,6 @@ public class NGonShape extends Polygon implements ISized {
     /**
      * constructor
      *
-     * @param width
      * @param n     n-gon
      */
     public NGonShape(double width, Point2D location, int n) {
@@ -64,7 +63,6 @@ public class NGonShape extends Polygon implements ISized {
     /**
      * constructor
      *
-     * @param width
      * @param ngon  n-gon
      */
     public NGonShape(double width, int ngon) {

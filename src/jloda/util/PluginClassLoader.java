@@ -34,8 +34,6 @@ public class PluginClassLoader {
     /**
      * get an instance of each class of the given type in the given packages
      *
-     * @param clazz
-     * @param packageNames
      * @return instances
      */
     public static <C> List<C> getInstances(Class<C> clazz, String... packageNames) {
@@ -47,7 +45,6 @@ public class PluginClassLoader {
      *
      * @param clazz1       this must be assignable from the returned class
      * @param clazz2       if non-null, must also be assignable from the returned class
-     * @param packageNames
      * @return instances
      */
     public static <C, D> List<C> getInstances(Class<C> clazz1, Class<D> clazz2, String... packageNames) {
@@ -110,10 +107,7 @@ public class PluginClassLoader {
     /**
      * Get a class instance for the given fully qualified classname.
      *
-     * @param name
-     * @return
-     * @throws ClassNotFoundException
-     */
+	 */
     public static <T> Class classForName(Class<T> clazz, String name) throws ClassNotFoundException {
         return clazz.getClassLoader().loadClass(name);
     }

@@ -39,9 +39,7 @@ public class Alphabet implements INormalizer {
     /**
      * constructor
      *
-     * @param definitionString
-     * @param undefinedLetter
-     */
+	 */
     public Alphabet(String definitionString, byte undefinedLetter) {
         boolean isUndefinedContained = (definitionString.indexOf(undefinedLetter) != -1);
         this.definitionString = definitionString.replaceAll("\\[", "").replaceAll("]", "").replaceAll(" {2}", " ");
@@ -174,7 +172,6 @@ public class Alphabet implements INormalizer {
     /**
      * returns normalized letter
      *
-     * @param letter
      * @return normalized letter
      */
     @Override

@@ -84,7 +84,6 @@ public class ResourceManager {
     /**
      * get all named icons
      *
-     * @param names
      * @return icons
      */
     public static ArrayList<ImageIcon> getIcons(String... names) {
@@ -199,10 +198,10 @@ public class ResourceManager {
     public static BufferedImage getImageResource(Class clazz, String packageName, String fileName) {
         final String resname = "/" + packageName.replace('.', '/') + "/" + fileName.replaceAll(" ", "\\ ");
         try (InputStream ins = clazz.getResourceAsStream(resname)) {
-            if (ins != null)
-                return ImageIO.read(ins);
-        } catch (Exception exc) {
-        }
+			if (ins != null)
+				return ImageIO.read(ins);
+		} catch (Exception ignored) {
+		}
         return null;
     }
 
@@ -214,15 +213,15 @@ public class ResourceManager {
      */
     public static BufferedImage getBufferedImageResource(Class clazz, String packageName, String fileName) {
         BufferedImage bufferedImage = null;
-        try {
-            final String resourceName = ("/" + packageName.replace('.', '/') + "/" + fileName).replaceAll(" ", "\\ ");
-            try (InputStream ins = clazz.getResourceAsStream(resourceName)) {
-                if (ins != null) {
-                    bufferedImage = ImageIO.read(ins);
-                }
-            }
-        } catch (Exception exc) {
-        }
+		try {
+			final String resourceName = ("/" + packageName.replace('.', '/') + "/" + fileName).replaceAll(" ", "\\ ");
+			try (InputStream ins = clazz.getResourceAsStream(resourceName)) {
+				if (ins != null) {
+					bufferedImage = ImageIO.read(ins);
+				}
+			}
+		} catch (Exception ignored) {
+		}
         return bufferedImage;
     }
 
@@ -234,13 +233,13 @@ public class ResourceManager {
      * @param fileName    the name of the file
      */
     public static File getFileResource(Class clazz, String packageName, String fileName) {
-        try {
-            final String resourceName = ("/" + packageName.replace('.', '/') + "/" + fileName).replaceAll(" ", "\\ ");
-            final URL url = clazz.getResource(resourceName);
-            if (url != null)
-                return new File(url.getFile());
-        } catch (Exception exc) {
-        }
+		try {
+			final String resourceName = ("/" + packageName.replace('.', '/') + "/" + fileName).replaceAll(" ", "\\ ");
+			final URL url = clazz.getResource(resourceName);
+			if (url != null)
+				return new File(url.getFile());
+		} catch (Exception ignored) {
+		}
         return null;
     }
 
@@ -251,11 +250,11 @@ public class ResourceManager {
      * @param fileName    the name of the file
      */
     public static URL getFileURL(Class clazz, String packageName, String fileName) {
-        try {
-            final String resourceName = ("/" + packageName.replace('.', '/') + "/" + fileName).replaceAll(" ", "\\ ");
-            return clazz.getResource(resourceName);
-        } catch (Exception exc) {
-        }
+		try {
+			final String resourceName = ("/" + packageName.replace('.', '/') + "/" + fileName).replaceAll(" ", "\\ ");
+			return clazz.getResource(resourceName);
+		} catch (Exception ignored) {
+		}
         return null;
     }
 
@@ -290,8 +289,6 @@ public class ResourceManager {
     /**
      * gets an image from the named package
      *
-     * @param packageName
-     * @param fileName
      * @return image
      */
     public static Image getImage(Class clazz, String packageName, String fileName) {
@@ -301,7 +298,6 @@ public class ResourceManager {
     /**
      * does the named file exist as a resource or file?
      *
-     * @param name
      * @return true if named file exists as a resource or file
      */
     public static boolean fileExists(String name) {
@@ -318,8 +314,6 @@ public class ResourceManager {
     /**
      * does the named file exist as a resource ?
      *
-     * @param packageName
-     * @param name
      * @return true if named file exists as a resource
      */
     public static boolean fileResourceExists(Class clazz, String packageName, String name) {

@@ -40,8 +40,7 @@ public class FlowPaneDragAndDrop {
     /**
      * setup drag and drop
      *
-     * @param flowPane
-     */
+	 */
     public static void setup(FlowPane flowPane) {
         final ObjectProperty<Node> draggingNode = new SimpleObjectProperty<>();
         //flowPane.setUserData(draggingNode);

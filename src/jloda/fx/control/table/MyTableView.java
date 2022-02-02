@@ -669,11 +669,11 @@ public class MyTableView extends Pane {
     public ArrayList<String> getSelectedCols() {
         final BitSet cols = new BitSet();
         try {
-            for (TablePosition position : getSelectedCells()) {
-                cols.set(position.getColumn());
-            }
-        } catch (IndexOutOfBoundsException ex) {
-        }
+			for (TablePosition position : getSelectedCells()) {
+				cols.set(position.getColumn());
+			}
+		} catch (IndexOutOfBoundsException ignored) {
+		}
         final ArrayList<String> list = new ArrayList<>(cols.cardinality());
         for (String colName : getColNames()) {
             if (cols.get(getColIndex(colName)))

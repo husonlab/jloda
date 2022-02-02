@@ -41,8 +41,7 @@ public class GraphGML {
      * @param w the writer
      * @param labelNodeValueMap for given labels, provides a node value maps
      * @param labelEdgeValueMap for given labels, provides node value maps
-     * @throws IOException
-     */
+	 */
     public static void writeGML(Graph graph,String comment,String graphLabel,boolean directed,int graphId, Writer w, Map<String, NodeArray<String>> labelNodeValueMap, Map<String, EdgeArray<String>> labelEdgeValueMap) throws IOException {
         var gmlInfo=new GMLInfo(comment,directed,graphId,graphLabel);
         w.write("graph [\n");
@@ -89,8 +88,7 @@ public class GraphGML {
     /**
      * read a graph in GraphGML for that was previously saved using writeGML. This is not a general parser.
      *
-     * @param r
-     */
+	 */
     public static GMLInfo readGML(Reader r, Graph graph,Map<String, NodeArray<String>> labelNodeValueMap, Map<String, EdgeArray<String>> labelEdgeValueMap) throws IOException {
         final var np = new NexusStreamParser(r);
         np.setSquareBracketsSurroundComments(false);

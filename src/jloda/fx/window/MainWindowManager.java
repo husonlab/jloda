@@ -105,7 +105,6 @@ public class MainWindowManager {
     /**
      * returns true if window was closed
      *
-     * @param mainWindow
      * @return true, if closed
      */
     public boolean closeMainWindow(IMainWindow mainWindow) {

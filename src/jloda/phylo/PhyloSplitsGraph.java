@@ -68,10 +68,7 @@ public class PhyloSplitsGraph extends PhyloGraph {
     /**
      * copies a graph
      *
-     * @param src
-     * @param oldNode2NewNode
-     * @param oldEdge2NewEdge
-     */
+	 */
     public NodeArray<Node> copy(PhyloSplitsGraph src, NodeArray<Node> oldNode2NewNode, EdgeArray<Edge> oldEdge2NewEdge) {
         clear();
         if (oldNode2NewNode == null)
@@ -145,8 +142,7 @@ public class PhyloSplitsGraph extends PhyloGraph {
     /**
      * removes a split from the graph by contracting all adjacentEdges associated with the split
      *
-     * @param splitId
-     */
+	 */
     public void removeSplit(int splitId) {
         Node one = getTaxon2Node(1);
 
@@ -211,13 +207,8 @@ public class PhyloSplitsGraph extends PhyloGraph {
     /**
      * recursively finds all adjacentEdges representing the named split.
      *
-     * @param splitId
-     * @param v
-     * @param e
-     * @param seen
      * @param separators adds the resulting pair of (node,edge) into this list
-     * @throws NotOwnerException
-     */
+	 */
     public void getAllSeparators(int splitId, Node v, Edge e, NodeSet seen, List<Pair<Node, Edge>> separators) {
         if (!seen.contains(v)) {
             seen.add(v);
@@ -235,13 +226,8 @@ public class PhyloSplitsGraph extends PhyloGraph {
     /**
      * finds an edge with the given split id that separates 1 from rest of graph
      *
-     * @param splitId
-     * @param v
-     * @param e
-     * @param seen
      * @return Pair consisting of node and edge
-     * @throws NotOwnerException
-     */
+	 */
     public Pair<Node, Edge> getSeparator(int splitId, Node v, Edge e, NodeSet seen) {
         if (!seen.contains(v)) {
             seen.add(v);
@@ -263,8 +249,6 @@ public class PhyloSplitsGraph extends PhyloGraph {
     /**
      * returns a labeling of all nodes by the sets of characters in state 1
      *
-     * @param split2chars
-     * @param firstChars
      * @return labeling of all nodes by 01 strings
      */
     public NodeArray labelNodesBySequences(Map split2chars, char[] firstChars) {
@@ -280,12 +264,7 @@ public class PhyloSplitsGraph extends PhyloGraph {
     /**
      * recursively do the work
      *
-     * @param v
-     * @param used
-     * @param split2chars
-     * @param firstChars
-     * @param labels
-     */
+	 */
     private void labelNodesBySequencesRec(Node v, BitSet used, Map split2chars, char[] firstChars, NodeArray<String> labels) {
         if (labels.get(v) == null) {
             BitSet flips = new BitSet();

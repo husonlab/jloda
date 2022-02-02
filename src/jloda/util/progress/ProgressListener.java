@@ -31,7 +31,6 @@ public interface ProgressListener extends AutoCloseable {
 	/**
 	 * set the total number of steps to be done
 	 *
-	 * @param total
 	 */
 	void setMaximum(long total);
 
@@ -66,22 +65,18 @@ public interface ProgressListener extends AutoCloseable {
 	/**
 	 * Sets the Task and subtask names, for use in progress bar displays
 	 *
-	 * @param taskName
-	 * @param subtaskName
 	 */
 	void setTasks(String taskName, String subtaskName);
 
 	/**
 	 * Sets just the subtask
 	 *
-	 * @param subtaskName
 	 */
 	void setSubtask(String subtaskName);
 
 	/**
 	 * Enable the user to cancel during this operation.
 	 *
-	 * @param enabled
 	 */
 	void setCancelable(boolean enabled);
 
@@ -120,21 +115,18 @@ public interface ProgressListener extends AutoCloseable {
 	/**
 	 * set the debug mode
 	 *
-	 * @param debug
 	 */
 	void setDebug(boolean debug);
 
 	/**
 	 * calculation has been paused
 	 *
-	 * @param pause
 	 */
 	void setPause(boolean pause);
 
 	/**
 	 * has calculation been paused?
 	 *
-	 * @return
 	 */
 	boolean getPause();
 

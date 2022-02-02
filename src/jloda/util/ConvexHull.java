@@ -41,7 +41,6 @@ public class ConvexHull {
     /**
      * computes the convex hull of a set of two-dimensional points using the quick hull algorithm
      *
-     * @param points0
      * @return convex hull
      */
     public ArrayList<APoint2D> quickHull(final ArrayList<APoint2D> points0) {
@@ -93,11 +92,7 @@ public class ConvexHull {
     /**
      * compute the hull set
      *
-     * @param a
-     * @param b
-     * @param set
-     * @param hull
-     */
+	 */
     private void hullSet(final APoint2D a, final APoint2D b, final ArrayList<APoint2D> set, final ArrayList<APoint2D> hull) {
         if (set.size() == 0) return;
 
@@ -148,9 +143,6 @@ public class ConvexHull {
     /**
      * is z to the left of the line from a to b?
      *
-     * @param a
-     * @param b
-     * @param z
      * @return true, if z to left of line from a to b
      */
     private boolean isLeftOf(final APoint2D a, final APoint2D b, final APoint2D z) {
@@ -160,9 +152,6 @@ public class ConvexHull {
     /**
      * returns distance of point z from line through a and b
      *
-     * @param a
-     * @param b
-     * @param z
      * @return distance to line
      */
     private double distance(final APoint2D a, final APoint2D b, final APoint2D z) {

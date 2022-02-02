@@ -30,8 +30,7 @@ abstract public class UndoableRedoableCommand {
     /**
      * named constructor
      *
-     * @param name
-     */
+	 */
     public UndoableRedoableCommand(String name) {
         this.name = name;
     }
@@ -48,8 +47,7 @@ abstract public class UndoableRedoableCommand {
     /**
      * set name to display
      *
-     * @param name
-     */
+	 */
     public void setName(String name) {
         this.name = name;
     }

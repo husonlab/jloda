@@ -33,9 +33,7 @@ public class LabelLayoutRTree {
     /**
      * layout nodes for drawing
      *
-     * @param graphView
-     * @param gc
-     */
+	 */
     public void layout(GraphView graphView, Graphics gc) {
         Transform trans = graphView.trans;
 

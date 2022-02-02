@@ -52,8 +52,7 @@ public class ProjectManager {
     /**
      * remove a project director
      *
-     * @param dir
-     */
+	 */
     static public void removeProject(IDirector dir) {
         synchronized (projects) {
             projects.remove(dir);
@@ -120,9 +119,7 @@ public class ProjectManager {
     /**
      * use this to add additional viewers that have a window menu that they want keep upto date
      *
-     * @param dir
-     * @param menu
-     */
+	 */
     public static void addAnotherWindowWithWindowMenu(IDirector dir, JMenu menu) {
         if (dir != null && !dir.isInternalDocument() && !windowMenusUnderControl.contains(menu)) {
             synchronized (projects) {
@@ -159,8 +156,6 @@ public class ProjectManager {
      * call this whenever a project opens or closes a window.
      * Add or move frame and update all window menus
      *
-     * @param dir
-     * @param viewer0
      * @param opened  true, if window opened, false if closed
      */
     public static void projectWindowChanged(IDirector dir, IDirectableViewer viewer0, boolean opened) {
@@ -184,8 +179,7 @@ public class ProjectManager {
     /**
      * add a projects changed listener
      *
-     * @param projectsChangedListener
-     */
+	 */
     public static void addProjectsChangedListener(IProjectsChangedListener projectsChangedListener) {
         projectsChangedListeners.add(projectsChangedListener);
     }
@@ -193,8 +187,7 @@ public class ProjectManager {
     /**
      * remove a projects changed listener
      *
-     * @param projectsChangedListener
-     */
+	 */
     public static void removeProjectsChangedListener(IProjectsChangedListener projectsChangedListener) {
         projectsChangedListeners.remove(projectsChangedListener);
     }
@@ -274,7 +267,6 @@ public class ProjectManager {
     /**
      * get the project associated with the given project id
      *
-     * @param pid
      * @return project
      */
     public static IDirector getProject(int pid) {
@@ -317,7 +309,6 @@ public class ProjectManager {
     /**
      * makes the file name unique
      *
-     * @param name
      * @return unique version of file name
      */
     public static String getUniqueName(String name) {
@@ -351,8 +342,7 @@ public class ProjectManager {
      * attempt to quit program. If quit canceled and no projects open, opens a new empty document.
      * Programs that use this method for quitting must set setQuitting to false if the user chooses not to quit
      *
-     * @param runOnQuitCanceled
-     */
+	 */
     public static void doQuit(final Runnable runJustBeforeQuit, final Runnable runOnQuitCanceled) {
         setQuitting(true);
         setExitOnEmpty(false);
@@ -367,23 +357,23 @@ public class ProjectManager {
                         projects.remove(projects.size() - 1);
                 }
             }
-            if (isQuitting()) {
-                try {
-                    if (runJustBeforeQuit != null)
-                        runJustBeforeQuit.run();
-                } catch (Exception ex) {
-                    Basic.caught(ex);
-                }
-                ProgramProperties.store();
-                System.exit(0);
-            }
-        } catch (CanceledException ex) {
-        } finally {
-            if (projects.isEmpty() && runOnQuitCanceled != null) {
-                runOnQuitCanceled.run();
-            }
-            setQuitting(false);
-        }
+			if (isQuitting()) {
+				try {
+					if (runJustBeforeQuit != null)
+						runJustBeforeQuit.run();
+				} catch (Exception ex) {
+					Basic.caught(ex);
+				}
+				ProgramProperties.store();
+				System.exit(0);
+			}
+		} catch (CanceledException ignored) {
+		} finally {
+			if (projects.isEmpty() && runOnQuitCanceled != null) {
+				runOnQuitCanceled.run();
+			}
+			setQuitting(false);
+		}
     }
 
     public static boolean isQuitting() {

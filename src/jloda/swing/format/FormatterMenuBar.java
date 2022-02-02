@@ -19,11 +19,6 @@
 
 package jloda.swing.format;
 
-/**
- * Formatter menu bar
- * Daniel Huson, 7.2010
- */
-
 import jloda.swing.director.IDirector;
 import jloda.swing.window.MenuMnemonics;
 import jloda.util.ProgramProperties;
@@ -41,9 +36,7 @@ public class FormatterMenuBar extends JMenuBar {
     /**
      * construtor
      *
-     * @param conf
-     * @param dir
-     */
+	 */
     public FormatterMenuBar(Formatter conf, IDirector dir) {
         super();
 

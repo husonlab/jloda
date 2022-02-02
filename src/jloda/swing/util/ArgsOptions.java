@@ -72,7 +72,6 @@ public class ArgsOptions {
      *
      * @param args        command line arguments
      * @param main        class that contains main method
-     * @param programName
      * @param description program description
      */
     public ArgsOptions(String[] args, Object main, String programName, String description) throws CanceledException {
@@ -89,10 +88,10 @@ public class ArgsOptions {
         usage = new LinkedList<>();
 
         try {
-            doHelp = (args.length > 0 && args[0].equalsIgnoreCase("help")) || getOption("-h", "--help", "Show help", false, false);
-            setVerbose(getOption("-v", "--verbose", "verbose", false) && !doHelp);
-        } catch (UsageException e) {
-        }
+			doHelp = (args.length > 0 && args[0].equalsIgnoreCase("help")) || getOption("-h", "--help", "Show help", false, false);
+			setVerbose(getOption("-v", "--verbose", "verbose", false) && !doHelp);
+		} catch (UsageException ignored) {
+		}
 
         if (verbose)
             System.err.println(programName + " - " + getDescription() + "\nOptions:");
@@ -183,8 +182,7 @@ public class ArgsOptions {
     /**
      * call this once all arguments have been parsed. Quit on help
      *
-     * @throws UsageException
-     */
+	 */
     public void done() throws UsageException {
         if (!alreadyHasOtherComment)
             comment(OTHER);
@@ -255,8 +253,7 @@ public class ArgsOptions {
     /**
      * add a comment to the usage message
      *
-     * @param comment
-     */
+	 */
     public void comment(String comment) {
         usage.add(" " + comment);
         if (verbose)
@@ -268,10 +265,8 @@ public class ArgsOptions {
     /**
      * gets a command (first value in arguments)
      *
-     * @param legalValues
      * @return command
-     * @throws UsageException
-     */
+	 */
     public String getCommand(String... legalValues) throws UsageException {
         final Command[] pairs = new Command[legalValues.length];
         for (int i = 0; i < legalValues.length; i++)
@@ -282,10 +277,8 @@ public class ArgsOptions {
     /**
      * gets a command (first value in arguments)
      *
-     * @param pairs
      * @return command
-     * @throws UsageException
-     */
+	 */
     public String getCommand(Command... pairs) throws UsageException {
         final String[] legalValues = new String[pairs.length];
         for (int i = 0; i < pairs.length; i++) {
@@ -678,8 +671,6 @@ public class ArgsOptions {
     /**
      * return number from value as object same as defaultValue
      *
-     * @param defaultValue
-     * @param value
      * @return appropriate number object
      */
     private static Number getNumber(Number defaultValue, String value) {

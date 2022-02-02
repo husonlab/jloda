@@ -70,8 +70,7 @@ public class PhyloTreeView extends GraphView {
      * @param tree        PhyloTree
      * @param w           int
      * @param h           int
-     * @param doEmbedding
-     */
+	 */
     public PhyloTreeView(PhyloTree tree, int w, int h, boolean doEmbedding) {
         super(tree, w, h);
         setDefaultNodeLocation(0, 0);
@@ -190,9 +189,7 @@ public class PhyloTreeView extends GraphView {
     /**
      * show or hide labels of set of nodes
      *
-     * @param nodes
-     * @param show
-     */
+	 */
     public void showLabels(NodeSet nodes, boolean show) {
         for (Node v = nodes.getFirstElement(); v != null; v = nodes.getNextElement(v)) {
             setLabelVisible(v, show);
@@ -252,8 +249,6 @@ public class PhyloTreeView extends GraphView {
     /**
      * recursively does the work
      *
-     * @param srcV
-     * @param tarTree
      * @return node if any selected nodes here
      */
     private Node getInducedTreeRec(Map<Integer, String> id2name, NodeSet selected, Node srcV, PhyloTree tarTree) {
@@ -343,7 +338,6 @@ public class PhyloTreeView extends GraphView {
     /**
      * rotates tree so as to sort leaves alphabetically
      *
-     * @param v
      * @return lexicographic smallest leaf label below
      */
     private String sortTreeAlphabeticallyRec(Node v) {

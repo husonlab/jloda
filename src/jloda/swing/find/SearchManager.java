@@ -76,12 +76,7 @@ public class SearchManager implements IDirectableViewer {
     /**
      * constructor. This does not create a single instance.
      *
-     * @param dir
-     * @param viewer
-     * @param target
-     * @param showReplace
-     * @param createToolBar
-     */
+	 */
     public SearchManager(IDirector dir, IViewerWithFindToolBar viewer, ISearcher target, boolean showReplace, boolean createToolBar) {
         if (!createToolBar) {
             if (getInstance() != null)
@@ -115,11 +110,7 @@ public class SearchManager implements IDirectableViewer {
     /**
      * constructor
      *
-     * @param dir
-     * @param title
-     * @param targets
-     * @param showReplace
-     */
+	 */
     public SearchManager(IDirector dir, String title, ISearcher[] targets, boolean showReplace) {
         if (getInstance() != null)
             new Alert("Internal error, multiple instances of SearchManager");
@@ -135,10 +126,7 @@ public class SearchManager implements IDirectableViewer {
     /**
      * constructor
      *
-     * @param title
-     * @param targets
-     * @param showReplace
-     */
+	 */
     public SearchManager(String title, ISearcher[] targets, boolean showReplace) {
         if (getInstance() != null)
             new Alert("Internal error, multiple instances of SearchManager");
@@ -154,8 +142,7 @@ public class SearchManager implements IDirectableViewer {
     /**
      * constructor for non-gui version. Doesn't set instance!
      *
-     * @param targets
-     */
+	 */
     public SearchManager(ISearcher[] targets) {
         this.dir = null;
         this.targets = targets;
@@ -548,8 +535,7 @@ public class SearchManager implements IDirectableViewer {
     /**
      * find all strings present in the given file
      *
-     * @param file
-     */
+	 */
     public void findFromFile(final File file) throws IOException {
         if (isCommandLineMode()) {
             {
@@ -606,8 +592,8 @@ public class SearchManager implements IDirectableViewer {
                         Basic.caught(ex);
                     }
                     final int finalCount = Math.abs(count);
-                    SwingUtilities.invokeLater(() -> new Message(findDialog.getFrame(), "Matches: " + finalCount, 150, 100));
-                    notifyUnlockUserInput();
+					SwingUtilities.invokeLater(() -> Message.show(findDialog.getFrame(), "Matches: " + finalCount, 150, 100));
+					notifyUnlockUserInput();
                 });
                 worker.setPriority(Thread.currentThread().getPriority() - 1);
                 worker.start();
@@ -701,8 +687,6 @@ public class SearchManager implements IDirectableViewer {
     /**
      * does label match pattern?
      *
-     * @param pattern
-     * @param label
      * @return true, if match
      */
     private boolean matches(Pattern pattern, String label) {
@@ -715,9 +699,6 @@ public class SearchManager implements IDirectableViewer {
     /**
      * determines whether pattern matches label.
      *
-     * @param pattern
-     * @param replacement
-     * @param label
      * @return result of replacing query by replace string in label
      */
     private String getReplacement(Pattern pattern, String replacement, String label) {
@@ -733,7 +714,6 @@ public class SearchManager implements IDirectableViewer {
     /**
      * prepares the regular expression that reflects the chosen find options
      *
-     * @param query
      * @return regular expression
      */
     private String prepareRegularExpression(String query) {
@@ -775,8 +755,7 @@ public class SearchManager implements IDirectableViewer {
     /**
      * set the current query string
      *
-     * @param searchText
-     */
+	 */
     public void setSearchText(String searchText) {
         this.searchText = searchText;
     }
@@ -793,8 +772,7 @@ public class SearchManager implements IDirectableViewer {
     /**
      * set the current replacement string
      *
-     * @param replaceText
-     */
+	 */
     public void setReplaceText(String replaceText) {
         this.replaceText = replaceText;
     }
@@ -850,8 +828,7 @@ public class SearchManager implements IDirectableViewer {
     /**
      * set uptodate state
      *
-     * @param flag
-     */
+	 */
     public void setUptoDate(boolean flag) {
     }
 
@@ -883,8 +860,7 @@ public class SearchManager implements IDirectableViewer {
     /**
      * chooses the current searcher by name
      *
-     * @param name
-     */
+	 */
     public void chooseSearcher(String name) {
         if (findDialog != null) {
             findDialog.selectTarget(name);
@@ -911,9 +887,7 @@ public class SearchManager implements IDirectableViewer {
     /**
      * replace the set of searchers by a new set
      *
-     * @param searchers
-     * @param showReplace
-     */
+	 */
     public void replaceSearchers(IDirector dir, ISearcher[] searchers, boolean showReplace) {
         this.dir = dir;
         if (searchers != this.targets) {
@@ -929,9 +903,7 @@ public class SearchManager implements IDirectableViewer {
     /**
      * enable or disable the named searcher
      *
-     * @param searcherName
-     * @param enable
-     */
+	 */
     public void setEnabled(String searcherName, boolean enable) {
         if (enable)
             disabledSearchers.remove(searcherName);
@@ -952,7 +924,6 @@ public class SearchManager implements IDirectableViewer {
     /**
      * is named searcher currently enabled?
      *
-     * @param searcherName
      * @return true, if enabled
      */
     public boolean isEnabled(String searcherName) {
@@ -971,8 +942,7 @@ public class SearchManager implements IDirectableViewer {
     /**
      * show or hide replace dialog
      *
-     * @param showReplace
-     */
+	 */
     public void setShowReplace(boolean showReplace) {
         if (showReplace != this.showReplace) {
             this.showReplace = showReplace;
@@ -985,13 +955,7 @@ public class SearchManager implements IDirectableViewer {
     /**
      * run a find. This is used in the command line version of a program
      *
-     * @param searchText
-     * @param target
-     * @param all
-     * @param regularExpression
-     * @param wholeWord
-     * @param caseSensitive
-     */
+	 */
     public void runFind(String searchText, String target, boolean all, boolean regularExpression, boolean wholeWord, boolean caseSensitive) {
         chooseSearcher(target);
         setSearchText(searchText);
@@ -1007,12 +971,7 @@ public class SearchManager implements IDirectableViewer {
     /**
      * run a find. This is used in the command line version of a program
      *
-     * @param searchFile
-     * @param target
-     * @param regularExpression
-     * @param wholeWord
-     * @param caseSensitive
-     */
+	 */
     public void runFindFromFile(File searchFile, String target, boolean regularExpression, boolean wholeWord, boolean caseSensitive) throws IOException {
         chooseSearcher(target);
         setRegularExpressionsOption(regularExpression);
@@ -1024,14 +983,7 @@ public class SearchManager implements IDirectableViewer {
     /**
      * run a find and replace. This is used in the command line version of a program
      *
-     * @param searchText
-     * @param replaceText
-     * @param target
-     * @param all
-     * @param regularExpression
-     * @param wholeWord
-     * @param caseSensitive
-     */
+	 */
     public boolean runFindReplace(String searchText, String replaceText, String target, boolean all, boolean regularExpression, boolean wholeWord, boolean caseSensitive) {
         chooseSearcher(target);
         setSearchText(searchText);
@@ -1072,8 +1024,7 @@ public class SearchManager implements IDirectableViewer {
     /**
      * equate an underscore in a label with a space in the query?
      *
-     * @param equateUnderscoreWithSpace
-     */
+	 */
     public void setEquateUnderscoreWithSpace(boolean equateUnderscoreWithSpace) {
         this.equateUnderscoreWithSpace = equateUnderscoreWithSpace;
     }
@@ -1091,8 +1042,7 @@ public class SearchManager implements IDirectableViewer {
     /**
      * sets the instance of the search manager
      *
-     * @param instance
-     */
+	 */
     public static void setInstance(SearchManager instance) {
         SearchManager.instance = instance;
     }
@@ -1102,26 +1052,26 @@ public class SearchManager implements IDirectableViewer {
      * notifies the director to lock user input
      */
     private void notifyLockUserInput() {
-        try {
-            SwingUtilities.invokeAndWait(() -> {
-                if (dir != null)
-                    dir.notifyLockInput();
-            });
-        } catch (Exception e) {
-        }
+		try {
+			SwingUtilities.invokeAndWait(() -> {
+				if (dir != null)
+					dir.notifyLockInput();
+			});
+		} catch (Exception ignored) {
+		}
     }
 
     /**
      * notifies the director to unlock user input
      */
     private void notifyUnlockUserInput() {
-        try {
-            SwingUtilities.invokeAndWait(() -> {
-                if (dir != null)
-                    dir.notifyUnlockInput();
-            });
-        } catch (Exception e) {
-        }
+		try {
+			SwingUtilities.invokeAndWait(() -> {
+				if (dir != null)
+					dir.notifyUnlockInput();
+			});
+		} catch (Exception ignored) {
+		}
     }
 
     private boolean isCommandLineMode() {

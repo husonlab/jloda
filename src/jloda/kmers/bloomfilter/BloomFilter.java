@@ -60,7 +60,6 @@ public class BloomFilter {
     /**
      * Constructor for expected number of items and total size to use
      *
-     * @param expectedNumberOfItems
      * @param totalNumberOfBytes    bytes to use
      */
     public BloomFilter(int expectedNumberOfItems, int totalNumberOfBytes) {
@@ -168,7 +167,6 @@ public class BloomFilter {
     /**
      * adds a string
      *
-     * @param string
      * @return true, if definitely not previously added
      */
     public boolean isContainedProbably(byte[] string) {

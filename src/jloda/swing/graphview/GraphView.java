@@ -17,12 +17,6 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-/**
- * @version $Id: GraphView.java,v 1.189 2010-06-08 08:55:32 huson Exp $
- * <p>
- * Graph tree class.
- * @author Daniel Huson
- */
 package jloda.swing.graphview;
 
 import jloda.graph.*;
@@ -225,7 +219,6 @@ public class GraphView extends JPanel implements Printable, Scrollable, INodeEdg
     /**
      * set the graphViewListener. Remove the old one
      *
-     * @param graphViewListener
      */
     public void setGraphViewListener(IGraphViewListener graphViewListener) {
         if (this.graphViewListener != null) {
@@ -288,7 +281,6 @@ public class GraphView extends JPanel implements Printable, Scrollable, INodeEdg
     /**
      * allow or disallow interactive moving of nodes
      *
-     * @param allowMoveNodes
      */
     public void setAllowMoveNodes(boolean allowMoveNodes) {
         this.allowMoveNodes = allowMoveNodes;
@@ -306,7 +298,6 @@ public class GraphView extends JPanel implements Printable, Scrollable, INodeEdg
     /**
      * allow to move internal edge points
      *
-     * @param allowMoveInternalEdgePoints
      */
     public void setAllowMoveInternalEdgePoints(boolean allowMoveInternalEdgePoints) {
         this.allowMoveInternalEdgePoints = allowMoveInternalEdgePoints;
@@ -361,7 +352,6 @@ public class GraphView extends JPanel implements Printable, Scrollable, INodeEdg
     /**
      * determine whether to display a scale bar
      *
-     * @param drawScaleBar
      */
     public void setDrawScaleBar(boolean drawScaleBar) {
         this.drawScaleBar = drawScaleBar;
@@ -379,7 +369,6 @@ public class GraphView extends JPanel implements Printable, Scrollable, INodeEdg
     /**
      * set lock aspect ratio
      *
-     * @param keepAspectRatio
      */
     public void setKeepAspectRatio(boolean keepAspectRatio) {
         trans.setLockXYScale(keepAspectRatio);
@@ -397,7 +386,6 @@ public class GraphView extends JPanel implements Printable, Scrollable, INodeEdg
     /**
      * is rotation by arbitary angle allowed
      *
-     * @param allowRotationArbitraryAngle
      */
     public void setAllowRotationArbitraryAngle(boolean allowRotationArbitraryAngle) {
         this.allowRotationArbitraryAngle = allowRotationArbitraryAngle;
@@ -423,7 +411,6 @@ public class GraphView extends JPanel implements Printable, Scrollable, INodeEdg
     /**
      * sets the default node font
      *
-     * @param font
      */
     public void setDefaultNodeFont(Font font) {
         defaultNodeView.setFont(font);
@@ -532,7 +519,6 @@ public class GraphView extends JPanel implements Printable, Scrollable, INodeEdg
     /**
      * gets the node shape
      *
-     * @param v
      * @return node shape
      */
     public NodeShape getNodeShape(Node v) {
@@ -749,7 +735,6 @@ public class GraphView extends JPanel implements Printable, Scrollable, INodeEdg
     /**
      * gets the list of internal points associated with an edge, or null
      *
-     * @param e
      * @return list of internal points, or null
      * @
      */
@@ -760,7 +745,6 @@ public class GraphView extends JPanel implements Printable, Scrollable, INodeEdg
     /**
      * sets the list of internal points associated with an edge, or null
      *
-     * @param e
      * @param list
      * @
      */
@@ -791,7 +775,6 @@ public class GraphView extends JPanel implements Printable, Scrollable, INodeEdg
     /**
      * gets the label layout mode of the node
      *
-     * @param v
      * @return layout mode
      */
     public byte getLabelLayout(Node v) {
@@ -811,7 +794,6 @@ public class GraphView extends JPanel implements Printable, Scrollable, INodeEdg
     /**
      * gets the label layout mode of the edge
      *
-     * @param e
      * @return layout mode
      */
     public byte getLabelLayout(Edge e) {
@@ -821,7 +803,6 @@ public class GraphView extends JPanel implements Printable, Scrollable, INodeEdg
     /**
      * Is the label visible ?
      *
-     * @param v
      * @return visibility of the label
      */
     public boolean isLabelVisible(Node v) {
@@ -1049,7 +1030,6 @@ public class GraphView extends JPanel implements Printable, Scrollable, INodeEdg
     /**
      * gets the labels background color
      *
-     * @param v
      * @return color
      */
     public Color getLabelBackgroundColor(Node v) {
@@ -1214,7 +1194,6 @@ public class GraphView extends JPanel implements Printable, Scrollable, INodeEdg
     /**
      * gets the labels background color
      *
-     * @param e
      * @return color
      */
     public Color getLabelBackgroundColor(Edge e) {
@@ -1492,7 +1471,6 @@ public class GraphView extends JPanel implements Printable, Scrollable, INodeEdg
     /**
      * Sets the font for all selected nodes and adjacentEdges
      *
-     * @param font
      */
     public void setFontSelected(Font font) {
         setFontSelectedNodes(font);
@@ -1503,7 +1481,6 @@ public class GraphView extends JPanel implements Printable, Scrollable, INodeEdg
     /**
      * Sets the font for all selected adjacentEdges
      *
-     * @param font
      */
     public void setFontSelectedEdges(Font font) {
         for (Edge e : selectedEdges) {
@@ -1515,10 +1492,6 @@ public class GraphView extends JPanel implements Printable, Scrollable, INodeEdg
     /**
      * Sets the font for all selected adjacentEdges. Only sets those parts that are not null or -1
      *
-     * @param family
-     * @param bold
-     * @param italics
-     * @param size
      * @return changed?
      */
     public boolean setFontSelectedEdges(String family, int bold, int italics, int size) {
@@ -1546,10 +1519,6 @@ public class GraphView extends JPanel implements Printable, Scrollable, INodeEdg
     /**
      * Sets the font for all selected nodes. Only sets those parts that are not null or -1
      *
-     * @param family
-     * @param bold
-     * @param italics
-     * @param size
      * @return changed?
      */
     public boolean setFontSelectedNodes(String family, int bold, int italics, int size) {
@@ -1577,7 +1546,6 @@ public class GraphView extends JPanel implements Printable, Scrollable, INodeEdg
     /**
      * Sets the font for all selected nodes
      *
-     * @param font
      */
     public void setFontSelectedNodes(Font font) {
         try {
@@ -1593,8 +1561,6 @@ public class GraphView extends JPanel implements Printable, Scrollable, INodeEdg
     /**
      * sets the size of all selected nodes
      *
-     * @param width
-     * @param height
      */
     public void setSizeSelectedNodes(byte width, byte height) {
         try {
@@ -2154,7 +2120,6 @@ public class GraphView extends JPanel implements Printable, Scrollable, INodeEdg
     /**
      * draws the powered by logo
      *
-     * @param gc
      */
     protected void drawPoweredBy(Graphics2D gc, Rectangle rect) {
         if (POWEREDBY != null && POWEREDBY.length() > 2) {
@@ -2725,7 +2690,6 @@ public class GraphView extends JPanel implements Printable, Scrollable, INodeEdg
     /**
      * set user is allowed to rubberband select nodes
      *
-     * @param allowRubberbandNodes
      */
     public void setAllowRubberbandNodes(boolean allowRubberbandNodes) {
         this.allowRubberbandNodes = allowRubberbandNodes;
@@ -2752,7 +2716,6 @@ public class GraphView extends JPanel implements Printable, Scrollable, INodeEdg
     /**
      * set internal edge points insertion mode.
      *
-     * @param allowInternalEdgePoints
      */
     public void setAllowInternalEdgePoints(boolean allowInternalEdgePoints) {
         this.allowInternalEdgePoints = allowInternalEdgePoints;
@@ -2761,7 +2724,6 @@ public class GraphView extends JPanel implements Printable, Scrollable, INodeEdg
     /**
      * set user is allowed to rubberband select adjacentEdges
      *
-     * @param allowRubberbandEdges
      */
     public void setAllowRubberbandEdges(boolean allowRubberbandEdges) {
         this.allowRubberbandEdges = allowRubberbandEdges;
@@ -2779,7 +2741,6 @@ public class GraphView extends JPanel implements Printable, Scrollable, INodeEdg
     /**
      * allow edit edge label on double click on edge label?
      *
-     * @param allowEditEdgeLabelsOnDoubleClick
      */
     public void setAllowEditEdgeLabelsOnDoubleClick(boolean allowEditEdgeLabelsOnDoubleClick) {
         this.allowEditEdgeLabelsOnDoubleClick = allowEditEdgeLabelsOnDoubleClick;
@@ -2797,7 +2758,6 @@ public class GraphView extends JPanel implements Printable, Scrollable, INodeEdg
     /**
      * allow undo node label on double click on node?
      *
-     * @param allowEditNodeLabelsOnDoubleClick
      */
     public void setAllowEditNodeLabelsOnDoubleClick(boolean allowEditNodeLabelsOnDoubleClick) {
         this.allowEditNodeLabelsOnDoubleClick = allowEditNodeLabelsOnDoubleClick;
@@ -2883,7 +2843,6 @@ public class GraphView extends JPanel implements Printable, Scrollable, INodeEdg
     /**
      * set use label layouter
      *
-     * @param autoLayoutLabels
      */
     public void setAutoLayoutLabels(boolean autoLayoutLabels) {
         this.autoLayoutLabels = autoLayoutLabels;
@@ -2901,7 +2860,6 @@ public class GraphView extends JPanel implements Printable, Scrollable, INodeEdg
     /**
      * sets the font
      *
-     * @param font
      */
     public void setFont(Font font) {
         this.font = font;
@@ -2911,7 +2869,6 @@ public class GraphView extends JPanel implements Printable, Scrollable, INodeEdg
     /**
      * set  draw nodes at fixed size
      *
-     * @param fixedNodeSize
      */
     public void setFixedNodeSize(boolean fixedNodeSize) {
         for (Node v = getGraph().getFirstNode(); v != null; v = v.getNext()) {
@@ -2939,7 +2896,6 @@ public class GraphView extends JPanel implements Printable, Scrollable, INodeEdg
     /**
      * sets the dendroscope used to draw the graph and to handle mouse interactions
      *
-     * @param graphDrawer
      */
     public void setGraphDrawer(IGraphDrawer graphDrawer) {
         this.graphDrawer = graphDrawer;
@@ -3053,7 +3009,6 @@ public class GraphView extends JPanel implements Printable, Scrollable, INodeEdg
     /**
      * sets the popup listener
      *
-     * @param popupListener
      */
     public void setPopupListener(IPopupListener popupListener) {
         this.popupListener = popupListener;
@@ -3062,8 +3017,6 @@ public class GraphView extends JPanel implements Printable, Scrollable, INodeEdg
     /**
      * fire the node popup menu
      *
-     * @param me
-     * @param nodes
      */
     public void fireNodePopup(MouseEvent me, NodeSet nodes) {
         if (popupListener != null) popupListener.doNodePopup(me, nodes);
@@ -3072,8 +3025,6 @@ public class GraphView extends JPanel implements Printable, Scrollable, INodeEdg
     /**
      * fire the node label popup menu
      *
-     * @param me
-     * @param nodes
      */
     public void fireNodeLabelPopup(MouseEvent me, NodeSet nodes) {
         if (popupListener != null) popupListener.doNodeLabelPopup(me, nodes);
@@ -3082,8 +3033,6 @@ public class GraphView extends JPanel implements Printable, Scrollable, INodeEdg
     /**
      * fire the edge popup menu
      *
-     * @param me
-     * @param edges
      */
     public void fireEdgePopup(MouseEvent me, EdgeSet edges) {
         if (popupListener != null) popupListener.doEdgePopup(me, edges);
@@ -3092,8 +3041,6 @@ public class GraphView extends JPanel implements Printable, Scrollable, INodeEdg
     /**
      * fire the edge label popup menu
      *
-     * @param me
-     * @param edges
      */
     public void fireEdgeLabelPopup(MouseEvent me, EdgeSet edges) {
         if (popupListener != null) popupListener.doEdgeLabelPopup(me, edges);
@@ -3102,7 +3049,6 @@ public class GraphView extends JPanel implements Printable, Scrollable, INodeEdg
     /**
      * fire the panel popup (when nothing was hit)
      *
-     * @param me
      */
     public void firePanelPopup(MouseEvent me) {
         if (popupListener != null) popupListener.doPanelPopup(me);
@@ -3114,7 +3060,6 @@ public class GraphView extends JPanel implements Printable, Scrollable, INodeEdg
      * replace current selection of nodes by given one. Do not fire any
      * node deselection events
      *
-     * @param nodes
      */
     public void pushNodeSelection(NodeSet nodes) {
         if (origNodeSelection != null)
@@ -3152,7 +3097,6 @@ public class GraphView extends JPanel implements Printable, Scrollable, INodeEdg
     /**
      * sets the cursor
      *
-     * @param cursor
      */
     public void setCursor(Cursor cursor) {
         getScrollPane().setCursor(cursor);
@@ -3183,8 +3127,6 @@ public class GraphView extends JPanel implements Printable, Scrollable, INodeEdg
     /**
      * flip node label layout horizontally, vertically, or both
      *
-     * @param hflip
-     * @param vflip
      */
     public void flipNodeLabels(boolean hflip, boolean vflip) {
         for (Node v = getGraph().getFirstNode(); v != null; v = v.getNext()) {
@@ -3239,7 +3181,6 @@ public class GraphView extends JPanel implements Printable, Scrollable, INodeEdg
     /**
      * rotateAbout labels of all selected nodes and adjacentEdges
      *
-     * @param percent
      */
     public void rotateLabels(NodeSet nodes, EdgeSet edges, int percent) {
         float angle = (float) (Math.PI / 50.0 * percent);
@@ -3274,7 +3215,6 @@ public class GraphView extends JPanel implements Printable, Scrollable, INodeEdg
     /**
      * node found by search, must be drawn if !=null
      *
-     * @param foundNode
      */
     public void setFoundNode(Node foundNode) {
         this.foundNode = foundNode;
@@ -3292,7 +3232,6 @@ public class GraphView extends JPanel implements Printable, Scrollable, INodeEdg
     /**
      * automatically repaint on graph change?
      *
-     * @param repaintOnGraphHasChanged
      */
     public void setRepaintOnGraphHasChanged(boolean repaintOnGraphHasChanged) {
         this.repaintOnGraphHasChanged = repaintOnGraphHasChanged;
@@ -3324,7 +3263,6 @@ public class GraphView extends JPanel implements Printable, Scrollable, INodeEdg
     /**
      * select the given adjacentEdges and all nodes and adjacentEdges below
      *
-     * @param edges
      */
     public void selectAllBelow(EdgeSet edges) {
         NodeSet seen = new NodeSet(getGraph());
@@ -3701,7 +3639,6 @@ public class GraphView extends JPanel implements Printable, Scrollable, INodeEdg
     /**
      * set the tool tip text to the label of the given node
      *
-     * @param v
      */
     public void setToolTipText(Node v) {
         setToolTipText(getLabel(v));
@@ -3718,7 +3655,6 @@ public class GraphView extends JPanel implements Printable, Scrollable, INodeEdg
     /**
      * selects all connected components containing any of the given nodes
      *
-     * @param nodes
      */
     public void selectConnectedComponents(NodeSet nodes) {
         final NodeSet nodesToSelect = new NodeSet(G);

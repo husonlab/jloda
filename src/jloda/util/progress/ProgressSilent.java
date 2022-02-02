@@ -35,8 +35,6 @@ public class ProgressSilent implements ProgressListener {
 	/**
 	 * constructor
 	 *
-	 * @param taskName
-	 * @param subtaskName
 	 */
 	public ProgressSilent(final String taskName, final String subtaskName) {
 	}
@@ -44,7 +42,6 @@ public class ProgressSilent implements ProgressListener {
 	/**
 	 * sets the steps number of steps to be done. By default, the maximum is set to 100
 	 *
-	 * @param steps
 	 */
 	public void setMaximum(final long steps) {
 	}
@@ -52,7 +49,6 @@ public class ProgressSilent implements ProgressListener {
 	/**
 	 * sets the progress
 	 *
-	 * @param steps
 	 */
 	public void setProgress(final long steps) {
 	}
@@ -86,8 +82,6 @@ public class ProgressSilent implements ProgressListener {
 	/**
 	 * Sets the Task and subtask names, for use in progress bar displays
 	 *
-	 * @param taskName
-	 * @param subtaskName
 	 */
 	public void setTasks(String taskName, String subtaskName) {
 	}
@@ -95,7 +89,6 @@ public class ProgressSilent implements ProgressListener {
 	/**
 	 * Sets just the subtask
 	 *
-	 * @param subtaskName
 	 */
 	public void setSubtask(String subtaskName) {
 	}

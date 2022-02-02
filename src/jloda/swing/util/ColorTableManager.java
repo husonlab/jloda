@@ -98,7 +98,6 @@ public class ColorTableManager {
     /**
      * get a named color table
      *
-     * @param name
      * @return color table
      */
     public static ColorTable getColorTable(String name) {
@@ -112,7 +111,6 @@ public class ColorTableManager {
     /**
      * get a named color table
      *
-     * @param name
      * @return color table
      */
     public static ColorTable getColorTableHeatMap(String name) {
@@ -158,8 +156,7 @@ public class ColorTableManager {
     /**
      * parse the definition of tables
      *
-     * @param tables
-     */
+	 */
     public static void parseTables(String... tables) {
         int alpha = Math.max(0, Math.min(255, ProgramProperties.get("ColorAlpha", 255)));
 

@@ -37,39 +37,31 @@ public interface IDirector {
     /**
      * execute a command
      *
-     * @param command
-     */
+	 */
     void execute(String command);
 
     /**
      * execute a command using the provided command manager
      *
-     * @param command
-     * @param commandManager
-     */
+	 */
     void execute(String command, CommandManager commandManager);
 
     /**
      * execute a command using the provided command manager
      *
-     * @param command
-     * @param commandManager
-     */
+	 */
     void execute(String command, CommandManager commandManager, Component parent);
 
     /**
      * execute a command
      *
-     * @param command
-     */
+	 */
     boolean executeImmediately(String command);
 
     /**
      * execute a command using the provided command manager
      *
-     * @param command
-     * @param commandManager
-     */
+	 */
     boolean executeImmediately(String command, CommandManager commandManager);
 
     /**
@@ -82,15 +74,13 @@ public interface IDirector {
     /**
      * adds a viewer
      *
-     * @param viewer
-     */
+	 */
     IDirectableViewer addViewer(IDirectableViewer viewer);
 
     /**
      * remove a given viewer
      *
-     * @param viewer
-     */
+	 */
     void removeViewer(IDirectableViewer viewer);
 
     /**
@@ -103,8 +93,7 @@ public interface IDirector {
     /**
      * set the dirty flag
      *
-     * @param dirty
-     */
+	 */
     void setDirty(boolean dirty);
 
     /**
@@ -117,8 +106,7 @@ public interface IDirector {
     /**
      * set the project id
      *
-     * @param id
-     */
+	 */
     void setID(int id);
 
     /**
@@ -153,7 +141,6 @@ public interface IDirector {
     /**
      * returns a viewer of the given class
      *
-     * @param aClass
      * @return viewer of the given class, or null
      */
     IDirectableViewer getViewerByClass(Class aClass);

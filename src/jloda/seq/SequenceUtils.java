@@ -46,9 +46,6 @@ public class SequenceUtils {
     /**
      * translate DNA into amino acids
      *
-     * @param c1
-     * @param c2
-     * @param c3
      * @return amino acid
      */
     static private byte getAminoAcidInit(int c1, int c2, int c3) {
@@ -201,8 +198,6 @@ public class SequenceUtils {
     /**
      * gets the amino acid for the codon starting the given position
      *
-     * @param sequence
-     * @param pos
      * @return amino acid
      */
     static public byte getAminoAcid(byte[] sequence, int pos) {
@@ -219,8 +214,6 @@ public class SequenceUtils {
      * To get the amino acid sequence of the reverse strand of DNA using this method,
      * start at beginning of leading strand, calling this method repeatedly, building the protein sequence from the end to the beginning
      *
-     * @param sequence
-     * @param pos
      * @return amino acid
      */
     static public byte getAminoAcidReverse(byte[] sequence, int pos) {
@@ -232,7 +225,6 @@ public class SequenceUtils {
      * To get the amino acid sequence of the reverse strand of DNA using this method,
      * start at the end of the leading strand and repeatedly call this method with letters at positions pos, pos-1, pos-2
      *
-     * @param a
      * @param b param c
      * @return amino acid
      */
@@ -243,8 +235,6 @@ public class SequenceUtils {
     /**
      * gets the amino acid for the codon starting the given position
      *
-     * @param sequence
-     * @param pos
      * @return amino acid
      */
     static public byte getAminoAcid(String sequence, int pos) {
@@ -256,8 +246,6 @@ public class SequenceUtils {
      * To get the amino acid sequence of the reverse strand of DNA using this method,
      * start at beginning of leading strand, calling this method repeatedly, building the protein sequence from the end to the beginning
      *
-     * @param sequence
-     * @param pos
      * @return amino acid
      */
     static public byte getAminoAcidReverse(String sequence, int pos) {
@@ -267,26 +255,22 @@ public class SequenceUtils {
     /**
      * translate DNA into amino acids
      *
-     * @param c1
-     * @param c2
-     * @param c3
      * @return amino acid
      */
     static public byte getAminoAcid(int c1, int c2, int c3) {
         try {
-            byte aa = codon2aminoAcid[c1][c2][c3];
-            if (aa != 0) {
-                return aa;
-            }
-        } catch (Exception ex) {
-        }
+			byte aa = codon2aminoAcid[c1][c2][c3];
+			if (aa != 0) {
+				return aa;
+			}
+		} catch (Exception ignored) {
+		}
         return 'X';
     }
 
     /**
      * is this a valid nucleotide (with ambiguity codes)
      *
-     * @param ch
      * @return true, if nucleotide
      */
     public static boolean isNucleotide(int ch) {
@@ -296,7 +280,6 @@ public class SequenceUtils {
     /**
      * reverse complement of string
      *
-     * @param readSequence
      * @return reverse complement
      */
     public static String getReverseComplement(String readSequence) {
@@ -310,7 +293,6 @@ public class SequenceUtils {
     /**
      * gets the  complement of a nucleotide. Returns ambiguity codes unaltered.
      *
-     * @param nucleotide
      * @return reverse complement
      */
     public static byte getComplement(byte nucleotide) {
@@ -330,7 +312,6 @@ public class SequenceUtils {
     /**
      * reverses (but does NOT complement) a sequence
      *
-     * @param sequence
      * @return reverse string (but not complemented
      */
     public static String getReverse(String sequence) {
@@ -344,7 +325,6 @@ public class SequenceUtils {
     /**
      * reverses (but does NOT complement) a sequence
      *
-     * @param sequence
      * @return reverse string (but not complemented)
      */
     public static byte[] getReverse(byte[] sequence) {
@@ -358,7 +338,6 @@ public class SequenceUtils {
     /**
      * gets the reverse complement
      *
-     * @param sequence
      * @return reverse complement
      */
     public static byte[] getReverseComplement(byte[] sequence) {
@@ -372,7 +351,6 @@ public class SequenceUtils {
 	/**
 	 * gets the reverse complement of a segment
 	 *
-	 * @param sequence
 	 * @param offset   start of segment
 	 * @param length   length of segment
 	 */
@@ -395,10 +373,7 @@ public class SequenceUtils {
     /**
      * translate a DNA sequence into protein
      *
-     * @param reverse
-     * @param sequence
-     * @return
-     */
+	 */
     public static byte[] translate(boolean reverse, int shift, String sequence) {
         byte[] result = new byte[(sequence.length() - shift) / 3];
         if (!reverse) {
@@ -421,8 +396,6 @@ public class SequenceUtils {
      * copies a string to a byte array, 0 terminated.
      * Note that the length of bytes is usually larger than the string length
      *
-     * @param string
-     * @param bytes
      * @return 0-terminated bytes
      */
     public static byte[] getBytes0Terminated(String string, byte[] bytes) {
@@ -438,7 +411,6 @@ public class SequenceUtils {
     /**
      * convert 0 terminated bytes to string
      *
-     * @param bytes
      * @return string
      */
     public static String getStringFromBytes0Terminated(byte[] bytes) {
@@ -454,8 +426,6 @@ public class SequenceUtils {
     /**
      * counts how many times each of the given symbols have been used
      *
-     * @param sequence
-     * @param symbols
      * @return usage
      */
     public static int[] computeUsageCounts(byte[] sequence, byte[] symbols) {
@@ -473,7 +443,6 @@ public class SequenceUtils {
     /**
      * count the number of gaps ('-') in a sequence
      *
-     * @param sequence
      * @return number of gaps
      */
     public static int countGaps(String sequence) {
@@ -487,7 +456,6 @@ public class SequenceUtils {
     /**
      * count the number of gaps ('-') in a sequence
      *
-     * @param sequence
      * @return number of gaps
      */
     public static int countGaps(byte[] sequence) {

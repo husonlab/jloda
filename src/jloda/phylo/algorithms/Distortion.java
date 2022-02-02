@@ -42,14 +42,12 @@ public class Distortion {
      * score over all possible refinements of the tree.
      * See Huson, Steel and Witfield, 2006
      *
-     * @param tree
      * @param A    one side of split
      * @param B    other side of split
      * @param root the root to use, this should not make any difference, but is here for testing
      *             purposes
      * @return homoplasy score for split
-     * @throws IOException
-     */
+	 */
     static public int computeDistortionForSplit(PhyloTree tree, BitSet A, BitSet B, Node root) throws IOException {
         if (tree.getNumberOfNodes() < 2 || A.cardinality() <= 1 || B.cardinality() <= 1)
             return 0;
@@ -112,11 +110,7 @@ public class Distortion {
     /**
      * recursively does the work
      *
-     * @param v
-     * @param e
-     * @param scoreA
-     * @param scoreB
-     */
+	 */
     private static void computeScoreRec(Node v, Edge e, NodeIntArray scoreA, NodeIntArray scoreB) {
         //System.out.println("Entering with v="+v);
         //printScores(tree,scoreA,scoreB);

@@ -39,8 +39,6 @@ public class Dijkstra {
      * compute single source shortest path from source to sink, non-negative edge weights
      *
      * @param graph  with adjacentEdges labeled by Integers
-     * @param source
-     * @param sink
      * @return shortest path from source to sink
      */
     public static List<Node> compute(final Graph graph, Node source, Node sink, Function<Edge, Number> weights) {
@@ -94,8 +92,6 @@ public class Dijkstra {
     /**
      * setups the priority queue
      *
-     * @param graph
-     * @param dist
      * @return full priority queue
      * @
      */

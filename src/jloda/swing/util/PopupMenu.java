@@ -39,10 +39,7 @@ public class PopupMenu extends JPopupMenu {
     /**
      * constructor
      *
-     * @param viewer
-     * @param configuration
-     * @param commandManager
-     */
+	 */
     public PopupMenu(Object viewer, String configuration, CommandManager commandManager) {
         this(viewer, configuration, commandManager, false, false, false);
     }
@@ -50,10 +47,7 @@ public class PopupMenu extends JPopupMenu {
     /**
      * constructor
      *
-     * @param viewer
-     * @param configuration
-     * @param commandManager
-     */
+	 */
     public PopupMenu(Object viewer, String configuration, CommandManager commandManager, boolean showApplicableOnly) {
         this(viewer, configuration, commandManager, showApplicableOnly, false, false);
     }
@@ -61,10 +55,7 @@ public class PopupMenu extends JPopupMenu {
     /**
      * constructor
      *
-     * @param viewer
-     * @param configuration
-     * @param commandManager
-     */
+	 */
     public PopupMenu(Object viewer, String configuration, CommandManager commandManager, boolean showApplicableOnly, boolean isNodePopup, boolean isEdgePopup) {
         super();
         this.isNodePopup = isNodePopup;
@@ -102,10 +93,10 @@ public class PopupMenu extends JPopupMenu {
         if (ProgramProperties.get("showtex", false)) {
             System.out.println(TeXGenerator.getPopupMenuLaTeX(configuration, commandManager));
         }
-        try {
-            commandManager.updateEnableState();
-        } catch (Exception ex) {
-        }
+		try {
+			commandManager.updateEnableState();
+		} catch (Exception ignored) {
+		}
     }
 
     public static IPopMenuModifier getMenuModifier() {

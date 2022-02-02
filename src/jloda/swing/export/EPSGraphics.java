@@ -101,10 +101,6 @@ public class EPSGraphics extends Graphics2D {
     public static final boolean FONT_TEXT = false;
 
     /**
-     * CONSTRUCTORS
-     */
-
-    /**
      * the eps document will be written directly to the given
      * <code>OutputStream</code>.
      * after writing to EPSGraphics is finished, {@link #finish() finish()} needs to be called in order to
@@ -162,11 +158,6 @@ public class EPSGraphics extends Graphics2D {
     public Graphics create() {
         return new EPSGraphics(this);
     }
-
-
-    /**
-     * overriden methods of <code>java.awt.Graphics</code>
-     */
 
 
     /**
@@ -419,15 +410,6 @@ public class EPSGraphics extends Graphics2D {
         return this.fontRenderContext;
     }
 
-
-    /**
-     * overriden methods of <code>java.awt.Graphics2D</code>
-     */
-
-
-    /**
-     * methods of <code>java.awt.Graphics2D</code> supported by <code>EPSGraphics</code>
-     */
 
     /**
      * draws a string at (<code>x,y</code>).

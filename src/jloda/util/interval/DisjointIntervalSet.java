@@ -33,7 +33,6 @@ public class DisjointIntervalSet<T> {
     /**
      * determines whether interval overlaps members of set
      *
-     * @param interval
      * @return true, if overlaps
      */
     public boolean overlaps(Interval<T> interval) {
@@ -43,8 +42,6 @@ public class DisjointIntervalSet<T> {
     /**
      * determines whether interval [a,b] overlaps members of set
      *
-     * @param start
-     * @param end
      * @return true, if overlaps
      */
     public boolean overlaps(int start, int end) {
@@ -62,7 +59,6 @@ public class DisjointIntervalSet<T> {
     /**
      * inserts interval into set
      *
-     * @param interval
      * @throws IllegalArgumentException, if interval overlaps  members of set
      */
     public void insert(Interval<T> interval) throws IllegalArgumentException {
@@ -74,9 +70,6 @@ public class DisjointIntervalSet<T> {
     /**
      * inserts interval into set
      *
-     * @param a
-     * @param b
-     * @param data
      * @throws IllegalArgumentException, if interval overlaps  members of set
      */
     public void insert(int a, int b, T data) throws IllegalArgumentException {

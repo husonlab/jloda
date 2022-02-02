@@ -18,12 +18,6 @@
  */
 
 package jloda.phylo;
-/**
- * @version $Id: TreeParseException.java,v 1.4 2007-01-03 06:32:45 huson Exp $
- * <p>
- * Expections for all of jloda
- * @author Daniel Huson
- */
 
 
 /**

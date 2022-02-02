@@ -30,8 +30,7 @@ public class Octahedron extends MeshView {
     /**
      * constructor
      *
-     * @param length
-     */
+	 */
     public Octahedron(float length) {
         final TriangleMesh mesh = new TriangleMesh();
         mesh.getPoints().addAll(

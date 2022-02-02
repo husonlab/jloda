@@ -54,8 +54,7 @@ public class Translator {
     /**
      * load translation from a language object
      *
-     * @param language
-     */
+	 */
     public void load(Language language) {
         Map lmap = language.getMap();
         for (Object obj : lmap.keySet()) {
@@ -67,7 +66,6 @@ public class Translator {
     /**
      * get the translation for a string, if translation is on
      *
-     * @param original
      * @param log      log missing translations?
      * @return translation
      */
@@ -88,7 +86,6 @@ public class Translator {
     /**
      * translate a string
      *
-     * @param original
      * @return translation
      */
     public static String get(String original) {
@@ -98,7 +95,6 @@ public class Translator {
     /**
      * translate a string
      *
-     * @param original
      * @param log      log missing translations?
      * @return translation
      */
@@ -118,8 +114,7 @@ public class Translator {
     /**
      * do translation?
      *
-     * @param doTranslation
-     */
+	 */
     public void setDoTranslation(boolean doTranslation) {
         this.doTranslation = doTranslation;
     }
@@ -127,9 +122,7 @@ public class Translator {
     /**
      * dump all defined and undefined translations to a file
      *
-     * @param file
-     * @throws IOException
-     */
+	 */
     public void dumpToFile(File file) throws IOException {
         BufferedWriter w = new BufferedWriter(new FileWriter(file));
 

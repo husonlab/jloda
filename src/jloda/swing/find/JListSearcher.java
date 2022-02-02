@@ -26,11 +26,6 @@ import java.util.HashSet;
 import java.util.Set;
 
 /**
- * JList searcher
- * Daniel Huson, 7.2012
- */
-
-/**
  * Class for finding labels in a JList
  * Daniel Huson, 2.2012
  */
@@ -47,8 +42,7 @@ public class JListSearcher implements IObjectSearcher {
     /**
      * constructor
      *
-     * @param jList
-     */
+	 */
     public JListSearcher(JList jList) {
         this(null, SEARCHER_NAME, jList);
     }
@@ -56,9 +50,7 @@ public class JListSearcher implements IObjectSearcher {
     /**
      * constructor
      *
-     * @param frame
-     * @param jList
-     */
+	 */
     public JListSearcher(Frame frame, JList jList) {
         this(frame, SEARCHER_NAME, jList);
     }
@@ -67,8 +59,7 @@ public class JListSearcher implements IObjectSearcher {
      * constructor
      *
      * @param
-     * @param jList
-     */
+	 */
     public JListSearcher(Frame frame, String name, JList jList) {
         this.frame = frame;
         this.name = name;
@@ -151,8 +142,7 @@ public class JListSearcher implements IObjectSearcher {
     /**
      * set selection state of current object
      *
-     * @param select
-     */
+	 */
     public void setCurrentSelected(boolean select) {
         if (select)
             toSelect.add(current);
@@ -163,8 +153,7 @@ public class JListSearcher implements IObjectSearcher {
     /**
      * set select state of all objects
      *
-     * @param select
-     */
+	 */
     public void selectAll(boolean select) {
         if (select) {
             jList.setSelectionInterval(0, jList.getComponentCount());
@@ -188,8 +177,7 @@ public class JListSearcher implements IObjectSearcher {
     /**
      * set the label of the current object
      *
-     * @param newLabel
-     */
+	 */
     public void setCurrentLabel(String newLabel) {
     }
 

@@ -19,13 +19,7 @@
 
 package jloda.progs;
 
-/**
- * a simple image processing program
- * Daniel Huson, 3.2008
- */
-
 import jloda.swing.util.CommandLineOptions;
-import jloda.util.UsageException;
 
 import javax.imageio.ImageIO;
 import java.awt.*;
@@ -48,9 +42,7 @@ public class ImageProcessor extends Component {
     /**
      * run the trait mapper
      *
-     * @param args
-     * @throws UsageException
-     */
+	 */
     public void run(String[] args) throws Exception {
         CommandLineOptions options = new CommandLineOptions(args);
         options.setDescription(ImageProcessor.class.getName() + "- simple image processor: replaces all non-green pixels by black");
@@ -70,7 +62,6 @@ public class ImageProcessor extends Component {
     /**
      * computes a new image from the input image replacing everything that is not green
      *
-     * @param originalImage
      * @return new image
      */
     public BufferedImage filterGreen(BufferedImage originalImage, int patchSize) {
@@ -99,10 +90,6 @@ public class ImageProcessor extends Component {
     /**
      * is this pixel green?
      *
-     * @param originalImage
-     * @param x
-     * @param y
-     * @param delta
      * @return true, if green
      */
     private boolean isGreen(BufferedImage originalImage, int x, int y, int delta) {
@@ -122,10 +109,8 @@ public class ImageProcessor extends Component {
     /**
      * read a buffered image from a file
      *
-     * @param fileName
      * @return image
-     * @throws IOException
-     */
+	 */
     public static BufferedImage readImage(String fileName) throws IOException {
         System.err.print("Reading image file '" + fileName + "':");
         if (!(new File(fileName)).canRead())
@@ -138,11 +123,7 @@ public class ImageProcessor extends Component {
     /**
      * write a buffered image to a file
      *
-     * @param fileName
-     * @param formatName
-     * @param bufferedImage
-     * @throws IOException
-     */
+	 */
     public static void writeImage(String fileName, String formatName, BufferedImage bufferedImage) throws IOException {
         System.err.print("Writing image file '" + fileName + "." + formatName + "':");
         File file = new File(fileName + "." + formatName);

@@ -27,7 +27,6 @@ public class PhyloTreeNetworkIOUtils {
     /**
      * looks for a suffix of the label that starts with '#'
      *
-     * @param label
      * @return label or null
      */
     public static String findReticulateLabel(String label) {

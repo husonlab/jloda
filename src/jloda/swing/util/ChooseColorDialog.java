@@ -35,9 +35,6 @@ public class ChooseColorDialog {
     /**
      * show a choose color dialog
      *
-     * @param parent
-     * @param title
-     * @param defaultColor
      * @return color chosen or null
      */
     public static Color showChooseColorDialog(JFrame parent, String title, Color defaultColor) {

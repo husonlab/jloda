@@ -32,7 +32,6 @@ public class FontUtils {
     /**
      * get the weight of a font
      *
-     * @param font
      * @return the weight
      */
     public static FontWeight getWeight(Font font) {
@@ -42,7 +41,6 @@ public class FontUtils {
     /**
      * get the posture
      *
-     * @param font
      * @return posture
      */
     public static FontPosture getPosture(Font font) {
@@ -52,7 +50,6 @@ public class FontUtils {
     /**
      * guess the weight
      *
-     * @param style
      * @return weight
      */
     public static FontWeight getWeight(String style) {
@@ -67,7 +64,6 @@ public class FontUtils {
     /**
      * get the posture
      *
-     * @param style
      * @return posture
      */
     public static FontPosture getPosture(String style) {
@@ -82,9 +78,6 @@ public class FontUtils {
     /**
      * creates a font for the given family, style and size
      *
-     * @param family
-     * @param style
-     * @param size
      * @return new font
      */
     public static Font font(String family, String style, double size) {
@@ -94,8 +87,6 @@ public class FontUtils {
     /**
      * creates the same font with a different size
      *
-     * @param font
-     * @param size
      * @return new font of given size
      */
     public static Font font(Font font, double size) {
@@ -108,7 +99,6 @@ public class FontUtils {
     /**
      * write font as comma-separated string family,style,size
      *
-     * @param font
      * @return font name as string
      */
     public static String toString(Font font) {
@@ -118,7 +108,6 @@ public class FontUtils {
     /**
      * get value font from string in format family,style,size
      *
-     * @param fontString
      * @return font
      */
     public static Font valueOf(String fontString) {

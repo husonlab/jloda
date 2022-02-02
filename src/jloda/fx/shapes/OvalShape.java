@@ -32,9 +32,7 @@ public class OvalShape extends Ellipse implements ISized {
     /**
      * constructor
      *
-     * @param width
-     * @param height
-     */
+	 */
     public OvalShape(double width, double height) {
         setSize(width, height);
     }

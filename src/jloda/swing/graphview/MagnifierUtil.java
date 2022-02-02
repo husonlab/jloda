@@ -39,8 +39,7 @@ public class MagnifierUtil {
     /**
      * constructor
      *
-     * @param graphView
-     */
+	 */
     public MagnifierUtil(GraphView graphView) {
         this.graphView = graphView;
         this.trans = graphView.trans;
@@ -49,8 +48,7 @@ public class MagnifierUtil {
     /**
      * add internal points to approximate curved adjacentEdges
      *
-     * @param e
-     */
+	 */
     public void addInternalPoints(Edge e) {
 
         // TODO: add additional points between existing ones!
@@ -78,8 +76,7 @@ public class MagnifierUtil {
      *
      * @param pv             support point in world coordinates
      * @param pw             support point in world coordinates
-     * @param internalPoints
-     */
+	 */
     private void addInternalPoints(Point2D pv, Point2D pw, java.util.List internalPoints) {
         int count = (int) trans.w2d(pv).distance(trans.w2d(pw)) / spacing;
         if (count > 0) {
@@ -96,8 +93,7 @@ public class MagnifierUtil {
     /**
      * remove the added points
      *
-     * @param e
-     */
+	 */
     public void removeAddedInternalPoints(Edge e) {
         graphView.setInternalPoints(e, oldInternalPoints);
     }
@@ -114,8 +110,7 @@ public class MagnifierUtil {
     /**
      * set spacing between points
      *
-     * @param spacing
-     */
+	 */
     public void setSpacing(int spacing) {
         this.spacing = spacing;
     }

@@ -43,7 +43,6 @@ public class LabelOverlapAvoider {
     /**
      * constructor
      *
-     * @param graphView
      * @param length    number of labels to remember
      */
     public LabelOverlapAvoider(GraphView graphView, int length) {
@@ -127,8 +126,6 @@ public class LabelOverlapAvoider {
     /**
      * does the shape s intersect the shape b? a is the area of s
      *
-     * @param a
-     * @param b
      * @return true, if a and b intersect
      */
     private boolean intersects(Area a, Shape b) {
@@ -162,8 +159,7 @@ public class LabelOverlapAvoider {
     /**
      * are we suppressing overlapping labels?
      *
-     * @param enabled
-     */
+	 */
     public void setEnabled(boolean enabled) {
         this.enabled = enabled;
     }

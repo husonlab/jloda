@@ -37,9 +37,6 @@ public class ChooseFontDialog {
     /**
      * show a choose font dialog
      *
-     * @param parent
-     * @param title
-     * @param defaultFont
      * @return color chosen or null
      */
     public static Pair<Font, Color> showChooseFontDialog(JFrame parent, String title, Font defaultFont, Color defaultColor) {

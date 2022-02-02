@@ -43,9 +43,6 @@ public class Edge extends NodeEdge implements Comparable<Edge> {
     /**
      * Construct a new edge from v to w.
      *
-     * @param G
-     * @param v
-     * @param w
      */
     Edge(Graph G, Node v, Node w) throws IllegalSelfEdgeException {
         this(G, v, null, w, null, Edge.AFTER, Edge.AFTER, null);
@@ -55,10 +52,6 @@ public class Edge extends NodeEdge implements Comparable<Edge> {
      * construct a new edge from v to w and set its info object. The next and previous adjacentEdges
      * are set to Edge.AFTER.
      *
-     * @param G
-     * @param v
-     * @param w
-     * @param obj
      */
     Edge(Graph G, Node v, Node w, Object obj) throws IllegalSelfEdgeException {
         this(G, v, null, w, null, Edge.AFTER, Edge.AFTER, obj);
@@ -92,11 +85,7 @@ public class Edge extends NodeEdge implements Comparable<Edge> {
      * @param G     The graph
      * @param id    The id of the edge
      * @param v     Source vertex
-     * @param e_v
-     * @param dir_v
      * @param w     Target Node
-     * @param e_w
-     * @param dir_w
      * @param obj   If e_v is null, then edge is inserted immediately after the last node in the list of
      *              adjacentEdges incident with v (or before the first node if dir_v = BEFORE). Likewise for e_w.
      */
@@ -345,7 +334,6 @@ public class Edge extends NodeEdge implements Comparable<Edge> {
     /**
      * compares with another edge of the same graph
      *
-     * @param e
      * @return -1, 1 or 0
      */
     public int compareTo(Edge e) {

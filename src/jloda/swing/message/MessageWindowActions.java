@@ -236,9 +236,9 @@ public class MessageWindowActions {
         action = new AbstractAction() {
             public void actionPerformed(ActionEvent event) {
                 try {
-                    undoManager.undo();
-                } catch (CannotUndoException ex) {
-                }
+					undoManager.undo();
+				} catch (CannotUndoException ignored) {
+				}
                 updateUndoRedo(undoManager);
             }
         };
@@ -278,10 +278,10 @@ public class MessageWindowActions {
 
         action = new AbstractAction() {
             public void actionPerformed(ActionEvent event) {
-                try {
-                    undoManager.redo();
-                } catch (CannotRedoException ex) {
-                }
+				try {
+					undoManager.redo();
+				} catch (CannotRedoException ignored) {
+				}
                 updateUndoRedo(undoManager);
             }
         };

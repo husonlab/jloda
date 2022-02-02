@@ -19,14 +19,6 @@
 
 package jloda.swing.graphview;
 
-/**
- * @version $Id: NodeActionListener.java,v 1.8 2007-09-11 12:33:14 kloepper Exp $
- * <p>
- * Actions performed during interaction.
- * @author Daniel Huson
- * 6.2001
- */
-
 import jloda.graph.Node;
 import jloda.graph.NodeSet;
 
@@ -95,16 +87,13 @@ public interface NodeActionListener {
     /**
      * called when node label is clicked on
      *
-     * @param nodes
-     * @param clicks
-     */
+	 */
     void doClickLabel(NodeSet nodes, int clicks);
 
     /**
      * called when node label was moved
      *
-     * @param nodes
-     */
+	 */
     void doMoveLabel(NodeSet nodes);
 
     /**

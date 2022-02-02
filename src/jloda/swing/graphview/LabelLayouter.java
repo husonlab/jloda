@@ -45,8 +45,7 @@ public class LabelLayouter {
     /**
      * constructor
      *
-     * @param gc
-     */
+	 */
     public LabelLayouter(Graphics2D gc) {
         this.gc = gc;
         rects = new LinkedList<>();
@@ -55,9 +54,7 @@ public class LabelLayouter {
     /**
      * layouts out label so that it does not cover any already visible
      *
-     * @param graphView
-     * @param v
-     */
+	 */
     private int layout(GraphView graphView, Node v, boolean changeLocations) {
         NodeView nv = graphView.getNV(v);
         Point apt = graphView.trans.w2d(nv.getLocation());
@@ -109,9 +106,7 @@ public class LabelLayouter {
     /**
      * initial layout of node labels opposite the adjacentEdges entering the node
      *
-     * @param trans
-     * @param graphView
-     */
+	 */
     public void initialLayout(Transform trans, GraphView graphView) {
         Graph graph = graphView.getGraph();
 
@@ -184,9 +179,7 @@ public class LabelLayouter {
     /**
      * lays out all node labels so that they don't overlap
      *
-     * @param trans
-     * @param graphView
-     */
+	 */
     public void nonOverlappingLayout(Transform trans, GraphView graphView) {
         Graph G = graphView.getGraph();
 

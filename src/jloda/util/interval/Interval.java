@@ -28,8 +28,7 @@ public class Interval<T> implements Comparable<Interval<T>> {
      *
      * @param start (inclusive)
      * @param end   (inclusive)
-     * @param data
-     */
+	 */
     public Interval(int start, int end, T data) {
         if (start <= end) {
             this.start = start;
@@ -44,8 +43,7 @@ public class Interval<T> implements Comparable<Interval<T>> {
     /**
      * get start
      *
-     * @return
-     */
+	 */
     public int getStart() {
         return start;
     }
@@ -77,7 +75,6 @@ public class Interval<T> implements Comparable<Interval<T>> {
     }
 
     /**
-     * @param pos
      * @return true if this interval contains pos (inclusive)
      */
     public boolean contains(int pos) {
@@ -87,7 +84,6 @@ public class Interval<T> implements Comparable<Interval<T>> {
     /**
      * does this interval contain the other?
      *
-     * @param other
      * @return true, if other contained in this
      */
     public boolean contains(Interval<?> other) {
@@ -95,7 +91,6 @@ public class Interval<T> implements Comparable<Interval<T>> {
     }
 
     /**
-     * @param other
      * @return return true if this interval intersects other
      */
     public boolean intersects(Interval<?> other) {
@@ -106,7 +101,6 @@ public class Interval<T> implements Comparable<Interval<T>> {
      * Return -1 if this interval's start pos is less than the other, 1 if greater
      * In the event of a tie, -1 if this interval's end pos is less than the other, 1 if greater, 0 if same
      *
-     * @param other
      * @return 1 or -1
      */
     public int compareTo(Interval<T> other) {
@@ -120,7 +114,6 @@ public class Interval<T> implements Comparable<Interval<T>> {
     /**
      * Returns true if start and end are equals
      *
-     * @param other
      * @return true, if start and end are equals
      */
     public boolean equals(Interval<T> other) {
@@ -130,7 +123,6 @@ public class Interval<T> implements Comparable<Interval<T>> {
     /**
      * compute the overlap with other
      *
-     * @param other
      * @return length of overlap
      */
     public double overlap(Interval<T> other) {
@@ -140,8 +132,6 @@ public class Interval<T> implements Comparable<Interval<T>> {
     /**
      * gets the length of the intersection with interval [a,b] or [b,a]
      *
-     * @param a
-     * @param b
      * @return intersection length
      */
     public int intersectionLength(int a, int b) {

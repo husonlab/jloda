@@ -36,7 +36,6 @@ public class ClosingLastDocument {
     /**
      * show the closing last document dialog
      *
-     * @param stage
      * @return true, if really want to quit
      */
     public static boolean apply(Stage stage) {

@@ -74,8 +74,7 @@ public interface IObjectSearcher<S> extends ISearcher {
     /**
      * set selection state of current object
      *
-     * @param select
-     */
+	 */
     void setCurrentSelected(boolean select);
 
     /**
@@ -95,8 +94,7 @@ public interface IObjectSearcher<S> extends ISearcher {
     /**
      * set the label of the current object
      *
-     * @param newLabel
-     */
+	 */
     void setCurrentLabel(String newLabel);
 
     /**

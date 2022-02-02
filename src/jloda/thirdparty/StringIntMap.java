@@ -222,8 +222,8 @@ public class StringIntMap {
     }
 
     public static class StringIntEntry {
-        String key;
-        int value;
+        final String key;
+		int value;
         StringIntEntry next;
 
         protected StringIntEntry(String key, int value, StringIntEntry next) {

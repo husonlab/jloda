@@ -53,9 +53,7 @@ public class FastAFileIterator implements IFastAIterator, Closeable {
     /**
      * constructor
      *
-     * @param fileName
-     * @throws IOException
-     */
+	 */
     public FastAFileIterator(String fileName) throws IOException {
         this.fileName = fileName;
         maxProgress = FileUtils.guessUncompressedSizeOfFile(fileName);
@@ -76,8 +74,7 @@ public class FastAFileIterator implements IFastAIterator, Closeable {
     /**
      * move to first fastA record
      *
-     * @throws IOException
-     */
+	 */
     private void moveToFirst() throws IOException {
         nextHeaderPosition = position;
         nextHeader = r.readLine();
@@ -154,7 +151,6 @@ public class FastAFileIterator implements IFastAIterator, Closeable {
     /**
      * gets the next fastA record for the given first word
      *
-     * @param firstWordInHeader
      * @return fastA record or null
      */
     public Pair<String, String> next(String firstWordInHeader) {
@@ -243,10 +239,8 @@ public class FastAFileIterator implements IFastAIterator, Closeable {
     /**
      * choose fastA or fastQ as fastA getLetterCodeIterator
      *
-     * @param inputFile
      * @return getLetterCodeIterator
-     * @throws IOException
-     */
+	 */
     public static IFastAIterator getFastAOrFastQAsFastAIterator(String inputFile) throws IOException {
         try (BufferedReader r = new BufferedReader(new InputStreamReader(FileUtils.getInputStreamPossiblyZIPorGZIP(inputFile)))) {
             String aLine = r.readLine();

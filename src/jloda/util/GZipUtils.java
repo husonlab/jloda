@@ -37,9 +37,7 @@ public class GZipUtils {
     /**
      * deflate a file in gzip format
      *
-     * @param sourceFile
-     * @param compressedFile
-     */
+	 */
     public static void deflate(String sourceFile, String compressedFile) {
         byte[] buffer = new byte[512000];
         try {
@@ -71,9 +69,7 @@ public class GZipUtils {
     /**
      * inflate a gzip file
      *
-     * @param compressedFile
-     * @param decompressedFile
-     */
+	 */
     public static void inflate(String compressedFile, String decompressedFile) {
         byte[] buffer = new byte[512000];
 

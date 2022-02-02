@@ -17,12 +17,6 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-/**
- * Edge visualization
- *
- * @version $Id: EdgeView.java,v 1.61 2010-05-18 15:42:26 huson Exp $
- * @author Daniel Huson
- */
 package jloda.swing.graphview;
 
 import jloda.swing.util.BasicSwing;
@@ -43,7 +37,7 @@ import java.util.StringTokenizer;
 /**
  * Edge visualization
  */
-final public class EdgeView extends ViewBase implements Cloneable { //, IEdgeView {
+final public class EdgeView extends ViewBase { //, IEdgeView {
     private Font font;
     private byte shape = POLY_EDGE;
     private byte direction = DIRECTED;
@@ -104,7 +98,6 @@ final public class EdgeView extends ViewBase implements Cloneable { //, IEdgeVie
     /**
      * copies the given src edge tree
      *
-     * @param src
      */
     public void copy(EdgeView src) {
         super.copy(src);
@@ -173,7 +166,6 @@ final public class EdgeView extends ViewBase implements Cloneable { //, IEdgeVie
     /**
      * sets the font
      *
-     * @param font
      */
     public void setFont(Font font) {
         this.font = font;
@@ -393,12 +385,6 @@ final public class EdgeView extends ViewBase implements Cloneable { //, IEdgeVie
      * Does given point (x,y) hit the edge, and if so, after which point?
      * Returns -1, if edge not hit
      *
-     * @param vp
-     * @param wp
-     * @param trans
-     * @param x
-     * @param y
-     * @param i
      * @return the rank of the point preceding the point where the edge was hit
      */
     public int hitEdgeRank(Point vp, Point wp, Transform trans, int x, int y, int i) {
@@ -427,7 +413,6 @@ final public class EdgeView extends ViewBase implements Cloneable { //, IEdgeVie
      *
      * @param vp    source node location in device coordinates
      * @param wp    target node location in device coordinates
-     * @param trans
      * @param x     mouse x
      * @param y     mouse y
      * @param i     tolerance in pixels
@@ -501,9 +486,6 @@ final public class EdgeView extends ViewBase implements Cloneable { //, IEdgeVie
     /**
      * moves the first internal point located at p1 to position p2
      *
-     * @param trans
-     * @param p1
-     * @param p2
      */
     public void moveInternalPoint(Transform trans, Point p1, Point p2) {
         if (shape != STRAIGHT_EDGE && getInternalPoints() != null) {
@@ -639,8 +621,6 @@ final public class EdgeView extends ViewBase implements Cloneable { //, IEdgeVie
     /**
      * hilites the label
      *
-     * @param gc
-     * @param trans
      */
     public void hiliteLabel(Graphics2D gc, Transform trans) {
         if (this.isLabelVisible() && labelColor != null && label != null) {
@@ -803,7 +783,6 @@ final public class EdgeView extends ViewBase implements Cloneable { //, IEdgeVie
     /**
      * sets the edge label reference point in world coordinates
      *
-     * @param labelReferencePoint
      */
     public void setLabelReferencePoint(Point labelReferencePoint) {
         this.labelReferencePoint = labelReferencePoint;
@@ -812,8 +791,6 @@ final public class EdgeView extends ViewBase implements Cloneable { //, IEdgeVie
     /**
      * sets the edge label reference point in world coordinates
      *
-     * @param x
-     * @param y
      */
     public void setLabelReferencePoint(int x, int y) {
         this.labelReferencePoint = new Point(x, y);
@@ -822,7 +799,6 @@ final public class EdgeView extends ViewBase implements Cloneable { //, IEdgeVie
     /**
      * gets the rectangle of the label
      *
-     * @param trans
      * @return bounding box of label
      */
     public Rectangle getLabelRect(Transform trans) {
@@ -837,7 +813,6 @@ final public class EdgeView extends ViewBase implements Cloneable { //, IEdgeVie
     /**
      * gets the bounding box of the label in device coordinates as a shape (rectangle or polygon)
      *
-     * @param trans
      * @return bounding box
      */
     public Shape getLabelShape(Transform trans) {
@@ -872,7 +847,6 @@ final public class EdgeView extends ViewBase implements Cloneable { //, IEdgeVie
     /**
      * writes this edge tree. Include internal points
      *
-     * @param w
      * @param previousEV if not null, only write those fields that differ from the values in previousNV
      */
     public void write(Writer w, EdgeView previousEV) throws IOException {
@@ -959,8 +933,6 @@ final public class EdgeView extends ViewBase implements Cloneable { //, IEdgeVie
     /**
      * read edge format from a string
      *
-     * @param src
-     * @throws IOException
      */
     public void read(String src) throws IOException {
         NexusStreamParser np = new NexusStreamParser(new StringReader(src));
@@ -971,8 +943,6 @@ final public class EdgeView extends ViewBase implements Cloneable { //, IEdgeVie
     /**
      * read edge format from a string
      *
-     * @param src
-     * @throws IOException
      */
     public void read(String src, EdgeView prevEV) throws IOException {
         NexusStreamParser np = new NexusStreamParser(new StringReader(src));
@@ -983,7 +953,6 @@ final public class EdgeView extends ViewBase implements Cloneable { //, IEdgeVie
     /**
      * reads a edge tree from a line
      *
-     * @param tokens
      * @param prevEV this must be !=null, for example can be set to graphView.defaultEdgeView
      */
     public void read(NexusStreamParser np, java.util.List<String> tokens, EdgeView prevEV) throws IOException {

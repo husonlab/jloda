@@ -43,7 +43,6 @@ public class RootedNetworkProperties {
     /**
      * is this a non-empty forest?
      *
-     * @param graph
      * @return true, if non-empty forest
      */
     public static boolean isNonEmptyForest(Graph graph) {
@@ -66,7 +65,6 @@ public class RootedNetworkProperties {
     /**
      * is this a non-empty DAG?
      *
-     * @param graph
      * @return true, if non-empty DAG
      */
     public static boolean isNonEmptyDAG(Graph graph) {
@@ -93,7 +91,6 @@ public class RootedNetworkProperties {
     /**
      * are all leaves labeled?
      *
-     * @param graph
      * @return true, if all leaves are labeled
      */
     public static boolean isLeafLabeled(Graph graph) {
@@ -103,7 +100,6 @@ public class RootedNetworkProperties {
     /**
      * find all roots
      *
-     * @param graph
      * @return list of roots of this graph
      */
     public static List<Node> findRoots(Graph graph) {
@@ -113,7 +109,6 @@ public class RootedNetworkProperties {
     /**
      * compute label to node mapping
      *
-     * @param graph
      * @return label to node mapping
      */
     public static Map<String, Node> getLabel2Node(Graph graph) {
@@ -129,7 +124,6 @@ public class RootedNetworkProperties {
     /**
      * compute node to label mapping
      *
-     * @param graph
      * @return node to label mapping
      */
     public static NodeArray<String> getNode2Label(Graph graph) {
@@ -145,7 +139,6 @@ public class RootedNetworkProperties {
     /**
      * is this graph a tree-child network?
      *
-     * @param graph
      * @return true, if tree or tree-child network
      */
     public static boolean isTreeChild(PhyloTree graph) {
@@ -168,7 +161,6 @@ public class RootedNetworkProperties {
     /**
      * compute all visible nodes
      *
-     * @param graph
      * @return set of visible nodes
      */
     public static NodeSet computeAllVisibleNodes(PhyloTree graph, Collection<Node> roots) {
@@ -218,8 +210,6 @@ public class RootedNetworkProperties {
     /**
      * determines all visible nodes that are unavoidable in any path from the root to at least one leaf
      *
-     * @param graph
-     * @return
      */
     public static NodeSet computeAllVisibleNodesOld(PhyloTree graph) {
         var result = graph.newNodeSet();
@@ -249,8 +239,6 @@ public class RootedNetworkProperties {
     /**
      * determines all completely stable nodes, which are nodes that lie on all paths to all of their children
      *
-     * @param graph
-     * @return
      */
     public static NodeSet computeAllCompletelyStableInternal(PhyloTree graph) {
         var result = graph.newNodeSet();
@@ -368,7 +356,6 @@ public class RootedNetworkProperties {
     /**
      * is the a temporal network?
      *
-     * @param graph
      * @return true, if temporal
      */
     public static boolean isTemporal(PhyloTree graph) {
@@ -388,7 +375,6 @@ public class RootedNetworkProperties {
     /**
      * is this rooted phylogenetic network tree-based?
      *
-     * @param tree
      * @return true, if tree-based
      */
     public static boolean isTreeBased(PhyloTree tree) {
@@ -402,7 +388,6 @@ public class RootedNetworkProperties {
     /**
      * compute an info string
      *
-     * @param phyloTree
      * @return info string
      */
     public static String computeInfoString(PhyloTree phyloTree) {

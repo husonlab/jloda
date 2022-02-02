@@ -58,13 +58,7 @@ public class ExportImageDialog extends JDialog {
     /**
      * constructs a dialog for exporting an image
      *
-     * @param parent
-     * @param documentFileName
-     * @param allowVisible
-     * @param allowWhole
-     * @param allowEPS
-     * @param event
-     */
+	 */
     public ExportImageDialog(JFrame parent, String documentFileName, boolean allowVisible, boolean allowWhole, boolean allowEPS, final ActionEvent event) {
         super(parent, "Export Image" + (ProgramProperties.getProgramName() != null ? " - " + ProgramProperties.getProgramName() : ""));
         setModal(true);
@@ -255,7 +249,6 @@ public class ExportImageDialog extends JDialog {
     /**
      * ok to write file?
      *
-     * @param fileName
      * @return true, if ok to write file
      */
     private boolean checkOkToWriteFile(String fileName) {
@@ -287,8 +280,7 @@ public class ExportImageDialog extends JDialog {
     /**
      * sets the format
      *
-     * @param format
-     */
+	 */
     private void setFormat(String format) {
         for (int i = 0; i < formatComboBox.getItemCount(); i++) {
             ExportGraphicType exportGraphicType = (ExportGraphicType) formatComboBox.getItemAt(i);
@@ -301,8 +293,7 @@ public class ExportImageDialog extends JDialog {
      * displays the dialog. Returns null, if user canceled, otherwise returns command string
      * that specifies image file, format and other options
      *
-     * @return
-     */
+	 */
     public String displayDialog() {
         setVisible(true);
         return command;
@@ -320,8 +311,7 @@ public class ExportImageDialog extends JDialog {
     /**
      * set the file
      *
-     * @param file
-     */
+	 */
     public void setFile(File file) {
         if (file == null)
             fileField.setText("");

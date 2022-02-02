@@ -49,8 +49,7 @@ public class NodeLabelSearcher implements IObjectSearcher {
     /**
      * constructor
      *
-     * @param viewer
-     */
+	 */
     public NodeLabelSearcher(GraphView viewer) {
         this(null, SEARCHER_NAME, viewer);
     }
@@ -58,9 +57,7 @@ public class NodeLabelSearcher implements IObjectSearcher {
     /**
      * constructor
      *
-     * @param frame
-     * @param viewer
-     */
+	 */
     public NodeLabelSearcher(Frame frame, GraphView viewer) {
         this(frame, SEARCHER_NAME, viewer);
     }
@@ -69,8 +66,7 @@ public class NodeLabelSearcher implements IObjectSearcher {
      * constructor
      *
      * @param
-     * @param viewer
-     */
+	 */
     public NodeLabelSearcher(Frame frame, String name, GraphView viewer) {
         this.frame = frame;
         this.name = name;
@@ -148,8 +144,7 @@ public class NodeLabelSearcher implements IObjectSearcher {
     /**
      * set selection state of current object
      *
-     * @param select
-     */
+	 */
     public void setCurrentSelected(boolean select) {
         if (current != null) {
             if (select)
@@ -166,8 +161,7 @@ public class NodeLabelSearcher implements IObjectSearcher {
     /**
      * set select state of all objects
      *
-     * @param select
-     */
+	 */
     public void selectAll(boolean select) {
         viewer.selectAllNodes(select);
         viewer.repaint();
@@ -188,8 +182,7 @@ public class NodeLabelSearcher implements IObjectSearcher {
     /**
      * set the label of the current object
      *
-     * @param newLabel
-     */
+	 */
     public void setCurrentLabel(String newLabel) {
         if (current != null && !Objects.equals(newLabel, viewer.getLabel(current))) {
             if (newLabel == null || newLabel.length() == 0) {
@@ -269,8 +262,7 @@ public class NodeLabelSearcher implements IObjectSearcher {
     /**
      * fire the label changed listener
      *
-     * @param v
-     */
+	 */
     private void fireLabelChangedListeners(Node v) {
         for (LabelChangedListener listener : labelChangedListeners) {
             listener.doLabelHasChanged(v);
@@ -280,8 +272,7 @@ public class NodeLabelSearcher implements IObjectSearcher {
     /**
      * add a label changed listener
      *
-     * @param listener
-     */
+	 */
     public void addLabelChangedListener(LabelChangedListener listener) {
         labelChangedListeners.add(listener);
     }
@@ -289,8 +280,7 @@ public class NodeLabelSearcher implements IObjectSearcher {
     /**
      * remove a label changed listener
      *
-     * @param listener
-     */
+	 */
     public void removeLabelChangedListener(LabelChangedListener listener) {
         labelChangedListeners.remove(listener);
     }

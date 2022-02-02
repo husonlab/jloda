@@ -285,8 +285,7 @@ public class PhyloGraph extends Graph {
     /**
      * removes a taxon from the graph, but leaves the corresponding node label, if any
      *
-     * @param taxonId
-     */
+	 */
     public void removeTaxon(int taxonId) {
         if (taxon2node != null && taxonId > 0 && taxonId < taxon2node.size()) {
             taxon2node.put(taxonId, null);
@@ -318,8 +317,7 @@ public class PhyloGraph extends Graph {
     /**
      * changes the node labels of the graph using the mapping old-to-new
      *
-     * @param old2new
-     */
+	 */
     public void changeLabels(Map<String, String> old2new) {
         for (var v : nodes()) {
             var label = getLabel(v);
@@ -331,8 +329,7 @@ public class PhyloGraph extends Graph {
     /**
      * add the nodes and edges of another graph to this graph. Doesn't make the graph connected, though!
      *
-     * @param graph
-     */
+	 */
     public void add(PhyloGraph graph) {
         NodeArray<Node> old2new = new NodeArray<>(graph);
         for (var v : graph.nodes()) {

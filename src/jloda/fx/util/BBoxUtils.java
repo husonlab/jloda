@@ -58,7 +58,6 @@ public class BBoxUtils {
 	/**
 	 * computes the bounding box of all locations
 	 *
-	 * @param points
 	 * @return bounding box
 	 */
 	public static <T> double[] computeBBox(Collection<? extends APoint2D<?>> points) {

@@ -31,30 +31,25 @@ public interface INodeDrawer {
     /**
      * setup data
      *
-     * @param graphView
-     * @param gc
-     */
+	 */
     void setup(GraphView graphView, Graphics2D gc);
 
     /**
      * draw the node
      *
-     * @param selected
-     */
+	 */
     void draw(Node v, boolean selected);
 
     /**
      * draw the label of the node
      *
-     * @param selected
-     */
+	 */
     void drawLabel(Node v, boolean selected);
 
     /**
      * draw the node and the label
      *
-     * @param selected
-     */
+	 */
     void drawNodeAndLabel(Node v, boolean selected);
 
 

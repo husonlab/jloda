@@ -63,9 +63,7 @@ public class Language {
      * load translations from a file.
      * Format: each line contains a pair of the form English:Translation
      *
-     * @param file
-     * @throws java.io.IOException
-     */
+	 */
     public void load(File file) {
         try {
             System.err.println("Loading file: " + file);
@@ -89,9 +87,7 @@ public class Language {
     /**
      * set a pair of original and translated strings
      *
-     * @param original
-     * @param translated
-     */
+	 */
     public void put(String original, String translated) {
         map.put(original, translated);
     }

@@ -32,70 +32,39 @@ import java.awt.event.ActionEvent;
  * Date: 23-Feb-2004
  */
 public class Message {
-    public static final Color PALE_YELLOW = new Color(252, 232, 131, 100);
+	public static final Color PALE_YELLOW = new Color(252, 232, 131, 100);
 
-    /**
-     * create an message window with the given message and display it
-     *
-     * @param message
-     */
-    public Message(String message) {
-        this(null, message);
-    }
+	public static void show(String message) {
+		show(null, message, 400, 200, null);
+	}
 
-    /**
-     * create an message window with the given message and display it
-     *
-     * @param parent  parent window
-     * @param message
-     */
-    public Message(Component parent, final String message) {
-        this(parent, message, 400, 200, null);
-    }
+	public static void show(Component parent, final String message) {
+		show(parent, message, 400, 200, null);
+	}
 
-    /**
-     * create an message window with the given message and display it
-     *
-     * @param parent  parent window
-     * @param message
-     */
-    public Message(Component parent, final String message, final String title) {
-        this(parent, message, 400, 200, title);
-    }
+	public static void show(Component parent, final String message, final String title) {
+		show(parent, message, 400, 200, title);
+	}
 
-    /**
-     * create an message window with the given message and display it
-     *
-     * @param parent  parent window
-     * @param message
-     */
-    public Message(Component parent, final String message, int width, int height) {
-        this(parent, message, width, height, null);
-    }
+	public static void show(Component parent, final String message, int width, int height) {
+		show(parent, message, width, height, null);
+	}
 
-
-    /**
-     * create an message window with the given message and display it
-     *
-     * @param parent  parent window
-     * @param message
-     */
-    public Message(Component parent, final String message, int width, int height, final String title) {
-        if (ProgramProperties.isUseGUI()) {
-            String label;
-            if (title == null) {
-                if (ProgramProperties.getProgramName() != null)
-                    label = "Message - " + ProgramProperties.getProgramName();
-                else
-                    label = "Message";
-            } else
-                label = title + " - " + ProgramProperties.getProgramName();
-            new MessageDialog(parent, message, label, width, height);
+	public static void show(Component parent, final String message, int width, int height, final String title) {
+		if (ProgramProperties.isUseGUI()) {
+			String label;
+			if (title == null) {
+				if (ProgramProperties.getProgramName() != null)
+					label = "Message - " + ProgramProperties.getProgramName();
+				else
+					label = "Message";
+			} else
+				label = title + " - " + ProgramProperties.getProgramName();
+			new MessageDialog(parent, message, label, width, height);
             //new MessageBox((JFrame)parent,message,label,width,height);
         } else
             System.err.println("Message - " + message);
     }
-
 }
 
 class MessageDialog extends JDialog {

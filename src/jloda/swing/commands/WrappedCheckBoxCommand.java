@@ -29,8 +29,7 @@ public class WrappedCheckBoxCommand extends WrappedCommand implements ICheckBoxC
     /**
      * constructor
      *
-     * @param command
-     */
+	 */
     public WrappedCheckBoxCommand(ICheckBoxCommand command) {
         super(command);
     }
@@ -48,8 +47,7 @@ public class WrappedCheckBoxCommand extends WrappedCommand implements ICheckBoxC
     /**
      * set the selected status of this command
      *
-     * @param selected
-     */
+	 */
     @Override
     public void setSelected(boolean selected) {
         ((ICheckBoxCommand) command).setSelected(selected);

@@ -404,8 +404,7 @@ public class ReorderListDialog extends JDialog implements DropTargetListener, Ac
     /**
      * constructor
      *
-     * @param title
-     */
+	 */
     public ReorderListDialog(String title) {
         this(title, true);
     }
@@ -420,7 +419,6 @@ public class ReorderListDialog extends JDialog implements DropTargetListener, Ac
     /**
      * show the dialog for the given list of objects
      *
-     * @param original
      * @return reordered list
      */
     public List show(List original) {
@@ -459,8 +457,7 @@ public class ReorderListDialog extends JDialog implements DropTargetListener, Ac
     /**
      * test program
      *
-     * @param args
-     */
+	 */
     static public void main(String[] args) throws Exception {
         final Vector superClasses = new Vector();
         Class rootClass = javax.swing.JList.class;

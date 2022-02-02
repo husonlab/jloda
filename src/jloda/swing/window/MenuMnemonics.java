@@ -30,8 +30,7 @@ public class MenuMnemonics {
     /**
      * set the mnemonic for all items of a menu
      *
-     * @param menu
-     */
+	 */
     public static void setMnemonics(JMenu menu) {
         if (menu.getMnemonic() == 0) {
             int menuMnemonic = menu.getText().charAt(0);

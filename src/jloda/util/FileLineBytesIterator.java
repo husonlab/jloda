@@ -44,9 +44,7 @@ public class FileLineBytesIterator implements ICloseableIterator<byte[]> {
     /**
      * constructor
      *
-     * @param fileName
-     * @throws IOException
-     */
+	 */
     public FileLineBytesIterator(String fileName) throws IOException {
 		reader = new InputStreamReader(FileUtils.getInputStreamPossiblyZIPorGZIP(fileName));
 		if (FileUtils.isZIPorGZIPFile(fileName))
@@ -136,8 +134,7 @@ public class FileLineBytesIterator implements ICloseableIterator<byte[]> {
     /**
      * gets the length of latest returned line
      *
-     * @return
-     */
+	 */
     public int getLineLength() {
         return lineLength;
     }

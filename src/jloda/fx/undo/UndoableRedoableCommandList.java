@@ -41,8 +41,7 @@ public class UndoableRedoableCommandList extends UndoableRedoableCommand {
     /**
      * constructor
      *
-     * @param name
-     */
+	 */
     public UndoableRedoableCommandList(String name) {
         super(name);
     }
@@ -50,8 +49,7 @@ public class UndoableRedoableCommandList extends UndoableRedoableCommand {
     /**
      * constructor
      *
-     * @param name
-     */
+	 */
     public UndoableRedoableCommandList(String name, Collection<? extends UndoableRedoableCommand> list) {
         super(name);
         this.list.addAll(list);

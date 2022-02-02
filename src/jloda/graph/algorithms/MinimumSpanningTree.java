@@ -38,11 +38,7 @@ public class MinimumSpanningTree {
     /**
      * compute a minimum spanning tree
      *
-     * @param graph
-     * @param weightFunction
-     * @param progress
-     * @return
-     */
+	 */
     public static EdgeSet apply(Graph graph, Function<Edge, Number> weightFunction, ProgressListener progress) {
         final var edges = new ArrayList<Pair<Double, Edge>>(graph.getNumberOfEdges());
         for (var e : graph.edges()) {

@@ -49,11 +49,7 @@ public class MashSketch {
     /**
      * construct a new sketch
      *
-     * @param sketchSize
-     * @param kMerSize
-     * @param name
-     * @param isNucleotides
-     */
+	 */
     public MashSketch(int sketchSize, int kMerSize, String name, boolean isNucleotides) {
         this.sketchSize = sketchSize;
         this.kSize = kMerSize;

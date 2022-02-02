@@ -38,10 +38,7 @@ public class RandomDNAGenerator {
     /**
      * generate a random DNA sequence with user-specified repeats
      *
-     * @param args
-     * @throws UsageException
-     * @throws IOException
-     */
+	 */
     public static void main(String[] args) throws UsageException, IOException {
         CommandLineOptions options = new CommandLineOptions(args);
         options.setDescription("Generates Random DNA");
@@ -98,7 +95,6 @@ public class RandomDNAGenerator {
     /**
      * generate a random DNA sequence
      *
-     * @param length
      * @return sequence
      */
     private static char[] makeRandomSequence(int length) {

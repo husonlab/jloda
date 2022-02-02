@@ -34,8 +34,6 @@ public class IteratorUtils {
     /**
      * join multiple iterables into one
      *
-     * @param collections
-     * @param <T>
      * @return iterable over multiple iterables
      */
     public static <T, L extends Collection<T>> Iterable<T> join(final Collection<L> collections) {
@@ -153,9 +151,6 @@ public class IteratorUtils {
     /**
      * iterable over first elements
      *
-     * @param src
-     * @param <P>
-     * @param <Q>
      * @return iterable over all first elements
      */
     public static <P, Q> Iterable<P> firstValues(final Iterable<Pair<P, Q>> src) {
@@ -182,9 +177,6 @@ public class IteratorUtils {
     /**
      * iterable over second elements
      *
-     * @param src
-     * @param <P>
-     * @param <Q>
      * @return iterable over all second elements
      */
     public static <P, Q> Iterable<Q> secondValues(final Iterable<Pair<P, Q>> src) {
@@ -347,9 +339,6 @@ public class IteratorUtils {
 	/**
 	 * iterates over items in sorted order
 	 *
-	 * @param list
-	 * @param comparator
-	 * @param <T>
 	 * @return iterator in sorted order
 	 */
 	public static <T> Iterable<T> sorted(Collection<T> list, Comparator<T> comparator) {
@@ -361,8 +350,6 @@ public class IteratorUtils {
 	/**
 	 * gets first item or null
 	 *
-	 * @param iterable
-	 * @param <T>
 	 * @return first item or null
 	 */
 	public static <T> T getFirst(Iterable<T> iterable) {

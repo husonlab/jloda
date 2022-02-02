@@ -31,8 +31,6 @@ public class SetUtils {
     /**
      * iterator over all elements contained in the intersection of the two collections
      *
-     * @param a
-     * @param b
      * @return intersection
      */
     public static <T> Iterable<T> intersection(Collection<T> a, Collection<T> b) {
@@ -69,7 +67,6 @@ public class SetUtils {
     /**
      * iterator over all elements contained in the union of the given sets
      *
-     * @param sets
      * @return intersection
      */
     public static Iterable union(final Collection... sets) {
@@ -103,9 +100,6 @@ public class SetUtils {
     /**
      * union of two sets
      *
-     * @param a
-     * @param b
-     * @param <T>
      * @return union
      */
     public static <T> Iterable<T> union(Collection<T> a, Collection<T> b) {
@@ -115,8 +109,6 @@ public class SetUtils {
     /**
      * iterator over all elements contained in the symmetric difference of two sets
      *
-     * @param a
-     * @param b
      * @return symmetric difference
      */
     public static <T> Iterable<T> symmetricDifference(Collection<T> a, Collection<T> b) {

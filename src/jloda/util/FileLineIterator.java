@@ -53,9 +53,7 @@ public class FileLineIterator implements ICloseableIterator<String> {
     /**
      * constructor
      *
-     * @param fileName
-     * @throws java.io.FileNotFoundException
-     */
+	 */
     public FileLineIterator(String fileName) throws IOException {
         this(fileName, false);
     }
@@ -63,8 +61,6 @@ public class FileLineIterator implements ICloseableIterator<String> {
     /**
      * constructor
      *
-     * @param file
-     * @throws java.io.FileNotFoundException
      */
     public FileLineIterator(File file, boolean reportProgress) throws IOException {
         this(file.getPath(), reportProgress);
@@ -73,8 +69,6 @@ public class FileLineIterator implements ICloseableIterator<String> {
     /**
      * constructor
      *
-     * @param file
-     * @throws java.io.FileNotFoundException
      */
     public FileLineIterator(File file) throws IOException {
         this(file, false);
@@ -83,8 +77,6 @@ public class FileLineIterator implements ICloseableIterator<String> {
     /**
      * constructor
      *
-     * @param fileName
-     * @throws java.io.FileNotFoundException
      */
     public FileLineIterator(String fileName, ProgressListener progress) throws IOException {
         this.fileName = fileName;
@@ -113,8 +105,6 @@ public class FileLineIterator implements ICloseableIterator<String> {
     /**
      * constructor
      *
-     * @param fileName
-     * @throws java.io.FileNotFoundException
      */
     public FileLineIterator(String fileName, boolean reportProgress) throws IOException {
         this(fileName, null);
@@ -124,8 +114,6 @@ public class FileLineIterator implements ICloseableIterator<String> {
     /**
      * constructor
      *
-     * @param r
-     * @throws java.io.FileNotFoundException
      */
     public FileLineIterator(Reader r, String fileName) throws IOException {
         this(r, fileName, false);
@@ -134,7 +122,6 @@ public class FileLineIterator implements ICloseableIterator<String> {
     /**
      * constructor
      *
-     * @param r
      */
     public FileLineIterator(Reader r, String fileName, boolean reportProgress) {
         this.fileName = fileName;

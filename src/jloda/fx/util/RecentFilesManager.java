@@ -89,14 +89,14 @@ public class RecentFilesManager {
                         final Menu menu = ref.get();
                         if (menu != null) {
                             try {
-                                for (String fileName : c.getAddedSubList()) {
-                                    final MenuItem openMenuItem = new MenuItem(fileName);
-                                    openMenuItem.setOnAction((e) -> fileOpener.get().accept(fileName));
-                                    openMenuItem.disableProperty().bind(disable);
-                                    menu.getItems().add(0, openMenuItem);
-                                }
-                            } catch (Exception ex) {
-                            }
+								for (String fileName : c.getAddedSubList()) {
+									final MenuItem openMenuItem = new MenuItem(fileName);
+									openMenuItem.setOnAction((e) -> fileOpener.get().accept(fileName));
+									openMenuItem.disableProperty().bind(disable);
+									menu.getItems().add(0, openMenuItem);
+								}
+							} catch (Exception ignored) {
+							}
                         } else
                             deadRefs.add(ref);
                     }
@@ -161,8 +161,7 @@ public class RecentFilesManager {
     /**
      * remove a recent file
      *
-     * @param fileName
-     */
+	 */
     public void removeRecentFile(String fileName) {
         recentFiles.remove(fileName);
     }

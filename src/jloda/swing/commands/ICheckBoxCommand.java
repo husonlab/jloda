@@ -35,7 +35,6 @@ public interface ICheckBoxCommand extends ICommand {
     /**
      * set the selected status of this command
      *
-     * @param selected
-     */
+	 */
     void setSelected(boolean selected);
 }

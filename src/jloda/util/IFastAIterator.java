@@ -36,8 +36,7 @@ public interface IFastAIterator extends ICloseableIterator<Pair<String, String>>
     /**
      * get number of bytes occupied by this sequence in file
      *
-     * @return
-     */
+	 */
     long getNumberOfBytes();
 
     /**

@@ -17,11 +17,6 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-/**
- * @version $Id: GraphUpdateAdapter.java,v 1.4 2005-01-07 14:23:05 huson Exp $
- * @author Daniel Huson
- * 11.02
- */
 package jloda.graph;
 
 /**

@@ -61,7 +61,6 @@ public class PhyloTree extends PhyloSplitsGraph {
     /**
      * copy constructor
      *
-     * @param src
      */
     public PhyloTree(PhyloTree src) {
         this();
@@ -94,9 +93,6 @@ public class PhyloTree extends PhyloSplitsGraph {
     /**
      * copies a phylogenetic tree
      *
-     * @param src
-     * @param oldNode2NewNode
-     * @param oldEdge2NewEdge
      */
     public void copy(PhyloTree src, NodeArray<Node> oldNode2NewNode, EdgeArray<Edge> oldEdge2NewEdge) {
         setName(src.getName());
@@ -501,7 +497,6 @@ public class PhyloTree extends PhyloSplitsGraph {
     /**
      * is v an unlabeled node of degree 2?
      *
-     * @param v
      * @return true, if v is an unlabeled node of degree 2
      */
     private boolean isUnlabeledDiVertex(Node v) {
@@ -674,8 +669,6 @@ public class PhyloTree extends PhyloSplitsGraph {
     /**
      * get the label to be used for writing. Will have single quotes, if label contains punctuation character or white space
      *
-     * @param v
-     * @return
      */
     public String getLabelForWriting(Node v) {
         String label = cleanLabelsOnWrite ? getCleanLabel(v) : getLabel(v);
@@ -691,8 +684,6 @@ public class PhyloTree extends PhyloSplitsGraph {
     /**
      * get the label to be used for writing. Will have single quotes, if label contains punctuation character or white space
      *
-     * @param e
-     * @return
      */
     public String getLabelForWriting(Edge e) {
         String label = cleanLabelsOnWrite ? getCleanLabel(e) : getLabel(e);
@@ -804,7 +795,6 @@ public class PhyloTree extends PhyloSplitsGraph {
     /**
      * sets the root node
      *
-     * @param root
      */
     public void setRoot(Node root) {
         this.root = root;
@@ -813,7 +803,6 @@ public class PhyloTree extends PhyloSplitsGraph {
     /**
      * sets the root node in the middle of this edge
      *
-     * @param e
      */
     public void setRoot(Edge e, EdgeArray<String> edgeLabels) {
         setRoot(e, getWeight(e) * 0.5, getWeight(e) * 0.5, edgeLabels);
@@ -822,7 +811,6 @@ public class PhyloTree extends PhyloSplitsGraph {
     /**
      * sets the root node in the middle of this edge
      *
-     * @param e
      * @param weightToSource weight for new edge adjacent to source of e
      * @param weightToTarget weight for new adjacent to target of e
      */
@@ -888,7 +876,6 @@ public class PhyloTree extends PhyloSplitsGraph {
      *
      * @param out  the print stream
      * @param wgts show weights?
-     * @throws Exception
      */
     public void print(PrintStream out, boolean wgts) throws Exception {
         StringWriter st = new StringWriter();
@@ -915,7 +902,6 @@ public class PhyloTree extends PhyloSplitsGraph {
     /**
      * returns true if string contains a bootstrap value
      *
-     * @param label
      * @return true, if label contains a non-negative float
      */
     public static boolean isBootstrapValue(String label) {
@@ -929,7 +915,6 @@ public class PhyloTree extends PhyloSplitsGraph {
     /**
      * allow different nodes to have the same names
      *
-     * @return
      */
     public boolean getAllowMultiLabeledNodes() {
         return allowMultiLabeledNodes;
@@ -938,7 +923,6 @@ public class PhyloTree extends PhyloSplitsGraph {
     /**
      * allow different nodes to have the same names
      *
-     * @param allowMultiLabeledNodes
      */
     public void setAllowMultiLabeledNodes(boolean allowMultiLabeledNodes) {
         this.allowMultiLabeledNodes = allowMultiLabeledNodes;
@@ -983,7 +967,6 @@ public class PhyloTree extends PhyloSplitsGraph {
     /**
      * warn about multi-labeled trees in input?
      *
-     * @param warnMultiLabeled
      */
     static public void setWarnMultiLabeled(boolean warnMultiLabeled) {
         PhyloTree.warnMultiLabeled = warnMultiLabeled;
@@ -1214,7 +1197,6 @@ public class PhyloTree extends PhyloSplitsGraph {
     /**
      * returns a new tree in which all edges of length < min length have been contracted
      *
-     * @param minLength
      * @return true, if anything contracted
      */
     public boolean contractShortEdges(double minLength) {

@@ -71,8 +71,7 @@ public class TransformableGroup extends Group {
     /**
      * constructor
      *
-     * @param rotateOrder
-     */
+	 */
     public TransformableGroup(RotateOrder rotateOrder) {
         super();
         // choose the order of rotations based on the rotateOrder
@@ -89,10 +88,7 @@ public class TransformableGroup extends Group {
     /**
      * set translation
      *
-     * @param x
-     * @param y
-     * @param z
-     */
+	 */
     public void setTranslate(double x, double y, double z) {
         t.setX(x);
         t.setY(y);
@@ -102,9 +98,7 @@ public class TransformableGroup extends Group {
     /**
      * set translation
      *
-     * @param x
-     * @param y
-     */
+	 */
     public void setTranslate(double x, double y) {
         t.setX(x);
         t.setY(y);
@@ -142,10 +136,7 @@ public class TransformableGroup extends Group {
     /**
      * set rotation
      *
-     * @param x
-     * @param y
-     * @param z
-     */
+	 */
     public void setRotate(double x, double y, double z) {
         rx.setAngle(x);
         ry.setAngle(y);

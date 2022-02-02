@@ -73,23 +73,13 @@ public interface ExportGraphicType {
      * writes image to a stream. If scrollPane given and showWholeImage=true, draws only visible portion
      * of panel
      *
-     * @param imagePanel
-     * @param imageScrollPane
-     * @param showWholeImage
-     * @param out
-     * @throws IOException
-     */
+	 */
     void stream(JPanel imagePanel, JScrollPane imageScrollPane, boolean showWholeImage, OutputStream out) throws IOException;
 
     /**
      * writes image to file. If scrollPane given and showWholeImage=true, draws only visible portion
      * of panel
      *
-     * @param file
-     * @param imagePanel
-     * @param imageScrollPane
-     * @param showWholeImage
-     * @throws IOException
-     */
+	 */
     void writeToFile(File file, JPanel imagePanel, JScrollPane imageScrollPane, boolean showWholeImage) throws IOException;
 }

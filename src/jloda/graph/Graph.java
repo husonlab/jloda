@@ -107,10 +107,7 @@ public class Graph extends GraphBase implements INamed {
     /**
      * constructs a new node and reuses an old id
      *
-     * @param info
-     * @param recycledId
-     * @return
-     */
+	 */
     public Node newNode(Object info, int recycledId) {
         var v = new Node(this, info);
         v.setId(recycledId);
@@ -1302,8 +1299,7 @@ public class Graph extends GraphBase implements INamed {
     /**
      * called from constructor of EdgeAssociation to register with graph
      *
-     * @param array
-     */
+	 */
     void registerEdgeArray(EdgeArray<?> array) {
         synchronized (edgeArrays) {
             final var toDelete = new LinkedList<WeakReference<EdgeArray<?>>>();
@@ -1512,8 +1508,7 @@ public class Graph extends GraphBase implements INamed {
     /**
      * gets a node stream
      *
-     * @return
-     */
+	 */
     public Stream<Node> nodeStream() {
         return nodeStream(null);
     }
@@ -1521,8 +1516,7 @@ public class Graph extends GraphBase implements INamed {
     /**
      * gets a node stream
      *
-     * @return
-     */
+	 */
     public Stream<Node> nodeParallelStream() {
         return nodeParallelStream(null);
     }
@@ -1530,8 +1524,7 @@ public class Graph extends GraphBase implements INamed {
     /**
      * gets a node stream
      *
-     * @return
-     */
+	 */
     public Stream<Node> nodeStream(Node afterMe) {
         return StreamSupport.stream(nodes(afterMe).spliterator(), false);
     }
@@ -1539,8 +1532,7 @@ public class Graph extends GraphBase implements INamed {
     /**
      * gets a node stream
      *
-     * @return
-     */
+	 */
     public Stream<Node> nodeParallelStream(Node afterMe) {
         return StreamSupport.stream(nodes(afterMe).spliterator(), true);
     }

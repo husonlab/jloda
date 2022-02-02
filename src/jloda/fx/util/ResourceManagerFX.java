@@ -226,7 +226,6 @@ public class ResourceManagerFX {
     /**
      * Returns File with specified file name at the location specified by <code>packageName</code>.
      *
-     * @param clazz
      * @param packageName the path through a package (the name of the subpackage) where to look for the icon
      * @param fileName    the name of the file
      */
@@ -332,8 +331,6 @@ public class ResourceManagerFX {
     /**
      * gets the compile time version of the given class
      *
-     * @param clazz
-     * @param name
      * @return compile time version
      */
     public static String getVersion(final Class<?> clazz, final String name) {

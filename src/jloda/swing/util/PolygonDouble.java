@@ -56,10 +56,7 @@ public class PolygonDouble {
     /**
      * construct a polygon and copy the given points
      *
-     * @param npoints
-     * @param xpoints
-     * @param ypoints
-     */
+	 */
     public PolygonDouble(int npoints, double[] xpoints, double[] ypoints) {
         this.npoints = npoints;
         this.xpoints = new double[npoints];
@@ -73,8 +70,7 @@ public class PolygonDouble {
     /**
      * construct a polygon from a rectangle
      *
-     * @param box
-     */
+	 */
     public PolygonDouble(Rectangle2D box) {
         this.npoints = 4;
         this.xpoints = new double[npoints];
@@ -92,9 +88,7 @@ public class PolygonDouble {
     /**
      * construct a polygon and copy the given points
      *
-     * @param npoints
-     * @param points
-     */
+	 */
     public PolygonDouble(int npoints, Point2D[] points) {
         this.npoints = npoints;
         this.xpoints = new double[npoints];
@@ -108,8 +102,7 @@ public class PolygonDouble {
     /**
      * construct a polygon from a list of points
      *
-     * @param points
-     */
+	 */
     public PolygonDouble(List points) {
         this(points.size());
         int i = 0;
@@ -124,11 +117,7 @@ public class PolygonDouble {
     /**
      * construct a polygon from a list of points
      *
-     * @param a
-     * @param b
-     * @param points
-     * @param c
-     */
+	 */
     public PolygonDouble(Point2D a, Point2D b, List points, Point2D c) {
         this(points.size() + 3);
         int i = 0;
@@ -149,10 +138,7 @@ public class PolygonDouble {
     /**
      * set the polygon from two lists of Double
      *
-     * @param npoints
-     * @param xpoints
-     * @param ypoints
-     */
+	 */
     public void set(int npoints, ArrayList xpoints, ArrayList ypoints) {
         this.npoints = npoints;
         this.xpoints = new double[npoints];

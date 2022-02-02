@@ -59,20 +59,14 @@ public class About {
     /**
      * set the current about window
      *
-     * @param fileName
-     * @param version
-     * @param closeOperation
-     */
+	 */
     public static void setAbout(String fileName, String version, int closeOperation) {
         instance = new About(fileName, version, closeOperation,1f);
     }
     /**
      * set the current about window
      *
-     * @param fileName
-     * @param version
-     * @param closeOperation
-     */
+	 */
     public static void setAbout(String fileName, String version, int closeOperation,float scaleFactor) {
         instance = new About(fileName, version, closeOperation,scaleFactor);
     }

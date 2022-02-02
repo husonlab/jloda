@@ -38,9 +38,7 @@ public class ScrollPaneAdjuster {
     /**
      * construct object and "remember" how scrollpane is currently centered around middle of screen
      *
-     * @param scrollPane
-     * @param trans
-     */
+	 */
     public ScrollPaneAdjuster(JScrollPane scrollPane, Transform trans) {
         this(scrollPane, trans, null);
     }
@@ -48,8 +46,6 @@ public class ScrollPaneAdjuster {
     /**
      * construct object and "remember" how scrollpane is currently centered
      *
-     * @param scrollPane
-     * @param trans
      * @param centerDC   center point in device coordinates
      */
     public ScrollPaneAdjuster(JScrollPane scrollPane, Transform trans, Point centerDC) {

@@ -76,8 +76,7 @@ public abstract class ViewBase {
     /**
      * copy
      *
-     * @param src
-     */
+	 */
     public void copy(ViewBase src) {
         setLabelColor(src.getLabelColor());
         setLabelBackgroundColor(src.getLabelBackgroundColor());
@@ -116,8 +115,7 @@ public abstract class ViewBase {
     /**
      * set the size of the label rect in device coordinates
      *
-     * @param size
-     */
+	 */
     public void setLabelSize(Dimension size) {
         labelSize = size;
     }
@@ -152,8 +150,7 @@ public abstract class ViewBase {
     /**
      * sets the font
      *
-     * @param font
-     */
+	 */
     public void setFont(Font font) {
         this.font = font;
     }
@@ -180,8 +177,7 @@ public abstract class ViewBase {
     /**
      * sets the label layout, such as NORTH etc
      *
-     * @param labelLayout
-     */
+	 */
     public void setLabelLayout(byte labelLayout) {
         this.labelLayout = labelLayout;
     }
@@ -189,8 +185,7 @@ public abstract class ViewBase {
     /**
      * sets the label layout to NORTH etc, approximating the given angle
      *
-     * @param radian
-     */
+	 */
     public void setLabelLayoutFromAngle(double radian) {
         final double PI_8 = Math.PI / 8.0;
         radian = Geometry.moduloTwoPI(radian);
@@ -244,8 +239,7 @@ public abstract class ViewBase {
     /**
      * Set label visibility
      *
-     * @param labelVisible
-     */
+	 */
     public void setLabelVisible(boolean labelVisible) {
         this.labelVisible = labelVisible;
     }
@@ -276,8 +270,7 @@ public abstract class ViewBase {
     /**
      * Sets the relative position of the label in device coordinates.
      *
-     * @param apt
-     */
+	 */
     public void setLabelPositionRelative(Point apt) {
         if (labelLayout != USER && labelLayout != LAYOUT)
             labelLayout = USER;
@@ -297,8 +290,7 @@ public abstract class ViewBase {
     /**
      * sets the offset used by USER_POS layout, in device coordinates
      *
-     * @param offset
-     */
+	 */
     public void setLabelOffset(Point offset) {
         dxLabel = offset.x;
         dyLabel = offset.y;
@@ -316,8 +308,7 @@ public abstract class ViewBase {
     /**
      * sets the angle at which label will be drawn
      *
-     * @param labelAngle
-     */
+	 */
     public void setLabelAngle(float labelAngle) {
         this.labelAngle = (float) Geometry.moduloTwoPI(labelAngle);
     }
@@ -325,7 +316,6 @@ public abstract class ViewBase {
     /**
      * get the label rectangle
      *
-     * @param trans
      * @return rectangle
      */
     abstract public Rectangle getLabelRect(Transform trans);
@@ -333,7 +323,6 @@ public abstract class ViewBase {
     /**
      * gets the label shape
      *
-     * @param trans
      * @return shape of label
      */
     abstract public Shape getLabelShape(Transform trans);
@@ -350,8 +339,7 @@ public abstract class ViewBase {
     /**
      * enable or disable this node or edge
      *
-     * @param enabled
-     */
+	 */
     public void setEnabled(boolean enabled) {
         this.enabled = enabled;
     }

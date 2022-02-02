@@ -29,8 +29,6 @@ public class MashDistance {
     /**
      * computes the mash distance
      *
-     * @param a
-     * @param b
      * @return mash distance
      */
     public static double compute(MashSketch a, MashSketch b, GenomeDistanceType genomeDistanceType) {
@@ -47,8 +45,6 @@ public class MashDistance {
     /**
      * computes the mash distance
      *
-     * @param a
-     * @param b
      * @return mash distance or 0.75, if Jaccard Index is 0
      */
     public static double compute(MashSketch a, MashSketch b) {
@@ -105,8 +101,6 @@ public class MashDistance {
     /**
      * computes the Jaccard index for two sketches
      *
-     * @param sketch1
-     * @param sketch2
      * @return Jaccard index
      */
     public static double computeJaccardIndex(MashSketch sketch1, MashSketch sketch2) {

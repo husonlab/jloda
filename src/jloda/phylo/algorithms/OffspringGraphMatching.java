@@ -36,8 +36,6 @@ public class OffspringGraphMatching {
     /**
      * computes the matching
      *
-     * @param tree
-     * @return
      */
     public static EdgeSet compute(PhyloTree tree, ProgressListener progress) throws CanceledException {
         var graph = new Graph();

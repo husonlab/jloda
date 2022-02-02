@@ -52,10 +52,7 @@ public class MessageWindow {
     /**
      * sets up the message window
      *
-     * @param icon
-     * @param title
-     * @param parent
-     */
+	 */
     public MessageWindow(ImageIcon icon, String title, Component parent) {
         this(icon, title, parent, true);
     }
@@ -63,11 +60,7 @@ public class MessageWindow {
     /**
      * sets up the message window
      *
-     * @param icon
-     * @param title
-     * @param parent
-     * @param visible
-     */
+	 */
     public MessageWindow(ImageIcon icon, String title, Component parent, boolean visible) {
         if (getInstance() != null)
             new Alert("Internal error, multiple instances of MessageWindow");
@@ -150,8 +143,7 @@ public class MessageWindow {
     /**
      * sets the title
      *
-     * @param title
-     */
+	 */
     public void setTitle(String title) {
         frame.setTitle(title);
     }
@@ -364,8 +356,7 @@ public class MessageWindow {
     /**
      * show or hide message window
      *
-     * @param visible
-     */
+	 */
     public void setVisible(boolean visible) {
         if (visible) {
             frame.setVisible(true);
@@ -406,8 +397,7 @@ public class MessageWindow {
     /**
      * send all messages to console when window is hidden?
      *
-     * @param toConsoleWhenHidden
-     */
+	 */
     public void setToConsoleWhenHidden(boolean toConsoleWhenHidden) {
         this.toConsoleWhenHidden = toConsoleWhenHidden;
         if (!frame.isVisible()) {
@@ -430,8 +420,7 @@ public class MessageWindow {
     /**
      * sets the instance
      *
-     * @param instance
-     */
+	 */
     public static void setInstance(MessageWindow instance) {
         MessageWindow.instance = instance;
     }
@@ -439,8 +428,7 @@ public class MessageWindow {
     /**
      * add an item to a menu
      *
-     * @param action
-     */
+	 */
     public void addToMenu(String menuName, AbstractAction action) {
         if (action != null) {
             JMenuBar bar = frame.getJMenuBar();
@@ -459,8 +447,7 @@ public class MessageWindow {
     /**
      * add an button to a menu
      *
-     * @param item
-     */
+	 */
     public void addToMenu(String menuName, JMenuItem item) {
         if (item != null) {
             JMenuBar bar = frame.getJMenuBar();

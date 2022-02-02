@@ -67,10 +67,7 @@ public class ProgressDialog implements ProgressListener {
      * Constructs a Progress Dialog with a given task name and subtask name. The dialog is embedded into
      * the given frame. If frame = null then the dialog will appear as a separate window.
      *
-     * @param taskName
-     * @param subtaskName
-     * @param owner
-     */
+	 */
     public ProgressDialog(final String taskName, final String subtaskName, final Component owner) {
         this.owner = owner;
         setup(taskName, subtaskName, delayInMilliseconds);
@@ -90,9 +87,7 @@ public class ProgressDialog implements ProgressListener {
      * sets up Progress Dialog with a given task name and subtask name. The dialog is embedded into
      * the given frame. If frame = null then the dialog will appear as a separate window.
      *
-     * @param taskName
-     * @param subtaskName
-     */
+	 */
     private void setup(final String taskName, final String subtaskName, final long delayInMillisec) {
         run(() -> {
             frameStatusBar = findStatusBar(owner);
@@ -123,11 +118,11 @@ public class ProgressDialog implements ProgressListener {
             cancelButton = new JButton();
             resetCancelButtonText();
             cancelButton.addActionListener(e -> {
-                try {
-                    setUserCancelled(true);
-                    checkForCancel();
-                } catch (CanceledException e1) {
-                }
+				try {
+					setUserCancelled(true);
+					checkForCancel();
+				} catch (CanceledException ignored) {
+				}
             });
 
             if (!isCancelable())
@@ -229,7 +224,6 @@ public class ProgressDialog implements ProgressListener {
     /**
      * determine whether given component contains a statusbar
      *
-     * @param component
      * @return statusbar or null
      */
     private static StatusBar findStatusBar(Component component) {
@@ -252,8 +246,7 @@ public class ProgressDialog implements ProgressListener {
     /**
      * sets the steps number of steps to be done. This can be done in the event dispatch thread
      *
-     * @param steps
-     */
+	 */
     public void setMaximum(final long steps) {
         startTime = System.currentTimeMillis();
 
@@ -270,8 +263,7 @@ public class ProgressDialog implements ProgressListener {
     /**
      * sets the progress. If a negative value is given, sets the progress bar to indeterminate mode
      *
-     * @param steps
-     */
+	 */
     public void setProgress(final long steps) throws CanceledException {
         if (steps != currentProgress) {
             currentProgress = steps;
@@ -322,8 +314,7 @@ public class ProgressDialog implements ProgressListener {
     /**
      * increment the progress
      *
-     * @throws CanceledException
-     */
+	 */
     public void incrementProgress() throws CanceledException {
         if (currentProgress == -1)
             currentProgress = 1;
@@ -380,8 +371,7 @@ public class ProgressDialog implements ProgressListener {
     /**
      * has user canceled?
      *
-     * @throws CanceledException
-     */
+	 */
     public void checkForCancel() throws CanceledException {
         if (this.userCancelled) {
             //dialog.setVisible(false);
@@ -395,9 +385,7 @@ public class ProgressDialog implements ProgressListener {
     /**
      * sets the subtask name
      *
-     * @param subtaskName
-     * @throws CanceledException
-     */
+	 */
     public void setSubtask(final String subtaskName) {
         checkTimeAndShow();
 
@@ -411,10 +399,7 @@ public class ProgressDialog implements ProgressListener {
     /**
      * Sets the task name (first description, printed in bold)  and subtask
      *
-     * @param taskName
-     * @param subtaskName
-     * @throws CanceledException
-     */
+	 */
     public void setTasks(final String taskName, final String subtaskName) {
         checkTimeAndShow();
         run(() -> {
@@ -449,12 +434,12 @@ public class ProgressDialog implements ProgressListener {
     }
 
     private void checkTimeAndShow() {
-        try {
-            if (!closed && !visible && System.currentTimeMillis() - startTime > delayInMilliseconds) {
-                show();
-            }
-        } catch (Exception ex) {
-        }
+		try {
+			if (!closed && !visible && System.currentTimeMillis() - startTime > delayInMilliseconds) {
+				show();
+			}
+		} catch (Exception ignored) {
+		}
     }
 
     /**
@@ -496,8 +481,7 @@ public class ProgressDialog implements ProgressListener {
     /**
      * run a task either directly, if in swing thread, or later,  otherwise
      *
-     * @param runnable
-     */
+	 */
     private static void run(Runnable runnable) {
         if (SwingUtilities.isEventDispatchThread())
             runnable.run();
@@ -531,8 +515,7 @@ public class ProgressDialog implements ProgressListener {
     /**
      * in debug mode, report tasks and subtasks to stderr, too
      *
-     * @param debug
-     */
+	 */
     public void setDebug(boolean debug) {
         this.debug = debug;
     }
@@ -540,8 +523,7 @@ public class ProgressDialog implements ProgressListener {
     /**
      * is user allowed to cancel?
      *
-     * @param cancelable
-     */
+	 */
     public void setCancelable(boolean cancelable) {
         this.cancelable = cancelable;
         if (cancelButton != null)

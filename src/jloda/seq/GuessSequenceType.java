@@ -33,10 +33,7 @@ public class GuessSequenceType {
     /**
      * does file contain nucleotides
      *
-     * @param fileName
-     * @return
-     * @throws IOException
-     */
+	 */
     public static boolean isFileContainsNucleotides(String fileName) throws IOException {
         final BitSet chars = new BitSet();
         int count = 0;

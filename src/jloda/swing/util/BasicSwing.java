@@ -46,9 +46,6 @@ public class BasicSwing {
     /**
      * get all files listed below the given root directory
      *
-     * @param rootDirectory
-     * @param fileFilter
-     * @param recursively
      * @return list of files
      */
     public static List<File> getAllFilesInDirectory(File rootDirectory, javax.swing.filechooser.FileFilter fileFilter, boolean recursively) {
@@ -79,9 +76,6 @@ public class BasicSwing {
     /**
      * get all files listed below the given root directory
      *
-     * @param rootDirectory
-     * @param fileFilter
-     * @param recursively
      * @return list of files
      */
     public static List<String> getAllFilesInDirectory(String rootDirectory, javax.swing.filechooser.FileFilter fileFilter, boolean recursively) {
@@ -112,7 +106,6 @@ public class BasicSwing {
     /**
      * returns the decodeable description of a font
      *
-     * @param font
      * @return family-style-size
      */
     public static String getCode(Font font) {
@@ -130,7 +123,6 @@ public class BasicSwing {
     /**
      * returns the size in device coordinates of the string str
      *
-     * @param str
      * @return size
      */
     public static Dimension getStringSize(Graphics gc, String str, Font font) {
@@ -149,9 +141,7 @@ public class BasicSwing {
     /**
      * selects a line in a text area
      *
-     * @param ta
-     * @param lineno
-     */
+	 */
     public static void selectLine(JTextArea ta, int lineno) {
         if (ta == null || lineno < 0)
             return;
@@ -181,9 +171,7 @@ public class BasicSwing {
     /**
      * sorts all menu items alphabetically starting at first item
      *
-     * @param menu
-     * @param firstItem
-     */
+	 */
     public static void sortMenuAlphabetically(JMenu menu, int firstItem) {
         if (menu.getItemCount() - firstItem <= 0)
             return;
@@ -210,9 +198,7 @@ public class BasicSwing {
     /**
      * centers a dialog in a parent frame
      *
-     * @param dialog
-     * @param parent
-     */
+	 */
     public static void centerDialogInParent(JDialog dialog, JFrame parent) {
         if (parent != null)   // center
             dialog.setLocation(new Point(parent.getLocation().x + (parent.getWidth() - dialog.getWidth()) / 2,
@@ -224,8 +210,7 @@ public class BasicSwing {
     /**
      * centers a dialog on the screen
      *
-     * @param dialog
-     */
+	 */
     static public void centerDialogOnScreen(JDialog dialog) {
         Dimension dim = dialog.getToolkit().getScreenSize();
         Rectangle abounds = dialog.getBounds();
@@ -236,8 +221,6 @@ public class BasicSwing {
     /**
      * converts an image to a buffered image
      *
-     * @param image
-     * @param imageObserver
      * @return buffered image
      */
     public static BufferedImage convertToBufferedImage(Image image, ImageObserver imageObserver) throws IOException, InterruptedException {
@@ -252,7 +235,6 @@ public class BasicSwing {
     /**
      * converts the image to a 1-D image
      *
-     * @param image
      * @return 1-d image
      */
     private static int[] convertToArray(Image image, int imageWidth, int imageHeight) throws InterruptedException, IOException {
@@ -267,7 +249,6 @@ public class BasicSwing {
     /**
      * gets color as 'r g b' or 'r g b a' string  or string "null"
      *
-     * @param color
      * @return r g b a
      */
     public static String toString3Int(Color color) {
@@ -300,7 +281,6 @@ public class BasicSwing {
     /**
      * gets a color as a background color
      *
-     * @param color
      * @return color
      */
     static public String getBackgroundColorHTML(Color color) {
@@ -310,7 +290,6 @@ public class BasicSwing {
     /**
      * encode a font as a string that can be decoded using Font.decode()
      *
-     * @param font
      * @return string
      */
     public static String encode(Font font) {
@@ -327,9 +306,7 @@ public class BasicSwing {
     /**
      * change font size
      *
-     * @param component
-     * @param newFontSize
-     */
+	 */
     static public void changeFontSize(Component component, int newFontSize) {
         Font font = new Font(component.getFont().getName(), component.getFont().getStyle(), newFontSize);
         component.setFont(font);
@@ -338,8 +315,7 @@ public class BasicSwing {
     /**
      * open the given URI in a web browser
      *
-     * @param uri
-     */
+	 */
     public static void openWebPage(URI uri) {
         Desktop desktop = Desktop.isDesktopSupported() ? Desktop.getDesktop() : null;
         if (desktop != null && desktop.isSupported(Desktop.Action.BROWSE)) {
@@ -354,8 +330,7 @@ public class BasicSwing {
     /**
      * open the given URL in a web browser
      *
-     * @param url
-     */
+	 */
     public static void openWebPage(URL url) {
         try {
             openWebPage(url.toURI());

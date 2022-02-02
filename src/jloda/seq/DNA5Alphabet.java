@@ -58,7 +58,6 @@ public class DNA5Alphabet extends Alphabet {
     /**
      * gets the reverse complement
      *
-     * @param sequence
      * @param reverseComplement can be null
      * @return reverse complement
      */
@@ -74,9 +73,6 @@ public class DNA5Alphabet extends Alphabet {
     /**
      * does normalized sequence contain an N
      *
-     * @param sequence
-     * @param offset
-     * @param len
      * @return true, if N present
      */
     public static boolean containsN(byte[] sequence, int offset, int len) {

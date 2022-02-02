@@ -38,8 +38,7 @@ public class LongBitSet implements Iterable<Long> {
     /**
      * constructor
      *
-     * @param maxCardinality
-     */
+	 */
     public LongBitSet(long maxCardinality) {
         bits = new long[(int) (maxCardinality / 64) + 1];
         for (int i = 0; i < sync.length; i++) {
@@ -50,7 +49,6 @@ public class LongBitSet implements Iterable<Long> {
     /**
      * add a bit, thread-safe
      *
-     * @param bit
      * @return true, if bit was added, false, if already present
      */
     public boolean add(long bit) {
@@ -74,7 +72,6 @@ public class LongBitSet implements Iterable<Long> {
     /**
      * remove a bit, thread-safe
      *
-     * @param bit
      * @return true, if bit was removed, false, if not present
      */
     public boolean remove(long bit) {
@@ -99,7 +96,6 @@ public class LongBitSet implements Iterable<Long> {
     /**
      * tests containment, thread-safe
      *
-     * @param bit
      * @return true, if contained
      */
     public boolean contains(long bit) {

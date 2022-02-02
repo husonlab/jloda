@@ -59,9 +59,7 @@ public class PNGExportType extends FileFilter implements ExportGraphicType {
      * <code>getData</code>: <i>currently not implemented since clipboard export of
      * png images is not intended.</i>
      *
-     * @param panel
-     * @return
-     */
+	 */
     public Object getData(JPanel panel) {
         return null;
     }
@@ -74,12 +72,7 @@ public class PNGExportType extends FileFilter implements ExportGraphicType {
      * writes image to a stream. If scrollPane given and showWholeImage=true, draws only visible portion
      * of panel
      *
-     * @param imagePanel
-     * @param imageScrollPane
-     * @param showWholeImage
-     * @param out
-     * @throws IOException
-     */
+	 */
     public void stream(JPanel imagePanel, JScrollPane imageScrollPane, boolean showWholeImage, OutputStream out) throws IOException {
         JPanel panel;
         if (showWholeImage || imageScrollPane == null)
@@ -95,12 +88,7 @@ public class PNGExportType extends FileFilter implements ExportGraphicType {
      * writes image to file. If scrollPane given and showWholeImage=true, draws only visible portion
      * of panel
      *
-     * @param file
-     * @param imagePanel
-     * @param imageScrollPane
-     * @param showWholeImage
-     * @throws IOException
-     */
+	 */
     public void writeToFile(File file, final JPanel imagePanel, JScrollPane imageScrollPane, boolean showWholeImage) throws IOException {
         final JPanel panel;
         if (showWholeImage || imageScrollPane == null)

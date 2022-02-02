@@ -17,13 +17,6 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-/**
- * Random numbers from Gaussian distribution
- *
- * @version $Id: RandomGaussian.java,v 1.3 2006-06-06 18:56:04 huson Exp $
- * @author Daniel Huson
- * 9.2003
- */
 package jloda.util;
 
 import java.util.Random;
@@ -48,9 +41,7 @@ public class RandomGaussian {
     /**
      * construct Gaussian random source with given mean and std deviation
      *
-     * @param mean
-     * @param stdDev
-     */
+	 */
     public RandomGaussian(double mean, double stdDev) {
         this.mean = mean;
         this.stdDev = stdDev;
@@ -69,9 +60,7 @@ public class RandomGaussian {
     /**
      * construct Gaussian random source with given mean and std deviation
      *
-     * @param mean
-     * @param stdDev
-     */
+	 */
     public RandomGaussian(double mean, double stdDev, int seed) {
         this.mean = mean;
         this.stdDev = stdDev;
@@ -90,8 +79,7 @@ public class RandomGaussian {
     /**
      * sets the mean
      *
-     * @param mean
-     */
+	 */
     public void setMean(double mean) {
         this.mean = mean;
     }
@@ -108,8 +96,7 @@ public class RandomGaussian {
     /**
      * sets the standard deviation
      *
-     * @param stdDev
-     */
+	 */
     public void setStdDev(double stdDev) {
         this.stdDev = stdDev;
     }
@@ -153,8 +140,7 @@ public class RandomGaussian {
     /**
      * sets the seed
      *
-     * @param seed
-     */
+	 */
     public void setSeed(long seed) {
         rand.setSeed(seed);
     }

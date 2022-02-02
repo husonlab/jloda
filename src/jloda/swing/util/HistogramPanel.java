@@ -77,9 +77,9 @@ public class HistogramPanel extends JPanel {
              */
             public void actionPerformed(ActionEvent e) {
                 try {
-                    setThreshold(Float.parseFloat(input.getText()));
-                } catch (Exception ex) {
-                }
+					setThreshold(Float.parseFloat(input.getText()));
+				} catch (Exception ignored) {
+				}
             }
         });
         /*
@@ -128,8 +128,7 @@ public class HistogramPanel extends JPanel {
     /**
      * set values
      *
-     * @param values
-     */
+	 */
     public void setValues(int[] values) {
         data.clear();
         for (int value : values) data.add((float) value);
@@ -139,8 +138,7 @@ public class HistogramPanel extends JPanel {
     /**
      * set values
      *
-     * @param values
-     */
+	 */
     public void setValues(BitSet values) {
         data.clear();
         for (int i = values.nextSetBit(0); i >= 0; i = values.nextSetBit(i + 1))
@@ -150,8 +148,7 @@ public class HistogramPanel extends JPanel {
     /**
      * set values
      *
-     * @param values
-     */
+	 */
     public void setValues(float[] values) {
         data.clear();
         for (float value : values) data.add(value);
@@ -161,8 +158,7 @@ public class HistogramPanel extends JPanel {
     /**
      * set values
      *
-     * @param values
-     */
+	 */
     public void setValues(double[] values) {
         data.clear();
         for (double value : values) data.add((float) (value));
@@ -239,7 +235,6 @@ public class HistogramPanel extends JPanel {
     /**
      * given a value f, returns its bucket
      *
-     * @param f
      * @return bucket
      */
     private int getBucketForValue(float f) {
@@ -258,8 +253,7 @@ public class HistogramPanel extends JPanel {
         /**
          * paint the histogram
          *
-         * @param g0
-         */
+		 */
         public void paint(Graphics g0) {
             super.paint(g0);
             Graphics2D g = (Graphics2D) g0;
@@ -393,9 +387,6 @@ public class HistogramPanel extends JPanel {
     /**
      * open a dialog to choose dialog
      *
-     * @param parent
-     * @param title
-     * @param initialThreshold
      * @return threshold chosen, or null, if canceled
      */
     public Float showThresholdDialog(JFrame parent, String title, float initialThreshold) {
@@ -408,8 +399,6 @@ public class HistogramPanel extends JPanel {
     /**
      * open a dialog to choose dialog
      *
-     * @param parent
-     * @param title
      * @return threshold chosen, or null, if canceled
      */
     public Float showThresholdDialog(final JFrame parent, String title) {
@@ -492,8 +481,7 @@ public class HistogramPanel extends JPanel {
     /**
      * set decimal digits
      *
-     * @param decimalDigits
-     */
+	 */
     public void setDecimalDigits(int decimalDigits) {
         this.decimalDigits = decimalDigits;
     }
