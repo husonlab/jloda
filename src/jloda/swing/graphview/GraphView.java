@@ -1653,20 +1653,24 @@ public class GraphView extends JPanel implements Printable, Scrollable, INodeEdg
      * Select all nodes.
      *
      * @param select value to set selection states to
+     * @return true, if selection state of at least one node changed
      */
-    public void selectAllNodes(boolean select) {
+    public boolean selectAllNodes(boolean select) {
         if (!select) {
             if (selectedNodes.size() > 0) {
                 NodeSet oldSelected = (NodeSet) selectedNodes.clone();
                 selectedNodes.clear();
                 fireDoDeselect(oldSelected);
+                return true;
             }
         } else {
             if (selectedNodes.size() < getGraph().getNumberOfNodes()) {
                 selectedNodes.addAll();
                 fireDoSelect(selectedNodes);
+                return true;
             }
         }
+        return false;
     }
 
     /**
@@ -1723,20 +1727,24 @@ public class GraphView extends JPanel implements Printable, Scrollable, INodeEdg
      * Select all adjacentEdges.
      *
      * @param select value to set selection states to
+     * @return true, if selection state of at least one edge changed
      */
-    public void selectAllEdges(boolean select) {
+    public boolean selectAllEdges(boolean select) {
         if (!select) {
             if (selectedEdges.size() > 0) {
                 EdgeSet oldSelected = (EdgeSet) selectedEdges.clone();
                 selectedEdges.clear();
                 fireDoDeselect(oldSelected);
+                return true;
             }
         } else {
             if (selectedEdges.size() < getGraph().getNumberOfEdges()) {
                 selectedEdges.addAll();
                 fireDoSelect(selectedEdges);
+                return true;
             }
         }
+        return false;
     }
 
 

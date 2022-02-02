@@ -22,6 +22,7 @@ package jloda.util;
 import jloda.util.progress.ProgressListener;
 import jloda.util.progress.ProgressSilent;
 
+import java.io.IOException;
 import java.util.Collection;
 import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.ExecutorService;
@@ -119,10 +120,10 @@ public class ExecuteInParallel {
     }
 
     public interface FunctionWithException<S, T> {
-        T apply(S input);
+        T apply(S input) throws CanceledException;
     }
 
     public interface ConsumerWithException<S> {
-        void accept(S input);
+        void accept(S input) throws IOException;
     }
 }

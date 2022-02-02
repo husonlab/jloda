@@ -36,17 +36,17 @@ public class ColorSchemeManager {
     private final ObservableMap<String, ObservableList<Color>> name2ColorSchemes = FXCollections.observableMap(new TreeMap<>());
     private final StringProperty lastColorScheme = new SimpleStringProperty("Retro29");
 
-    public static final String[] BuiltInColorTables = {
+    public static String[] BuiltInColorTables = {
             "Caspian8;8;0Xf64d1b;0X8633bc;0X41a744;0X747474;0X2746bc;0Xff9301;0Xc03150;0X2198bc;" +
-                    "Fews8;8;0X5da6dc;0Xfba53a;0X60be68;0Xf27db0;0Xb39230;0Xb376b2;0Xdfd040;0Xf15954;" +
-                    "Pairs12;12;0X267ab2;0Xa8cfe3;0X399f34;0Xb4df8e;0Xe11f27;0Xfa9b9b;0Xfe7f23;0Xfcbf75;0X6a4199;0Xcab3d6;0Xb05a2f;0Xffff9f;" +
-                    "Pale12;12;0Xdbdada;0Xf27e75;0Xba7bbd;0Xceedc5;0Xfbf074;0Xf8cbe5;0Xf9b666;0Xfdffb6;0X86b0d2;0X95d6c8;0Xb3e46c;0Xbfb8da;" +
-                    "Rainbow13;13;0Xed1582;0Xf73e43;0Xee8236;0Xe5ae3d;0Xe5da45;0Xa1e443;0X22da27;0X21d18e;0X21c8c7;0X1ba2fc;0X2346fb;0X811fd9;0X9f1cc5;" +
-                    "Retro29;29;0Xf4d564;0X97141d;0Xe9af6b;0X82ae92;0X356c7c;0X5c8c83;0X3a2b27;0Xe28b90;0X242666;0Xc2a690;0Xb80614;0X35644f;0Xe3a380;0Xb9a253;0X72a283;0X73605b;0X94a0ad;0Xf7a09d;0Xe5c09e;0X4a4037;0Xcec07c;0X6c80bb;0X7fa0a4;0Xb9805b;0Xd5c03f;0Xdd802e;0X8b807f;0Xc42030;0Xc2603d;" +
-                    "Sea9;9;0Xffffdb;0Xedfbb4;0Xc9ecb6;0X88cfbc;0X56b7c4;0X3c90bf;0X345aa7;0X2f2b93;0X121858;" +
-                    "White-Green;160;0xfdfefd;0xfbfdfb;0xfafdf9;0xf8fcf7;0xf6fcf5;0xf4fbf3;0xf2faf1;0xf0f9ef;0xeff8ed;0xedf7eb;0xebf7e9;0xe9f6e7;0xe8f5e5;0xe6f4e3;0xe4f4e2;0xe2f3e0;" +
-                    "0xe0f2de;0xdff1db;0xddf0d9;0xdbefd7;0xdaeed5;0xd8edd3;0xd6edd1;0xd4eccf;0xd3ebcd;0xd1eacb;0xd0eac9;0xcee9c7;0xcce8c5;0xcae7c3;0xc8e7c2;0xc7e6c0;0xc5e6be;" +
-                    "0xc3e5bc;0xc1e4bb;0xc0e3b9;0xbee2b7;0xbce2b5;0xbae1b2;0xb8e0b0;0xb6dfae;0xb5deac;0xb3deab;0xb1dda9;0xb0dda7;0xaedca5;0xacdba3;0xaadaa1;0xa8da9f;0xa7d99d;" +
+            "Fews8;8;0X5da6dc;0Xfba53a;0X60be68;0Xf27db0;0Xb39230;0Xb376b2;0Xdfd040;0Xf15954;" +
+            "Pairs12;12;0X267ab2;0Xa8cfe3;0X399f34;0Xb4df8e;0Xe11f27;0Xfa9b9b;0Xfe7f23;0Xfcbf75;0X6a4199;0Xcab3d6;0Xb05a2f;0Xffff9f;" +
+            "Pale12;12;0Xdbdada;0Xf27e75;0Xba7bbd;0Xceedc5;0Xfbf074;0Xf8cbe5;0Xf9b666;0Xfdffb6;0X86b0d2;0X95d6c8;0Xb3e46c;0Xbfb8da;" +
+            "Rainbow13;13;0Xed1582;0Xf73e43;0Xee8236;0Xe5ae3d;0Xe5da45;0Xa1e443;0X22da27;0X21d18e;0X21c8c7;0X1ba2fc;0X2346fb;0X811fd9;0X9f1cc5;" +
+            "Retro29;29;0Xf4d564;0X97141d;0Xe9af6b;0X82ae92;0X356c7c;0X5c8c83;0X3a2b27;0Xe28b90;0X242666;0Xc2a690;0Xb80614;0X35644f;0Xe3a380;0Xb9a253;0X72a283;0X73605b;0X94a0ad;0Xf7a09d;0Xe5c09e;0X4a4037;0Xcec07c;0X6c80bb;0X7fa0a4;0Xb9805b;0Xd5c03f;0Xdd802e;0X8b807f;0Xc42030;0Xc2603d;" +
+            "Sea9;9;0Xffffdb;0Xedfbb4;0Xc9ecb6;0X88cfbc;0X56b7c4;0X3c90bf;0X345aa7;0X2f2b93;0X121858;" +
+            "White-Green;160;0xfdfefd;0xfbfdfb;0xfafdf9;0xf8fcf7;0xf6fcf5;0xf4fbf3;0xf2faf1;0xf0f9ef;0xeff8ed;0xedf7eb;0xebf7e9;0xe9f6e7;0xe8f5e5;0xe6f4e3;0xe4f4e2;0xe2f3e0;" +
+            "0xe0f2de;0xdff1db;0xddf0d9;0xdbefd7;0xdaeed5;0xd8edd3;0xd6edd1;0xd4eccf;0xd3ebcd;0xd1eacb;0xd0eac9;0xcee9c7;0xcce8c5;0xcae7c3;0xc8e7c2;0xc7e6c0;0xc5e6be;" +
+            "0xc3e5bc;0xc1e4bb;0xc0e3b9;0xbee2b7;0xbce2b5;0xbae1b2;0xb8e0b0;0xb6dfae;0xb5deac;0xb3deab;0xb1dda9;0xb0dda7;0xaedca5;0xacdba3;0xaadaa1;0xa8da9f;0xa7d99d;" +
                     "0xa5d89b;0xa3d799;0xa1d697;0x9fd695;0x9ed593;0x9dd491;0x9bd48f;0x99d38d;0x97d28b;0x95d189;0x93d087;0x91cf85;0x8fce82;0x8dcd80;0x8bcd7e;0x89cc7d;0x87cb7b;" +
                     "0x86cb79;0x85ca77;0x83ca75;0x81c873;0x7fc771;0x7dc770;0x7bc66e;0x79c56c;0x77c46b;0x75c46a;0x73c368;0x71c267;0x6fc266;0x6dc165;0x6cc063;0x6abf61;0x68be5f;" +
                     "0x66be5f;0x64bd5d;0x62bc5c;0x60bb5b;0x5fba59;0x5db958;0x5bb856;0x59b755;0x57b754;0x55b653;0x53b651;0x51b550;0x50b44e;0x4eb24c;0x4cb24b;0x4ab14a;0x48b149;" +

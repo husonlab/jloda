@@ -34,11 +34,11 @@ public class CollectionUtils {
 	}
 
 	/**
-     * given an array, returns it randomized (Durstenfeld 1964)
-     */
-    public static <T> void randomize(T[] array, long seed) {
-        randomize(array, new Random(seed));
-    }
+	 * given an array, returns it randomized (Durstenfeld 1964)
+	 */
+	public static <T> T[] randomize(T[] array, long seed) {
+		return randomize(array, new Random(seed));
+	}
 
 	/**
 	 * given an array, returns it randomized (Durstenfeld 1964)

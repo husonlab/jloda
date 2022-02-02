@@ -41,8 +41,9 @@ public class Single<S> implements Comparable<Single<S>>, Comparator<Single<S>> {
         return value;
     }
 
-    public void set(S s) {
+    public S set(S s) {
         this.value = s;
+        return s;
     }
 
     public synchronized void setIfCurrentValueIsNull(S s) {

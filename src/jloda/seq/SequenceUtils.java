@@ -66,156 +66,136 @@ public class SequenceUtils {
             return '-';
 
         switch (c1) {
-            case 'U':
-                switch (c2) {
-                    case 'U':
-                        return switch (c3) {
-                            case 'U', 'C' -> 'F';
-                            case 'A' -> 'L';
-                            case 'G' -> 'L';
-                            default -> 'X';
-                        };
-                    case 'C':
-                        return switch (c3) {
-                            case 'U' -> 'S';
-                            case 'C' -> 'S';
-                            case 'A' -> 'S';
-                            case 'G' -> 'S';
-                            default -> 'S';
-                        };
-                    case 'A':
-                        return switch (c3) {
-                            case 'U' -> 'Y';
-                            case 'C' -> 'Y';
-                            case 'A' -> '*';
-                            case 'G' -> '*';
-                            default -> 'X';
-                        };
-                    case 'G':
-                        return switch (c3) {
-                            case 'U' -> 'C';
-                            case 'C' -> 'C';
-                            case 'A' -> '*';
-                            case 'G' -> 'W';
-                            default -> 'X';
-                        };
-                    default:
-                        return 'X';
-                }
-            case 'C':
-                switch (c2) {
-                    case 'U':
-                        return switch (c3) {
-                            case 'U' -> 'L';
-                            case 'C' -> 'L';
-                            case 'A' -> 'L';
-                            case 'G' -> 'L';
-                            default -> 'L';
-                        };
-                    case 'C':
-                        return switch (c3) {
-                            case 'U' -> 'P';
-                            case 'C' -> 'P';
-                            case 'A' -> 'P';
-                            case 'G' -> 'P';
-                            default -> 'P';
-                        };
-                    case 'A':
-                        return switch (c3) {
-                            case 'U' -> 'H';
-                            case 'C' -> 'H';
-                            case 'A' -> 'Q';
-                            case 'G' -> 'Q';
-                            default -> 'X';
-                        };
-                    case 'G':
-                        return switch (c3) {
-                            case 'U' -> 'R';
-                            case 'C' -> 'R';
-                            case 'A' -> 'R';
-                            case 'G' -> 'R';
-                            default -> 'R';
-                        };
-                    default:
-                        return 'X';
-                }
-            case 'A':
-                switch (c2) {
-                    case 'U':
-                        return switch (c3) {
-                            case 'U' -> 'I';
-                            case 'C' -> 'I';
-                            case 'A' -> 'I';
-                            case 'G' -> 'M';
-                            default -> 'X';
-                        };
-                    case 'C':
-                        return switch (c3) {
-                            case 'U' -> 'T';
-                            case 'C' -> 'T';
-                            case 'A' -> 'T';
-                            case 'G' -> 'T';
-                            default -> 'T';
-                        };
-                    case 'A':
-                        return switch (c3) {
-                            case 'U' -> 'N';
-                            case 'C' -> 'N';
-                            case 'A' -> 'K';
-                            case 'G' -> 'K';
-                            default -> 'X';
-                        };
-                    case 'G':
-                        return switch (c3) {
-                            case 'U' -> 'S';
-                            case 'C' -> 'S';
-                            case 'A' -> 'R';
-                            case 'G' -> 'R';
-                            default -> 'X';
-                        };
-                    default:
-                        return 'X';
-                }
-            case 'G':
-                switch (c2) {
-                    case 'U':
-                        return switch (c3) {
-                            case 'U' -> 'V';
-                            case 'C' -> 'V';
-                            case 'A' -> 'V';
-                            case 'G' -> 'V';
-                            default -> 'V';
-                        };
-                    case 'C':
-                        return switch (c3) {
-                            case 'U' -> 'A';
-                            case 'C' -> 'A';
-                            case 'A' -> 'A';
-                            case 'G' -> 'A';
-                            default -> 'A';
-                        };
-                    case 'A':
-                        return switch (c3) {
-                            case 'U' -> 'D';
-                            case 'C' -> 'D';
-                            case 'A' -> 'E';
-                            case 'G' -> 'E';
-                            default -> 'X';
-                        };
-                    case 'G':
-                        return switch (c3) {
-                            case 'U' -> 'G';
-                            case 'C' -> 'G';
-                            case 'A' -> 'G';
-                            case 'G' -> 'G';
-                            default -> 'G';
-                        };
-                    default:
-                        return 'X';
-                }
-            default:
-                return 'X';
-        }
+			case 'U':
+				return (byte) switch (c2) {
+					case 'U' -> switch (c3) {
+						case 'U', 'C' -> 'F';
+						case 'A' -> 'L';
+						case 'G' -> 'L';
+						default -> 'X';
+					};
+					case 'C' -> switch (c3) {
+						case 'U' -> 'S';
+						case 'C' -> 'S';
+						case 'A' -> 'S';
+						case 'G' -> 'S';
+						default -> 'S';
+					};
+					case 'A' -> switch (c3) {
+						case 'U' -> 'Y';
+						case 'C' -> 'Y';
+						case 'A' -> '*';
+						case 'G' -> '*';
+						default -> 'X';
+					};
+					case 'G' -> switch (c3) {
+						case 'U' -> 'C';
+						case 'C' -> 'C';
+						case 'A' -> '*';
+						case 'G' -> 'W';
+						default -> 'X';
+					};
+					default -> 'X';
+				};
+			case 'C':
+				return (byte) switch (c2) {
+					case 'U' -> switch (c3) {
+						case 'U' -> 'L';
+						case 'C' -> 'L';
+						case 'A' -> 'L';
+						case 'G' -> 'L';
+						default -> 'L';
+					};
+					case 'C' -> switch (c3) {
+						case 'U' -> 'P';
+						case 'C' -> 'P';
+						case 'A' -> 'P';
+						case 'G' -> 'P';
+						default -> 'P';
+					};
+					case 'A' -> switch (c3) {
+						case 'U' -> 'H';
+						case 'C' -> 'H';
+						case 'A' -> 'Q';
+						case 'G' -> 'Q';
+						default -> 'X';
+					};
+					case 'G' -> switch (c3) {
+						case 'U' -> 'R';
+						case 'C' -> 'R';
+						case 'A' -> 'R';
+						case 'G' -> 'R';
+						default -> 'R';
+					};
+					default -> 'X';
+				};
+			case 'A':
+				return (byte) switch (c2) {
+					case 'U' -> switch (c3) {
+						case 'U' -> 'I';
+						case 'C' -> 'I';
+						case 'A' -> 'I';
+						case 'G' -> 'M';
+						default -> 'X';
+					};
+					case 'C' -> switch (c3) {
+						case 'U' -> 'T';
+						case 'C' -> 'T';
+						case 'A' -> 'T';
+						case 'G' -> 'T';
+						default -> 'T';
+					};
+					case 'A' -> switch (c3) {
+						case 'U' -> 'N';
+						case 'C' -> 'N';
+						case 'A' -> 'K';
+						case 'G' -> 'K';
+						default -> 'X';
+					};
+					case 'G' -> switch (c3) {
+						case 'U' -> 'S';
+						case 'C' -> 'S';
+						case 'A' -> 'R';
+						case 'G' -> 'R';
+						default -> 'X';
+					};
+					default -> 'X';
+				};
+			case 'G':
+				return (byte) switch (c2) {
+					case 'U' -> switch (c3) {
+						case 'U' -> 'V';
+						case 'C' -> 'V';
+						case 'A' -> 'V';
+						case 'G' -> 'V';
+						default -> 'V';
+					};
+					case 'C' -> switch (c3) {
+						case 'U' -> 'A';
+						case 'C' -> 'A';
+						case 'A' -> 'A';
+						case 'G' -> 'A';
+						default -> 'A';
+					};
+					case 'A' -> switch (c3) {
+						case 'U' -> 'D';
+						case 'C' -> 'D';
+						case 'A' -> 'E';
+						case 'G' -> 'E';
+						default -> 'X';
+					};
+					case 'G' -> switch (c3) {
+						case 'U' -> 'G';
+						case 'C' -> 'G';
+						case 'A' -> 'G';
+						case 'G' -> 'G';
+						default -> 'G';
+					};
+					default -> 'X';
+				};
+			default:
+				return 'X';
+		}
     }
 
     /**
@@ -334,17 +314,17 @@ public class SequenceUtils {
      * @return reverse complement
      */
     public static byte getComplement(byte nucleotide) {
-        return switch (nucleotide) {
-            case 'a' -> 't';
-            case 'A' -> 'T';
-            case 'c' -> 'g';
-            case 'C' -> 'G';
-            case 'g' -> 'c';
-            case 'G' -> 'C';
-            case 't' -> 'a';
-            case 'T' -> 'A';
-            default -> nucleotide;
-        };
+		return (byte) switch (nucleotide) {
+			case 'a' -> 't';
+			case 'A' -> 'T';
+			case 'c' -> 'g';
+			case 'C' -> 'G';
+			case 'g' -> 'c';
+			case 'G' -> 'C';
+			case 't' -> 'a';
+			case 'T' -> 'A';
+			default -> nucleotide;
+		};
     }
 
     /**
@@ -389,20 +369,21 @@ public class SequenceUtils {
         return result;
     }
 
-    /**
-     * gets the reverse complement of a segment
-     *
-     * @param sequence
-     * @param offset   start of segment
-     * @param length   length of segment
-     */
-    public static void getReverseComplement(byte[] sequence, int offset, int length, byte[] result) {
-        if (result == null)
-            result = new byte[length];
-        for (int i = 0; i < length; i++) {
-            result[i] = getComplement(sequence[length + offset - 1 - i]);
-        }
-    }
+	/**
+	 * gets the reverse complement of a segment
+	 *
+	 * @param sequence
+	 * @param offset   start of segment
+	 * @param length   length of segment
+	 */
+	public static byte[] getReverseComplement(byte[] sequence, int offset, int length, byte[] result) {
+		if (result == null)
+			result = new byte[length];
+		for (int i = 0; i < length; i++) {
+			result[i] = getComplement(sequence[length + offset - 1 - i]);
+		}
+		return result;
+	}
 
     public static void getSegment(byte[] sequence, int offset, int length, byte[] result) {
         if (result == null)
