@@ -709,7 +709,7 @@ public class SplittableTabPane extends Pane {
         stage.getIcons().addAll(ProgramProperties.getProgramIconsFX());
 
         stage.setScene(new Scene(root, width, height));
-        tab.getContent().getStyleClass().add("background");
+        tab.getContent().getStyleClass().add("viewer-background");
 
         stage.sizeToScene();
         stage.setX(screenX);
