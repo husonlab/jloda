@@ -10,8 +10,8 @@
 .root {
     -fx-accent: #1e74c6;
     -fx-focus-color: -fx-accent;
-    -fx-base: rgba(60, 63, 65, 255);
-/ / dark -fx-control-inner-background: derive(-fx-base, 35 %);
+    -fx-base: rgb(60, 63, 65);
+    -fx-control-inner-background: derive(-fx-base, 35%);
     -fx-control-inner-background-alt: -fx-control-inner-background;
 }
 
@@ -39,6 +39,10 @@
 
 .scroll-bar {
     -fx-background-color: derive(-fx-base, 45%)
+}
+
+.scroll-pane {
+    -fx-background: rgb(43, 43, 43);
 }
 
 .button:default {
@@ -73,8 +77,9 @@
     -fx-table-cell-border-color: transparent;
 }
 
+
 .background {
-    -fx-background-color: derive(-fx-base, 35%);
+    -fx-background-color: rgb(43, 43, 43);
 }
 
 .paragraph-text .text {

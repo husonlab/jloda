@@ -19,3 +19,7 @@
 .background {
     -fx-background-color: white;
 }
+
+.scroll-pane {
+    -fx-background: white;
+}

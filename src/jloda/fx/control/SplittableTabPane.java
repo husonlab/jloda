@@ -72,8 +72,6 @@ public class SplittableTabPane extends Pane {
      * constructor
      */
     public SplittableTabPane() {
-        getStyleClass().add("background");
-
         final TabPane tabPane = createTabPane();
         tabPane.prefWidthProperty().bind(widthProperty());
         tabPane.prefHeightProperty().bind(heightProperty());
@@ -350,8 +348,6 @@ public class SplittableTabPane extends Pane {
             moveTab(tab, tabPane, newTabPane);
         } else { // change of orientation, create new split pane
             final SplitPane splitPane = new SplitPane();
-            splitPane.getStyleClass().add("background");
-
             splitPane.setOrientation(orientation);
             final IntegerProperty splitPaneSize = new SimpleIntegerProperty();
             splitPaneSize.bind(Bindings.size(splitPane.getItems()));
@@ -597,7 +593,6 @@ public class SplittableTabPane extends Pane {
      */
     private TabPane createTabPane() {
         final TabPane tabPane = new TabPane();
-        tabPane.getStyleClass().add("background");
 
         tabPane.getSelectionModel().selectedItemProperty().addListener((c, o, n) -> {
             if (n == null)
