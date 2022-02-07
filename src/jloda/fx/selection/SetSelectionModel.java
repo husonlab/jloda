@@ -45,7 +45,7 @@ public class SetSelectionModel<T> implements SelectionModel<T> {
 
 	@Override
 	public boolean select(T t) {
-		return set.add(t);
+		return t != null && set.add(t);
 	}
 
 	@Override
@@ -55,7 +55,12 @@ public class SetSelectionModel<T> implements SelectionModel<T> {
 
 	@Override
 	public boolean selectAll(Collection<T> list) {
-		return set.addAll(list);
+		var result = false;
+		for (var item : list) {
+			if (item != null && select(item))
+				result = true;
+		}
+		return result;
 	}
 
 	@Override
@@ -65,12 +70,17 @@ public class SetSelectionModel<T> implements SelectionModel<T> {
 
 	@Override
 	public boolean clearSelection(T t) {
-		return set.remove(t);
+		return t != null && set.remove(t);
 	}
 
 	@Override
 	public boolean clearSelection(Collection<T> list) {
-		return set.removeAll(list);
+		var result = false;
+		for (var item : list) {
+			if (item != null && clearSelection(item))
+				result = true;
+		}
+		return result;
 	}
 
 	@Override

@@ -115,7 +115,8 @@ public class RichTextLabel extends TextFlow {
     public RichTextLabel(RichTextLabel that) {
         this();
         setFont(that.getFont());
-        setTextFill(that.getTextFill());
+        if (that.getTextFill() != null)
+            setTextFill(that.getTextFill());
         setRequireHTMLTag(that.isRequireHTMLTag());
         setContentDisplay(that.getContentDisplay());
         setScale(that.getScale());
@@ -342,13 +343,11 @@ public class RichTextLabel extends TextFlow {
                 } else {
                     if (isRequireHTMLTag()) { // require leading HTML tag, but none found, return non-styled text
                         final Text text = new Text(getText());
+                        text.getStyleClass().add("rich-text-label");
                         if (getScale() == 1.0)
                             text.setFont(getFont());
                         else
                             text.setFont(new Font(getFont().getName(), getScale() * getFont().getSize()));
-
-                        if (getTextFill() != Color.BLACK)
-                            text.setFill(getTextFill());
                         getChildren().add(text);
                         return;
                     } else
@@ -370,7 +369,7 @@ public class RichTextLabel extends TextFlow {
             var offset = 0.0;
             var currentFont = getFont();
             var fontSize = currentFont.getSize();
-            var textFill = getTextFill();
+            Paint textFill = null;
 
             final var active = new HashMap<String, Boolean>();
 
@@ -385,8 +384,11 @@ public class RichTextLabel extends TextFlow {
 
                 if (event.pos() > segmentStart) {
                     final var textItem = new Text(getText().substring(segmentStart, event.pos()));
-                    if (textFill != Color.BLACK)
+
+                    if (textFill != null)
                         textItem.setFill(textFill);
+                    else
+                        textItem.getStyleClass().add("rich-text-label");
 
                     final FontWeight weight;
                     final var bold = active.get("bold");
@@ -768,7 +770,7 @@ public class RichTextLabel extends TextFlow {
         var prefixElement = getPrefixElement(text, Event.Change.colorStart.type());
         if (prefixElement != null)
             text = removePrefixElement(text, prefixElement);
-        if (textFill != null && !textFill.equals(Color.BLACK))
+        if (textFill != null)
             return insertPrefix(text, String.format("<c \"%s\">", textFill));
         else
             return text;
@@ -785,7 +787,7 @@ public class RichTextLabel extends TextFlow {
                 }
             }
         }
-        return Color.BLACK;
+        return null;
     }
 
     public void setTextFill(Paint textFill) {
@@ -977,9 +979,9 @@ public class RichTextLabel extends TextFlow {
                 if (line.startsWith(change.tag())) {
                     if (change.tag().endsWith(" ")) // requires argument
                     {
-                        int startPos = change.tag().length();
-                        int endPos = line.indexOf(">");
-                        String argument = (startPos < endPos ? line.substring(startPos, endPos).trim() : null);
+                        var startPos = change.tag().length();
+                        var endPos = line.indexOf(">");
+                        var argument = (startPos < endPos ? line.substring(startPos, endPos).trim() : null);
                         if (argument != null && argument.startsWith("\"") && argument.endsWith("\""))
                             argument = argument.substring(1, argument.length() - 1);
                         return new Event(change, pos, pos + endPos + 1, argument);

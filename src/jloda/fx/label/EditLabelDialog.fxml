@@ -23,10 +23,10 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.text.Font?>
-<BorderPane xmlns="http://javafx.com/javafx/8.0.111" xmlns:fx="http://javafx.com/fxml/1"
+<BorderPane xmlns="http://javafx.com/javafx/16" xmlns:fx="http://javafx.com/fxml/1"
             fx:controller="jloda.fx.label.EditLabelDialogController">
     <bottom>
-        <TextArea fx:id="supporteHTMLTextArea" editable="false" focusTraversable="false" minHeight="0.0" opacity="0.57"
+        <TextArea fx:id="supportedHTMLTextArea" editable="false" focusTraversable="false" minHeight="0.0" opacity="0.57"
                   prefRowCount="5"
                   style="-fx-background-color: lightgray; -fx-border-color: transparent; -fx-border-width: 0;"
                   text="Supported HTML tags:&#10;&#10;" wrapText="true">
@@ -54,10 +54,8 @@
                 </padding>
                 <VBox alignment="CENTER" GridPane.valignment="CENTER" GridPane.vgrow="ALWAYS">
                     <Label alignment="CENTER" text="Label:"/>
-                    <Label alignment="CENTER" layoutX="10.0" layoutY="10.0" text="(HTML)"
-                           textFill="LIGHTGRAY"/>
-                    <Button fx:id="clearHTMLButton" focusTraversable="false" mnemonicParsing="false"
-                            text="x">
+                    <Label alignment="CENTER" layoutX="10.0" layoutY="10.0" text="(HTML)" textFill="LIGHTGRAY"/>
+                    <Button fx:id="clearHTMLButton" focusTraversable="false" mnemonicParsing="false" text="x">
                         <tooltip>
                             <Tooltip text="Remove all HTML tags"/>
                         </tooltip>
@@ -86,7 +84,7 @@
                     <GridPane.margin>
                         <Insets/>
                     </GridPane.margin>
-                    <StackPane fx:id="previewStackPane" style="-fx-background-color: WHITE;"/>
+                    <StackPane fx:id="previewStackPane" styleClass="viewer-background"/>
                 </ScrollPane>
             </GridPane>
         </SplitPane>

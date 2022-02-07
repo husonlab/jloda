@@ -23,3 +23,23 @@
 .scroll-pane {
     -fx-background: white;
 }
+
+.rich-text-label {
+    -fx-fill: black;
+}
+
+.graph-node {
+    -fx-stroke: null;
+    -fx-fill: black;
+}
+
+.graph-edge {
+    -fx-stroke: black;
+    -fx-fill: null;
+    -fx-stroke-line-cap: round;
+}
+
+.graph-special-edge {
+    -fx-stroke: darkorange;
+    -fx-fill: null;
+}

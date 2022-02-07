@@ -262,13 +262,13 @@ public class MainWindowManager {
 
     public static void ensureDarkTheme(IMainWindow window) {
 		if (window != null)
-			window.getStage().getScene().getStylesheets().remove("jloda/resources/css/mondena_dark.css");
+			window.getStage().getScene().getStylesheets().remove("jloda/resources/css/dark.css");
 		if (isUseDarkTheme())
-			window.getStage().getScene().getStylesheets().add("jloda/resources/css/mondena_dark.css");
+            window.getStage().getScene().getStylesheets().add("jloda/resources/css/dark.css");
         for (var aux : MainWindowManager.getInstance().getAuxiliaryWindows(window)) {
-            aux.getScene().getStylesheets().remove("jloda/resources/css/mondena_dark.css");
+            aux.getScene().getStylesheets().remove("jloda/resources/css/dark.css");
             if (isUseDarkTheme())
-                aux.getScene().getStylesheets().add("jloda/resources/css/mondena_dark.css");
+                aux.getScene().getStylesheets().add("jloda/resources/css/dark.css");
         }
     }
 
