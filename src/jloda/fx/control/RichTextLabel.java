@@ -28,6 +28,7 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.paint.Color;
 import javafx.scene.paint.Paint;
+import javafx.scene.shape.Rectangle;
 import javafx.scene.text.*;
 import jloda.fx.util.BasicFX;
 import jloda.fx.util.GeometryUtilsFX;
@@ -320,6 +321,7 @@ public class RichTextLabel extends TextFlow {
                "<font \"name\">font-name</font>, " +
                "<size \"value\">font-size</size>, " +
                "<c \"value\">font-color</c>, " +
+               "<box width=\"value\" height=\"value\" fill=\"color\" stroke=\"color\"> adds a box, " +
                "<img src=\"url\" alt=\"text\" width=\"value\" height=\"value\"> adds an image";
     }
 
@@ -494,7 +496,13 @@ public class RichTextLabel extends TextFlow {
 
                 segmentStart = event.segmentStart();
 
-                if (event.change() == Event.Change.image) {
+                if (event.change() == Event.Change.box) {
+                    final var node = getBox(event.argument());
+                    if (node != null) {
+                        node.setTranslateY(offset);
+                        getChildren().add(node);
+                    }
+                } else if (event.change() == Event.Change.image) {
                     final var node = getImageNode(event.argument());
                     if (node != null) {
                         node.setTranslateY(offset);
@@ -515,23 +523,26 @@ public class RichTextLabel extends TextFlow {
             Platform.runLater(this::requestLayout);
     }
 
+    private Node getBox(String specification) {
+        if (specification != null) {
+            final var map = getMap(specification);
+            final var width = (map.containsKey("width") ? Double.parseDouble(map.get("width")) : getFontSize());
+            final var height = (map.containsKey("height") ? Double.parseDouble(map.get("height")) : getFontSize());
+
+            final var fill = (map.containsKey("fill") ? Color.web(map.get("fill")) : null);
+            final var stroke = (map.containsKey("stroke") ? Color.web(map.get("stroke")) : null);
+
+            var rectangle = new Rectangle(width, height);
+            rectangle.setFill(fill);
+            rectangle.setStroke(stroke);
+            return rectangle;
+        }
+        return null;
+    }
+
     private Node getImageNode(String specification) {
         if (specification != null) {
-            specification = specification.replaceAll("\\s+\"", " \"").replaceAll("\"\\s+", "\" ");
-
-            final Map<String, String> map = new HashMap<>();
-            final String[] tokens = specification.split(" ");
-            for (String token : tokens) {
-                final String[] pair = token.split("=");
-                if (pair.length == 2) {
-                    final String key = pair[0].trim();
-                    String value = pair[1].trim();
-                    if (value.startsWith("\"") && value.endsWith("\"") && value.length() >= 2)
-                        value = value.substring(1, value.length() - 1);
-                    if (key.length() > 0)
-                        map.put(key, value);
-                }
-            }
+            final var map = getMap(specification);
             if (map.containsKey("src")) {
                 final String src = map.get("src");
                 try {
@@ -576,6 +587,25 @@ public class RichTextLabel extends TextFlow {
                 return new Text(map.get("alt"));
         }
         return null;
+    }
+
+    private static Map<String, String> getMap(String specification) {
+        specification = specification.replaceAll("\\s+\"", " \"").replaceAll("\"\\s+", "\" ").replaceAll(" =", "=").replaceAll("= ", "=");
+
+        final Map<String, String> map = new HashMap<>();
+        final String[] tokens = specification.split(" ");
+        for (String token : tokens) {
+            final String[] pair = token.split("=");
+            if (pair.length == 2) {
+                final String key = pair[0].trim();
+                String value = pair[1].trim();
+                if (value.startsWith("\"") && value.endsWith("\"") && value.length() >= 2)
+                    value = value.substring(1, value.length() - 1);
+                if (key.length() > 0)
+                    map.put(key, value);
+            }
+        }
+        return map;
     }
 
     public static Event getPrefixElement(String text, String changeType) {
@@ -891,6 +921,29 @@ public class RichTextLabel extends TextFlow {
         return fontFamily;
     }
 
+    public static String setBox(String text, Double width, Double height, Color fill, Color stroke) {
+        var prefixElement = getPrefixElement(text, Event.Change.box.type());
+        if (prefixElement != null)
+            text = removePrefixElement(text, prefixElement);
+        var tag = "<box ";
+
+        if (width != null)
+            tag += String.format(" width=\"%.2f\"", width);
+        if (height != null)
+            tag += String.format(" height=\"%.2f\"", height);
+        if (fill != null)
+            tag += String.format(" fill=\"%s\"", fill);
+        if (stroke != null)
+            tag += String.format(" stroke=\"%s\"", stroke);
+
+        tag += ">";
+        return insertPrefix(text, tag);
+    }
+
+    public void setBox(Double width, Double height, Color fill, Color stroke) {
+        setBox(getText(), width, height, fill, stroke);
+    }
+
     public static String setImage(String text, String url, String alt, Double width, Double height) {
         var prefixElement = getPrefixElement(text, Event.Change.image.type());
         if (prefixElement != null)
@@ -935,6 +988,7 @@ public class RichTextLabel extends TextFlow {
             fontSizeStart("<size "), fontSizeEnd("</size>"),
             fontFamilyStart("<font "), fontFamilyEnd("</font>"),
             lineBreak("<br>"),
+            box("<box "),
             image("<img ");
 
             private final String tag;
