@@ -22,6 +22,7 @@ import javafx.scene.control.Alert;
 import javafx.scene.control.ButtonBar;
 import javafx.scene.control.ButtonType;
 import javafx.stage.Stage;
+import jloda.fx.window.MainWindowManager;
 import jloda.util.FileUtils;
 
 import java.util.Optional;
@@ -37,18 +38,23 @@ public class ConfirmOverwriteDialog {
 		if (!FileUtils.fileExistsAndIsNonEmpty(fileName))
 			return Result.yes;
 
-        Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
-        alert.initOwner(owner);
+		Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+
+		if (MainWindowManager.isUseDarkTheme()) {
+			alert.getDialogPane().getScene().getWindow().getScene().getStylesheets().add("jloda/resources/css/dark.css");
+		}
+
+		alert.initOwner(owner);
 		alert.setTitle("File exists");
 		alert.setHeaderText("The file '" + FileUtils.getFileNameWithoutPath(fileName) + "' already exists.");
 		alert.setContentText("Overwrite the existing file?");
-        ButtonType buttonTypeYes = new ButtonType("Yes");
-        ButtonType buttonTypeYesAll = new ButtonType("Yes to all");
-        ButtonType buttonTypeNo = new ButtonType("No");
-        ButtonType buttonTypeCancel = new ButtonType("Cancel", ButtonBar.ButtonData.CANCEL_CLOSE);
-        alert.getButtonTypes().setAll(buttonTypeNo, buttonTypeYes, buttonTypeYesAll, buttonTypeCancel);
+		ButtonType buttonTypeYes = new ButtonType("Yes");
+		ButtonType buttonTypeYesAll = new ButtonType("Yes to all");
+		ButtonType buttonTypeNo = new ButtonType("No");
+		ButtonType buttonTypeCancel = new ButtonType("Cancel", ButtonBar.ButtonData.CANCEL_CLOSE);
+		alert.getButtonTypes().setAll(buttonTypeNo, buttonTypeYes, buttonTypeYesAll, buttonTypeCancel);
 
-        final Optional<ButtonType> result = alert.showAndWait();
+		final Optional<ButtonType> result = alert.showAndWait();
         if (result.isPresent()) {
             if (result.get() == buttonTypeYes)
                 return Result.yes;
