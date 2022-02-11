@@ -40,6 +40,7 @@ import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Text;
 import javafx.util.converter.DefaultStringConverter;
 import jloda.fx.control.AMultipleSelectionModel;
+import jloda.fx.window.MainWindowManager;
 import jloda.util.BitSetUtils;
 import jloda.util.NumberUtils;
 import jloda.util.StringUtils;
@@ -148,12 +149,16 @@ public class MyTableView extends Pane {
             final MenuItem addRowMenuItem = new MenuItem("Add Row...");
             addRowMenuItem.setOnAction((e) -> {
                 TextInputDialog dialog = new TextInputDialog("row");
+                if (MainWindowManager.isUseDarkTheme()) {
+                    dialog.getDialogPane().getScene().getWindow().getScene().getStylesheets().add("jloda/resources/css/dark.css");
+                }
+
                 dialog.setTitle("New row");
                 dialog.setHeaderText("Enter row name:");
 
                 final Optional<String> result = dialog.showAndWait();
                 if (result.isPresent() && rowHeaderView.getSelectionModel().getSelectedItems().size() == 1) {
-					final String newName = StringUtils.getUniqueName(result.get().trim(), getRowNames());
+                    final String newName = StringUtils.getUniqueName(result.get().trim(), getRowNames());
 
                     final MyTableRow newRow = new MyTableRow(newName);
                     final int pos = getRowIndex(rowHeaderView.getSelectionModel().getSelectedItems().get(0));
@@ -169,13 +174,17 @@ public class MyTableView extends Pane {
             renameMenuItem.setOnAction((e) -> {
                 final String oldName = cell.getText();
                 TextInputDialog dialog = new TextInputDialog(oldName);
+                if (MainWindowManager.isUseDarkTheme()) {
+                    dialog.getDialogPane().getScene().getWindow().getScene().getStylesheets().add("jloda/resources/css/dark.css");
+                }
+
                 dialog.setTitle("New Row Name");
                 dialog.setHeaderText("Enter new row name:");
 
                 final Optional<String> result = dialog.showAndWait();
                 if (result.isPresent() && rowHeaderView.getSelectionModel().getSelectedItems().size() == 1) {
                     if (!result.get().equals(oldName)) {
-						final String newName = StringUtils.getUniqueName(result.get().trim(), getRowNames());
+                        final String newName = StringUtils.getUniqueName(result.get().trim(), getRowNames());
                         renameRow(oldName, newName);
                     }
                 }

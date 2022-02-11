@@ -1537,7 +1537,6 @@ public class Graph extends GraphBase implements INamed {
         return StreamSupport.stream(nodes(afterMe).spliterator(), true);
     }
 
-
     /**
      * get the unhidden subset
      *
