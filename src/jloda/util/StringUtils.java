@@ -2150,4 +2150,11 @@ public class StringUtils {
 		}
 		return count;
 	}
+
+	public static String stripSurroundingQuotesIfAny(String s) {
+		if (s.length() > 1 && (s.startsWith("\"") && s.endsWith("\"") || s.startsWith("'") && s.endsWith("'")))
+			return s.substring(1, s.length() - 1);
+		else
+			return s;
+	}
 }

@@ -229,6 +229,11 @@ public class FileUtils {
 		}
 	}
 
+	public static void checkFileWritable(boolean allowOverwrite, String... fileNames) throws IOException {
+		for (var fileName : fileNames)
+			checkFileWritable(fileName, allowOverwrite);
+	}
+
 	public static void checkFileWritable(String fileName, boolean allowOverwrite) throws IOException {
 		if (fileName.equalsIgnoreCase("stdout") || fileName.equalsIgnoreCase("stderr")
 				|| fileName.equalsIgnoreCase("stdout-gz"))
@@ -241,9 +246,9 @@ public class FileUtils {
 			else if (!file.delete())
 				throw new IOException("Failed to delete existing file: " + fileName);
 		}
-		if (!file.getParentFile().exists())
-			throw new IOException("Directory doesn't exist: " + file.getParentFile());
-		try (Writer w = new FileWriter(file)) {
+		if (!isDirectory(file.getParent()))
+			throw new IOException("Containing directory doesn't exist: " + fileName);
+		try (var w = getOutputWriterPossiblyZIPorGZIP(fileName)) {
 			w.write("");
 		} catch (IOException ex) {
 			throw new IOException("Can't create file: " + fileName);
@@ -258,7 +263,7 @@ public class FileUtils {
 	 * @return true if directory
 	 */
 	public static boolean isDirectory(String fileName) {
-		return ((new File(fileName)).isDirectory());
+		return fileName != null && ((new File(fileName)).isDirectory());
 	}
 
 	/**

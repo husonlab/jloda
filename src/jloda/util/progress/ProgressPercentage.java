@@ -157,7 +157,7 @@ public class ProgressPercentage implements ProgressListener {
 	 * report end of task
 	 */
 	public String getTimeString() {
-		return String.format("%.1fs", (System.currentTimeMillis() - startTime) / 1000.0);
+		return String.format("%,.1fs", (System.currentTimeMillis() - startTime) / 1000f);
 	}
 
 	/**
