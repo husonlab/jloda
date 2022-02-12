@@ -32,7 +32,9 @@ import javafx.scene.shape.Rectangle;
 import javafx.scene.text.*;
 import jloda.fx.util.BasicFX;
 import jloda.fx.util.GeometryUtilsFX;
+import jloda.fx.window.NotificationManager;
 import jloda.util.Basic;
+import jloda.util.NumberUtils;
 import jloda.util.StringUtils;
 
 import java.util.*;
@@ -443,12 +445,9 @@ public class RichTextLabel extends TextFlow {
                 if (event.getChangeType().equals("fontSize")) {
                     if (event.isStart()) {
                         final var argument = event.argument();
-                        if (argument != null) {
+                        if (argument != null && NumberUtils.isDouble(argument)) {
                             fontSizeStack.push(currentFont.getSize());
-                            try {
-                                fontSize = Double.parseDouble(argument);
-                            } catch (NumberFormatException ignored) {
-                            }
+                            fontSize = NumberUtils.parseDouble(argument);
                         }
                     } else if (fontSizeStack.size() > 0) {
                         fontSize = fontSizeStack.pop();
@@ -526,8 +525,8 @@ public class RichTextLabel extends TextFlow {
     private Node getBox(String specification) {
         if (specification != null) {
             final var map = getMap(specification);
-            final var width = (map.containsKey("width") ? Double.parseDouble(map.get("width")) : getFontSize());
-            final var height = (map.containsKey("height") ? Double.parseDouble(map.get("height")) : getFontSize());
+            final var width = (map.containsKey("width") && NumberUtils.isDouble(map.get("width")) ? NumberUtils.parseDouble(map.get("width")) : getFontSize());
+            final var height = (map.containsKey("height") && NumberUtils.isDouble(map.get("height")) ? NumberUtils.parseDouble(map.get("height")) : getFontSize());
 
             final var fill = (map.containsKey("fill") ? Color.web(map.get("fill")) : null);
             final var stroke = (map.containsKey("stroke") ? Color.web(map.get("stroke")) : null);
@@ -544,10 +543,10 @@ public class RichTextLabel extends TextFlow {
         if (specification != null) {
             final var map = getMap(specification);
             if (map.containsKey("src")) {
-                final String src = map.get("src");
+                final String src = (StringUtils.isHttpOrFileURL(map.get("src")) ? "" : "file://") + map.get("src");
                 try {
-                    final double width = (map.containsKey("width") ? Double.parseDouble(map.get("width")) : -1);
-                    final double height = (map.containsKey("height") ? Double.parseDouble(map.get("height")) : -1);
+                    final double width = (map.containsKey("width") && NumberUtils.isDouble(map.get("width")) ? NumberUtils.parseDouble(map.get("width")) : -1);
+                    final double height = (map.containsKey("height") && NumberUtils.isDouble(map.get("height")) ? NumberUtils.parseDouble(map.get("height")) : -1);
 
                     final ImageView imageView;
 
@@ -580,6 +579,7 @@ public class RichTextLabel extends TextFlow {
                         imageView.setFitHeight(getScale() * height);
                     return imageView;
                 } catch (Exception ex) {
+                    NotificationManager.showError("Failed to load image: " + ex);
                     Basic.caught(ex);
                 }
             }
@@ -854,11 +854,8 @@ public class RichTextLabel extends TextFlow {
         var prefixElement = getPrefixElement(text, Event.Change.fontSizeStart.type());
         if (prefixElement != null) {
             final var argument = prefixElement.argument();
-            if (argument != null) {
-                try {
-                    return Double.parseDouble(argument);
-                } catch (NumberFormatException ignored) {
-                }
+            if (argument != null && NumberUtils.isDouble(argument)) {
+                return NumberUtils.parseDouble(argument);
             }
         }
         return DEFAULT_FONT.getSize();

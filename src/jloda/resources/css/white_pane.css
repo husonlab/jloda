@@ -33,10 +33,21 @@
     -fx-fill: black;
 }
 
+.graph-node-hollow {
+    -fx-stroke: black;
+    -fx-fill: white;
+}
+
 .graph-edge {
     -fx-stroke: black;
     -fx-fill: null;
     -fx-stroke-line-cap: round;
+}
+
+.above-label {
+    -fx-fill: black;
+    -fx-text-fill: black;
+    -fx-background-color: rgba(255, 255, 255, 0.5);
 }
 
 .graph-special-edge {

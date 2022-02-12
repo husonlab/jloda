@@ -298,7 +298,6 @@ public class NumberUtils {
 				return Double.NEGATIVE_INFINITY;
 			else if (string.equalsIgnoreCase("inf"))
 				return Double.POSITIVE_INFINITY;
-
 		}
 		return 0;
 	}

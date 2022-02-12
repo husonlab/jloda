@@ -2161,4 +2161,8 @@ public class StringUtils {
 		else
 			return s;
 	}
+
+	public static boolean isHttpOrFileURL(String string) {
+		return string.startsWith("http:") || string.startsWith("https:") || string.startsWith("file:");
+	}
 }

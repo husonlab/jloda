@@ -89,6 +89,17 @@
     -fx-fill: white;
 }
 
+.graph-node-hollow {
+    -fx-stroke: white;
+    -fx-fill: -fx-base;
+}
+
+.above-label {
+    -fx-fill: white;
+    -fx-text-fill: white;
+    -fx-background-color: rgba(0, 0, 0, 0.5);
+}
+
 .graph-edge {
     -fx-stroke: white;
     -fx-fill: null;

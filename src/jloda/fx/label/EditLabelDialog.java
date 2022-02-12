@@ -44,19 +44,20 @@ import java.util.List;
  */
 public class EditLabelDialog extends Dialog<String> {
     private final EditLabelDialogController controller;
+    private final RichTextLabel displayLabel;
 
     public EditLabelDialog(Stage owner, RichTextLabel label) {
         final ExtendedFXMLLoader<EditLabelDialogController> extendedFXMLLoader = new ExtendedFXMLLoader<>(this.getClass());
         controller = extendedFXMLLoader.getController();
 
         setTitle("Label Editor - " + ProgramProperties.getProgramName());
-        setHeaderText("Set label (using HTML tags to style, if desired)");
+        setHeaderText("Set label. Use HTML tags to style. Drag-and-drop images.");
         initOwner(owner);
         setResizable(true);
         getDialogPane().setContent(extendedFXMLLoader.getRoot());
         initModality(Modality.WINDOW_MODAL);
 
-        final RichTextLabel displayLabel = (label != null ? new RichTextLabel(label) : new RichTextLabel());
+        displayLabel = (label != null ? new RichTextLabel(label) : new RichTextLabel());
         controller.getInputTextArea().setText(displayLabel.getText().replaceAll("<br>", "\n"));
 
         controller.getSupporteHTMLTextArea().setText("Supported HTML tags:\n" + RichTextLabel.getSupportedHTMLTags());
@@ -125,9 +126,9 @@ public class EditLabelDialog extends Dialog<String> {
             for (File file : files) {
                 if (BasicFX.acceptableImageFormat(file.getName())) {
                     if (file.getName().startsWith("http") || file.getName().startsWith("file:")) {
-                        inputTextArea.setText(inputTextArea.getText() + String.format(" <img src=\"%s\" height=64>", file.getPath()));
+                        inputTextArea.setText(inputTextArea.getText() + String.format(" <img src=\"%s\" height=%.1f>", file.getPath(), Math.max(12, displayLabel.getFontSize())));
                     } else
-                        inputTextArea.setText(inputTextArea.getText() + String.format(" <img src=\"file:%s\" height=64>", file.getAbsolutePath()));
+                        inputTextArea.setText(inputTextArea.getText() + String.format(" <img src=\"file://%s\" height=%.1f>", file.getAbsolutePath(), Math.max(12, displayLabel.getFontSize())));
                 }
             }
         } else if (db.hasString() && db.getString().startsWith("http") && BasicFX.acceptableImageFormat(db.getString())) {
