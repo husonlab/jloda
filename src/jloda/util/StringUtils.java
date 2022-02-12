@@ -1475,21 +1475,23 @@ public class StringUtils {
 	 * @return camel case
 	 */
 	public static String toCamelCase(String string) {
-		int pos = 0;
-		while (pos < string.length() && (Character.isWhitespace(string.charAt(pos)) || string.charAt(pos) == '_'))
-			pos++;
-		boolean afterWhiteSpace = false;
-		StringBuilder buf = new StringBuilder();
-		while (pos < string.length()) {
-			final char ch = string.charAt(pos);
-			if (Character.isWhitespace(ch) || ch == '_')
-				afterWhiteSpace = true;
-			else if (afterWhiteSpace) {
-				buf.append(Character.toUpperCase(ch));
-				afterWhiteSpace = false;
-			} else
-				buf.append(Character.toLowerCase(ch));
-			pos++;
+		final var buf = new StringBuilder();
+		if (string != null) {
+			var pos = 0;
+			while (pos < string.length() && (Character.isWhitespace(string.charAt(pos)) || string.charAt(pos) == '_'))
+				pos++;
+			var afterWhiteSpace = false;
+			while (pos < string.length()) {
+				final var ch = string.charAt(pos);
+				if (Character.isWhitespace(ch) || ch == '_')
+					afterWhiteSpace = true;
+				else if (afterWhiteSpace) {
+					buf.append(Character.toUpperCase(ch));
+					afterWhiteSpace = false;
+				} else
+					buf.append(Character.toLowerCase(ch));
+				pos++;
+			}
 		}
 		return buf.toString();
 	}
@@ -1500,20 +1502,22 @@ public class StringUtils {
 	 * @return camel case
 	 */
 	public static String fromCamelCase(String string) {
-		boolean afterWhiteSpace = true;
-		boolean afterCapital = false;
-		StringBuilder buf = new StringBuilder();
-		for (int pos = 0; pos < string.length(); pos++) {
-			final char ch = string.charAt(pos);
-			if (Character.isUpperCase(ch)) {
-				if (!afterWhiteSpace && !afterCapital) {
-					buf.append(" ");
-				}
-				afterCapital = true;
-			} else
-				afterCapital = false;
-			buf.append(ch);
-			afterWhiteSpace = (Character.isWhitespace(ch));
+		final var buf = new StringBuilder();
+		if (string != null) {
+			var afterWhiteSpace = true;
+			var afterCapital = false;
+			for (var pos = 0; pos < string.length(); pos++) {
+				final var ch = string.charAt(pos);
+				if (Character.isUpperCase(ch)) {
+					if (!afterWhiteSpace && !afterCapital) {
+						buf.append(" ");
+					}
+					afterCapital = true;
+				} else
+					afterCapital = false;
+				buf.append(ch);
+				afterWhiteSpace = (Character.isWhitespace(ch));
+			}
 		}
 		return buf.toString();
 	}
