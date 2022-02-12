@@ -20,6 +20,7 @@ package jloda.fx.dialog;
 
 import javafx.scene.control.TextInputDialog;
 import javafx.stage.Stage;
+import jloda.fx.window.MainWindowManager;
 import jloda.util.NumberUtils;
 import jloda.util.ProgramProperties;
 
@@ -32,6 +33,11 @@ import java.util.Optional;
 public class SetIntegerParameterDialog {
     public static Integer apply(Stage parent, String message, int defaultValue) {
         final TextInputDialog dialog = new TextInputDialog("" + defaultValue);
+
+        if (MainWindowManager.isUseDarkTheme()) {
+            dialog.getDialogPane().getScene().getWindow().getScene().getStylesheets().add("jloda/resources/css/dark.css");
+        }
+
         dialog.initOwner(parent);
         dialog.setTitle("Set Parameter - " + ProgramProperties.getProgramName());
         dialog.setHeaderText(message);

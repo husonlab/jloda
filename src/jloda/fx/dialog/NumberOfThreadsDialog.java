@@ -20,6 +20,7 @@ package jloda.fx.dialog;
 
 import javafx.scene.control.TextInputDialog;
 import javafx.stage.Stage;
+import jloda.fx.window.MainWindowManager;
 import jloda.util.NumberUtils;
 import jloda.util.ProgramProperties;
 
@@ -37,6 +38,10 @@ public class NumberOfThreadsDialog {
         dialog.setTitle("Set Parameter -" + ProgramProperties.getProgramName());
         dialog.setHeaderText("Set the number of threads to use (max. " + Runtime.getRuntime().availableProcessors() + ")");
         dialog.setContentText("Please enter the new value:");
+
+        if (MainWindowManager.isUseDarkTheme()) {
+            dialog.getDialogPane().getScene().getWindow().getScene().getStylesheets().add("jloda/resources/css/dark.css");
+        }
 
         final Optional<String> result = dialog.showAndWait();
 

@@ -21,6 +21,7 @@ package jloda.fx.dialog;
 
 import javafx.scene.control.ChoiceDialog;
 import javafx.stage.Stage;
+import jloda.fx.window.MainWindowManager;
 import jloda.util.ProgramProperties;
 
 import java.util.Collection;
@@ -41,6 +42,10 @@ public class SetParameterDialog {
             dialog.setX(Math.max(parent.getX(), parent.getX() + 0.5 * parent.getWidth() - 200));
             dialog.setY(Math.max(parent.getY(), parent.getY() + 0.5 * parent.getHeight() - 200));
         }
+        if (MainWindowManager.isUseDarkTheme()) {
+            dialog.getDialogPane().getScene().getWindow().getScene().getStylesheets().add("jloda/resources/css/dark.css");
+        }
+
         dialog.setTitle("Set Parameter - " + ProgramProperties.getProgramName());
         dialog.setHeaderText(message);
         dialog.setContentText("Choose the value:");

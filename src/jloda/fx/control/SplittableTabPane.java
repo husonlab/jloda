@@ -615,12 +615,16 @@ public class SplittableTabPane extends Pane {
     private void setupDrag(Tab tab) {
         final Label label = new Label(tab.getText());
         label.setGraphic(tab.getGraphic());
+
         tab.setText("");
         tab.setGraphic(label);
+        tab.textProperty().unbind();
         tab.textProperty().addListener((c, o, n) -> {
-            if (n.length() > 0) {
+            if (n != null && !n.isBlank()) {
                 label.setText(n);
-                Platform.runLater(() -> tab.setText(""));
+                Platform.runLater(() -> {
+                    tab.setText("");
+                });
             }
         });
         tab.graphicProperty().addListener((c, o, n) -> {

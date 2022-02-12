@@ -23,6 +23,7 @@ import javafx.scene.control.Alert;
 import javafx.scene.control.ButtonBar;
 import javafx.scene.control.ButtonType;
 import javafx.stage.Stage;
+import jloda.fx.window.MainWindowManager;
 import jloda.util.ProgramProperties;
 
 import java.util.Optional;
@@ -40,6 +41,9 @@ public class ClosingLastDocument {
      */
     public static boolean apply(Stage stage) {
         final Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+        if (MainWindowManager.isUseDarkTheme()) {
+            alert.getDialogPane().getScene().getWindow().getScene().getStylesheets().add("jloda/resources/css/dark.css");
+        }
         alert.initOwner(stage);
         alert.setResizable(true);
 
