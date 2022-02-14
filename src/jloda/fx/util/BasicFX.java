@@ -404,4 +404,18 @@ public class BasicFX {
             stateProperty.set(defaultState);
         }
     }
+
+    public static void applyToAllMenus(MenuBar menuBar, Function<Menu, Boolean> accept, Consumer<Menu> callback) {
+        var queue = new LinkedList<>(menuBar.getMenus());
+        while (queue.size() > 0) {
+            var menu = queue.pop();
+            if (accept.apply(menu))
+                callback.accept(menu);
+            for (var item : menu.getItems()) {
+                if (item instanceof Menu other)
+                    queue.add(other);
+            }
+        }
+    }
+
 }

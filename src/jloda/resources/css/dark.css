@@ -82,6 +82,7 @@
 
 .rich-text-label {
     -fx-fill: white;
+    -fx-background-color: transparent;
 }
 
 .graph-node {

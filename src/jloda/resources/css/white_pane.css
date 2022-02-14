@@ -26,6 +26,7 @@
 
 .rich-text-label {
     -fx-fill: black;
+    -fx-background-color: transparent;
 }
 
 .graph-node {
