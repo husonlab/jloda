@@ -24,6 +24,7 @@ import javafx.beans.property.*;
 import javafx.scene.Node;
 import javafx.scene.control.ContentDisplay;
 import javafx.scene.control.Control;
+import javafx.scene.control.Tooltip;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.paint.Color;
@@ -32,13 +33,14 @@ import javafx.scene.shape.Rectangle;
 import javafx.scene.text.*;
 import jloda.fx.util.BasicFX;
 import jloda.fx.util.GeometryUtilsFX;
+import jloda.fx.util.ProgramExecutorService;
 import jloda.fx.window.NotificationManager;
 import jloda.util.Basic;
 import jloda.util.NumberUtils;
 import jloda.util.StringUtils;
 
 import java.util.*;
-import java.util.concurrent.Executors;
+import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * A simple RichTextLabel. A number of html and html-like tags are interpreted.
@@ -59,7 +61,7 @@ import java.util.concurrent.Executors;
  */
 public class RichTextLabel extends TextFlow {
     public final static Font DEFAULT_FONT = Font.font("Arial", 14);
-    private static final Map<String, Image> file2image = new HashMap<>();
+    private static final Map<String, Image> file2image = new ConcurrentHashMap<>();
 
     @Deprecated // want to remove this
     private Font _font = DEFAULT_FONT;
@@ -550,26 +552,25 @@ public class RichTextLabel extends TextFlow {
 
                     final ImageView imageView;
 
-                    synchronized (file2image) {
-                        if (file2image.containsKey(src))
-                            imageView = new ImageView(file2image.get(src));
-                        else {
-                            final Image image = new Image(src);
-                            imageView = new ImageView(image);
-
-                            Executors.newSingleThreadExecutor().submit(() -> {
-                                        // note that the same file might get processed multiple times...
-                                        // to fix this, we will implement storage of the images in a new nexus resources block
-                                        final Image image2 = BasicFX.copyAndRemoveWhiteBackground(imageView.getImage(), 240, true);
-                                        if (image2 != null)
-                                            Platform.runLater(() -> {
-                                                imageView.setImage(image2);
-                                                file2image.put(src, image2);
-                                            });
-                                    }
-                            );
-                        }
+                    if (file2image.containsKey(src))
+                        imageView = new ImageView(file2image.get(src));
+                    else {
+                        System.err.println("Loading: " + src);
+                        final var image = new Image(src, true);
+                        file2image.put(src, image);
+                        imageView = new ImageView(image);
+                        image.exceptionProperty().addListener((c, o, n) -> {
+                            NotificationManager.showError("Failed to load image: " + n.getMessage() + ", src='" + src + "'");
+                            file2image.remove(src);
+                            if (n.getMessage().contains("response code: 429")) { // too many requests
+                                ProgramExecutorService.submit(500, () -> {
+                                    file2image.put(src, new Image(src, true));
+                                    imageView.setImage(file2image.get(src));
+                                });
+                            }
+                        });
                     }
+                    Tooltip.install(imageView, new Tooltip(src));
 
                     if (width == -1 || height == -1)
                         imageView.setPreserveRatio(true);

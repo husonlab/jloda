@@ -15,6 +15,7 @@ module jloda {
     exports jloda.fx.find;
     exports jloda.fx.graph;
     exports jloda.fx.label;
+    exports jloda.fx.message;
     exports jloda.fx.selection;
     exports jloda.fx.shapes;
     exports jloda.fx.undo;
@@ -50,6 +51,8 @@ module jloda {
     opens jloda.fx.label;
     opens jloda.fx.control.table;
     opens jloda.fx.find;
+    opens jloda.fx.message;
+
     opens jloda.resources.icons;
     opens jloda.resources.icons.sun;
     opens jloda.resources.icons.dialog;

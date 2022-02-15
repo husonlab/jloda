@@ -378,6 +378,10 @@ public class NexusStreamParser extends NexusStreamTokenizer implements Closeable
      * and 'last'
      */
     public List<String> getTokensRespectCase(String first, String last) throws IOExceptionWithLineNumber {
+        return getTokensRespectCase(first, last, false);
+    }
+
+    public List<String> getTokensRespectCase(String first, String last, boolean surroundWithQuotes) throws IOExceptionWithLineNumber {
         if (first != null)
             matchIgnoreCase(first);
         final LinkedList<String> list = new LinkedList<>();
@@ -389,7 +393,10 @@ public class NexusStreamParser extends NexusStreamTokenizer implements Closeable
                         break;
                     throw new IOExceptionWithLineNumber("'" + last + "' expected, got EOF", lineno());
                 }
-                list.add(toString());
+                if (surroundWithQuotes)
+                    list.add("'" + toString() + "'");
+                else
+                    list.add(toString());
                 nextToken();
             }
         } catch (IOException ex) {

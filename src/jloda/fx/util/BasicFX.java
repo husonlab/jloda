@@ -418,4 +418,14 @@ public class BasicFX {
         }
     }
 
+    public static boolean isColor(String text) {
+        {
+            try {
+                javafx.scene.paint.Color.web(text);
+                return true;
+            } catch (Exception ignored) {
+                return false;
+            }
+        }
+    }
 }

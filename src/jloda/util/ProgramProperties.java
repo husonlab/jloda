@@ -618,21 +618,29 @@ public class ProgramProperties {
             property.set(get(label, defaultValue));
         }
         property.addListener((v, o, n) -> put(label, property.get()));
-    }
+	}
 
-    public static void track(StringProperty property, String defaultValue) {
-        var label = property.getBean().getClass().getName() + property.getName();
-        if (!property.isBound()) {
-            property.set(get(label, defaultValue));
-        }
-        property.addListener((v, o, n) -> put(label, property.get()));
-    }
+	public static void track(StringProperty property, String defaultValue) {
+		var label = property.getBean().getClass().getName() + property.getName();
+		if (!property.isBound()) {
+			property.set(get(label, defaultValue));
+		}
+		property.addListener((v, o, n) -> put(label, property.get()));
+	}
 
-    public static <T> void track(ObjectProperty<T> property, Function<String, T> valueOf, T defaultValue) {
-        var label = property.getBean().getClass().getName() + property.getName();
-        if (!property.isBound()) {
-            property.set(valueOf.apply(get(label, defaultValue.toString())));
-        }
-        property.addListener((v, o, n) -> put(label, property.get().toString()));
-    }
+	public static void track(ObjectProperty<javafx.scene.paint.Color> property, javafx.scene.paint.Color defaultValue) {
+		var label = property.getBean().getClass().getName() + property.getName();
+		if (!property.isBound()) {
+			property.set(get(label, defaultValue));
+		}
+		property.addListener((v, o, n) -> put(label, property.get()));
+	}
+
+	public static <T> void track(ObjectProperty<T> property, Function<String, T> valueOf, T defaultValue) {
+		var label = property.getBean().getClass().getName() + property.getName();
+		if (!property.isBound()) {
+			property.set(valueOf.apply(get(label, defaultValue.toString())));
+		}
+		property.addListener((v, o, n) -> put(label, property.get().toString()));
+	}
 }
