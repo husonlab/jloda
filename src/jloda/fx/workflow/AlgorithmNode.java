@@ -25,7 +25,6 @@ import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.value.ChangeListener;
 import javafx.concurrent.Worker;
 import jloda.fx.util.AService;
-import jloda.fx.window.NotificationManager;
 import jloda.util.Basic;
 import jloda.util.StringUtils;
 
@@ -61,10 +60,6 @@ public class AlgorithmNode extends WorkflowNode {
 			}
 
 			setValid(n.equals(Worker.State.SUCCEEDED));
-
-			if (n == Worker.State.FAILED) {
-				NotificationManager.showError(getAlgorithm().getName() + ": Calculation failed: " + service.getException());
-			}
 		});
 
 		validProperty().addListener((v, o, n) -> {
