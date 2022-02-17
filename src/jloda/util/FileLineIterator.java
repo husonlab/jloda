@@ -92,7 +92,7 @@ public class FileLineIterator implements ICloseableIterator<String> {
         } else {
 
             if (FileUtils.fileExistsAndIsNonEmpty(fileName)) {
-                maxProgress = (FileUtils.isZIPorGZIPFile(fileName) ? 10 : 1) * (new File(fileName)).length();
+                maxProgress = (FileUtils.isZIPorGZIPFile(fileName) ? 5 : 1) * (new File(fileName)).length();
             } else
                 maxProgress = 10000000;  // unknown
             reader = new BufferedReader(new InputStreamReader(FileUtils.getInputStreamPossiblyZIPorGZIP(fileName)));
