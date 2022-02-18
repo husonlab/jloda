@@ -246,7 +246,7 @@ public class FileUtils {
 			else if (!file.delete())
 				throw new IOException("Failed to delete existing file: " + fileName);
 		}
-		if (!isDirectory(file.getParent()))
+		if (file.getParent() != null && !file.getParent().isBlank() && !isDirectory(file.getParent()))
 			throw new IOException("Containing directory doesn't exist: " + fileName);
 		try (var w = getOutputWriterPossiblyZIPorGZIP(fileName)) {
 			w.write("");
