@@ -99,6 +99,8 @@ public class FileLineIterator implements ICloseableIterator<String> {
             endOfLineBytes = FileUtils.determineEndOfLinesBytes(fileName);
         }
         done = (maxProgress <= 0);
+        if (progress != null)
+            progress.setProgress(0L);
         this.progress = progress;
     }
 
@@ -108,7 +110,7 @@ public class FileLineIterator implements ICloseableIterator<String> {
      */
     public FileLineIterator(String fileName, boolean reportProgress) throws IOException {
         this(fileName, null);
-        setReportProgress(true);
+        setReportProgress(reportProgress);
     }
 
     /**
@@ -155,11 +157,6 @@ public class FileLineIterator implements ICloseableIterator<String> {
                 else
                     progress = new ProgressPercentage("Processing string", getMaximumProgress());
             }
-        } else {
-            if (progress != null) {
-                progress.close();
-                progress = null;
-            }
         }
     }
 
@@ -187,7 +184,7 @@ public class FileLineIterator implements ICloseableIterator<String> {
     public void close() throws IOException {
         reader.close();
         if (progress != null)
-            progress.close();
+            progress.reportTaskCompleted();
     }
 
     /**
