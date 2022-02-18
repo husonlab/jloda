@@ -530,8 +530,8 @@ public class RichTextLabel extends TextFlow {
             final var width = (map.containsKey("width") && NumberUtils.isDouble(map.get("width")) ? NumberUtils.parseDouble(map.get("width")) : getFontSize());
             final var height = (map.containsKey("height") && NumberUtils.isDouble(map.get("height")) ? NumberUtils.parseDouble(map.get("height")) : getFontSize());
 
-            final var fill = (map.containsKey("fill") ? Color.web(map.get("fill")) : null);
-            final var stroke = (map.containsKey("stroke") ? Color.web(map.get("stroke")) : null);
+            final var fill = (map.containsKey("fill") && BasicFX.isColor(map.get("fill"))? Color.web(map.get("fill")) : null);
+            final var stroke = (map.containsKey("stroke") && BasicFX.isColor(map.get("stroke")) ? Color.web(map.get("stroke")) : null);
 
             var rectangle = new Rectangle(width, height);
             rectangle.setFill(fill);
