@@ -239,12 +239,19 @@ public class CollectionUtils {
 	}
 
 	public static <T> ArrayList<T> difference(Collection<T> a, Collection<T> b) {
-		final ArrayList<T> union = new ArrayList<>();
+		final ArrayList<T> result = new ArrayList<>();
 		for (T t : a) {
 			if (!b.contains(t))
-				union.add(t);
+				result.add(t);
 		}
-		return union;
+		return result;
+	}
+
+	public static <T> ArrayList<T> concatenate(Collection<T> a, Collection<T> b) {
+		final ArrayList<T> result = new ArrayList<>(a);
+		result.addAll(b);
+		return result;
+
 	}
 
 	/**
@@ -252,8 +259,8 @@ public class CollectionUtils {
 	 */
 	public static <T> ArrayList<T> reverse(Collection<T> list) {
 		var source = new ArrayList<>(list);
-        var target = new ArrayList<T>(list.size());
-        for (var i = source.size() - 1; i >= 0; i--)
+		var target = new ArrayList<T>(list.size());
+		for (var i = source.size() - 1; i >= 0; i--)
 			target.add(source.get(i));
 		return target;
 	}
