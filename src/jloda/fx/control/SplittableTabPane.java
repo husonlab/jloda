@@ -635,8 +635,11 @@ public class SplittableTabPane extends Pane {
         });
         tab.graphicProperty().addListener((c, o, n) -> {
             if (n != label) {
-                label.setGraphic(n);
-                Platform.runLater(() -> tab.setGraphic(label));
+                Platform.runLater(() ->
+                {
+                    label.setGraphic(n);
+                    tab.setGraphic(label);
+                });
             }
         });
         label.setOnDragOver(event -> {

@@ -353,7 +353,8 @@ public class CollectionUtils {
 	 *
 	 * @return index or -1
 	 */
-	public static int getIndex(Object s, Object[]... array) {
+	@SafeVarargs
+	public static <T> int getIndex(T s, T... array) {
 		for (var i = 0; i < array.length; i++)
 			if (s.equals(array[i]))
 				return i;

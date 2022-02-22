@@ -307,7 +307,6 @@ public class PhyloTree extends PhyloSplitsGraph {
         if (ALLOW_READ_RETICULATE)
             postProcessReticulate();
 
-        // System.err.println("Bootstrap values detected:    " + getInputHasBootstrapValuesOnNodes());
         // System.err.println("Multi-labeled nodes detected: " + getInputHasMultiLabels());
     }
 
@@ -1365,7 +1364,7 @@ public class PhyloTree extends PhyloSplitsGraph {
      * @return true, if marked as reticulate
      */
     public boolean isReticulatedEdge(Edge e) {
-        return reticulatedEdges != null && reticulatedEdges.contains(e);
+        return e != null && reticulatedEdges != null && reticulatedEdges.contains(e);
     }
 
     /**
