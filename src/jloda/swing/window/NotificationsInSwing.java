@@ -154,7 +154,7 @@ public class NotificationsInSwing {
      *
 	 */
     public static void showNotification(String title, final String message0, final Mode mode, final long milliseconds) {
-        final String message = (message0.length() > maxLength + 3 ? (message0.substring(0, maxLength) + "...") : message0);
+        final String message = (message0==null?"null":(message0.length() > maxLength + 3 ? (message0.substring(0, maxLength) + "...") : message0));
 
         if (isShowNotifications() && ProgramProperties.isUseGUI()) {
             final Window activeWindow = getActiveWindow();

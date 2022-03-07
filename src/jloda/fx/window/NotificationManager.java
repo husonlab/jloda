@@ -170,7 +170,7 @@ public class NotificationManager {
      *
 	 */
     public static void showNotification(Stage owner, String title, final String message0, final NotificationManager.Mode mode, final long milliseconds) {
-        final String message = (message0.length() > maxLength + 3 ? (message0.substring(0, maxLength) + "...") : message0).replaceAll("\\s+", " ");
+        final String message = (message0==null?"null":(message0.length() > maxLength + 3 ? (message0.substring(0, maxLength) + "...") : message0).replaceAll("\\s+", " "));
 
         if (isShowNotifications() && ProgramProperties.isUseGUI()) {
             final Window window = getWindow(owner);
