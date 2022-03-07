@@ -31,6 +31,7 @@ import javafx.scene.Group;
 import javafx.scene.Node;
 import javafx.scene.control.ScrollBar;
 import javafx.scene.control.ScrollPane;
+import javafx.scene.layout.Pane;
 import javafx.scene.layout.StackPane;
 
 /**
@@ -95,6 +96,10 @@ public class ZoomableScrollPane extends ScrollPane {
      */
     public Node getContentNode() {
         return content;
+    }
+
+    public Pane getOuterNode() {
+        return outerNode;
     }
 
     public double getZoomFactorX() {
@@ -176,6 +181,7 @@ public class ZoomableScrollPane extends ScrollPane {
         updateScale();
 
         this.layout(); // refresh ScrollPane scroll positions & target bounds
+
 
         // convert target coordinates to zoomTarget coordinates
         Point2D posInZoomTarget = content.parentToLocal(zoomNode.parentToLocal(mousePoint));

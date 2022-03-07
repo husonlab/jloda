@@ -123,6 +123,21 @@ public class BasicFX {
         return all;
     }
 
+    public static ArrayList<Node> findRecursively(Node root, Function<Node, Boolean> condition) {
+        var all = new ArrayList<Node>();
+        var queue = new LinkedList<Node>();
+        queue.add(root);
+        while (queue.size() > 0) {
+            var node = queue.pop();
+            if (condition.apply(node))
+                all.add(node);
+            if (node instanceof Parent parent) {
+                queue.addAll(parent.getChildrenUnmodifiable());
+            }
+        }
+        return all;
+    }
+
     /**
      * get the best font size to fit the given width
      *

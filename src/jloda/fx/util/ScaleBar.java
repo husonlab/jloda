@@ -86,6 +86,7 @@ public class ScaleBar extends AnchorPane {
         update();
 
         factorX.addListener(e -> update());
+        unitLengthX.addListener(e -> update());
     }
 
     public void update() {
