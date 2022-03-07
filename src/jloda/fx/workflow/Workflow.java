@@ -56,7 +56,6 @@ public class Workflow extends WorkerBase implements Worker<Boolean> {
 
 	private final BooleanProperty connected = new SimpleBooleanProperty(true);
 
-
 	public Workflow() {
 		this("Workflow");
 	}
@@ -112,7 +111,8 @@ public class Workflow extends WorkerBase implements Worker<Boolean> {
 			}
 			if (!currentStates.contains(State.SUCCEEDED))
 				setMessage(null);
-			setRunning(currentStates.contains(State.SCHEDULED) || currentStates.contains(State.READY) || currentStates.contains(State.RUNNING));
+			// setRunning(currentStates.contains(State.SCHEDULED) || currentStates.contains(State.READY) || currentStates.contains(State.RUNNING));
+			setRunning(!currentStates.contains(State.CANCELLED) && (currentStates.contains(State.SCHEDULED) || currentStates.contains(State.RUNNING)));
 		};
 
 		stateProperty().addListener((v, o, n) -> {

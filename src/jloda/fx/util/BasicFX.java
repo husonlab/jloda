@@ -328,6 +328,7 @@ public class BasicFX {
      * @param property the property to listen to
      */
     public static <T> void reportChanges(String label, ReadOnlyProperty<T> property) {
+        System.err.println((label != null ? label + ": " : "") + property.getValue());
         ChangeListener<T> listener = (v, o, n) -> System.err.println((label != null ? label + ": " : "") + property.getName() + ": " + (o == null ? null : o.toString()) + " -> " + (n == null ? "null" : n.toString()));
         property.addListener(listener);
     }
