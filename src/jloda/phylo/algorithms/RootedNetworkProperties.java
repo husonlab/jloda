@@ -391,7 +391,9 @@ public class RootedNetworkProperties {
      * @return info string
      */
     public static String computeInfoString(PhyloTree phyloTree) {
-        if (phyloTree.isReticulated()) {
+        if (phyloTree == null)
+            return "null";
+        else if (phyloTree.isReticulated()) {
             var buf = new StringBuilder();
             if (isTreeBased(phyloTree))
                 buf.append(", tree-based");
