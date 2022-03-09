@@ -26,13 +26,12 @@ import javafx.stage.Stage;
 import jloda.fx.window.MainWindowManager;
 import jloda.util.ProgramProperties;
 
-import java.util.Optional;
-
 /**
  * closing last document dialog
  * Daniel Huson, 3.2019
  */
 public class ClosingLastDocument {
+    public static boolean askToConfirmQuit = true;
 
     /**
      * show the closing last document dialog
@@ -40,21 +39,25 @@ public class ClosingLastDocument {
      * @return true, if really want to quit
      */
     public static boolean apply(Stage stage) {
-        final Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
-        if (MainWindowManager.isUseDarkTheme()) {
-            alert.getDialogPane().getScene().getWindow().getScene().getStylesheets().add("jloda/resources/css/dark.css");
+        if (!askToConfirmQuit)
+            return true;
+        else {
+            final var alert = new Alert(Alert.AlertType.CONFIRMATION);
+            if (MainWindowManager.isUseDarkTheme()) {
+                alert.getDialogPane().getScene().getWindow().getScene().getStylesheets().add("jloda/resources/css/dark.css");
+            }
+            alert.initOwner(stage);
+            alert.setResizable(true);
+
+            alert.setTitle("Confirm Quit - " + ProgramProperties.getProgramName());
+            alert.setHeaderText("Closing the last open document");
+            alert.setContentText("Do you really want to quit?");
+            final ButtonType buttonTypeCancel = new ButtonType("No", ButtonBar.ButtonData.CANCEL_CLOSE);
+            final ButtonType buttonTypeYes = new ButtonType("Yes", ButtonBar.ButtonData.OK_DONE);
+            alert.getButtonTypes().setAll(buttonTypeCancel, buttonTypeYes);
+
+            final var result = alert.showAndWait();
+            return result.isEmpty() || result.get() != buttonTypeCancel;
         }
-        alert.initOwner(stage);
-        alert.setResizable(true);
-
-        alert.setTitle("Confirm Quit - " + ProgramProperties.getProgramName());
-        alert.setHeaderText("Closing the last open document");
-        alert.setContentText("Do you really want to quit?");
-        final ButtonType buttonTypeCancel = new ButtonType("No", ButtonBar.ButtonData.CANCEL_CLOSE);
-        final ButtonType buttonTypeYes = new ButtonType("Yes", ButtonBar.ButtonData.OK_DONE);
-        alert.getButtonTypes().setAll(buttonTypeCancel, buttonTypeYes);
-
-        final Optional<ButtonType> result = alert.showAndWait();
-        return result.isEmpty() || result.get() != buttonTypeCancel;
     }
 }
