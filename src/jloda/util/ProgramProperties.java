@@ -53,24 +53,27 @@ public class ProgramProperties {
     public static final Color SELECTION_COLOR_DARKER = new Color(210, 190, 95);
     public static final Color SELECTION_COLOR_ADDITIONAL_TEXT = new Color(93, 155, 206);
 
-    static private String programName = "";
-    static private String programVersion = "";
-    static private String programTitle = "";
-    static private String programLicence = "";
+	static private String programName = "";
+	static private String programVersion = "";
+	static private String programTitle = "";
+	static private String programLicence = "";
 
-    static private String defaultFileName = null;
+	static private String defaultFileName = null;
 
-    private static final boolean macOS = (System.getProperty("os.name") != null && System.getProperty("os.name").toLowerCase().startsWith("mac"));
-    private static boolean useGUI = false;
-    private static Runnable stateChecker = null;
-    public static final String OPENFILE = "OpenFile";
-    public static final String SAVEFILE = "SaveFile";
-    public static final String SAVEFORMAT = "SaveFormat";
-    public static final String EXPORTFILE = "ExportFile";
-    public static final String RECENTFILES = "RecentFiles";
-    public static final String MAXRECENTFILES = "MaxRecentFiles";
-    public static final String SHOWVERSIONINTITLE = "VINT";
-    public static final String DRAWERKIND = "DrawerKind";
+	private static final boolean macOS = (System.getProperty("os.name") != null && System.getProperty("os.name").toLowerCase().startsWith("mac"));
+	private static boolean useGUI = false;
+	private static boolean confirmQuit = true;
+
+
+	private static Runnable stateChecker = null;
+	public static final String OPENFILE = "OpenFile";
+	public static final String SAVEFILE = "SaveFile";
+	public static final String SAVEFORMAT = "SaveFormat";
+	public static final String EXPORTFILE = "ExportFile";
+	public static final String RECENTFILES = "RecentFiles";
+	public static final String MAXRECENTFILES = "MaxRecentFiles";
+	public static final String SHOWVERSIONINTITLE = "VINT";
+	public static final String DRAWERKIND = "DrawerKind";
     public static final String LASTCOMMAND = "LastCommand";
     public static final String MAIN_WINDOW_GEOMETRY = "MainWindowGeometry";
     public static final String MULTI_WINDOW_GEOMETRY = "MultiWindowGeometry";
@@ -540,24 +543,32 @@ public class ProgramProperties {
             return text;
         else
             return "";
-    }
+	}
 
-    public static boolean isUseGUI() {
-        return useGUI;
-    }
+	public static boolean isUseGUI() {
+		return useGUI;
+	}
 
-    public static void setUseGUI(boolean useGUI) {
-        ProgramProperties.useGUI = useGUI;
-    }
+	public static void setUseGUI(boolean useGUI) {
+		ProgramProperties.useGUI = useGUI;
+	}
 
-    public static void checkState() {
-        if (stateChecker != null)
-            stateChecker.run();
-    }
+	public static boolean isConfirmQuit() {
+		return confirmQuit;
+	}
 
-    public static void setStateChecker(Runnable stateChecker) {
-        ProgramProperties.stateChecker = stateChecker;
-    }
+	public static void setConfirmQuit(boolean confirmQuit) {
+		ProgramProperties.confirmQuit = confirmQuit;
+	}
+
+	public static void checkState() {
+		if (stateChecker != null)
+			stateChecker.run();
+	}
+
+	public static void setStateChecker(Runnable stateChecker) {
+		ProgramProperties.stateChecker = stateChecker;
+	}
 
     public static ObservableList<javafx.scene.image.Image> getProgramIconsFX() {
         return programIconsFX;

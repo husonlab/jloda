@@ -31,15 +31,13 @@ import jloda.util.ProgramProperties;
  * Daniel Huson, 3.2019
  */
 public class ClosingLastDocument {
-    public static boolean askToConfirmQuit = true;
-
     /**
      * show the closing last document dialog
      *
      * @return true, if really want to quit
      */
     public static boolean apply(Stage stage) {
-        if (!askToConfirmQuit)
+        if (!ProgramProperties.isConfirmQuit())
             return true;
         else {
             final var alert = new Alert(Alert.AlertType.CONFIRMATION);
