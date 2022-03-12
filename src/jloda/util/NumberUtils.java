@@ -100,9 +100,18 @@ public class NumberUtils {
 	 *
 	 * @return true, if int
 	 */
-	public static boolean isInteger(String next) {
+	public static boolean isInteger(String text) {
+		return isInteger(text, 10);
+	}
+
+	/**
+	 * returns true, if string can be parsed as int
+	 *
+	 * @return true, if int
+	 */
+	public static boolean isInteger(String text, int base) {
 		try {
-			Integer.parseInt(next);
+			Integer.parseInt(text, base);
 		} catch (Exception ex) {
 			return false;
 		}
@@ -114,18 +123,18 @@ public class NumberUtils {
 	 *
 	 * @return true, if boolean
 	 */
-	public static boolean isBoolean(String next) {
-		return next.equalsIgnoreCase("true") || next.equalsIgnoreCase("false");
+	public static boolean isBoolean(String text) {
+		return text.equalsIgnoreCase("true") || text.equalsIgnoreCase("false");
 	}
 
 	/**
-	 * returns true, if string can be parsed as int
+	 * returns true, if string can be parsed as boolean
 	 *
 	 * @return true, if boolean
 	 */
-	public static boolean parseBoolean(String next) {
-		next = next.trim();
-		return next.length() >= 4 && next.substring(0, 4).toLowerCase().startsWith("true");
+	public static boolean parseBoolean(String text) {
+		text = text.trim();
+		return text.length() >= 4 && text.substring(0, 4).toLowerCase().startsWith("true");
 	}
 
 	/**
@@ -133,9 +142,9 @@ public class NumberUtils {
 	 *
 	 * @return true, if long
 	 */
-	public static boolean isLong(String next) {
+	public static boolean isLong(String text) {
 		try {
-			Long.parseLong(next);
+			Long.parseLong(text);
 		} catch (Exception ex) {
 			return false;
 		}
@@ -147,9 +156,9 @@ public class NumberUtils {
 	 *
 	 * @return true, if float
 	 */
-	public static boolean isFloat(String next) {
+	public static boolean isFloat(String text) {
 		try {
-			Float.parseFloat(next);
+			Float.parseFloat(text);
 		} catch (Exception ex) {
 			return false;
 		}
@@ -161,9 +170,9 @@ public class NumberUtils {
 	 *
 	 * @return true, if double
 	 */
-	public static boolean isDouble(String next) {
+	public static boolean isDouble(String text) {
 		try {
-			Double.parseDouble(next);
+			Double.parseDouble(text);
 		} catch (Exception ex) {
 			return false;
 		}
@@ -200,6 +209,40 @@ public class NumberUtils {
 			else if (string.equalsIgnoreCase("inf"))
 				return Integer.MAX_VALUE;
 
+		}
+		return 0;
+	}
+
+	/**
+	 * attempt to parse an integer
+	 *
+	 * @param text the text
+	 * @param base the base
+	 * @return integer or 0
+	 */
+	public static int parseInt(String text, int base) {
+		try {
+			if (text != null) {
+				var start = 0;
+				while (start < text.length()) {
+					var ch = text.charAt(start);
+					if (isInteger(String.valueOf(ch), base) || ch == '-')
+						break;
+					start++;
+				}
+				if (start < text.length()) {
+					var finish = start + 1;
+					while (finish < text.length() && isInteger(String.valueOf(text.charAt(finish)), base))
+						finish++;
+					if (start < finish)
+						return Integer.parseInt(text.substring(start, finish), 16);
+				}
+			}
+		} catch (Exception ex) {
+			if (text.equalsIgnoreCase("-inf"))
+				return Integer.MIN_VALUE;
+			else if (text.equalsIgnoreCase("inf"))
+				return Integer.MAX_VALUE;
 		}
 		return 0;
 	}

@@ -37,6 +37,7 @@ import javafx.scene.input.ClipboardContent;
 import javafx.scene.input.DataFormat;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.Pane;
+import javafx.scene.paint.Color;
 import javafx.scene.shape.Arc;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Font;
@@ -435,6 +436,8 @@ public class BasicFX {
     }
 
     public static boolean isColor(String text) {
+        if (text.equals("random"))
+            return true;
         {
             try {
                 javafx.scene.paint.Color.web(text);
@@ -443,5 +446,13 @@ public class BasicFX {
                 return false;
             }
         }
+    }
+
+    public static Color parseColor(String text) {
+        if (text.equals("random")) {
+            var random = new Random();
+            return new Color(random.nextDouble(), random.nextDouble(), random.nextDouble(), 1);
+        } else
+            return javafx.scene.paint.Color.web(text);
     }
 }

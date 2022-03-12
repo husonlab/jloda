@@ -36,6 +36,7 @@ import jloda.fx.util.GeometryUtilsFX;
 import jloda.fx.util.ProgramExecutorService;
 import jloda.fx.window.NotificationManager;
 import jloda.util.Basic;
+import jloda.util.HTMLConvert;
 import jloda.util.NumberUtils;
 import jloda.util.StringUtils;
 
@@ -326,7 +327,7 @@ public class RichTextLabel extends TextFlow {
                "<size \"value\">font-size</size>, " +
                "<c \"value\">font-color</c>, " +
                "<box width=\"value\" height=\"value\" fill=\"color\" stroke=\"color\"> adds a box, " +
-               "<img src=\"url\" alt=\"text\" width=\"value\" height=\"value\"> adds an image";
+               "<img src=\"url\" alt=\"text\" width=\"value\" height=\"value\"> adds an image, also supports HTML numeric codes";
     }
 
     @Override
@@ -337,18 +338,20 @@ public class RichTextLabel extends TextFlow {
     private void update() {
         getChildren().clear();
 
+        var workingText = HTMLConvert.convertHtmlToCharacters(getText());
+
         if (getGraphic() != null && (getContentDisplay() != ContentDisplay.TOP || getContentDisplay() != ContentDisplay.LEFT))
             getChildren().add(getGraphic());
 
-        if (getText().length() > 0 && getContentDisplay() != ContentDisplay.GRAPHIC_ONLY) {
+        if (workingText.length() > 0 && getContentDisplay() != ContentDisplay.GRAPHIC_ONLY) {
             final ArrayList<Event> events = new ArrayList<>();
             {
-                final Event event = Event.getEventAtPos(getText(), 0);
+                final Event event = Event.getEventAtPos(workingText, 0);
                 if (event != null && event.change().equals(Event.Change.htmlStart)) {
                     events.add(event);
                 } else {
                     if (isRequireHTMLTag()) { // require leading HTML tag, but none found, return non-styled text
-                        final Text text = new Text(getText());
+                        final Text text = new Text(workingText);
                         text.getStyleClass().add("rich-text-label");
                         if (getScale() == 1.0)
                             text.setFont(getFont());
@@ -361,8 +364,8 @@ public class RichTextLabel extends TextFlow {
                 }
             }
 
-            for (int pos = 0; pos < getText().length(); pos++) {
-                final Event event = Event.getEventAtPos(getText(), pos);
+            for (int pos = 0; pos < workingText.length(); pos++) {
+                final Event event = Event.getEventAtPos(workingText, pos);
                 if (event != null) {
                     events.add(event);
                     if (event.change().equals(Event.Change.htmlEnd))
@@ -370,7 +373,7 @@ public class RichTextLabel extends TextFlow {
                 }
             }
             if (events.size() <= 1 || !events.get(events.size() - 1).change().equals(Event.Change.htmlEnd))
-                events.add(new Event(Event.Change.htmlEnd, getText().length(), getText().length(), null));
+                events.add(new Event(Event.Change.htmlEnd, workingText.length(), workingText.length(), null));
 
             var offset = 0.0;
             var currentFont = getFont();
@@ -389,7 +392,7 @@ public class RichTextLabel extends TextFlow {
                 final Event event = events.get(i);
 
                 if (event.pos() > segmentStart) {
-                    final var textItem = new Text(getText().substring(segmentStart, event.pos()));
+                    final var textItem = new Text(workingText.substring(segmentStart, event.pos()));
 
                     if (textFill != null)
                         textItem.setFill(textFill);
@@ -461,7 +464,7 @@ public class RichTextLabel extends TextFlow {
                         final var argument = event.argument();
                         if (argument != null) {
                             try {
-                                final Color newColor = Color.valueOf(argument);
+                                final Color newColor = BasicFX.parseColor(argument);
                                 colorStack.push(textFill);
                                 textFill = newColor;
                             } catch (IllegalArgumentException ignored) {
@@ -530,8 +533,8 @@ public class RichTextLabel extends TextFlow {
             final var width = (map.containsKey("width") && NumberUtils.isDouble(map.get("width")) ? NumberUtils.parseDouble(map.get("width")) : getFontSize());
             final var height = (map.containsKey("height") && NumberUtils.isDouble(map.get("height")) ? NumberUtils.parseDouble(map.get("height")) : getFontSize());
 
-            final var fill = (map.containsKey("fill") && BasicFX.isColor(map.get("fill"))? Color.web(map.get("fill")) : null);
-            final var stroke = (map.containsKey("stroke") && BasicFX.isColor(map.get("stroke")) ? Color.web(map.get("stroke")) : null);
+            final var fill = (map.containsKey("fill") && BasicFX.isColor(map.get("fill")) ? BasicFX.parseColor(map.get("fill")) : getTextFill());
+            final var stroke = (map.containsKey("stroke") && BasicFX.isColor(map.get("stroke")) ? BasicFX.parseColor(map.get("stroke")) : null);
 
             var rectangle = new Rectangle(width, height);
             rectangle.setFill(fill);
@@ -813,7 +816,7 @@ public class RichTextLabel extends TextFlow {
             final var argument = prefixElement.argument();
             if (argument != null) {
                 try {
-                    return Color.valueOf(argument);
+                    return BasicFX.parseColor(argument);
                 } catch (IllegalArgumentException ignored) {
                 }
             }
@@ -1016,7 +1019,6 @@ public class RichTextLabel extends TextFlow {
             return types;
         }
 
-
         public String getChangeType() {
             return change().type();
         }
@@ -1027,18 +1029,21 @@ public class RichTextLabel extends TextFlow {
 
         public static Event getEventAtPos(String line, int pos) {
             line = line.substring(pos);
+            if (line.startsWith("<box>")) {
+                return new Event(Change.box, pos, pos + 5, "");
+            }
             for (Event.Change change : Event.Change.values()) {
-                if (line.startsWith(change.tag())) {
-                    if (change.tag().endsWith(" ")) // requires argument
-                    {
-                        var startPos = change.tag().length();
+                var tag = change.tag();
+                if (line.startsWith(tag)) {
+                    if (tag.endsWith(" ")) { // requires an argument
+                        var startPos = tag.length() - 1; // start at the trailing " "
                         var endPos = line.indexOf(">");
                         var argument = (startPos < endPos ? line.substring(startPos, endPos).trim() : null);
                         if (argument != null && argument.startsWith("\"") && argument.endsWith("\""))
                             argument = argument.substring(1, argument.length() - 1);
                         return new Event(change, pos, pos + endPos + 1, argument);
                     } else
-                        return new Event(change, pos, pos + change.tag().length(), null);
+                        return new Event(change, pos, pos + tag.length(), null);
                 }
             }
             return null;
