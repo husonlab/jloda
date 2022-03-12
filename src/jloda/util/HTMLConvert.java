@@ -207,10 +207,12 @@ public class HTMLConvert {
 				if (endPos != -1) {
 					var word = text.substring(pos, endPos + 1);
 					var character = htmlCharacterMap.get(word);
-					if (character == null && word.startsWith("&#") && NumberUtils.isInteger(word.substring(2, word.length() - 1))) {
-						character = (char) NumberUtils.parseInt(word.substring(2, word.length() - 1));
-					} else if (character == null && word.startsWith("&#") && NumberUtils.isInteger(word.substring(2, word.length() - 1), 16)) {
-						character = (char) NumberUtils.parseInt(word.substring(2, word.length() - 1), 16);
+					if (character == null) {
+						if (word.startsWith("&#x") && NumberUtils.isInteger(word.substring(3, word.length() - 1), 16)) {
+							character = (char) NumberUtils.parseInt(word.substring(3, word.length() - 1), 16);
+						} else if (word.startsWith("&#") && NumberUtils.isInteger(word.substring(2, word.length() - 1))) {
+							character = (char) NumberUtils.parseInt(word.substring(2, word.length() - 1));
+						}
 					}
 					if (character != null) {
 						buf.append(character);

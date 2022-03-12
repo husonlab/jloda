@@ -101,7 +101,7 @@ public class NumberUtils {
 	 * @return true, if int
 	 */
 	public static boolean isInteger(String text) {
-		return isInteger(text, 10);
+		return isInteger(text, text.startsWith("x") ? 16 : 10);
 	}
 
 	/**
@@ -226,7 +226,7 @@ public class NumberUtils {
 				var start = 0;
 				while (start < text.length()) {
 					var ch = text.charAt(start);
-					if (isInteger(String.valueOf(ch), base) || ch == '-')
+					if (Character.isLetterOrDigit(ch) || ch == '-')
 						break;
 					start++;
 				}
