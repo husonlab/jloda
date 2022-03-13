@@ -23,6 +23,7 @@ package jloda.fx.label;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.TextArea;
+import javafx.scene.layout.FlowPane;
 import javafx.scene.layout.StackPane;
 
 public class EditLabelDialogController {
@@ -39,6 +40,9 @@ public class EditLabelDialogController {
     @FXML
     private TextArea supportedHTMLTextArea;
 
+    @FXML
+    private FlowPane specialCharactersFlowPane;
+
     public TextArea getInputTextArea() {
         return inputTextArea;
     }
@@ -51,7 +55,11 @@ public class EditLabelDialogController {
         return clearHTMLButton;
     }
 
-    public TextArea getSupporteHTMLTextArea() {
+    public TextArea getSupportedHTMLTextArea() {
         return supportedHTMLTextArea;
+    }
+
+    public FlowPane getSpecialCharactersFlowPane() {
+        return specialCharactersFlowPane;
     }
 }

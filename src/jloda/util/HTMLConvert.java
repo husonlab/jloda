@@ -21,6 +21,7 @@ package jloda.util;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.TreeSet;
 
 /**
  * convert HTML characters entities into characters and vice versa
@@ -34,43 +35,17 @@ public class HTMLConvert {
 			rfloor	8971
 			lang	9001
 			rang	9002
-			loz	9674
 			spades	9824
 			clubs	9827
 			hearts	9829
 			diams	9830
-			quot	34
-			amp	38
-			lt	60
-			gt	62
-			OElig	338
-			oelig	339
-			Scaron	352
-			scaron	353
-			Yuml	376
-			circ	710
-			tilde	732
-			ensp	8194
-			emsp	8195
-			thinsp	8201
-			zwnj	8204
-			zwj	8205
-			lrm	8206
-			rlm	8207
 			ndash	8211
 			mdash	8212
-			lsquo	8216
-			rsquo	8217
-			sbquo	8218
-			ldquo	8220
-			rdquo	8221
-			bdquo	8222
 			dagger	8224
-			Dagger	8225
+			ddagger	8225
 			permil	8240
 			lsaquo	8249
 			rsaquo	8250
-			euro	8364
 			BlackSquare	9632
 			WhiteSquare	9633
 			WhiteSquareWithRoundedCorners	9634
@@ -93,7 +68,7 @@ public class HTMLConvert {
 			WhiteUpPointingTriangle	9651
 			BlackUpPointingSmallTriangle	9652
 			WhiteUpPointingSmallTriangle	9653
-			BlackRi:1,$s/ghtPointingTriangle	9654
+			BlackRightPointingTriangle	9654
 			WhiteRightPointingTriangle	9655
 			BlackRightPointingSmallTriangle	9656
 			WhiteRightPointingSmallTriangle	9657
@@ -129,14 +104,6 @@ public class HTMLConvert {
 			RightHalfBlackCircle	9687
 			InverseBullet	9688
 			InverseWhiteCircle	9689
-			UpperHalfInverseWhiteCircle	9690
-			LowerHalfInverseWhiteCircle	9691
-			UpperLeftQuadrantCircularArc	9692
-			UpperRightQuadrantCircularArc	9693
-			LowerRightQuadrantCircularArc	9694
-			LowerLeftQuadrantCircularArc	9695
-			UpperHalfCircle	9696
-			LowerHalfCircle	9697
 			BlackLowerRightTriangle	9698
 			BlackLowerLeftTriangle	9699
 			BlackUpperLeftTriangle	9700
@@ -146,19 +113,10 @@ public class HTMLConvert {
 			SquareWithRightHalfBlack	9704
 			SquareWithUpperLeftDiagonalHalfBlack	9705
 			SquareWithLowerRightDiagonalHalfBlack	9706
-			WhiteSquareWithVerticalBisectingLine	9707
 			WhiteUpPointingTriangleWithDot	9708
 			UpPointingTriangleWithLeftHalfBlack	9709
 			UpPointingTriangleWithRightHalfBlack	9710
 			LargeCircle	9711
-			WhiteSquareWithUpperLeftQuadrant	9712
-			WhiteSquareWithLowerLeftQuadrant	9713
-			WhiteSquareWithLowerRightQuadrant	9714
-			WhiteSquareWithUpperRightQuadrant	9715
-			WhiteCircleWithUpperLeftQuadrant	9716
-			WhiteCircleWithLowerLeftQuadrant	9717
-			WhiteCircleWithLowerRightQuadrant	9718
-			WhiteCircleWithUpperRightQuadrant	9719
 			UpperLeftTriangle	9720
 			UpperRightTriangle	9721
 			LowerLeftTriangle	9722
@@ -167,18 +125,47 @@ public class HTMLConvert {
 			WhiteMediumSmallSquare	9725
 			BlackMediumSmallSquare	9726
 			LowerRightTriangle	9727
-			 
+			CIRCLE_DONE	10112
+			CIRCLED_TWO	10113
+			CIRCLED_THREE	10114
+			CIRCLED_FOUR	10115
+			CIRCLED_FIVE	10116
+			CIRCLED_SIX	10117
+			CIRCLED_SEVEN	10118
+			CIRCLED_EIGHT	10119
+			CIRCLED_NINE	10120
+			CIRCLED_TEN	10121
+			BLACK_STAR	9733
+			WHITE_STAR	9734
+			CHECK_BOX	9745
+			CHECKED_BOX	9746
+			PEACE_SIGN	9774
+			YIN_YANG	9775
+			FROWNING_FACE	9785
+			SMILING_FACE	9786
+			WARNING_SIGN	9888
+			HIGH_VOLTAGE	9889
+			CHECK_MARK	10003
+			HEAVY_CHECKMARK	10004
+			MULTIPLICATION_X	10005
+			HEAVY_MULTIPLICATION_X	10006
+			BALLOT_	10007
+			HEAVY_BALLOT	10008
 			""";
 
 	public final static Map<String, Character> htmlCharacterMap = new HashMap<>();
+	public final static Map<Character, String> characterHtmlMap = new HashMap<>();
 
 	static {
 		nameHtmlUnicode.lines().map(line -> line.split("\t")).filter(tokens -> tokens.length == 2)
 				.forEach(tokens -> {
 					var htmlName = String.format("&%s;", tokens[0].trim());
 					var ch = (char) Integer.parseInt(tokens[1]);
-					htmlCharacterMap.put(htmlName, ch);
 					htmlCharacterMap.put(htmlName.toLowerCase(), ch);
+					if (htmlName.contains("_")) // is not an offical HTML name
+						characterHtmlMap.put(ch, "&#%s;".formatted(tokens[1]));
+					else
+						characterHtmlMap.put(ch, htmlName.toLowerCase());
 				});
 	}
 
@@ -206,7 +193,7 @@ public class HTMLConvert {
 				var endPos = text.indexOf(";", pos + 2);
 				if (endPos != -1) {
 					var word = text.substring(pos, endPos + 1);
-					var character = htmlCharacterMap.get(word);
+					var character = htmlCharacterMap.get(word.toLowerCase());
 					if (character == null) {
 						if (word.startsWith("&#x") && NumberUtils.isInteger(word.substring(3, word.length() - 1), 16)) {
 							character = (char) NumberUtils.parseInt(word.substring(3, word.length() - 1), 16);
@@ -226,5 +213,30 @@ public class HTMLConvert {
 			}
 		}
 		return buf.toString();
+	}
+
+	public static void main(String[] args) {
+
+
+		if (true) {
+			for (var html : new TreeSet<>(htmlCharacterMap.keySet())) {
+				System.err.println(html + " = " + htmlCharacterMap.get(html));
+			}
+		} else {
+			var row = 0;
+			var col = 0;
+
+			for (var html : new TreeSet<>(htmlCharacterMap.keySet())) {
+				var ch = htmlCharacterMap.get(html);
+				System.err.printf("<Button alignment=\"CENTER\" layoutX=\"23.0\" layoutY=\"8.0\" mnemonicParsing=\"false\" prefHeight=\"16.0\" prefWidth=\"16.0\" style=\"-fx-background-color: transparent; -fx-border-color: transparent;\" text=\"%c\"  GridPane.rowIndex=\"%d\" GridPane.columnIndex=\"%d\" />%n",
+						ch, row, col);
+				if (++col == 12) {
+					row++;
+					col = 0;
+				}
+			}
+		}
+
+		System.err.println("Count: " + htmlCharacterMap.size());
 	}
 }

@@ -312,7 +312,7 @@ public class RichTextLabel extends TextFlow {
             if (b != -1)
                 text = text.substring(0, a) + text.substring(b + 1);
         }
-        return text.replaceAll("\\s+", " ");
+        return text.replaceAll("\\s+", " ").replaceAll("&#[x0-9a-eA-E]+;", "").replaceAll("&[a-zA-Z]+;", "");
     }
 
     public static String getSupportedHTMLTags() {

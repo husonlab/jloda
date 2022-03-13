@@ -25,16 +25,6 @@
 <?import javafx.scene.text.Font?>
 <BorderPane xmlns="http://javafx.com/javafx/16" xmlns:fx="http://javafx.com/fxml/1"
             fx:controller="jloda.fx.label.EditLabelDialogController">
-    <bottom>
-        <TextArea fx:id="supportedHTMLTextArea" editable="false" focusTraversable="false" minHeight="0.0" opacity="0.57"
-                  prefRowCount="5"
-                  style="-fx-background-color: lightgray; -fx-border-color: transparent; -fx-border-width: 0;"
-                  text="Supported HTML tags:&#10;&#10;" wrapText="true">
-            <font>
-                <Font size="12.0"/>
-            </font>
-        </TextArea>
-    </bottom>
     <center>
         <SplitPane dividerPositions="0.5" orientation="VERTICAL" BorderPane.alignment="CENTER">
             <BorderPane.margin>
@@ -96,4 +86,41 @@
             </GridPane>
         </SplitPane>
     </center>
+    <bottom>
+        <TabPane prefHeight="200.0" prefWidth="200.0" tabClosingPolicy="UNAVAILABLE" BorderPane.alignment="CENTER">
+            <tabs>
+                <Tab text="Supported HTML tags">
+                    <content>
+                        <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
+                            <children>
+                                <TextArea fx:id="supportedHTMLTextArea" editable="false" focusTraversable="false"
+                                          minHeight="0.0" opacity="0.57" prefRowCount="5"
+                                          promptText="Supported HTML tags:Supported HTML tags"
+                                          style="-fx-background-color: lightgray; -fx-border-color: transparent; -fx-border-width: 0;"
+                                          text="&#10;&#10;" wrapText="true" AnchorPane.bottomAnchor="0.0"
+                                          AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0"
+                                          AnchorPane.topAnchor="0.0">
+                                    <font>
+                                        <Font size="12.0"/>
+                                    </font>
+                                </TextArea>
+                            </children>
+                        </AnchorPane>
+                    </content>
+                </Tab>
+                <Tab text="Special characters">
+                    <content>
+                        <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
+                            <children>
+                                <FlowPane fx:id="specialCharactersFlowPane" AnchorPane.bottomAnchor="0.0"
+                                          AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0"
+                                          AnchorPane.topAnchor="0.0">
+                                </FlowPane>
+                            </children>
+                        </AnchorPane>
+                    </content>
+                </Tab>
+            </tabs>
+        </TabPane>
+    </bottom>
 </BorderPane>

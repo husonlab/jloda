@@ -19,23 +19,20 @@
 
 package jloda.fx.label;
 
-import javafx.scene.control.ButtonBar;
-import javafx.scene.control.ButtonType;
-import javafx.scene.control.Dialog;
-import javafx.scene.control.TextArea;
+import javafx.scene.control.*;
 import javafx.scene.effect.DropShadow;
-import javafx.scene.input.DragEvent;
-import javafx.scene.input.Dragboard;
-import javafx.scene.input.TransferMode;
+import javafx.scene.input.*;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import jloda.fx.control.RichTextLabel;
 import jloda.fx.util.BasicFX;
 import jloda.fx.util.ExtendedFXMLLoader;
+import jloda.util.HTMLConvert;
 import jloda.util.ProgramProperties;
 
 import java.io.File;
 import java.util.List;
+import java.util.TreeSet;
 
 
 /**
@@ -60,7 +57,7 @@ public class EditLabelDialog extends Dialog<String> {
         displayLabel = (label != null ? new RichTextLabel(label) : new RichTextLabel());
         controller.getInputTextArea().setText(displayLabel.getText().replaceAll("<br>", "\n"));
 
-        controller.getSupporteHTMLTextArea().setText("Supported HTML tags:\n" + RichTextLabel.getSupportedHTMLTags());
+        controller.getSupportedHTMLTextArea().setText(RichTextLabel.getSupportedHTMLTags());
 
         // trigger listener:
         final String tmp = displayLabel.getText();
@@ -88,6 +85,20 @@ public class EditLabelDialog extends Dialog<String> {
         controller.getInputTextArea().setOnDragOver(this::handleDragOver);
         controller.getInputTextArea().setOnDragDropped(this::handleDragDropped);
         controller.getInputTextArea().setOnDragExited(event -> controller.getInputTextArea().setEffect(null));
+
+        for (var character : new TreeSet<>(HTMLConvert.characterHtmlMap.keySet())) {
+            var button = new Button(String.valueOf(character));
+            button.setPrefSize(Button.USE_COMPUTED_SIZE, 16);
+            //button.setEllipsisString("");
+            button.setStyle("-fx-background-color: transparent;-fx-border-color: transparent;");
+            button.setOnAction(e -> {
+                var content = new ClipboardContent();
+                content.putString(HTMLConvert.characterHtmlMap.get(character));
+                Clipboard.getSystemClipboard().setContent(content);
+                controller.getInputTextArea().paste();
+            });
+            controller.getSpecialCharactersFlowPane().getChildren().add(button);
+        }
     }
 
     private void handleDragOver(DragEvent e) {
