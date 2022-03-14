@@ -89,7 +89,7 @@ public class ZoomableScrollPane extends ScrollPane {
         });
     }
 
-    /**
+     /**
      * this returns the node that is zoomable. This method should be used in place of ScrollPane.getContent()
      *
      * @return zoomable content
