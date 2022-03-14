@@ -62,7 +62,10 @@ public class Searcher<T> implements IObjectSearcher<T> {
      * @param textGetter         gets text for current item
      * @param textSetter         sets text for current item
      */
-    public Searcher(ObservableList<T> items, Function<Integer, Boolean> isSelectedFunction, BiConsumer<Integer, Boolean> selectCallback, ObjectProperty<SelectionMode> selectionMode, Function<Integer, String> textGetter, Function<String, String> prepareTextForReplaceFunction, BiConsumer<Integer, String> textSetter) {
+    public Searcher(ObservableList<T> items, Function<Integer, Boolean> isSelectedFunction, BiConsumer<Integer, Boolean> selectCallback,
+                    ObjectProperty<SelectionMode> selectionMode, Function<Integer, String> textGetter,
+                    Function<String, String> prepareTextForReplaceFunction,
+                    BiConsumer<Integer, String> textSetter) {
         this.isSelectedFunction = isSelectedFunction;
         this.selectCallback = selectCallback;
         this.items = items;
