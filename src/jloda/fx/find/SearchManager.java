@@ -64,9 +64,9 @@ public class SearchManager {
     public SearchManager() {
         disabled.bind(searcher.isNull());
 
-        service.setOnScheduled((e) -> message.set(""));
+        service.setOnScheduled(e -> message.set(""));
 
-        service.setOnFailed((e) -> System.err.println("Search failed: " + service.getException()));
+        service.setOnFailed(e -> System.err.println("Search failed: " + service.getException()));
 
         // any change clears the message:
         caseSensitiveOption.addListener(c -> message.set(""));
@@ -100,7 +100,7 @@ public class SearchManager {
      */
     public void findFirst() {
         service.setCallable(() -> doFindFirst(service.getProgressListener()) ? 1 : 0);
-        service.setOnSucceeded((e) -> {
+        service.setOnSucceeded(e -> {
             message.set(service.getValue() > 0 ? "Found" : "No matches");
             if (service.getValue() > 0)
                 getSearcher().updateView();
@@ -113,7 +113,7 @@ public class SearchManager {
      */
     public void findNext() {
         service.setCallable(() -> doFindNext(service.getProgressListener()) ? 1 : 0);
-        service.setOnSucceeded((e) -> {
+        service.setOnSucceeded(e -> {
             message.set(service.getValue() > 0 ? "Found" : "No matches");
             if (service.getValue() > 0)
                 getSearcher().updateView();
@@ -127,7 +127,7 @@ public class SearchManager {
     public void findAll() {
         service.setCallable(() -> doFindAll(service.getProgressListener()));
 
-        service.setOnSucceeded((e) -> {
+        service.setOnSucceeded(e -> {
             message.set(service.getValue() > 0 ? "Found " + service.getValue() : "No matches");
             if (service.getValue() > 0)
                 getSearcher().updateView();
@@ -139,26 +139,42 @@ public class SearchManager {
      * replace and find
      */
     public void findAndReplace() {
-        service.setCallable(() -> doFindAndReplace(service.getProgressListener()) ? 1 : 0);
-        service.setOnSucceeded((e) -> {
-            message.set(service.getValue() > 0 ? "Replaced" : "No matches");
-            if (service.getValue() > 0)
-                getSearcher().updateView();
-        });
-        service.restart();
+        if (!isDisabled()) {
+            service.setCallable(() -> doFindAndReplace(service.getProgressListener()) ? 1 : 0);
+            if (searcher.get() instanceof Searcher aSearcher) {
+                service.setOnScheduled(e -> aSearcher.startReplace());
+            }
+            service.setOnSucceeded(e -> {
+                message.set(service.getValue() > 0 ? "Replaced" : "No matches");
+                if (service.getValue() > 0)
+                    getSearcher().updateView();
+                if (searcher.get() instanceof Searcher aSearcher) {
+                    aSearcher.endReplace();
+                }
+            });
+            service.restart();
+        }
     }
 
     /**
      * replace all
      */
     public void replaceAll() {
-        service.setCallable(() -> doReplaceAll(service.getProgressListener()));
-        service.setOnSucceeded((e) -> {
-            message.set(service.getValue() > 0 ? "Replaced " + service.getValue() : "No matches");
-            if (service.getValue() > 0)
-                getSearcher().updateView();
-        });
-        service.restart();
+        if (!isDisabled()) {
+            service.setCallable(() -> doReplaceAll(service.getProgressListener()));
+            if (searcher.get() instanceof Searcher aSearcher) {
+                service.setOnScheduled(e -> aSearcher.startReplace());
+            }
+            service.setOnSucceeded(e -> {
+                message.set(service.getValue() > 0 ? "Replaced " + service.getValue() : "No matches");
+                if (service.getValue() > 0)
+                    getSearcher().updateView();
+                if (searcher.get() instanceof Searcher aSearcher) {
+                    aSearcher.endReplace();
+                }
+            });
+            service.restart();
+        }
     }
 
     /**

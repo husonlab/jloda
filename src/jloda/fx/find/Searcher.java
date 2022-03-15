@@ -42,6 +42,9 @@ public class Searcher<T> implements IObjectSearcher<T> {
     private final Function<String, String> prepareTextForReplaceFunction;
 
     private final BiConsumer<Integer, String> textSetter;
+    private final Runnable startReplaceCallback;
+    private final Runnable endReplaceCallback;
+
     private final StringProperty name = new SimpleStringProperty("Searcher");
 
     private final ObjectProperty<T> found = new SimpleObjectProperty<>();
@@ -65,13 +68,15 @@ public class Searcher<T> implements IObjectSearcher<T> {
     public Searcher(ObservableList<T> items, Function<Integer, Boolean> isSelectedFunction, BiConsumer<Integer, Boolean> selectCallback,
                     ObjectProperty<SelectionMode> selectionMode, Function<Integer, String> textGetter,
                     Function<String, String> prepareTextForReplaceFunction,
-                    BiConsumer<Integer, String> textSetter) {
+                    BiConsumer<Integer, String> textSetter, Runnable startReplaceCallback, Runnable endReplace) {
         this.isSelectedFunction = isSelectedFunction;
         this.selectCallback = selectCallback;
         this.items = items;
         this.textGetter = textGetter;
         this.prepareTextForReplaceFunction = prepareTextForReplaceFunction;
         this.textSetter = textSetter;
+        this.startReplaceCallback = startReplaceCallback;
+        this.endReplaceCallback = endReplace;
 
         globalFindable.bind(selectionMode.isEqualTo(SelectionMode.MULTIPLE).and(Bindings.size(items).greaterThan(0)));
     }
@@ -138,7 +143,6 @@ public class Searcher<T> implements IObjectSearcher<T> {
                 selectCallback.accept(index, select);
                 found.set(items.get(index));
             });
-
         }
     }
 
@@ -221,5 +225,15 @@ public class Searcher<T> implements IObjectSearcher<T> {
 
     public void setSelectionFindable(boolean selectionFindable) {
         this.selectionFindable.set(selectionFindable);
+    }
+
+    public void startReplace() {
+        if (startReplaceCallback != null)
+            startReplaceCallback.run();
+    }
+
+    public void endReplace() {
+        if (endReplaceCallback != null)
+            endReplaceCallback.run();
     }
 }
