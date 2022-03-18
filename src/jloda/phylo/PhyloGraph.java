@@ -268,10 +268,17 @@ public class PhyloGraph extends Graph {
     public Iterable<Integer> getTaxa(Node v) {
         return () -> {
             if (node2taxa == null || node2taxa.get(v) == null)
-				return IteratorUtils.emptyIterator();
+                return IteratorUtils.emptyIterator();
             else
                 return node2taxa.get(v).iterator();
         };
+    }
+
+    public int getTaxon(Node v) {
+        if (node2taxa == null || node2taxa.get(v) == null || node2taxa.get(v).size() == 0)
+            return -1;
+        else
+            return node2taxa.get(v).get(0);
     }
 
     /**
