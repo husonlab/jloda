@@ -83,10 +83,10 @@ public class Print {
 						alert.initOwner(owner);
 						alert.setResizable(true);
 
-						alert.setTitle("Scale Before Printing - " + ProgramProperties.getProgramName());
+						alert.setTitle("ScalingType Before Printing - " + ProgramProperties.getProgramName());
 						alert.setHeaderText(String.format("Scene size (%.0f x %.0f) exceeds printable area (%.0f x %.0f)", node.getBoundsInParent().getWidth(),
 								node.getBoundsInParent().getHeight(), pageLayout.getPrintableWidth(), pageLayout.getPrintableHeight()));
-						alert.setContentText("Scale to fit printable area?");
+						alert.setContentText("ScalingType to fit printable area?");
 						ButtonType buttonTypeYes = new ButtonType("Yes", ButtonBar.ButtonData.YES);
 						ButtonType buttonTypeNo = new ButtonType("No", ButtonBar.ButtonData.NO);
 						ButtonType buttonTypeCancel = new ButtonType("Cancel", ButtonBar.ButtonData.CANCEL_CLOSE);

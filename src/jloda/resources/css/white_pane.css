@@ -55,3 +55,7 @@
     -fx-stroke: darkorange;
     -fx-fill: null;
 }
+
+.chart-pie {
+    -fx-border-width: 0.5px;
+}

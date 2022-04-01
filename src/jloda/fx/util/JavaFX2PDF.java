@@ -90,7 +90,7 @@ public class JavaFX2PDF {
 //        job.showPageSetupDialog(stage);
         job.getJobSettings().setPageLayout(layout);
 
-        // Scale image to paper size (A4)
+        // ScalingType image to paper size (A4)
         double scaleX = layout.getPrintableWidth() / printImage.getLayoutBounds().getWidth();
         double scaleY = layout.getPrintableHeight() / printImage.getLayoutBounds().getHeight();
         if (scaleX > scaleY) {

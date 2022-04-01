@@ -165,3 +165,7 @@
 .styled-text-area .caret {
     -fx-stroke: white !important;
 }
+
+.chart-pie {
+    -fx-border-width: 0.5px;
+}
