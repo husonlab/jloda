@@ -2165,4 +2165,22 @@ public class StringUtils {
 	public static boolean isHttpOrFileURL(String string) {
 		return string.startsWith("http:") || string.startsWith("https:") || string.startsWith("file:");
 	}
+
+	public static String[] addOrRemove(String[] array, String label, boolean add) {
+		var index = getIndex(label, array);
+		if (add && index == -1) {
+			var tmp = new String[array.length + 1];
+			System.arraycopy(array, 0, tmp, 0, array.length);
+			tmp[array.length] = label;
+			return tmp;
+		} else if (!add && index >= 0) {
+			var tmp = new String[array.length - 1];
+			System.arraycopy(array, 0, tmp, 0, index);
+			var remaining = tmp.length - index;
+			if (remaining >= 0)
+				System.arraycopy(array, index + 1, tmp, index, remaining);
+			return tmp;
+		} else
+			return array;
+	}
 }
