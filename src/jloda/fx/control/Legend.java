@@ -188,7 +188,7 @@ public class Legend extends StackPane {
 							var label = new Label(String.format("%,d", value));
 							label.setStyle("-fx-font-family: Arial; -fx-font-size: 11 px;");
 							var hbox = new HBox(label);
-							hbox.setLayoutY(2);
+							hbox.setLayoutY(-12);
 							hbox.setPrefWidth(2 * radius);
 							hbox.setAlignment(Pos.CENTER);
 							pane.getChildren().add(hbox);

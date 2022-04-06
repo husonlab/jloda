@@ -49,6 +49,7 @@ import javafx.stage.Stage;
 import java.util.*;
 import java.util.function.Consumer;
 import java.util.function.Function;
+import java.util.function.Predicate;
 
 /**
  * basic stuff for FX
@@ -100,6 +101,23 @@ public class BasicFX {
             node = queue.pop();
             if (clazz.isAssignableFrom(node.getClass()))
                 all.add((T) node);
+            if (node instanceof Parent parent)
+                queue.addAll(parent.getChildrenUnmodifiable());
+        }
+        return all;
+    }
+
+    /**
+     * recursively gets node and all nodes below it
+     */
+    public static Collection<Node> getAllRecursively(Node node, Predicate<Node> nodePredicate) {
+        final var all = new ArrayList<Node>();
+        final var queue = new LinkedList<Node>();
+        queue.add(node);
+        while (queue.size() > 0) {
+            node = queue.pop();
+            if (nodePredicate.test(node))
+                all.add(node);
             if (node instanceof Parent parent)
                 queue.addAll(parent.getChildrenUnmodifiable());
         }

@@ -20,7 +20,6 @@
 package jloda.swing.export;
 
 
-import de.erichseifert.vectorgraphics2d.Document;
 import de.erichseifert.vectorgraphics2d.VectorGraphics2D;
 import de.erichseifert.vectorgraphics2d.pdf.PDFProcessor;
 import de.erichseifert.vectorgraphics2d.util.PageSize;
@@ -83,15 +82,29 @@ public class PDFExportType extends SVGExportType implements ExportGraphicType {
         int height = panel.getHeight();
 
         // Get the Graphics object for pdf writing
-        final VectorGraphics2D pdfGraphics = new VectorGraphics2D();
-        panel.paint(pdfGraphics);
 
-        final PDFProcessor processor = new PDFProcessor(false);
-        final Document document = processor.getDocument(pdfGraphics.getCommands(), new PageSize(width, height));
-        document.writeTo(out);
-        out.flush();
+
+        /*
+        if(true) {
+            var document=new PDDocument();
+            final var graphics = new PdfBoxGraphics2D(document, width, height);
+            panel.paint(graphics);
+            document.save(out);
+            out.flush();
+        }
+        else
+        */
+        {
+
+            final var graphics = new VectorGraphics2D();
+            panel.paint(graphics);
+
+            final var processor = new PDFProcessor(false);
+            final var document = processor.getDocument(graphics.getCommands(), new PageSize(width, height));
+            document.writeTo(out);
+            out.flush();
+        }
     }
-
 
     /**
      * writes image to a stream. If scrollPane given and showWholeImage=true, draws only visible portion
