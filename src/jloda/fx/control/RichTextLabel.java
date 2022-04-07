@@ -27,6 +27,8 @@ import javafx.scene.control.Control;
 import javafx.scene.control.Tooltip;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.layout.Background;
+import javafx.scene.layout.BackgroundFill;
 import javafx.scene.paint.Color;
 import javafx.scene.paint.Paint;
 import javafx.scene.shape.Rectangle;
@@ -46,21 +48,27 @@ import java.util.concurrent.ConcurrentHashMap;
 /**
  * A simple RichTextLabel. A number of html and html-like tags are interpreted.
  * The text can optionally be enclosed in \<html\> \</html\> tags.
- * List of tags:
- * \<i\> and \</i\> - italic
- * \<b\>  and \</b\> - bold
- * \<u\> and \</u\> - underline
- * \<a\> and \</a\> - strike through
- * \<sup\> and \</sup\> - super script
- * \<sub\> and \</sub\> - sub script
- * \<c "color"\> and \</c\> - text color
- * \<font "name"\> and \</font\> - font
- * \<size "number"\> and \</size\> - font size
  * All errors in tags are silently ignored.
  * <p>
  * Daniel Huson, 6.2020
  */
 public class RichTextLabel extends TextFlow {
+    public static String getSupportedHTMLTags() {
+        return "<i>italics</i>, " +
+               "<b>bold</b>, " +
+               "<sup>super-script</sup>, " +
+               "<sub>sub-script</sub>, " +
+               "<u>underline</u>, " +
+               "<a>strike-through</a>, " +
+               "<br>new-line, " +
+               "<font \"name\">font-name</font>, " +
+               "<size \"value\">font-size</size>, " +
+               "<c \"value\">font-color</c>, " +
+               "<bg \"value\">background-color</bg>, " +
+               "<box width=\"value\" height=\"value\" fill=\"color\" stroke=\"color\"> adds a box, " +
+               "<img src=\"url\" alt=\"text\" width=\"value\" height=\"value\"> adds an image. Supports HTML numeric codes.";
+    }
+
     public final static Font DEFAULT_FONT = Font.font("Arial", 14);
     private static final Map<String, Image> file2image = new ConcurrentHashMap<>();
 
@@ -93,7 +101,9 @@ public class RichTextLabel extends TextFlow {
     private BooleanProperty superscript;
     private BooleanProperty underline;
     private ObjectProperty<Paint> textFill;
+    private ObjectProperty<Paint> backgroundColor;
     private DoubleProperty fontSize;
+    private StringProperty fontFamily;
 
     /**
      * constructor
@@ -315,28 +325,14 @@ public class RichTextLabel extends TextFlow {
         return text.replaceAll("\\s+", " ").replaceAll("&#[x0-9a-eA-E]+™;", "").replaceAll("&[a-zA-Z]+;", "");
     }
 
-    public static String getSupportedHTMLTags() {
-        return "<i>italics</i>, " +
-               "<b>bold</b>, " +
-               "<sup>super-script</sup>, " +
-               "<sub>sub-script</sub>, " +
-               "<u>underline</u>, " +
-               "<a>strike-through</a>, " +
-               "<br>new-line, " +
-               "<font \"name\">font-name</font>, " +
-               "<size \"value\">font-size</size>, " +
-               "<c \"value\">font-color</c>, " +
-               "<box width=\"value\" height=\"value\" fill=\"color\" stroke=\"color\"> adds a box, " +
-               "<img src=\"url\" alt=\"text\" width=\"value\" height=\"value\"> adds an image, also supports HTML numeric codes";
-    }
-
-    @Override
-    public String toString() {
+     @Override
+     public String toString() {
         return getRawText();
     }
 
     private void update() {
         getChildren().clear();
+        setBackground(null);
 
         var workingText = HTMLConvert.convertHtmlToCharacters(getText());
 
@@ -500,7 +496,16 @@ public class RichTextLabel extends TextFlow {
 
                 segmentStart = event.segmentStart();
 
-                if (event.change() == Event.Change.box) {
+                if (event.change() == Event.Change.background) {
+                    final var argument = event.argument();
+                    if (argument != null) {
+                        try {
+                            final Color color = BasicFX.parseColor(argument);
+                            setBackground(new Background(new BackgroundFill(color, null, null)));
+                        } catch (IllegalArgumentException ignored) {
+                        }
+                    }
+                } else if (event.change() == Event.Change.box) {
                     final var node = getBox(event.argument());
                     if (node != null) {
                         node.setTranslateY(offset);
@@ -912,14 +917,52 @@ public class RichTextLabel extends TextFlow {
         return getFontFamily(getText());
     }
 
-    StringProperty fontFamily;
-
     public StringProperty fontFamilyProperty() {
         if (fontFamily == null)
             fontFamily = new SimpleStringProperty(getFontFamily());
         fontFamily.addListener((v, o, n) -> setFontFamily(n));
         textProperty().addListener(e -> fontFamily.set(getFontFamily()));
         return fontFamily;
+    }
+
+    public static String setBackgroundColor(String text, Paint background) {
+        var prefixElement = getPrefixElement(text, Event.Change.background.type());
+        if (prefixElement != null)
+            text = removePrefixElement(text, prefixElement);
+        if (background != null)
+            return insertPrefix(text, String.format("<bg \"%s\">", background));
+        else
+            return text;
+    }
+
+    public static Paint getBackgroundColor(String text) {
+        var prefixElement = getPrefixElement(text, Event.Change.background.type());
+        if (prefixElement != null) {
+            final var argument = prefixElement.argument();
+            if (argument != null) {
+                try {
+                    return BasicFX.parseColor(argument);
+                } catch (IllegalArgumentException ignored) {
+                }
+            }
+        }
+        return null;
+    }
+
+    public void setBackgroundColor(Paint background) {
+        setText(setBackgroundColor(getText(), background));
+    }
+
+    public Paint getBackgroundColor() {
+        return getBackgroundColor(getText());
+    }
+
+    public ObjectProperty<Paint> backgroundColorProperty() {
+        if (backgroundColor == null)
+            backgroundColor = new SimpleObjectProperty<>(getBackgroundColor());
+        backgroundColor.addListener((v, o, n) -> setBackgroundColor(n));
+        textProperty().addListener(e -> backgroundColor.set(getBackgroundColor()));
+        return backgroundColor;
     }
 
     public static String setBox(String text, Double width, Double height, Color fill, Color stroke) {
@@ -988,9 +1031,10 @@ public class RichTextLabel extends TextFlow {
             colorStart("<c "), colorEnd("</c>"),
             fontSizeStart("<size "), fontSizeEnd("</size>"),
             fontFamilyStart("<font "), fontFamilyEnd("</font>"),
-            lineBreak("<br>"),
+            background("<bg "),
             box("<box "),
-            image("<img ");
+            image("<img "),
+            lineBreak("<br>");
 
             private final String tag;
 

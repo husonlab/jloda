@@ -1197,7 +1197,7 @@ public class NexusStreamParser extends NexusStreamTokenizer implements Closeable
      * @param blockName        the name of the block
      * @return the full block
      */
-    public String convertToBlock(String firstSourceLabel, String lastSourceLabel, String blockName) throws Exception {
+    public String convertToBlock(String firstSourceLabel, String lastSourceLabel, String blockName) throws IOException {
         pushPunctuationCharacters(SEMICOLON_PUNCTUATION);
         StringBuilder str = new StringBuilder("begin " + blockName + ";");
         try {

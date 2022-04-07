@@ -1941,8 +1941,8 @@ public class GraphView extends JPanel implements Printable, Scrollable, INodeEdg
                         if (dist < 1e-3)
                             dist = 1e-3;
                         double repulse = k * k / dist;
-                        xDispl.put(v, xDispl.get(v) + repulse * xDist);
-                        yDispl.put(v, yDispl.get(v) + repulse * yDist);
+                        xDispl.put(v, xDispl.getOrDefault(v, 0.0) + repulse * xDist);
+                        yDispl.put(v, yDispl.getOrDefault(v, 0.0) + repulse * yDist);
                     }
 
                     for (Edge e = G.getFirstEdge(); e != null; e = G.getNextEdge(e)) {
