@@ -275,7 +275,8 @@ public class StringUtils {
 	public static String toString(Object[] array, int offset, int length, String separator) {
 		final var buf = new StringBuilder();
 
-		boolean first = true;
+		var first = true;
+		length = Math.min(length, array.length - offset);
 		for (var i = 0; i < length; i++) {
 			var anArray = array[i + offset];
 			if (first)
