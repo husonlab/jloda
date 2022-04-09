@@ -32,6 +32,7 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
+import javafx.scene.shape.Circle;
 import javafx.scene.shape.Ellipse;
 import javafx.scene.shape.Rectangle;
 import jloda.fx.util.ColorSchemeManager;
@@ -54,7 +55,11 @@ public class Legend extends StackPane {
 		}
 	}
 
+	public enum PatchShape {Circle, Square}
+
+	private final StringProperty title = new SimpleStringProperty(this, "title", null);
 	private final ObjectProperty<ScalingType> scalingType = new SimpleObjectProperty<>(this, "scalingType", ScalingType.none);
+	private final ObjectProperty<PatchShape> patchShape = new SimpleObjectProperty<>(this, "colorPatchShape", PatchShape.Circle);
 	private final DoubleProperty circleMinSize = new SimpleDoubleProperty(64);
 	private final DoubleProperty unitRadius = new SimpleDoubleProperty(this, "unitRadius", 0);
 	private final DoubleProperty scale = new SimpleDoubleProperty(this, "scaleProperty", 1.0);
@@ -89,6 +94,9 @@ public class Legend extends StackPane {
 	private void update() {
 		pane.getChildren().clear();
 
+		if (getTitle() != null && !getTitle().isBlank()) {
+			pane.getChildren().add(new HBox(new Label(getTitle())));
+		}
 		if (getScalingType() != ScalingType.none && getUnitRadius() > 0) {
 			pane.getChildren().add(createCircleScaleBox(getScalingType(), getUnitRadius(), getScale()));
 		}
@@ -97,7 +105,7 @@ public class Legend extends StackPane {
 			var colorScheme = ColorSchemeManager.getInstance().getColorScheme(getColorSchemeName());
 			for (var i = 0; i < labels.size(); i++) {
 				if (active.contains(labels.get(i))) {
-					var shape = new Rectangle(16, 16);
+					var shape = getColorPatchShae() == PatchShape.Circle ? new Circle(8) : new Rectangle(16, 16);
 					shape.setFill(colorScheme.get(i % colorScheme.size()));
 					var label = new Label(labels.get(i));
 					var hbox = new HBox(shape, label);
@@ -126,6 +134,18 @@ public class Legend extends StackPane {
 
 	public ObservableList<String> getLabels() {
 		return labels;
+	}
+
+	public String getTitle() {
+		return title.get();
+	}
+
+	public StringProperty titleProperty() {
+		return title;
+	}
+
+	public void setTitle(String title) {
+		this.title.set(title);
 	}
 
 	public ScalingType getScalingType() {
@@ -174,6 +194,18 @@ public class Legend extends StackPane {
 
 	public void setCircleMinSize(double circleMinSize) {
 		this.circleMinSize.set(circleMinSize);
+	}
+
+	public PatchShape getColorPatchShae() {
+		return patchShape.get();
+	}
+
+	public ObjectProperty<PatchShape> patchShapeProperty() {
+		return patchShape;
+	}
+
+	public void setPatchShape(PatchShape patchShape) {
+		this.patchShape.set(patchShape);
 	}
 
 	private Node createCircleScaleBox(ScalingType scalingType, double unitRadius, double scale) {
