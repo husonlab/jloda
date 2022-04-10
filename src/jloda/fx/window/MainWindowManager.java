@@ -31,6 +31,7 @@ import javafx.stage.Stage;
 import jloda.fx.util.ClosingLastDocument;
 import jloda.util.IteratorUtils;
 import jloda.util.ProgramProperties;
+import jloda.util.StringUtils;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -59,6 +60,12 @@ public class MainWindowManager {
      * constructor
      */
     private MainWindowManager() {
+        if (false) {
+            previousSelection.addListener((InvalidationListener) e -> {
+                System.err.println("previousSelection: " + StringUtils.toString(previousSelection, " "));
+            });
+        }
+
         mainWindows = FXCollections.observableArrayList();
         mainWindows2AdditionalWindows = new HashMap<>();
 

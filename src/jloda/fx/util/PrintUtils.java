@@ -48,7 +48,7 @@ public class PrintUtils {
 		parameters.setTransform(new Scale(4, 4));
 		var right = (containedScrollPane != null && isScrollBarVisible(containedScrollPane, Orientation.VERTICAL) ? 64 : 8);
 		var bottom = (containedScrollPane != null && isScrollBarVisible(containedScrollPane, Orientation.HORIZONTAL) ? 64 : 8);
-		parameters.setViewport(new Rectangle2D(4, 4, 4 * region.getWidth() - right, 4 * region.getHeight() - bottom));
+		parameters.setViewport(new Rectangle2D(4, 4, Math.max(100, 4 * region.getWidth() - right), Math.max(100, 4 * region.getHeight() - bottom)));
 		return new ImageView(region.snapshot(parameters, null));
 	}
 
