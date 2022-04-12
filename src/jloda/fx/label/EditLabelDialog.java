@@ -55,6 +55,7 @@ public class EditLabelDialog extends Dialog<String> {
         initModality(Modality.WINDOW_MODAL);
 
         displayLabel = (label != null ? new RichTextLabel(label) : new RichTextLabel());
+        displayLabel.setScale(1.0);
         controller.getInputTextArea().setText(displayLabel.getText().replaceAll("<br>", "\n"));
 
         controller.getSupportedHTMLTextArea().setText(RichTextLabel.getSupportedHTMLTags());

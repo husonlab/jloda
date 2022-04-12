@@ -342,12 +342,12 @@ public class RichTextLabel extends TextFlow {
         if (workingText.length() > 0 && getContentDisplay() != ContentDisplay.GRAPHIC_ONLY) {
             final ArrayList<Event> events = new ArrayList<>();
             {
-                final Event event = Event.getEventAtPos(workingText, 0);
+                final var event = Event.getEventAtPos(workingText, 0);
                 if (event != null && event.change().equals(Event.Change.htmlStart)) {
                     events.add(event);
                 } else {
                     if (isRequireHTMLTag()) { // require leading HTML tag, but none found, return non-styled text
-                        final Text text = new Text(workingText);
+                        final var text = new Text(workingText);
                         text.getStyleClass().add("rich-text-label");
                         if (getScale() == 1.0)
                             text.setFont(getFont());
@@ -471,7 +471,6 @@ public class RichTextLabel extends TextFlow {
                             textFill = colorStack.pop();
                     }
                 }
-
                 if (event.getChangeType().equals("sup")) {
                     if (event.isStart()) {
                         fontSize *= 0.8;
@@ -510,15 +509,18 @@ public class RichTextLabel extends TextFlow {
                     if (node != null) {
                         node.setTranslateY(offset);
                         getChildren().add(node);
+                        offset -= 0.5 * (node.prefHeight(0) - fontSize);
                     }
                 } else if (event.change() == Event.Change.image) {
                     final var node = getImageNode(event.argument());
                     if (node != null) {
                         node.setTranslateY(offset);
                         getChildren().add(node);
+                        offset -= 0.5 * (node.prefHeight(0) - fontSize);
                     }
                 } else if (event.change() == Event.Change.lineBreak) {
                     getChildren().add(new Text("\n"));
+                    offset = 0;
                 }
             }
         }
@@ -535,8 +537,8 @@ public class RichTextLabel extends TextFlow {
     private Node getBox(String specification) {
         if (specification != null) {
             final var map = getMap(specification);
-            final var width = (map.containsKey("width") && NumberUtils.isDouble(map.get("width")) ? NumberUtils.parseDouble(map.get("width")) : getFontSize());
-            final var height = (map.containsKey("height") && NumberUtils.isDouble(map.get("height")) ? NumberUtils.parseDouble(map.get("height")) : getFontSize());
+            final var width = getScale() * (map.containsKey("width") && NumberUtils.isDouble(map.get("width")) ? NumberUtils.parseDouble(map.get("width")) : getFontSize());
+            final var height = getScale() * (map.containsKey("height") && NumberUtils.isDouble(map.get("height")) ? NumberUtils.parseDouble(map.get("height")) : getFontSize());
 
             final var fill = (map.containsKey("fill") && BasicFX.isColor(map.get("fill")) ? BasicFX.parseColor(map.get("fill")) : getTextFill());
             final var stroke = (map.containsKey("stroke") && BasicFX.isColor(map.get("stroke")) ? BasicFX.parseColor(map.get("stroke")) : null);
@@ -601,13 +603,15 @@ public class RichTextLabel extends TextFlow {
     private static Map<String, String> getMap(String specification) {
         specification = specification.replaceAll("\\s+\"", " \"").replaceAll("\"\\s+", "\" ").replaceAll(" =", "=").replaceAll("= ", "=");
 
-        final Map<String, String> map = new HashMap<>();
-        final String[] tokens = specification.split(" ");
-        for (String token : tokens) {
-            final String[] pair = token.split("=");
+        final var map = new HashMap<String, String>();
+        final var tokens = specification.split(" ");
+        for (var token : tokens) {
+            final var pair = token.split("=");
             if (pair.length == 2) {
-                final String key = pair[0].trim();
-                String value = pair[1].trim();
+                final var key = pair[0].trim();
+                var value = pair[1].trim();
+                if (value.endsWith("<br"))
+                    value = value.substring(0, value.length() - 3);
                 if (value.startsWith("\"") && value.endsWith("\"") && value.length() >= 2)
                     value = value.substring(1, value.length() - 1);
                 if (key.length() > 0)
