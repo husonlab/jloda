@@ -294,16 +294,19 @@ public class SplittableTabPane extends Pane {
             final int oldIndex = oldTabPane.getTabs().indexOf(tab);
             if (oldIndex >= 0) {
                 oldTabPane.getTabs().remove(tab);
-                if (oldTabPane.getTabs().size() == 0 && oldSplitPane != null) {
-                    oldSplitPane.getItems().remove(oldTabPane);
-                    if (getFocusedTabPane() == oldTabPane) {
-                        Platform.runLater(() -> {
-                            if (tabPane2ParentSplitPane.size() > 0)
-                                setFocusedTabPane(tabPane2ParentSplitPane.keySet().iterator().next());
-                        });
-                    }
-                    tabPane2ParentSplitPane.remove(oldTabPane);
+                if (oldSplitPane != null) {
+                    if (oldTabPane.getTabs().size() == 0) {
+                        oldSplitPane.getItems().remove(oldTabPane);
+                        if (getFocusedTabPane() == oldTabPane) {
+                            Platform.runLater(() -> {
+                                if (tabPane2ParentSplitPane.size() > 0)
+                                    setFocusedTabPane(tabPane2ParentSplitPane.keySet().iterator().next());
+                            });
+                        }
+                        tabPane2ParentSplitPane.remove(oldTabPane);
+                    } else Platform.runLater(oldSplitPane::requestLayout);
                 }
+
                 if (newTabPane == null) {
                     if (oldTabPane.getTabs().size() > 0) {
                         Platform.runLater(() -> {
@@ -326,6 +329,7 @@ public class SplittableTabPane extends Pane {
                 newTabPane.getSelectionModel().select(tab);
                 selectionModel.select(tab);
                 setFocusedTabPane(newTabPane);
+                Platform.runLater(newTabPane::requestLayout);
             });
         }
     }
@@ -634,13 +638,12 @@ public class SplittableTabPane extends Pane {
             }
         });
         tab.graphicProperty().addListener((c, o, n) -> {
-            if (n != label) {
-                Platform.runLater(() ->
-                {
+            Platform.runLater(() -> {
+                if (n != label) {
                     label.setGraphic(n);
                     tab.setGraphic(label);
-                });
-            }
+                }
+            });
         });
         label.setOnDragOver(event -> {
             final Dragboard dragboard = event.getDragboard();

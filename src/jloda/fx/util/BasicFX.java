@@ -473,4 +473,8 @@ public class BasicFX {
         } else
             return javafx.scene.paint.Color.web(text);
     }
+
+    public static String toStringCSS(Color color) {
+        return color.toString().replace("0x", "#");
+    }
 }

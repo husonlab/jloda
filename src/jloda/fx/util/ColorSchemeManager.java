@@ -169,8 +169,7 @@ public class ColorSchemeManager {
             for (var i = 0; i < data.size(); i++) {
                 var node = data.get(i).getNode();
                 if (node != null) {
-                    var colorString = colorScheme.get(i % colorScheme.size()).toString().replaceAll("0x", "#");
-                    node.setStyle("-fx-pie-color: " + colorString + ";");
+                    node.setStyle("-fx-pie-color: " + BasicFX.toStringCSS(colorScheme.get(i % colorScheme.size())) + ";");
                 }
             }
         }

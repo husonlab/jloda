@@ -65,7 +65,7 @@ public class RichTextLabel extends TextFlow {
                "<size \"value\">font-size</size>, " +
                "<c \"value\">font-color</c>, " +
                "<bg \"value\">background-color</bg>, " +
-               "<box width=\"value\" height=\"value\" fill=\"color\" stroke=\"color\"> adds a box, " +
+               "<mark width=\"value\" height=\"value\" fill=\"color\" stroke=\"color\"> adds a mark, " +
                "<img src=\"url\" alt=\"text\" width=\"value\" height=\"value\"> adds an image. Supports HTML numeric codes.";
     }
 
@@ -504,12 +504,11 @@ public class RichTextLabel extends TextFlow {
                         } catch (IllegalArgumentException ignored) {
                         }
                     }
-                } else if (event.change() == Event.Change.box) {
-                    final var node = getBox(event.argument());
+                } else if (event.change() == Event.Change.mark) {
+                    final var node = getMark(event.argument());
                     if (node != null) {
                         node.setTranslateY(offset);
                         getChildren().add(node);
-                        offset -= 0.5 * (node.prefHeight(0) - fontSize);
                     }
                 } else if (event.change() == Event.Change.image) {
                     final var node = getImageNode(event.argument());
@@ -534,7 +533,7 @@ public class RichTextLabel extends TextFlow {
             Platform.runLater(this::requestLayout);
     }
 
-    private Node getBox(String specification) {
+    private Node getMark(String specification) {
         if (specification != null) {
             final var map = getMap(specification);
             final var width = getScale() * (map.containsKey("width") && NumberUtils.isDouble(map.get("width")) ? NumberUtils.parseDouble(map.get("width")) : getFontSize());
@@ -969,11 +968,11 @@ public class RichTextLabel extends TextFlow {
         return backgroundColor;
     }
 
-    public static String setBox(String text, Double width, Double height, Color fill, Color stroke) {
-        var prefixElement = getPrefixElement(text, Event.Change.box.type());
+    public static String setMark(String text, Double width, Double height, Color fill, Color stroke) {
+        var prefixElement = getPrefixElement(text, Event.Change.mark.type());
         if (prefixElement != null)
             text = removePrefixElement(text, prefixElement);
-        var tag = "<box ";
+        var tag = "<mark ";
 
         if (width != null)
             tag += String.format(" width=\"%.2f\"", width);
@@ -988,8 +987,20 @@ public class RichTextLabel extends TextFlow {
         return insertPrefix(text, tag);
     }
 
-    public void setBox(Double width, Double height, Color fill, Color stroke) {
-        setBox(getText(), width, height, fill, stroke);
+    public void setMark(Double width, Double height, Color fill, Color stroke) {
+        setMark(getText(), width, height, fill, stroke);
+    }
+
+
+    public static String removeMark(String text) {
+        var start = text.indexOf("<mark ");
+        if (start != -1) {
+            var end = text.indexOf(">", start + 5);
+            if (end != -1) {
+                return start == 0 ? text.substring(end + 1) : text.substring(0, start) + text.substring(end + 1);
+            }
+        }
+        return text;
     }
 
     public static String setImage(String text, String url, String alt, Double width, Double height) {
@@ -1036,7 +1047,7 @@ public class RichTextLabel extends TextFlow {
             fontSizeStart("<size "), fontSizeEnd("</size>"),
             fontFamilyStart("<font "), fontFamilyEnd("</font>"),
             background("<bg "),
-            box("<box "),
+            mark("<mark "),
             image("<img "),
             lineBreak("<br>");
 
@@ -1077,8 +1088,8 @@ public class RichTextLabel extends TextFlow {
 
         public static Event getEventAtPos(String line, int pos) {
             line = line.substring(pos);
-            if (line.startsWith("<box>")) {
-                return new Event(Change.box, pos, pos + 5, "");
+            if (line.startsWith("<mark>")) {
+                return new Event(Change.mark, pos, pos + 5, "");
             }
             for (Event.Change change : Event.Change.values()) {
                 var tag = change.tag();
