@@ -300,10 +300,10 @@ public class RichTextLabel extends TextFlow {
                             setScaleX(-getScaleX());
                         }
                         var screenAngle = BasicFX.getAngleOnScreen(this);
-                        if (screenAngle.isPresent() && screenAngle.get() > 90 && screenAngle.get() < 270) {
+                         if (screenAngle.isPresent() && screenAngle.get() > 90 && screenAngle.get() < 270) {
                             setRotate(GeometryUtilsFX.modulo360(getRotate() + 180.0));
                         }
-                    } finally {
+                     } finally {
                         _inUprighting = false;
                     }
                 }
