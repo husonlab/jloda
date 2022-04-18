@@ -25,6 +25,10 @@ import javafx.scene.shape.Shape3D;
 import javafx.scene.shape.Sphere;
 import jloda.util.StringUtils;
 
+/**
+ * some shapes
+ * Daniel Huson, 2020
+ */
 public enum NodeShape {
     Square, Circle, TriangleUp, TriangleDown, Diamond, Hexagon, Rectangle, Oval, None;
 
@@ -57,7 +61,7 @@ public enum NodeShape {
     /**
      * gets the short code for this shape, which consists only of the capital letters appearing in the name
      *
-	 */
+     */
     public static String getCode(Shape shape) {
         return valueOf(shape).toString().replaceAll("[a-z]", "");
     }
@@ -83,9 +87,9 @@ public enum NodeShape {
     /**
      * creates a shape
      *
-	 */
+     */
     public static Shape create(String name, double width, double height) {
-		final NodeShape nodeShape = StringUtils.valueOfIgnoreCase(NodeShape.class, name);
+        var nodeShape = StringUtils.valueOfIgnoreCase(NodeShape.class, name);
         if (nodeShape != null)
             return create(nodeShape, width, height);
         else

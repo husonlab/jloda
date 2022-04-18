@@ -31,24 +31,25 @@ import javafx.scene.layout.Background;
 import javafx.scene.layout.BackgroundFill;
 import javafx.scene.paint.Color;
 import javafx.scene.paint.Paint;
-import javafx.scene.shape.Rectangle;
+import javafx.scene.shape.Shape;
 import javafx.scene.text.*;
+import jloda.fx.shapes.NodeShape;
 import jloda.fx.util.BasicFX;
 import jloda.fx.util.GeometryUtilsFX;
 import jloda.fx.util.ProgramExecutorService;
 import jloda.fx.window.NotificationManager;
-import jloda.util.Basic;
-import jloda.util.HTMLConvert;
-import jloda.util.NumberUtils;
-import jloda.util.StringUtils;
+import jloda.util.*;
 
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 
+import static jloda.fx.shapes.NodeShape.None;
+
 /**
- * A simple RichTextLabel. A number of html and html-like tags are interpreted.
+ * A rich text label. A number of html and html-like tags are interpreted.
  * The text can optionally be enclosed in \<html\> \</html\> tags.
  * All errors in tags are silently ignored.
+ * If an anchor node is given, then any set marks are displayed at the end of the label that is closest to the anchor
  * <p>
  * Daniel Huson, 6.2020
  */
@@ -65,7 +66,7 @@ public class RichTextLabel extends TextFlow {
                "<size \"value\">font-size</size>, " +
                "<c \"value\">font-color</c>, " +
                "<bg \"value\">background-color</bg>, " +
-               "<mark width=\"value\" height=\"value\" fill=\"color\" stroke=\"color\"> adds a mark, " +
+               "<mark shape=\"value\" width=\"value\" height=\"value\" fill=\"color\" stroke=\"color\"> adds a mark, " +
                "<img src=\"url\" alt=\"text\" width=\"value\" height=\"value\"> adds an image. Supports HTML numeric codes.";
     }
 
@@ -93,17 +94,9 @@ public class RichTextLabel extends TextFlow {
 
     private transient boolean _inUprighting = false;
 
-    // global styling
-    private BooleanProperty bold;
-    private BooleanProperty italic;
-    private BooleanProperty strike;
-    private BooleanProperty subscript;
-    private BooleanProperty superscript;
-    private BooleanProperty underline;
-    private ObjectProperty<Paint> textFill;
-    private ObjectProperty<Paint> backgroundColor;
-    private DoubleProperty fontSize;
-    private StringProperty fontFamily;
+    private Node _anchor;
+    private ObjectProperty<Node> anchor;
+
 
     /**
      * constructor
@@ -163,7 +156,7 @@ public class RichTextLabel extends TextFlow {
         }
         if (this.text != null)
             this.text.set(text);
-        else {
+        else if ((text == null && _text != null) || (text != null && !text.equals(_text))) {
             this._text = text;
             Platform.runLater(this::update);
         }
@@ -188,7 +181,7 @@ public class RichTextLabel extends TextFlow {
     public void setFont(Font font) {
         if (this.font != null)
             this.font.set(font);
-        else {
+        else if ((font == null && _font != null) || (font != null && !font.equals(_font))) {
             this._font = font;
             Platform.runLater(this::update);
         }
@@ -209,7 +202,7 @@ public class RichTextLabel extends TextFlow {
     public void setRequireHTMLTag(boolean requireHTMLTag) {
         if (this.requireHTMLTag != null)
             this.requireHTMLTag.set(requireHTMLTag);
-        else {
+        else if (requireHTMLTag != _requireHTMLTag) {
             this._requireHTMLTag = requireHTMLTag;
             Platform.runLater(this::update);
         }
@@ -230,7 +223,7 @@ public class RichTextLabel extends TextFlow {
     public void setGraphic(Node graphic) {
         if (this.graphic != null)
             this.graphic.set(graphic);
-        else {
+        else if ((graphic == null && _graphic != null) || (graphic != null && !graphic.equals(_graphic))) {
             this._graphic = graphic;
             Platform.runLater(this::update);
         }
@@ -251,7 +244,7 @@ public class RichTextLabel extends TextFlow {
     public void setContentDisplay(ContentDisplay contentDisplay) {
         if (this.contentDisplay != null) {
             this.contentDisplay.set(contentDisplay);
-        } else {
+        } else if ((contentDisplay == null && _contentDisplay != null) || (contentDisplay != null && !contentDisplay.equals(_contentDisplay))) {
             this._contentDisplay = contentDisplay;
             Platform.runLater(this::update);
         }
@@ -286,6 +279,45 @@ public class RichTextLabel extends TextFlow {
         }
     }
 
+    public Node getAnchor() {
+        return anchor != null ? getAnchor() : _anchor;
+    }
+
+    public ObjectProperty<Node> anchorProperty() {
+        if (anchor == null) {
+            anchor = new SimpleObjectProperty<>(_anchor);
+            anchor.addListener(e -> update());
+        }
+        return anchor;
+    }
+
+    public void setAnchor(Node anchor) {
+        if (this.anchor != null)
+            this.anchor.set(anchor);
+        else if ((anchor == null && _anchor != null) || (anchor != null && !anchor.equals(_anchor))) {
+            _anchor = anchor;
+            Platform.runLater(this::update);
+        }
+    }
+
+    public boolean isShowMarksAtEnd() {
+        if (getAnchor() == null)
+            return false;
+        else {
+            var labelTransform = getLocalToSceneTransform();
+            var start = labelTransform.transform(0, 0);
+            var end = labelTransform.transform(20, 0);
+            if (start.getX() > end.getX()) {
+                var tmp = end;
+                end = start;
+                start = tmp;
+            }
+            var anchorPos = getAnchor().getLocalToSceneTransform().transform(0, 0);
+            //System.err.println(getRawText()+": anchor: "+anchorPos+" start: "+start+" end: "+end);
+            return anchorPos.distance(end) < anchorPos.distance(start);
+        }
+    }
+
     /**
      * ensure text is upright
      */
@@ -305,6 +337,9 @@ public class RichTextLabel extends TextFlow {
                         }
                      } finally {
                         _inUprighting = false;
+                        if (getAnchor() != null) {
+                            Platform.runLater(this::update);
+                        }
                     }
                 }
             });
@@ -359,7 +394,6 @@ public class RichTextLabel extends TextFlow {
                         events.add(new Event(Event.Change.htmlStart, 0, 0, null));
                 }
             }
-
             for (int pos = 0; pos < workingText.length(); pos++) {
                 final Event event = Event.getEventAtPos(workingText, pos);
                 if (event != null) {
@@ -377,6 +411,8 @@ public class RichTextLabel extends TextFlow {
             Paint textFill = null;
 
             final var active = new HashMap<String, Boolean>();
+
+            var atEndList = (isShowMarksAtEnd() ? new ArrayList<Node>() : null);
 
             final var fontStack = new Stack<Font>();
             final var fontSizeStack = new Stack<Double>();
@@ -505,13 +541,16 @@ public class RichTextLabel extends TextFlow {
                         }
                     }
                 } else if (event.change() == Event.Change.mark) {
-                    final var node = getMark(event.argument());
+                    final var node = createMark(event.argument(), getScale(), getFontSize(), getTextFill());
                     if (node != null) {
                         node.setTranslateY(offset);
-                        getChildren().add(node);
+                        if (atEndList == null)
+                            getChildren().add(node);
+                        else
+                            atEndList.add(node);
                     }
                 } else if (event.change() == Event.Change.image) {
-                    final var node = getImageNode(event.argument());
+                    final var node = createImageNode(event.argument());
                     if (node != null) {
                         node.setTranslateY(offset);
                         getChildren().add(node);
@@ -522,6 +561,8 @@ public class RichTextLabel extends TextFlow {
                     offset = 0;
                 }
             }
+            if (atEndList != null)
+                getChildren().addAll(CollectionUtils.reverse(atEndList));
         }
 
         if (getGraphic() != null && (getContentDisplay() != ContentDisplay.BOTTOM || getContentDisplay() != ContentDisplay.RIGHT))
@@ -533,24 +574,7 @@ public class RichTextLabel extends TextFlow {
             Platform.runLater(this::requestLayout);
     }
 
-    private Node getMark(String specification) {
-        if (specification != null) {
-            final var map = getMap(specification);
-            final var width = getScale() * (map.containsKey("width") && NumberUtils.isDouble(map.get("width")) ? NumberUtils.parseDouble(map.get("width")) : getFontSize());
-            final var height = getScale() * (map.containsKey("height") && NumberUtils.isDouble(map.get("height")) ? NumberUtils.parseDouble(map.get("height")) : getFontSize());
-
-            final var fill = (map.containsKey("fill") && BasicFX.isColor(map.get("fill")) ? BasicFX.parseColor(map.get("fill")) : getTextFill());
-            final var stroke = (map.containsKey("stroke") && BasicFX.isColor(map.get("stroke")) ? BasicFX.parseColor(map.get("stroke")) : null);
-
-            var rectangle = new Rectangle(width, height);
-            rectangle.setFill(fill);
-            rectangle.setStroke(stroke);
-            return rectangle;
-        }
-        return null;
-    }
-
-    private Node getImageNode(String specification) {
+    private Node createImageNode(String specification) {
         if (specification != null) {
             final var map = getMap(specification);
             if (map.containsKey("src")) {
@@ -595,6 +619,24 @@ public class RichTextLabel extends TextFlow {
             }
             if (map.get("alt") != null)
                 return new Text(map.get("alt"));
+        }
+        return null;
+    }
+
+    private static Shape createMark(String specification, double defaultScale, double defaultSize, Paint defaultFill) {
+        if (specification != null) {
+            final var map = getMap(specification);
+            final var shape = map.containsKey("shape") && StringUtils.valueOfIgnoreCase(NodeShape.class, map.get("shape")) != null ? StringUtils.valueOfIgnoreCase(NodeShape.class, map.get("shape")) : NodeShape.Square;
+            final var width = defaultScale * (map.containsKey("width") && NumberUtils.isDouble(map.get("width")) ? NumberUtils.parseDouble(map.get("width")) : defaultSize);
+            final var height = defaultScale * (map.containsKey("height") && NumberUtils.isDouble(map.get("height")) ? NumberUtils.parseDouble(map.get("height")) : defaultSize);
+
+            final var fill = (map.containsKey("fill") && BasicFX.isColor(map.get("fill")) ? BasicFX.parseColor(map.get("fill")) : defaultFill);
+            final var stroke = (map.containsKey("stroke") && BasicFX.isColor(map.get("stroke")) ? BasicFX.parseColor(map.get("stroke")) : null);
+
+            var rectangle = NodeShape.create(shape, shape == NodeShape.Oval ? 0.5 * width : width, height);
+            rectangle.setFill(shape == None ? Color.TRANSPARENT : fill);
+            rectangle.setStroke(shape == None ? Color.TRANSPARENT : stroke);
+            return rectangle;
         }
         return null;
     }
@@ -679,9 +721,8 @@ public class RichTextLabel extends TextFlow {
         return isBold(getText());
     }
 
-    public BooleanProperty boldProperty() {
-        if (bold == null)
-            bold = new SimpleBooleanProperty(isBold());
+    public BooleanProperty createBoldProperty() {
+        var bold = new SimpleBooleanProperty(isBold());
         bold.addListener((v, o, n) -> setBold(n));
         textProperty().addListener(e -> bold.set(isBold()));
         return bold;
@@ -703,9 +744,8 @@ public class RichTextLabel extends TextFlow {
         return isItalic(getText());
     }
 
-    public BooleanProperty italicProperty() {
-        if (italic == null)
-            italic = new SimpleBooleanProperty(isItalic());
+    public BooleanProperty createItalicProperty() {
+        var italic = new SimpleBooleanProperty(isItalic());
         italic.addListener((v, o, n) -> setItalic(n));
         textProperty().addListener(e -> italic.set(isItalic()));
         return italic;
@@ -727,9 +767,8 @@ public class RichTextLabel extends TextFlow {
         return isStrike(getText());
     }
 
-    public BooleanProperty strikeProperty() {
-        if (strike == null)
-            strike = new SimpleBooleanProperty(isStrike());
+    public BooleanProperty createStrikeProperty() {
+        var strike = new SimpleBooleanProperty(isStrike());
         strike.addListener((v, o, n) -> setStrike(n));
         textProperty().addListener(e -> strike.set(isStrike()));
         return strike;
@@ -751,9 +790,8 @@ public class RichTextLabel extends TextFlow {
         return isSubscript(getText());
     }
 
-    public BooleanProperty subscriptProperty() {
-        if (subscript == null)
-            subscript = new SimpleBooleanProperty(isSubscript());
+    public BooleanProperty createSubscriptProperty() {
+        var subscript = new SimpleBooleanProperty(isSubscript());
         subscript.addListener((v, o, n) -> setSubscript(n));
         textProperty().addListener(e -> subscript.set(isSubscript()));
         return subscript;
@@ -776,9 +814,8 @@ public class RichTextLabel extends TextFlow {
     }
 
 
-    public BooleanProperty superscriptProperty() {
-        if (superscript == null)
-            superscript = new SimpleBooleanProperty(isSuperscript());
+    public BooleanProperty createSuperscriptProperty() {
+        var superscript = new SimpleBooleanProperty(isSuperscript());
         superscript.addListener((v, o, n) -> setSuperscript(n));
         textProperty().addListener(e -> superscript.set(isSuperscript()));
         return superscript;
@@ -800,9 +837,8 @@ public class RichTextLabel extends TextFlow {
         return isUnderline(getText());
     }
 
-    public BooleanProperty underlineProperty() {
-        if (underline == null)
-            underline = new SimpleBooleanProperty(isUnderline());
+    public BooleanProperty createUnderlineProperty() {
+        var underline = new SimpleBooleanProperty(isUnderline());
         underline.addListener((v, o, n) -> setUnderline(n));
         textProperty().addListener(e -> underline.set(isUnderline()));
         return underline;
@@ -840,9 +876,8 @@ public class RichTextLabel extends TextFlow {
         return getTextFill(getText());
     }
 
-    public ObjectProperty<Paint> textFillProperty() {
-        if (textFill == null)
-            textFill = new SimpleObjectProperty<>(getTextFill());
+    public ObjectProperty<Paint> createTextFillProperty() {
+        var textFill = new SimpleObjectProperty<>(getTextFill());
         textFill.addListener((v, o, n) -> setTextFill(n));
         textProperty().addListener(e -> textFill.set(getTextFill()));
         return textFill;
@@ -877,9 +912,8 @@ public class RichTextLabel extends TextFlow {
         return getFontSize(getText());
     }
 
-    public DoubleProperty fontSizeProperty() {
-        if (fontSize == null)
-            fontSize = new SimpleDoubleProperty(getFontSize());
+    public DoubleProperty createontSizeProperty() {
+        var fontSize = new SimpleDoubleProperty(getFontSize());
         fontSize.addListener((v, o, n) -> setFontSize(n.doubleValue()));
         textProperty().addListener(e -> fontSize.set(getFontSize()));
         return fontSize;
@@ -920,9 +954,8 @@ public class RichTextLabel extends TextFlow {
         return getFontFamily(getText());
     }
 
-    public StringProperty fontFamilyProperty() {
-        if (fontFamily == null)
-            fontFamily = new SimpleStringProperty(getFontFamily());
+    public StringProperty createFontFamilyProperty() {
+        var fontFamily = new SimpleStringProperty(getFontFamily());
         fontFamily.addListener((v, o, n) -> setFontFamily(n));
         textProperty().addListener(e -> fontFamily.set(getFontFamily()));
         return fontFamily;
@@ -960,37 +993,37 @@ public class RichTextLabel extends TextFlow {
         return getBackgroundColor(getText());
     }
 
-    public ObjectProperty<Paint> backgroundColorProperty() {
-        if (backgroundColor == null)
-            backgroundColor = new SimpleObjectProperty<>(getBackgroundColor());
+    public ObjectProperty<Paint> createBackgroundColorProperty() {
+        var backgroundColor = new SimpleObjectProperty<>(getBackgroundColor());
         backgroundColor.addListener((v, o, n) -> setBackgroundColor(n));
         textProperty().addListener(e -> backgroundColor.set(getBackgroundColor()));
         return backgroundColor;
     }
 
-    public static String setMark(String text, Double width, Double height, Color fill, Color stroke) {
+    public static String setMark(String text, NodeShape shape, Double width, Double height, Color fill, Color stroke) {
         var prefixElement = getPrefixElement(text, Event.Change.mark.type());
         if (prefixElement != null)
             text = removePrefixElement(text, prefixElement);
         var tag = "<mark ";
 
+        if (shape != null)
+            tag += " shape=\"%s\"".formatted(shape.name());
         if (width != null)
-            tag += String.format(" width=\"%.2f\"", width);
+            tag += " width=\"%.2f\"".formatted(width);
         if (height != null)
-            tag += String.format(" height=\"%.2f\"", height);
+            tag += " height=\"%.2f\"".formatted(height);
         if (fill != null)
-            tag += String.format(" fill=\"%s\"", fill);
+            tag += " fill=\"%s\"".formatted(fill);
         if (stroke != null)
-            tag += String.format(" stroke=\"%s\"", stroke);
+            tag += " stroke=\"%s\"".formatted(stroke);
 
         tag += ">";
         return insertPrefix(text, tag);
     }
 
-    public void setMark(Double width, Double height, Color fill, Color stroke) {
-        setMark(getText(), width, height, fill, stroke);
+    public void setMark(NodeShape shape, Double width, Double height, Color fill, Color stroke) {
+        setText(setMark(getText(), shape, width, height, fill, stroke));
     }
-
 
     public static String removeMark(String text) {
         var start = text.indexOf("<mark ");
@@ -1002,6 +1035,18 @@ public class RichTextLabel extends TextFlow {
         }
         return text;
     }
+
+    public static Shape getMark(String text) {
+        var start = text.indexOf("<mark ");
+        if (start != -1) {
+            var end = text.indexOf(">", start + 5);
+            if (end != -1) {
+                return createMark(text.substring(start, end), 1, 14, Color.TRANSPARENT);
+            }
+        }
+        return null;
+    }
+
 
     public static String setImage(String text, String url, String alt, Double width, Double height) {
         var prefixElement = getPrefixElement(text, Event.Change.image.type());
@@ -1032,6 +1077,10 @@ public class RichTextLabel extends TextFlow {
      */
     public double getEstimatedWidth() {
         return getRawText().length() * 0.7 * getFont().getSize();
+    }
+
+    public Node get_anchor() {
+        return _anchor;
     }
 
     public record Event(RichTextLabel.Event.Change change, int pos, int segmentStart, String argument) {
