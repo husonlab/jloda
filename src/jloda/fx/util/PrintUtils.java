@@ -21,15 +21,11 @@ package jloda.fx.util;
 
 import javafx.geometry.Orientation;
 import javafx.geometry.Rectangle2D;
-import javafx.scene.Node;
 import javafx.scene.SnapshotParameters;
-import javafx.scene.control.ScrollBar;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.Region;
 import javafx.scene.transform.Scale;
-
-import java.util.Optional;
 
 /**
  * print utilities
@@ -46,25 +42,10 @@ public class PrintUtils {
 	public static ImageView createImage(Region region, ScrollPane containedScrollPane) {
 		var parameters = new SnapshotParameters();
 		parameters.setTransform(new Scale(4, 4));
-		var right = (containedScrollPane != null && isScrollBarVisible(containedScrollPane, Orientation.VERTICAL) ? 64 : 8);
-		var bottom = (containedScrollPane != null && isScrollBarVisible(containedScrollPane, Orientation.HORIZONTAL) ? 64 : 8);
+		var right = (containedScrollPane != null && BasicFX.isScrollBarVisible(containedScrollPane, Orientation.VERTICAL) ? 64 : 8);
+		var bottom = (containedScrollPane != null && BasicFX.isScrollBarVisible(containedScrollPane, Orientation.HORIZONTAL) ? 64 : 8);
 		parameters.setViewport(new Rectangle2D(4, 4, Math.max(100, 4 * region.getWidth() - right), Math.max(100, 4 * region.getHeight() - bottom)));
 		return new ImageView(region.snapshot(parameters, null));
-	}
-
-	/**
-	 * determines whether a scroll-bar is visble
-	 *
-	 * @param scrollPane
-	 * @param orientation
-	 * @return true, if visible
-	 */
-	public static boolean isScrollBarVisible(ScrollPane scrollPane, Orientation orientation) {
-		var scrollBars = scrollPane.lookupAll(".scroll-bar");
-		Optional<Node> scrollbar = scrollBars.stream()
-				.filter(node -> ((ScrollBar) node).getOrientation().equals(orientation))
-				.findAny();
-		return scrollbar.isPresent() && scrollbar.get().isVisible();
 	}
 
 }

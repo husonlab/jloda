@@ -25,6 +25,7 @@ import javafx.beans.property.ReadOnlyProperty;
 import javafx.beans.property.StringProperty;
 import javafx.beans.value.ChangeListener;
 import javafx.geometry.Dimension2D;
+import javafx.geometry.Orientation;
 import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.control.*;
@@ -476,5 +477,29 @@ public class BasicFX {
 
     public static String toStringCSS(Color color) {
         return color.toString().replace("0x", "#");
+    }
+
+
+    public static ScrollBar getScrollBar(Node scrollable, Orientation orientation) {
+        var nodes = scrollable.lookupAll(".scroll-bar");
+        var node = nodes.stream()
+                .filter(v -> ((ScrollBar) v).getOrientation().equals(orientation))
+                .findAny();
+        if (node.isPresent() && node.get() instanceof ScrollBar scrollBar)
+            return scrollBar;
+        else
+            return null;
+    }
+
+    /**
+     * determines whether a scroll-bar is visible
+     *
+     * @param scrollPane
+     * @param orientation
+     * @return true, if visible
+     */
+    public static boolean isScrollBarVisible(ScrollPane scrollPane, Orientation orientation) {
+        var scrollBar = getScrollBar(scrollPane, orientation);
+        return scrollBar != null && scrollBar.isVisible();
     }
 }
