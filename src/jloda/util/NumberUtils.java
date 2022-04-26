@@ -19,6 +19,9 @@
 
 package jloda.util;
 
+import java.util.ArrayList;
+import java.util.Collection;
+
 public class NumberUtils {
 	/**
 	 * Round to a given number of significant figures
@@ -384,5 +387,19 @@ public class NumberUtils {
 
 	public static boolean equals(double a, double b, double threshold) {
 		return Math.abs(a - b) <= threshold;
+	}
+
+	/**
+	 * create a range of numbers
+	 *
+	 * @param low  lowest number (inclusive)
+	 * @param high highest number (exclusive)
+	 * @return all numbers [low,high)
+	 */
+	public static Collection<Integer> range(int low, int high) {
+		var list = new ArrayList<Integer>();
+		for (var i = low; i < high; i++)
+			list.add(i);
+		return list;
 	}
 }

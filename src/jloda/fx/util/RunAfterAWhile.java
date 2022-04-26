@@ -29,7 +29,7 @@ import java.util.*;
  */
 public class RunAfterAWhile {
 	private static final RunAfterAWhile instance;
-	public static final long DELAY = 400L;
+	public static final long DELAY = 200L;
 
 	static {
 		instance = new RunAfterAWhile();
