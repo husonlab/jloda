@@ -106,6 +106,16 @@ public class FileUtils {
 	}
 
 	/**
+	 * returns name with path removed
+	 *
+	 * @return name without path
+	 */
+	public static String getFileNameWithoutPathOrSuffix(String name) {
+		name=getFileNameWithoutPath(getFileNameWithoutPath(name));
+		return name==null?null:replaceFileSuffix(name,"");
+	}
+
+	/**
 	 * get the lines of a files as a list of strings
 	 */
 	public static ArrayList<String> getLinesFromFile(String file) throws IOException {

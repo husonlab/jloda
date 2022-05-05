@@ -25,8 +25,10 @@ import jloda.swing.util.ResourceManager;
 import jloda.util.*;
 
 import javax.swing.*;
+import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.util.*;
+import java.util.List;
 
 
 /**
@@ -41,6 +43,7 @@ public class ProjectManager {
     final static private List<Pair<IDirector, JMenu>> dirAndWindowMenuPairs = Collections.synchronizedList(new LinkedList<>());
     final static private Map<JMenu, Integer> menu2baseSize = new HashMap<>();
     final static private List<IProjectsChangedListener> projectsChangedListeners = Collections.synchronizedList(new LinkedList<>());
+    public static IMainViewer lastAddedViewer;
     private static boolean exitOnEmpty = true;
     final static private HashSet<JMenu> windowMenusUnderControl = new HashSet<>();
 
@@ -108,6 +111,7 @@ public class ProjectManager {
                         }
                     }
                     dir.addViewer(viewer);
+                    lastAddedViewer=viewer;
                 }
             }
             fireProjectsChanged();
