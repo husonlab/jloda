@@ -112,7 +112,7 @@ public class FileUtils {
 	 */
 	public static String getFileNameWithoutPathOrSuffix(String name) {
 		name=getFileNameWithoutPath(getFileNameWithoutPath(name));
-		return name==null?null:replaceFileSuffix(name,"");
+		return name==null?"":replaceFileSuffix(name,"");
 	}
 
 	/**

@@ -53,6 +53,7 @@ public class ChooseFileDialog {
                 dialog = new java.awt.FileDialog((Dialog) parent, message, java.awt.FileDialog.LOAD);
             else
                 dialog = new java.awt.FileDialog((JFrame) null, message, java.awt.FileDialog.LOAD);
+            dialog.setTitle(message);
             if (parent != null)
                 dialog.setLocationRelativeTo(parent);
             //dialog.setModalityType(Dialog.ModalityType.APPLICATION_MODAL);
@@ -75,6 +76,7 @@ public class ChooseFileDialog {
             } catch (Exception ex) {
                 chooser = new JFileChooser();
             }
+            chooser.setToolTipText(message);
             chooser.setAcceptAllFileFilterUsed(true);
             if (fileFilter != null)
                 chooser.setFileFilter(fileFilter);
