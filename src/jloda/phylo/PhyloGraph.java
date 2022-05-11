@@ -325,11 +325,13 @@ public class PhyloGraph extends Graph {
      * changes the node labels of the graph using the mapping old-to-new
      *
 	 */
-    public void changeLabels(Map<String, String> old2new) {
+    public void changeLabels(Map<String, String> old2new,boolean leavesOnly) {
         for (var v : nodes()) {
-            var label = getLabel(v);
-            if (label != null && old2new.containsKey(label))
-                setLabel(v, old2new.get(label));
+            if(v.isLeaf()) {
+                var label = getLabel(v);
+                if (label != null && old2new.containsKey(label))
+                    setLabel(v, old2new.get(label));
+            }
         }
     }
 

@@ -60,6 +60,7 @@ public class NexusStreamTokenizer extends StreamTokenizer implements Closeable {
     private int line = 0;
 
     private boolean collectAllComments = false;
+    private boolean collectAllCommentsWithExclamationMark=false;
     private String comment = null;
     private boolean echoCommentsWithExclamationMark = true;
 
@@ -121,10 +122,13 @@ public class NexusStreamTokenizer extends StreamTokenizer implements Closeable {
 // Set the comment String
 
                 if (sval != null) {
-                    if (collectAllComments && comment != null) {
-                        comment += "\n" + (sval.startsWith("!") ? sval.substring(1) : sval);
-                    } else
-                        comment = (sval.startsWith("!") ? sval.substring(1) : sval);
+                    var startsWithExclamationMark=sval.startsWith("!");
+                    if(collectAllComments  || collectAllCommentsWithExclamationMark && startsWithExclamationMark) {
+                        if(comment==null || comment.isBlank())
+                      comment= (startsWithExclamationMark ? sval.substring(1) : sval).trim();
+                        else
+                            comment+="\n"+ (startsWithExclamationMark ? sval.substring(1) : sval).trim();
+                    }
                 }
                 nval = super.nval;
                 ttype = super.ttype;
@@ -169,11 +173,11 @@ public class NexusStreamTokenizer extends StreamTokenizer implements Closeable {
     }
 
     /**
-     * Gets all comments since last call of getComment
+     * Gets all comments since last call of popComments
      *
      * @return comments
      */
-    public String getComment() {
+    public String popComments() {
         String result = comment;
         comment = null;
         return result;
@@ -418,7 +422,7 @@ public class NexusStreamTokenizer extends StreamTokenizer implements Closeable {
     }
 
     /**
-     * if set, getComment will return all comments encountered since last call of getComment, otherwise
+     * if set, popComments will return all comments encountered since last call of popComments, otherwise
      * will only return last comment
      *
      * @return true, if all comments are to be collected
@@ -428,12 +432,20 @@ public class NexusStreamTokenizer extends StreamTokenizer implements Closeable {
     }
 
     /**
-     * if set, getComment will return all comments encountered since last call of getComment, otherwise
+     * if set, popComments will return all comments encountered since last call of popComments, otherwise
      * will only return last comment
      *
 	 */
     public void setCollectAllComments(boolean collectAllComments) {
         this.collectAllComments = collectAllComments;
+    }
+
+    public boolean isCollectAllCommentsWithExclamationMark() {
+        return collectAllCommentsWithExclamationMark;
+    }
+
+    public void setCollectAllCommentsWithExclamationMark(boolean collectAllCommentsWithExclamationMark) {
+        this.collectAllCommentsWithExclamationMark = collectAllCommentsWithExclamationMark;
     }
 
     public boolean isSquareBracketsSurroundComments() {

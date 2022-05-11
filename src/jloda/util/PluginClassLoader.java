@@ -61,25 +61,29 @@ public class PluginClassLoader {
 	 * @return instances
 	 */
     public static <C, D> List<C> getInstances(String className, Class<C> clazz1, Class<D> clazz2, String... packageNames) {
-        final List<C> plugins = new LinkedList<>();
-        final LinkedList<String> packageNameQueue = new LinkedList<>(Arrays.asList(packageNames));
+    	if(className!=null)
+    		className=className.replaceAll(" ","").trim();
+
+        final var plugins = new LinkedList<C>();
+        final var packageNameQueue = new LinkedList<>(Arrays.asList(packageNames));
         while (packageNameQueue.size() > 0) {
             try {
-                final String packageName = packageNameQueue.removeFirst();
-                final String[] resources = ResourceUtils.fetchResources(clazz1, packageName);
+                final var packageName = packageNameQueue.removeFirst();
+                final var resources = ResourceUtils.fetchResources(clazz1, packageName);
 
-                for (int i = 0; i != resources.length; ++i) {
+                for (var i = 0; i != resources.length; ++i) {
                     // System.err.println("Resource: " + resources[i]);
                     if (resources[i].endsWith(".class")) {
                         try {
                             resources[i] = resources[i].substring(0, resources[i].length() - 6);
                             final Class<C> c = classForName(clazz1, packageName.concat(".").concat(resources[i]));
-							if (!c.isInterface() && !Modifier.isAbstract(c.getModifiers()) && clazz1.isAssignableFrom(c) && (clazz2 == null || clazz2.isAssignableFrom(c))
-								&& (className == null || c.getSimpleName().equalsIgnoreCase(className))) {
-								try {
-									plugins.add(c.getConstructor().newInstance());
-								} catch (InstantiationException ex) {
-									Basic.caught(ex);
+							if (!c.isInterface() && !Modifier.isAbstract(c.getModifiers()) && clazz1.isAssignableFrom(c) && (clazz2 == null || clazz2.isAssignableFrom(c)) ) {
+								if(className == null || c.getSimpleName().equalsIgnoreCase(className)){
+									try {
+										plugins.add(c.getConstructor().newInstance());
+									} catch (InstantiationException ex) {
+										Basic.caught(ex);
+									}
 								}
 							}
                         } catch (Exception ex) {
@@ -87,7 +91,7 @@ public class PluginClassLoader {
                         }
                     } else {
                         try {
-                            final String newPackageName = resources[i];
+                            final var newPackageName = resources[i];
                             if (!newPackageName.equals(packageName)) {
                                 packageNameQueue.addLast(newPackageName);
                                 // System.err.println("Adding package name: " + newPackageName);
