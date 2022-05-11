@@ -119,15 +119,15 @@ public class NexusStreamTokenizer extends StreamTokenizer implements Closeable {
                 tt = super.nextToken();
                 sval = super.sval;
 
-// Set the comment String
+                var collecting = (collectAllComments || (collectAllCommentsWithExclamationMark && sval != null && sval.startsWith("!")));
 
+// Set the comment String
                 if (sval != null) {
-                    var startsWithExclamationMark=sval.startsWith("!");
-                    if(collectAllComments  || collectAllCommentsWithExclamationMark && startsWithExclamationMark) {
-                        if(comment==null || comment.isBlank())
-                      comment= (startsWithExclamationMark ? sval.substring(1) : sval).trim();
+                    if (collecting) {
+                        if (comment == null || comment.isBlank())
+                            comment = sval.startsWith("!") ? sval.substring(1) : sval;
                         else
-                            comment+="\n"+ (startsWithExclamationMark ? sval.substring(1) : sval).trim();
+                            comment += "\n" + (sval.startsWith("!") ? sval.substring(1) : sval);
                     }
                 }
                 nval = super.nval;
@@ -149,7 +149,7 @@ public class NexusStreamTokenizer extends StreamTokenizer implements Closeable {
                     }
                     tt = super.nextToken();
                     sval = super.sval;
-                    if (sval != null) {
+                    if (sval != null && collecting) {
                         if (comment == null)
                             comment = (sval.startsWith("!") ? sval.substring(1) : sval);
                         else
