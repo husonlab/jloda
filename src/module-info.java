@@ -12,6 +12,8 @@ module jloda {
     exports jloda.fx.colorscale;
     exports jloda.fx.control;
     exports jloda.fx.control.table;
+    exports jloda.fx.control.sliderhistogram;
+
     exports jloda.fx.find;
     exports jloda.fx.graph;
     exports jloda.fx.label;
@@ -50,6 +52,7 @@ module jloda {
     opens jloda.fx.colorscale;
     opens jloda.fx.label;
     opens jloda.fx.control.table;
+    opens jloda.fx.control.sliderhistogram;
     opens jloda.fx.find;
     opens jloda.fx.message;
 

@@ -1613,7 +1613,7 @@ public class StringUtils {
 
 
 	public static String removeTrailingZerosAfterDot(double value) {
-		return removeTrailingZerosAfterDot(String.valueOf(value));
+		return removeTrailingZerosAfterDot("%f", value);
 	}
 
 	public static String removeTrailingZerosAfterDot(String format, double value) {
