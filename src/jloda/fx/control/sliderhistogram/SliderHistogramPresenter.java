@@ -22,34 +22,17 @@ package jloda.fx.control.sliderhistogram;
 import javafx.beans.InvalidationListener;
 import javafx.beans.WeakInvalidationListener;
 import javafx.beans.property.DoubleProperty;
-import javafx.beans.property.ReadOnlyDoubleProperty;
 import javafx.collections.ObservableList;
 import javafx.scene.chart.XYChart;
-import javafx.stage.Stage;
 import jloda.util.StringUtils;
-
-import java.util.ArrayList;
 
 
 public class SliderHistogramPresenter {
 	private final InvalidationListener invalidationListener;
 	private boolean inUpdate = false;
 
-	private final double originalThreshold;
-
-	public SliderHistogramPresenter(Stage stage, SliderHistogramController controller, ObservableList<Double> values, DoubleProperty threshold, ReadOnlyDoubleProperty minValue, ReadOnlyDoubleProperty maxValue) {
-		originalThreshold = threshold.get();
+	public SliderHistogramPresenter(SliderHistogramController controller, ObservableList<Double> values, DoubleProperty threshold) {
 		controller.getThresholdSlider().setValue(threshold.get());
-
-		controller.getCancelButton().setOnAction(e -> {
-			threshold.set(originalThreshold);
-			stage.hide();
-		});
-
-		controller.getApplyButton().setOnAction(e -> {
-			threshold.set(controller.getThresholdSlider().getValue());
-			stage.hide();
-		});
 
 		invalidationListener = e -> {
 			if (!inUpdate)
@@ -64,57 +47,43 @@ public class SliderHistogramPresenter {
 						var series = new XYChart.Series<String, Number>();
 						barChart.getData().add(series);
 
-						var sorted = new ArrayList<>(values);
-						sorted.sort(Double::compare);
-
-						var min = Math.min(minValue.get(), sorted.get(0));
-						var max = Math.max(maxValue.get(), sorted.get(sorted.size() - 1));
-
+						var min = values.stream().mapToDouble(Double::doubleValue).min().orElse(0);
+						var max = values.stream().mapToDouble(Double::doubleValue).max().orElse(1);
 						var bars = Math.min(100, values.size());
-						var bucketWidth = (max - min) / bars;
-						var bucketMinValue = min;
-						var bucketMaxValue = bucketMinValue + bucketWidth;
-						var bucketContentSize = 0;
-						var bucketNumber = 0;
+						var barWidth = (max - min) / (bars - 1);
+						var barContentSize = new double[bars];
 
-						var firstActive = Double.MAX_VALUE;
+						for (var value : values) {
+							var bar = (int) ((value - min) / barWidth);
+							barContentSize[bar]++;
+						}
+
+						var firstActive = 0.0;
 						var countActive = 0;
 
-						for (var value : sorted) {
-							if (value < bucketMaxValue) {
-								bucketContentSize++;
-							} else {
-								series.getData().add(new XYChart.Data<>(StringUtils.removeTrailingZerosAfterDot(bucketMinValue), bucketContentSize));
-								if (bucketMinValue < currentThreshold)
-									barChart.lookup(".data%d.chart-bar".formatted(bucketNumber++)).setStyle("-fx-bar-fill: gray;");
-								else {
-									firstActive = Math.min(firstActive, bucketMinValue);
-									countActive += bucketContentSize;
-									barChart.lookup(".data%d.chart-bar".formatted(bucketNumber++)).setStyle("-fx-bar-fill: green;");
-								}
-								bucketMinValue = min + bucketNumber * bucketWidth;
-								bucketMaxValue = bucketMinValue + bucketWidth;
-								bucketContentSize = 1;
-							}
-						}
-						{
-							series.getData().add(new XYChart.Data<>(StringUtils.removeTrailingZerosAfterDot(bucketMinValue), bucketContentSize));
+						for (var i = 0; i < bars; i++) {
+							var bucketMinValue = min + i * barWidth;
+							var count = barContentSize[i];
+							series.getData().add(new XYChart.Data<>(StringUtils.removeTrailingZerosAfterDot(bucketMinValue), count));
 							if (bucketMinValue < currentThreshold)
-								barChart.lookup(".data%d.chart-bar".formatted(bucketNumber)).setStyle("-fx-bar-fill: gray;");
+								barChart.lookup(".data%d.chart-bar".formatted(i)).setStyle("-fx-bar-fill: gray;");
 							else {
 								firstActive = Math.min(firstActive, bucketMinValue);
-								countActive += bucketContentSize;
-								barChart.lookup(".data%d.chart-bar".formatted(bucketNumber)).setStyle("-fx-bar-fill: green;");
+								countActive += count;
+								barChart.lookup(".data%d.chart-bar".formatted(i)).setStyle("-fx-bar-fill: green;");
 							}
 						}
 
-						controller.getThresholdSlider().setMin(Math.min(0, min));
-						controller.getThresholdSlider().setMax(Math.max(1, max + bucketWidth));
+						controller.getThresholdSlider().setMin(min);
+						controller.getThresholdSlider().setMax(max + barWidth);
 
-						if (firstActive < Double.MAX_VALUE)
-							controller.getThresholdSlider().setValue(firstActive);
-						else
-							controller.getThresholdSlider().setValue(controller.getThresholdSlider().getMax());
+						if (false) {
+							if (firstActive < Double.MAX_VALUE)
+								controller.getThresholdSlider().setValue(firstActive);
+							else
+								controller.getThresholdSlider().setValue(controller.getThresholdSlider().getMax());
+						}
+
 						controller.getReportLabel().setText("%,d (of %,d)".formatted(countActive, values.size()));
 					}
 				} finally {
@@ -123,8 +92,7 @@ public class SliderHistogramPresenter {
 		};
 
 		values.addListener(new WeakInvalidationListener(invalidationListener));
-		minValue.addListener(new WeakInvalidationListener(invalidationListener));
-		maxValue.addListener(new WeakInvalidationListener(invalidationListener));
+		threshold.addListener((v, o, n) -> controller.getThresholdSlider().setValue(n.doubleValue()));
 		threshold.addListener(new WeakInvalidationListener(invalidationListener));
 
 		controller.getThresholdSlider().valueProperty().addListener(invalidationListener);

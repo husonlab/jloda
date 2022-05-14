@@ -22,7 +22,9 @@ package jloda.fx.control.sliderhistogram;
 import javafx.beans.property.DoubleProperty;
 import javafx.beans.property.ReadOnlyDoubleProperty;
 import javafx.collections.ObservableList;
+import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.layout.Pane;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import jloda.fx.util.ExtendedFXMLLoader;
@@ -32,9 +34,14 @@ import jloda.fx.util.ExtendedFXMLLoader;
  * Daniel Huson, 5.2022
  */
 public class SliderHistogramView {
+	private final SliderHistogramController controller;
+	private final SliderHistogramPresenter presenter;
+	private final Parent root;
+
 	public SliderHistogramView(Stage owner, Modality modality, double screenX, double screenY, String title, ObservableList<Double> values, DoubleProperty threshold, ReadOnlyDoubleProperty minValue, ReadOnlyDoubleProperty maxValue) {
 		var loader = new ExtendedFXMLLoader<SliderHistogramController>(SliderHistogramController.class);
-		var controller = loader.getController();
+		controller = loader.getController();
+		root = loader.getRoot();
 
 		var stage = new Stage();
 		stage.initOwner(owner);
@@ -47,6 +54,40 @@ public class SliderHistogramView {
 		//stage.setAlwaysOnTop(true);
 		stage.show();
 
-		var presenter = new SliderHistogramPresenter(stage, controller, values, threshold, minValue, maxValue);
+		var originalThreshold = threshold.get();
+
+		presenter = new SliderHistogramPresenter(controller, values, threshold);
+		controller.getCancelButton().setOnAction(e -> {
+			threshold.set(originalThreshold);
+			stage.hide();
+		});
+
+		controller.getApplyButton().setOnAction(e -> {
+			threshold.set(controller.getThresholdSlider().getValue());
+			stage.hide();
+		});
+	}
+
+	public SliderHistogramView(ObservableList<Double> values, DoubleProperty threshold, ReadOnlyDoubleProperty minValue, ReadOnlyDoubleProperty maxValue) {
+		var loader = new ExtendedFXMLLoader<SliderHistogramController>(SliderHistogramController.class);
+		controller = loader.getController();
+		((Pane) controller.getApplyButton().getParent()).getChildren().remove(controller.getApplyButton());
+		((Pane) controller.getCancelButton().getParent()).getChildren().remove(controller.getCancelButton());
+
+		root = loader.getRoot();
+		presenter = new SliderHistogramPresenter(controller, values, threshold);
+		controller.getThresholdSlider().valueProperty().addListener((v, o, n) -> threshold.set(n == null ? threshold.get() : n.doubleValue()));
+	}
+
+	public SliderHistogramController getController() {
+		return controller;
+	}
+
+	public SliderHistogramPresenter getPresenter() {
+		return presenter;
+	}
+
+	public Parent getRoot() {
+		return root;
 	}
 }

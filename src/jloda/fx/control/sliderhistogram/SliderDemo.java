@@ -50,14 +50,16 @@ public class SliderDemo extends Application {
 		button.setOnAction(e -> new SliderHistogramView(primaryStage, Modality.WINDOW_MODAL, primaryStage.getX() + 20, primaryStage.getY() + 20,
 				"Demo", list, threshold, new SimpleDoubleProperty(0), new SimpleDoubleProperty(1)));
 
-		var label = new Label(String.valueOf(threshold.get()));
-		label.textProperty().bind(Bindings.createObjectBinding(() -> String.valueOf(threshold.get()), threshold));
+		var label1 = new Label(String.valueOf(threshold.get()));
+		label1.textProperty().bind(Bindings.createObjectBinding(() -> String.valueOf(threshold.get()), threshold));
 
 		var root = new BorderPane();
-		root.setCenter(button);
-		root.setBottom(label);
-		root.setStyle("-fx-font-size: 60;");
+		root.setLeft(button);
+		root.setBottom(label1);
+		root.setStyle("-fx-font-size: 16;");
 
+		var slider = new SliderHistogramView(list, threshold, new SimpleDoubleProperty(0), new SimpleDoubleProperty(1));
+		root.setCenter(slider.getRoot());
 
 		primaryStage.setScene(new Scene(root, 300, 200));
 		primaryStage.show();

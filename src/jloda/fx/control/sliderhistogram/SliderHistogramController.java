@@ -22,11 +22,16 @@ package jloda.fx.control.sliderhistogram;
 import javafx.fxml.FXML;
 import javafx.scene.chart.BarChart;
 import javafx.scene.control.*;
+import javafx.scene.layout.AnchorPane;
 import javafx.util.converter.DoubleStringConverter;
+import jloda.util.NumberUtils;
 import jloda.util.StringUtils;
 
 
 public class SliderHistogramController {
+	@FXML
+	private AnchorPane rootPane;
+
 
 	@FXML
 	private Button applyButton;
@@ -48,15 +53,17 @@ public class SliderHistogramController {
 
 	@FXML
 	private void initialize() {
-		valuesBarChart.setAnimated(false);
 		reportLabel.setText("");
 
 		thresholdSlider.setValue(Double.MIN_VALUE);
 		thresholdSlider.valueProperty().addListener((v, o, n) -> thresholdTextField.setText(StringUtils.removeTrailingZerosAfterDot(n.floatValue())));
 		thresholdTextField.setTextFormatter(new TextFormatter<>(new DoubleStringConverter()));
-		thresholdTextField.textProperty().addListener((v, o, n) -> thresholdSlider.setValue(Double.parseDouble(n)));
+		thresholdTextField.textProperty().addListener((v, o, n) -> thresholdSlider.setValue(NumberUtils.isDouble(n) ? Double.parseDouble(n) : 0.0));
 	}
 
+	public AnchorPane getRootPane() {
+		return rootPane;
+	}
 
 	public Button getApplyButton() {
 		return applyButton;
