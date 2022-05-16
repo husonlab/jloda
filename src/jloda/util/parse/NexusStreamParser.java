@@ -47,18 +47,17 @@ public class NexusStreamParser extends NexusStreamTokenizer implements Closeable
     }
 
     /**
-     * Match the tokens in the string with the one obtained from the reader
+     * Match the tokens in the string with the ones obtained from the reader
      *
-     * @param str string of tokens
+     * @param tokens string of tokens
      */
-    public void matchIgnoreCase(String str) throws IOExceptionWithLineNumber {
-        NexusStreamTokenizer sst = new NexusStreamTokenizer(new StringReader(str));
-        sst.setSquareBracketsSurroundComments(isSquareBracketsSurroundComments());
-        try {
-            while (sst.nextToken() != NexusStreamParser.TT_EOF) {
+    public void matchIgnoreCase(String tokens) throws IOExceptionWithLineNumber {
+        try (var s = new NexusStreamTokenizer(new StringReader(tokens))) {
+            s.setSquareBracketsSurroundComments(isSquareBracketsSurroundComments());
+            while (s.nextToken() != NexusStreamParser.TT_EOF) {
                 nextToken();
-                if (!toString().equalsIgnoreCase(sst.toString())) {
-                    throw new IOExceptionWithLineNumber("'" + sst + "' expected, got: '" + this + "'", lineno());
+                if (!toString().equalsIgnoreCase(s.toString())) {
+                    throw new IOExceptionWithLineNumber("'" + s + "' expected, got: '" + this + "'", lineno());
                 }
             }
         } catch (IOException ex) {
@@ -69,17 +68,15 @@ public class NexusStreamParser extends NexusStreamTokenizer implements Closeable
     /**
      * Match the tokens in the string with the one obtained from the reader
      *
-     * @param str string of tokens
+     * @param tokens string of tokens
      */
-    public void matchRespectCase(String str) throws IOExceptionWithLineNumber {
-        NexusStreamTokenizer sst = new NexusStreamTokenizer(new StringReader(str));
-        sst.setSquareBracketsSurroundComments(isSquareBracketsSurroundComments());
-
-        try {
-            while (sst.nextToken() != NexusStreamParser.TT_EOF) {
+    public void matchRespectCase(String tokens) throws IOExceptionWithLineNumber {
+        try (var s = new NexusStreamTokenizer(new StringReader(tokens))) {
+            s.setSquareBracketsSurroundComments(isSquareBracketsSurroundComments());
+            while (s.nextToken() != NexusStreamParser.TT_EOF) {
                 nextToken();
-                if (!toString().equals(sst.toString())) {
-                    throw new IOExceptionWithLineNumber(sst + "' expected, got: '" + this + "'", lineno());
+                if (!toString().equals(s.toString())) {
+                    throw new IOExceptionWithLineNumber(s + "' expected, got: '" + this + "'", lineno());
                 }
             }
         } catch (IOException ex) {
@@ -188,46 +185,44 @@ public class NexusStreamParser extends NexusStreamTokenizer implements Closeable
      * Compares the given string of tokens with the next tokens in the
      * stream
      *
-     * @param s string of tokens to be compared with the tokens in the input stream
+     * @param tokens string of tokens to be compared with the tokens in the input stream
      * @return true, if all tokens match
      */
-    public boolean peekMatchIgnoreCase(String s) {
-        final boolean echo = isEchoCommentsWithExclamationMark();
+    public boolean peekMatchIgnoreCase(String tokens) {
+        final var echo = isEchoCommentsWithExclamationMark();
         setEchoCommentsWithExclamationMark(false);
 
-        try {
-            final NexusStreamTokenizer sst = new NexusStreamTokenizer(new StringReader(s));
-            sst.setSquareBracketsSurroundComments(isSquareBracketsSurroundComments());
+        try (var s = new NexusStreamTokenizer(new StringReader(tokens))) {
+            s.setSquareBracketsSurroundComments(isSquareBracketsSurroundComments());
 
-            final ArrayList<Double> nvals = new ArrayList<>();
-            final ArrayList<String> svals = new ArrayList<>();
-            final ArrayList<Integer> ttypes = new ArrayList<>();
-            final ArrayList<Integer> lines = new ArrayList<>();
+            final var nvals = new ArrayList<Double>();
+            final var svals = new ArrayList<String>();
+            final var ttypes = new ArrayList<Integer>();
+            final var lines = new ArrayList<Integer>();
 
             svals.add(sval);
             nvals.add(nval);
             ttypes.add(ttype);
             lines.add(lineno());
 
-            boolean flag = true;
-            try {
-                while (sst.nextToken() != NexusStreamParser.TT_EOF) {
-                    nextToken();
-                    svals.add(sval);
-                    nvals.add(nval);
-                    ttypes.add(ttype);
-                    lines.add(lineno());
-
-                    flag = toString().equalsIgnoreCase(sst.toString());
-                    if (!flag)
-                        break;
-                }
-                pushBack(svals, nvals, ttypes, lines);
+            var flag = true;
+            while (s.nextToken() != NexusStreamParser.TT_EOF) {
                 nextToken();
-            } catch (IOException ex) {
-                return false;
+                svals.add(sval);
+                nvals.add(nval);
+                ttypes.add(ttype);
+                lines.add(lineno());
+
+                flag = toString().equalsIgnoreCase(s.toString());
+                if (!flag)
+                    break;
             }
+            pushBack(svals, nvals, ttypes, lines);
+            nextToken();
+
             return flag;
+        } catch (IOException ex) {
+            return false;
         } finally {
             setEchoCommentsWithExclamationMark(echo);
         }
@@ -237,44 +232,42 @@ public class NexusStreamParser extends NexusStreamTokenizer implements Closeable
      * Compares the given string of tokens with the next tokens in the
      * stream
      *
-     * @param s string of tokens to be compared with the tokens in the input stream
+     * @param tokens string of tokens to be compared with the tokens in the input stream
      * @return true, if all tokens match
      */
-    public boolean peekMatchRespectCase(String s) {
+    public boolean peekMatchRespectCase(String tokens) {
         final boolean echo = isEchoCommentsWithExclamationMark();
         setEchoCommentsWithExclamationMark(false);
-        try {
-            final NexusStreamTokenizer sst = new NexusStreamTokenizer(new StringReader(s));
-            sst.setSquareBracketsSurroundComments(isSquareBracketsSurroundComments());
+        try (var s = new NexusStreamTokenizer(new StringReader(tokens))) {
+            s.setSquareBracketsSurroundComments(isSquareBracketsSurroundComments());
 
-            final ArrayList<Double> nvals = new ArrayList<>();
-            final ArrayList<String> svals = new ArrayList<>();
-            final ArrayList<Integer> ttypes = new ArrayList<>();
-            final ArrayList<Integer> lines = new ArrayList<>();
+            final var nvals = new ArrayList<Double>();
+            final var svals = new ArrayList<String>();
+            final var ttypes = new ArrayList<Integer>();
+            final var lines = new ArrayList<Integer>();
 
             svals.add(sval);
             nvals.add(nval);
             ttypes.add(ttype);
             lines.add(lineno());
 
-            boolean flag = true;
-            try {
-                while (sst.nextToken() != NexusStreamParser.TT_EOF) {
-                    nextToken();
-                    svals.add(sval);
-                    nvals.add(nval);
-                    ttypes.add(ttype);
-                    lines.add(lineno());
-                    flag = toString().equals(sst.toString());
-                    if (!flag)
-                        break;
-                }
-                pushBack(svals, nvals, ttypes, lines);
+            var flag = true;
+            while (s.nextToken() != NexusStreamParser.TT_EOF) {
                 nextToken();
-            } catch (IOException ex) {
-                return false;
+                svals.add(sval);
+                nvals.add(nval);
+                ttypes.add(ttype);
+                lines.add(lineno());
+                flag = toString().equals(s.toString());
+                if (!flag)
+                    break;
             }
+            pushBack(svals, nvals, ttypes, lines);
+            nextToken();
+
             return flag;
+        } catch (IOException ex) {
+            return false;
         } finally {
             setEchoCommentsWithExclamationMark(echo);
         }
@@ -289,10 +282,10 @@ public class NexusStreamParser extends NexusStreamTokenizer implements Closeable
         final boolean echo = isEchoCommentsWithExclamationMark();
         setEchoCommentsWithExclamationMark(false);
         try {
-            final ArrayList<Double> nvals = new ArrayList<>();
-            final ArrayList<String> svals = new ArrayList<>();
-            final ArrayList<Integer> ttypes = new ArrayList<>();
-            final ArrayList<Integer> lines = new ArrayList<>();
+            final var nvals = new ArrayList<Double>();
+            final var svals = new ArrayList<String>();
+            final var ttypes = new ArrayList<Integer>();
+            final var lines = new ArrayList<Integer>();
 
             svals.add(sval);
             nvals.add(nval);
@@ -301,8 +294,8 @@ public class NexusStreamParser extends NexusStreamTokenizer implements Closeable
 
             String result = null;
             try {
-				nextToken();
-				svals.add(sval);
+                nextToken();
+                svals.add(sval);
 				nvals.add(nval);
 				ttypes.add(ttype);
 				lines.add(lineno());
@@ -384,7 +377,7 @@ public class NexusStreamParser extends NexusStreamTokenizer implements Closeable
     public List<String> getTokensRespectCase(String first, String last, boolean surroundWithQuotes) throws IOExceptionWithLineNumber {
         if (first != null)
             matchIgnoreCase(first);
-        final LinkedList<String> list = new LinkedList<>();
+        final var list = new ArrayList<String>();
         try {
             nextToken();
             while (last == null || !toString().equals(last)) {
@@ -430,7 +423,7 @@ public class NexusStreamParser extends NexusStreamTokenizer implements Closeable
      * @return the next token as a word
      */
     public String getAbsoluteFileName() throws IOExceptionWithLineNumber {
-        String fileName = getWordFileNamePunctuation();
+        var fileName = getWordFileNamePunctuation();
         if (fileName != null && fileName.length() > 0) {
             File file = new File(fileName);
             if ((file.getParent() == null || file.getParent().length() == 0) && !file.getPath().startsWith("DB:")
@@ -455,13 +448,13 @@ public class NexusStreamParser extends NexusStreamTokenizer implements Closeable
     public String getTokensFileNamePunctuation(String first, String last) throws IOExceptionWithLineNumber {
         pushPunctuationCharacters(SEMICOLON_PUNCTUATION);
 
-        StringBuilder result = new StringBuilder();
+        var buf = new StringBuilder();
         try {
             if (first != null)
                 matchIgnoreCase(first);
             nextToken();
             while (!toString().equals(last)) {
-                result.append(" ").append(this);
+                buf.append(" ").append(this);
                 if (ttype == TT_EOF)
                     throw new IOExceptionWithLineNumber("'" + last + "' expected, got EOF", lineno());
                 nextToken();
@@ -471,9 +464,9 @@ public class NexusStreamParser extends NexusStreamTokenizer implements Closeable
         } finally {
             popPunctuationCharacters();
         }
-        if (result.length() == 0)
+        if (buf.length() == 0)
             return null;
-        return result.toString();
+        return buf.toString();
     }
 
     /**
@@ -488,7 +481,7 @@ public class NexusStreamParser extends NexusStreamTokenizer implements Closeable
      * and 'last', all in single quotes
      */
     public String getQuotedTokensRespectCase(String first, String last) throws IOExceptionWithLineNumber {
-        final StringBuilder buf = new StringBuilder();
+        final var buf = new StringBuilder();
         if (first != null)
             matchIgnoreCase(first);
         try {
@@ -535,11 +528,11 @@ public class NexusStreamParser extends NexusStreamTokenizer implements Closeable
      * and 'last'
      */
     public String getTokensStringLowerCase(String last) throws IOExceptionWithLineNumber {
-        StringBuilder result = new StringBuilder();
+        var buf = new StringBuilder();
         try {
             nextToken();
             while (!toString().equalsIgnoreCase(last)) {
-                result.append(" ").append(toString().toLowerCase());
+                buf.append(" ").append(toString().toLowerCase());
                 if (ttype == TT_EOF)
                     throw new IOExceptionWithLineNumber("'" + last + "' expected, got EOF", lineno());
                 nextToken();
@@ -547,9 +540,9 @@ public class NexusStreamParser extends NexusStreamTokenizer implements Closeable
         } catch (IOException ex) {
             throw new IOExceptionWithLineNumber(lineno(), ex);
         }
-        if (result.toString().equals(""))
+        if (buf.toString().equals(""))
             return null;
-        return result.toString();
+        return buf.toString();
     }
 
 
@@ -564,11 +557,11 @@ public class NexusStreamParser extends NexusStreamTokenizer implements Closeable
      * and 'last'
      */
     public String getTokensStringRespectCase(String last) throws IOExceptionWithLineNumber {
-        StringBuilder result = new StringBuilder();
+        var buf = new StringBuilder();
         try {
             nextToken();
             while (!toString().equals(last)) {
-                result.append(" ").append(this);
+                buf.append(" ").append(this);
                 if (ttype == TT_EOF)
                     throw new IOExceptionWithLineNumber("'" + last + "' expected, got EOF", lineno());
                 nextToken();
@@ -576,9 +569,9 @@ public class NexusStreamParser extends NexusStreamTokenizer implements Closeable
         } catch (IOException ex) {
             throw new IOExceptionWithLineNumber(lineno(), ex);
         }
-        if (result.length() == 0)
+        if (buf.length() == 0)
             return null;
-        return result.toString().trim();
+        return buf.toString().trim();
     }
 
     /**
@@ -597,13 +590,11 @@ public class NexusStreamParser extends NexusStreamTokenizer implements Closeable
         if (tokens.size() == 0)
             return defaultValue;
 
-        boolean result = defaultValue;
-        boolean found = false;
-        String str = List2String(tokens);
-        final NexusStreamParser s = new NexusStreamParser(new StringReader(str));
-        tokens.clear();
+        var result = defaultValue;
+        var found = false;
+        try (var s = new NexusStreamParser(new StringReader(List2String(tokens)))) {
+            tokens.clear();
 
-        try {
             while (s.ttype != NexusStreamParser.TT_EOF) {
                 if (!found && s.peekMatchIgnoreCase(query)) {
                     result = value;
@@ -638,12 +629,11 @@ public class NexusStreamParser extends NexusStreamTokenizer implements Closeable
         if (tokens.size() == 0)
             return defaultValue;
 
-        float result = defaultValue;
-        boolean found = false;
-        final NexusStreamParser s = new NexusStreamParser(new StringReader(List2String(tokens)));
-        tokens.clear();
+        var result = defaultValue;
+        var found = false;
+        try (final var s = new NexusStreamParser(new StringReader(List2String(tokens)))) {
+            tokens.clear();
 
-        try {
             while (s.ttype != NexusStreamParser.TT_EOF) {
                 if (!found && s.peekMatchIgnoreCase(query)) {
                     found = true;
@@ -684,15 +674,13 @@ public class NexusStreamParser extends NexusStreamTokenizer implements Closeable
         if (tokens.size() == 0)
             return defaultValue;
 
-        boolean found = false;
+        var found = false;
         // The following line seems to be a bug - have replaced it
         //String result = defaultValue;
-        StringBuilder result = new StringBuilder();
+        var buf = new StringBuilder();
+        try (var s = new NexusStreamParser(new StringReader(List2String(tokens)))) {
+            tokens.clear();
 
-        NexusStreamParser s = new NexusStreamParser(new StringReader(List2String(tokens)));
-        tokens.clear();
-
-        try {
             while (s.ttype != NexusStreamParser.TT_EOF) {
                 if (!found && s.peekMatchIgnoreCase(token)) {
                     s.matchIgnoreCase(token + leftDelimiter);
@@ -703,9 +691,9 @@ public class NexusStreamParser extends NexusStreamTokenizer implements Closeable
 
                         if (word.equalsIgnoreCase(rightDelimiter))
                             break;
-                        if (!result.toString().equals(""))
-                            result.append(" ");
-                        result.append(word);
+                        if (!buf.toString().equals(""))
+                            buf.append(" ");
+                        buf.append(word);
                     }
                 } else {
                     if (s.nextToken() != NexusStreamParser.TT_EOF)
@@ -715,10 +703,10 @@ public class NexusStreamParser extends NexusStreamTokenizer implements Closeable
         } catch (IOException ex) {
             throw new IOExceptionWithLineNumber(lineno(), ex);
         }
-        if (result.length() == 0)
+        if (buf.length() == 0)
             return defaultValue;
         else
-            return result.toString();
+            return buf.toString();
     }
 
     /**
@@ -732,16 +720,15 @@ public class NexusStreamParser extends NexusStreamTokenizer implements Closeable
      * @param defaultValue the return value, if token not found
      * @return the value
      */
-    public String findIgnoreCase(List<String> tokens, String token, String legalValues, String defaultValue) throws IOExceptionWithLineNumber {
+    public String findIgnoreCase(List<String> tokens, String token, final String legalValues, String defaultValue) throws IOExceptionWithLineNumber {
         if (tokens.size() == 0)
             return defaultValue;
 
-        boolean found = false;
-        String result = defaultValue;
-        final NexusStreamParser s = new NexusStreamParser(new StringReader(List2String(tokens)));
-        tokens.clear();
+        var found = false;
+        var result = defaultValue;
+        try (var s = new NexusStreamParser(new StringReader(List2String(tokens)))) {
+            tokens.clear();
 
-        try {
             while (s.ttype != NexusStreamParser.TT_EOF) {
                 if (!found && s.peekMatchIgnoreCase(token)) {
                     s.matchIgnoreCase(token);
@@ -782,12 +769,11 @@ public class NexusStreamParser extends NexusStreamTokenizer implements Closeable
         if (tokens.size() == 0)
             return defaultValue;
 
-        boolean found = false;
-        char result = defaultValue;
-        final NexusStreamParser s = new NexusStreamParser(new StringReader(List2String(tokens)));
-        tokens.clear();
+        var found = false;
+        var result = defaultValue;
+        try (var s = new NexusStreamParser(new StringReader(List2String(tokens)))) {
+            tokens.clear();
 
-        try {
             while (s.ttype != NexusStreamParser.TT_EOF) {
                 if (!found && s.peekMatchIgnoreCase(token)) {
                     s.matchIgnoreCase(token);
@@ -831,12 +817,11 @@ public class NexusStreamParser extends NexusStreamTokenizer implements Closeable
         if (tokens.size() == 0)
             return defaultValue;
 
-        boolean found = false;
-        double result = defaultValue;
-        final NexusStreamParser s = new NexusStreamParser(new StringReader(List2String(tokens)));
-        tokens.clear();
+        var found = false;
+        var result = defaultValue;
+        try (var s = new NexusStreamParser(new StringReader(List2String(tokens)))) {
+            tokens.clear();
 
-        try {
             while (s.ttype != NexusStreamParser.TT_EOF) {
                 if (!found && s.peekMatchIgnoreCase(token)) {
                     s.matchIgnoreCase(token);
@@ -877,12 +862,11 @@ public class NexusStreamParser extends NexusStreamTokenizer implements Closeable
         if (tokens.size() == 0)
             return defaultValue;
 
-        boolean found = false;
-        int result = defaultValue;
-        final NexusStreamParser s = new NexusStreamParser(new StringReader(List2String(tokens)));
-        tokens.clear();
+        var found = false;
+        var result = defaultValue;
+        try (var s = new NexusStreamParser(new StringReader(List2String(tokens)))) {
+            tokens.clear();
 
-        try {
             while (s.ttype != NexusStreamParser.TT_EOF) {
                 if (!found && s.peekMatchIgnoreCase(token)) {
                     s.matchIgnoreCase(token);
@@ -918,23 +902,24 @@ public class NexusStreamParser extends NexusStreamTokenizer implements Closeable
         if (tokens.size() == 0)
             return defaultValue;
 
-        boolean found = false;
-        java.awt.Color result = defaultValue;
-        final NexusStreamParser s = new NexusStreamParser(new StringReader(List2String(tokens)));
-        tokens.clear();
+        var found = false;
+        var result = defaultValue;
+        try (var s = new NexusStreamParser(new StringReader(List2String(tokens)))) {
+            tokens.clear();
 
-        while (s.ttype != NexusStreamParser.TT_EOF) {
-            if (!found && s.peekMatchIgnoreCase(token)) {
-                s.matchIgnoreCase(token);
-                try {
-                    result = s.getColor();
-                    found = true;
-                } catch (Exception e) {
-                    throw new IOException("Line " + lineno() + ": " + token + ": color or null expected");
+            while (s.ttype != NexusStreamParser.TT_EOF) {
+                if (!found && s.peekMatchIgnoreCase(token)) {
+                    s.matchIgnoreCase(token);
+                    try {
+                        result = s.getColor();
+                        found = true;
+                    } catch (Exception e) {
+                        throw new IOException("Line " + lineno() + ": " + token + ": color or null expected");
+                    }
+                } else {
+                    if (s.nextToken() != NexusStreamParser.TT_EOF)
+                        tokens.add(s.toString());
                 }
-            } else {
-                if (s.nextToken() != NexusStreamParser.TT_EOF)
-                    tokens.add(s.toString());
             }
         }
         return result;
@@ -951,11 +936,10 @@ public class NexusStreamParser extends NexusStreamTokenizer implements Closeable
         if (tokens.size() == 0)
             return false;
 
-        boolean result = false;
-        final NexusStreamParser s = new NexusStreamParser(new StringReader(List2String(tokens)));
-        tokens.clear();
+        var result = false;
+        try (var s = new NexusStreamParser(new StringReader(List2String(tokens)))) {
+            tokens.clear();
 
-        try {
             while (s.ttype != NexusStreamParser.TT_EOF) {
                 if (s.peekMatchIgnoreCase(token)) {
                     result = true;
@@ -980,8 +964,7 @@ public class NexusStreamParser extends NexusStreamTokenizer implements Closeable
      * @return true, if token contained in values
      */
     public boolean findIgnoreCase(String vals, String token) throws IOExceptionWithLineNumber {
-        final NexusStreamParser s = new NexusStreamParser(new StringReader(vals));
-        try {
+        try (var s = new NexusStreamParser(new StringReader(vals))) {
             while (s.ttype != NexusStreamParser.TT_EOF) {
                 if (s.peekMatchIgnoreCase(token))
                     return true;
@@ -1028,7 +1011,7 @@ public class NexusStreamParser extends NexusStreamTokenizer implements Closeable
      * @return integer read
      */
     public int getInt(int low, int high) throws IOExceptionWithLineNumber {
-        int result = getInt();
+        var result = getInt();
 
         if (result < low || result > high) {
             if (low > Integer.MIN_VALUE && high == Integer.MAX_VALUE)
@@ -1096,7 +1079,7 @@ public class NexusStreamParser extends NexusStreamTokenizer implements Closeable
      * @return integer read
      */
     public double getDouble(double low, double high) throws IOExceptionWithLineNumber {
-        double result = getDouble();
+        var result = getDouble();
 
         if (result < low || result > high) {
             if (low > Double.NEGATIVE_INFINITY && high == Double.POSITIVE_INFINITY)
@@ -1170,20 +1153,20 @@ public class NexusStreamParser extends NexusStreamTokenizer implements Closeable
      * @param tokens list of tokens
      * @return string representation of list of tokens
      */
-    static String List2String(List tokens) {
-        StringBuilder sb = new StringBuilder();
+    static String List2String(List<String> tokens) {
+        var buf = new StringBuilder();
 
-        ListIterator it = tokens.listIterator();
+        var it = tokens.listIterator();
 
         boolean first = true;
         while (it.hasNext()) {
             if (first) {
-                sb.append("'").append(it.next()).append("'");
+                buf.append("'").append(it.next()).append("'");
                 first = false;
             } else
-                sb.append(" '").append(it.next()).append("'");
+                buf.append(" '").append(it.next()).append("'");
         }
-        return sb.toString();
+        return buf.toString();
     }
 
     /**
@@ -1199,33 +1182,31 @@ public class NexusStreamParser extends NexusStreamTokenizer implements Closeable
      */
     public String convertToBlock(String firstSourceLabel, String lastSourceLabel, String blockName) throws IOException {
         pushPunctuationCharacters(SEMICOLON_PUNCTUATION);
-        StringBuilder str = new StringBuilder("begin " + blockName + ";");
+        var buf = new StringBuilder("begin " + blockName + ";");
         try {
-            List<String> tokens = getTokensRespectCase(firstSourceLabel, lastSourceLabel);
-            for (String token : tokens) str.append(" ").append(token);
-
-            str.append(";end;");
+            var tokens = getTokensRespectCase(firstSourceLabel, lastSourceLabel);
+            for (var token : tokens) buf.append(" ").append(token);
+            buf.append(";end;");
         } finally {
             popPunctuationCharacters();
         }
-        return str.toString();
+        return buf.toString();
     }
 
     /**
      * Peeks at the next token and attempts to match it to any of the tokens
      * present in str
      *
-     * @param s a string of tokens
+     * @param tokens a string of tokens
      */
-    public boolean peekMatchAnyTokenIgnoreCase(String s) {
-        final boolean echo = isEchoCommentsWithExclamationMark();
+    public boolean peekMatchAnyTokenIgnoreCase(String tokens) {
+        var echo = isEchoCommentsWithExclamationMark();
         setEchoCommentsWithExclamationMark(false);
-        try {
-            final NexusStreamTokenizer sst = new NexusStreamTokenizer(new StringReader(s));
-            sst.setSquareBracketsSurroundComments(isSquareBracketsSurroundComments());
+        try (var s = new NexusStreamTokenizer(new StringReader(tokens))) {
+            s.setSquareBracketsSurroundComments(isSquareBracketsSurroundComments());
 
-            while (sst.nextToken() != NexusStreamParser.TT_EOF) {
-                if (peekMatchIgnoreCase(sst.toString()))
+            while (s.nextToken() != NexusStreamParser.TT_EOF) {
+                if (peekMatchIgnoreCase(s.toString()))
                     return true;
             }
         } catch (IOException ex) {
@@ -1238,25 +1219,24 @@ public class NexusStreamParser extends NexusStreamTokenizer implements Closeable
     }
 
     /**
-     * Attempts to match the next token to any of the tokens present in s
+     * Attempts to match the next token to any of the tokens in the given string
      *
-     * @param s a string of tokens
+     * @param tokens a string of tokens
      */
-    public void matchAnyTokenIgnoreCase(String s) throws IOExceptionWithLineNumber {
-        try {
-            final NexusStreamTokenizer sst = new NexusStreamTokenizer(new StringReader(s));
-            sst.setSquareBracketsSurroundComments(isSquareBracketsSurroundComments());
+    public void matchAnyTokenIgnoreCase(String tokens) throws IOExceptionWithLineNumber {
+        try (var s = new NexusStreamTokenizer(new StringReader(tokens))) {
+            s.setSquareBracketsSurroundComments(isSquareBracketsSurroundComments());
 
-            while (sst.nextToken() != NexusStreamParser.TT_EOF) {
-                if (peekMatchIgnoreCase(sst.toString())) {
-                    matchIgnoreCase(sst.toString());
+            while (s.nextToken() != NexusStreamParser.TT_EOF) {
+                if (peekMatchIgnoreCase(s.toString())) {
+                    matchIgnoreCase(s.toString());
                     return;
                 }
             }
         } catch (IOException ex) {
             jloda.util.Basic.caught(ex);
         }
-        throw new IOExceptionWithLineNumber("any of '" + s.toLowerCase() + "' expected", lineno());
+        throw new IOExceptionWithLineNumber("any of '" + tokens.toLowerCase() + "' expected", lineno());
     }
 
 
@@ -1264,17 +1244,17 @@ public class NexusStreamParser extends NexusStreamTokenizer implements Closeable
      * Peeks at the next token and attempts to match it to any of the tokens
      * present in str
      *
-     * @param s a string of tokens
+     * @param tokens a string of tokens
      */
-    public boolean peekMatchAnyTokenRespectCase(String s) {
-        final boolean echo = isEchoCommentsWithExclamationMark();
+    public boolean peekMatchAnyTokenRespectCase(String tokens) {
+        final var echo = isEchoCommentsWithExclamationMark();
         setEchoCommentsWithExclamationMark(false);
-        try {
-            final NexusStreamTokenizer sst = new NexusStreamTokenizer(new StringReader(s));
-            sst.setSquareBracketsSurroundComments(isSquareBracketsSurroundComments());
 
-            while (sst.nextToken() != NexusStreamParser.TT_EOF) {
-                if (peekMatchRespectCase(sst.toString()))
+        try (var s = new NexusStreamTokenizer(new StringReader(tokens))) {
+            s.setSquareBracketsSurroundComments(isSquareBracketsSurroundComments());
+
+            while (s.nextToken() != NexusStreamParser.TT_EOF) {
+                if (peekMatchRespectCase(s.toString()))
                     return true;
             }
         } catch (IOException ex) {
@@ -1296,7 +1276,7 @@ public class NexusStreamParser extends NexusStreamTokenizer implements Closeable
     public List<String> getWordsRespectCase(String first, String last) throws IOExceptionWithLineNumber {
         pushPunctuationCharacters(SEMICOLON_PUNCTUATION);
 
-        final LinkedList<String> list = new LinkedList<>();
+        final var list = new ArrayList<String>();
         try {
             if (first != null)
                 matchIgnoreCase(first);
@@ -1318,15 +1298,15 @@ public class NexusStreamParser extends NexusStreamTokenizer implements Closeable
     /**
      * returns the next n words
      *
-     * @param n number of wordxs
+     * @param n number of words
      * @return next n words
      */
-    public List getWordsRespectCase(int n) throws IOExceptionWithLineNumber {
+    public List<String> getWordsRespectCase(int n) throws IOExceptionWithLineNumber {
         pushPunctuationCharacters(SEMICOLON_PUNCTUATION);
-        LinkedList<String> list = new LinkedList<>();
+        var list = new ArrayList<String>(n);
 
         try {
-            for (int i = 0; i < n; i++)
+            for (var i = 0; i < n; i++)
                 list.add(getWordRespectCase());
 
         } catch (IOExceptionWithLineNumber ex) {
@@ -1352,24 +1332,22 @@ public class NexusStreamParser extends NexusStreamTokenizer implements Closeable
             popPunctuationCharacters();
         }
 
-        List<Integer> result = new LinkedList<>();
-        BitSet seen = new BitSet();
+        var result = new ArrayList<Integer>();
+        var seen = new BitSet();
 
-        int inState = 0; // 0: expecting first number, 1: expecting new number or -2: expecting second number
-        int firstNumber = 0;
+        var inState = 0; // 0: expecting first number, 1: expecting new number or -2: expecting second number
+        var firstNumber = 0;
         int secondNumber;
-        final Iterator<String> it = tokens.listIterator();
+        final var it = tokens.listIterator();
         while (it.hasNext()) {
-            String label = it.next();
-
+            var label = it.next();
             if (label.equalsIgnoreCase("none")) {
                 if (!it.hasNext())
-                    throw new IOExceptionWithLineNumber("unexcepted: " + label, lineno());
+                    throw new IOExceptionWithLineNumber("unexpected: " + label, lineno());
                 return result; // return empty list
             }
 
             switch (inState) {
-
                 case 1:      // expecting number or -
                     if (label.equals("-")) {
                         inState = 2;
@@ -1396,9 +1374,9 @@ public class NexusStreamParser extends NexusStreamTokenizer implements Closeable
                         throw new IOExceptionWithLineNumber("number expected: " + label, lineno());
                     }
 
-                    int imin = Math.min(firstNumber, secondNumber);
-                    int imax = Math.max(firstNumber, secondNumber);
-                    for (int i = imin; i <= imax; i++) {
+                    var imin = Math.min(firstNumber, secondNumber);
+                    var imax = Math.max(firstNumber, secondNumber);
+                    for (var i = imin; i <= imax; i++) {
                         if (!seen.get(i)) {
                             result.add(i);
                             seen.set(i);
@@ -1433,15 +1411,14 @@ public class NexusStreamParser extends NexusStreamTokenizer implements Closeable
      * @return line number or 0
      */
     static public int getLineNumber(Exception ex) {
-		try {
-			final NexusStreamParser np = new NexusStreamParser(new StringReader(ex.toString()));
-			while (np.peekNextToken() != NexusStreamParser.TT_EOF
-				   && !np.peekMatchIgnoreCase("line"))
-				np.getWordRespectCase();
-			np.getWordRespectCase();
-			return np.getInt();
-		} catch (Exception ignored) {
-		}
+        try (var np = new NexusStreamParser(new StringReader(ex.toString()))) {
+            while (np.peekNextToken() != NexusStreamParser.TT_EOF
+                   && !np.peekMatchIgnoreCase("line"))
+                np.getWordRespectCase();
+            np.getWordRespectCase();
+            return np.getInt();
+        } catch (Exception ignored) {
+        }
         return 0;
     }
 
@@ -1451,9 +1428,8 @@ public class NexusStreamParser extends NexusStreamTokenizer implements Closeable
      * @return matched token
 	 */
     public String getWordMatchesIgnoringCase(String legalTokens) throws IOExceptionWithLineNumber {
-        final String word = getWordRespectCase();
-        final NexusStreamParser np = new NexusStreamParser(new StringReader(legalTokens));
-        try {
+        final var word = getWordRespectCase();
+        try (var np = new NexusStreamParser(new StringReader(legalTokens))) {
             while (np.peekNextToken() != NexusStreamParser.TT_EOF) {
                 if (np.peekMatchIgnoreCase(word))
                     return np.getWordRespectCase();
@@ -1472,9 +1448,8 @@ public class NexusStreamParser extends NexusStreamTokenizer implements Closeable
      * @return matched token
 	 */
     public String getWordMatchesRespectingCase(String legalTokens) throws IOExceptionWithLineNumber {
-        final String word = getWordRespectCase();
-        final NexusStreamParser np = new NexusStreamParser(new StringReader(legalTokens));
-        try {
+        final var word = getWordRespectCase();
+        try (var np = new NexusStreamParser(new StringReader(legalTokens))) {
             while (np.peekNextToken() != NexusStreamParser.TT_EOF) {
                 if (np.peekMatchRespectCase(word))
                     return np.getWordRespectCase();
@@ -1493,8 +1468,8 @@ public class NexusStreamParser extends NexusStreamTokenizer implements Closeable
      * @return matched token
 	 */
     public String getWordMatchesRespectingCase(Collection<String> legalTokens) throws IOExceptionWithLineNumber {
-        final String word = getWordRespectCase();
-        for (String legalToken : legalTokens)
+        final var word = getWordRespectCase();
+        for (var legalToken : legalTokens)
             if (word.equals(legalToken))
                 return legalToken;
         throw new IOExceptionWithLineNumber("input '" + word + "' does not match any of legal tokens: " + StringUtils.toString(legalTokens, " "), lineno());
@@ -1507,8 +1482,8 @@ public class NexusStreamParser extends NexusStreamTokenizer implements Closeable
      * @return matched token
 	 */
     public String getWordMatchesRespectingCase(String[] legalTokens) throws IOExceptionWithLineNumber {
-        final String word = getWordRespectCase();
-        for (String legalToken : legalTokens)
+        final var word = getWordRespectCase();
+        for (var legalToken : legalTokens)
             if (word.equals(legalToken))
                 return legalToken;
         throw new IOExceptionWithLineNumber("input '" + word + "' does not match any of legal tokens: " + StringUtils.toString(legalTokens, " "), lineno());
@@ -1520,8 +1495,8 @@ public class NexusStreamParser extends NexusStreamTokenizer implements Closeable
      * @return matched token
 	 */
     public String getWordMatchesIgnoringCase(Collection<String> legalTokens) throws IOExceptionWithLineNumber {
-        final String word = getWordRespectCase();
-        for (String legalToken : legalTokens)
+        final var word = getWordRespectCase();
+        for (var legalToken : legalTokens)
             if (word.equalsIgnoreCase(legalToken))
                 return legalToken;
         throw new IOExceptionWithLineNumber("input '" + word + "' does not match any of legal tokens: " + StringUtils.toString(legalTokens, ", "), lineno());
@@ -1533,8 +1508,8 @@ public class NexusStreamParser extends NexusStreamTokenizer implements Closeable
      * @return matched token
 	 */
     public String getWordMatchesIgnoringCase(String[] legalTokens) throws IOExceptionWithLineNumber {
-        final String word = getWordRespectCase();
-        for (String legalToken : legalTokens)
+        final var word = getWordRespectCase();
+        for (var legalToken : legalTokens)
             if (word.equalsIgnoreCase(legalToken))
                 return legalToken;
         throw new IOExceptionWithLineNumber("input '" + word + "' does not match any of legal tokens: " + StringUtils.toString(legalTokens, ", "), lineno());
@@ -1550,8 +1525,8 @@ public class NexusStreamParser extends NexusStreamTokenizer implements Closeable
 
         try {
             int r = 0, g = 0, b = 0, a = 0;
-            for (int i = 0; i < 4; i++) {
-                String word = getWordRespectCase();
+            for (var i = 0; i < 4; i++) {
+                var word = getWordRespectCase();
                 switch (i) {
                     case 0 -> {
                         if (word.equals("null"))
@@ -1602,7 +1577,7 @@ public class NexusStreamParser extends NexusStreamTokenizer implements Closeable
     }
 
     public int parseHexInt(String value) {
-        if (value.startsWith("0x"))
+        if (isHexInt(value))
             return Integer.parseInt(value.substring(2), 16);
         else
             throw new NumberFormatException("Not hex: " + value);
@@ -1619,7 +1594,7 @@ public class NexusStreamParser extends NexusStreamTokenizer implements Closeable
      * @return name of block skipped or null
 	 */
     public String skipBlock() throws IOExceptionWithLineNumber {
-        final boolean echo = isEchoCommentsWithExclamationMark();
+        final var echo = isEchoCommentsWithExclamationMark();
         setEchoCommentsWithExclamationMark(false);
         String blockName = null;
         try {
@@ -1644,7 +1619,6 @@ public class NexusStreamParser extends NexusStreamTokenizer implements Closeable
     public boolean peekInteger() {
         return NumberUtils.isInteger(peekNextWord());
     }
-
 
     public static String getQuotedString(NexusStreamParser np) throws IOException {
         np.matchIgnoreCase("\"");
