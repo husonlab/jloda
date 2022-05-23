@@ -37,6 +37,6 @@ public class SelectionEffectBlue extends DropShadow {
     }
 
     private SelectionEffectBlue() {
-        super(BlurType.THREE_PASS_BOX, Color.LIGHTBLUE, 3, 1, 0, 0);
+        super(BlurType.THREE_PASS_BOX, Color.LIGHTBLUE, 4, 2, 0, 0);
     }
 }

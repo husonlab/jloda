@@ -63,7 +63,7 @@ public class DLine {
     public boolean intersection(DLine line, DPointMutable intersection, boolean includingEndpoints) {
         if (slope() == line.slope()) return false; // lines are parallel, so there is no unique intersection point
 
-        // check whether intersect on endpoints
+        // check whether intersects on endpoints
 
         if (start.getX() == line.start.getX() && start.getY() == line.start.getY() || start.getX() == line.end.getX() && start.getY() == line.end.getY()) {
             if (includingEndpoints) {

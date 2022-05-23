@@ -144,11 +144,11 @@ public class IntervalNode<Type> {
     }
 
     /**
-     * Perform an interval intersection query on the node
-     *
-     * @param target the interval to intersect
-     * @return all intervals containing time
-     */
+	 * Perform an interval intersection query on the node
+	 *
+	 * @param target the interval to intersects
+	 * @return all intervals containing time
+	 */
     ArrayList<Interval<Type>> query(Interval<?> target) {
         final ArrayList<Interval<Type>> result = new ArrayList<>();
 

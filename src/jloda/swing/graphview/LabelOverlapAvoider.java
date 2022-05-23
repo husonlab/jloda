@@ -124,10 +124,10 @@ public class LabelOverlapAvoider {
     }
 
     /**
-     * does the shape s intersect the shape b? a is the area of s
-     *
-     * @return true, if a and b intersect
-     */
+	 * does the shape s intersects the shape b? a is the area of s
+	 *
+	 * @return true, if a and b intersects
+	 */
     private boolean intersects(Area a, Shape b) {
         if (b instanceof Rectangle) {
             return a.intersects((Rectangle) b);

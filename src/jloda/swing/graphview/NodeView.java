@@ -939,8 +939,7 @@ final public class NodeView extends ViewBase {
     }
 
     /**
-     * does node intersect rectangle?
-     *
+	 * does node intersects rectangle?
 	 */
     public boolean intersects(Transform trans, Rectangle rect) {
         Rectangle box = getBox(trans);

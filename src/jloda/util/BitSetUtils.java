@@ -261,14 +261,33 @@ public class BitSetUtils {
      * get list of integers as bit set
      *
      * @return bits
-     */
-    public static BitSet asBitSet(List<Integer> integers) {
-        var bits = new BitSet();
-        if (integers != null) {
-            for (var i : integers) {
-                bits.set(i);
-            }
-        }
-        return bits;
-    }
+	 */
+	public static BitSet asBitSet(List<Integer> integers) {
+		var bits = new BitSet();
+		if (integers != null) {
+			for (var i : integers) {
+				bits.set(i);
+			}
+		}
+		return bits;
+	}
+
+	public static BitSet getComplement(BitSet bitSet, int firstBitInclusive, int lastBitExclusive) {
+		var result = copy(bitSet);
+		result.flip(firstBitInclusive, lastBitExclusive);
+		return result;
+	}
+
+	/**
+	 * do the three  bitsets intersects?
+	 *
+	 * @return true, if non-empty   intersection
+	 */
+	public static boolean intersects(BitSet a, BitSet b, BitSet c) {
+		for (int i = a.nextSetBit(1); i >= 0; i = a.nextSetBit(i + 1)) {
+			if (b.get(i) && c.get(i))
+				return true;
+		}
+		return false;
+	}
 }

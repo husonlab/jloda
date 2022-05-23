@@ -121,24 +121,24 @@ public class IntervalTree<T> implements Iterable<Interval<T>> {
     }
 
     /**
-     * Perform an interval query, returning the associated data
-     * Will rebuild the tree if out of sync
-     *
-     * @param start the start of the interval to check
-     * @param end   the end of the interval to check
-     * @return the data associated with all intervals that intersect target
-     */
+	 * Perform an interval query, returning the associated data
+	 * Will rebuild the tree if out of sync
+	 *
+	 * @param start the start of the interval to check
+	 * @param end   the end of the interval to check
+	 * @return the data associated with all intervals that intersects target
+	 */
     public ArrayList<T> get(int start, int end) {
         return get(new Interval<>(start, end, null));
     }
 
-    /**
-     * Perform an interval query, returning the associated data
-     * Will rebuild the tree if out of sync
-     *
-     * @param target the interval to check
-     * @return the data associated with all intervals that intersect target
-     */
+	/**
+	 * Perform an interval query, returning the associated data
+	 * Will rebuild the tree if out of sync
+	 *
+	 * @param target the interval to check
+	 * @return the data associated with all intervals that intersects target
+	 */
     public ArrayList<T> get(Interval<T> target) {
         buildTree();
         final ArrayList<Interval<T>> intervals = head.query(target);
@@ -148,26 +148,26 @@ public class IntervalTree<T> implements Iterable<Interval<T>> {
         return result;
     }
 
-    /**
-     * Perform an interval query, returning the interval objects
-     * Will rebuild the tree if out of sync
-     *
-     * @param target the interval to check
-     * @return all intervals that intersect target
-     */
+	/**
+	 * Perform an interval query, returning the interval objects
+	 * Will rebuild the tree if out of sync
+	 *
+	 * @param target the interval to check
+	 * @return all intervals that intersects target
+	 */
     public ArrayList<Interval<T>> getIntervals(Interval<T> target) {
         buildTree();
         return head.query(target);
     }
 
-    /**
-     * Perform an interval query, returning the interval objects
-     * Will rebuild the tree if out of sync
-     *
-     * @param start the start of the interval to check
-     * @param end   the end of the interval to check
-     * @return all intervals that intersect target
-     */
+	/**
+	 * Perform an interval query, returning the interval objects
+	 * Will rebuild the tree if out of sync
+	 *
+	 * @param start the start of the interval to check
+	 * @param end   the end of the interval to check
+	 * @return all intervals that intersects target
+	 */
     public ArrayList<Interval<T>> getIntervals(int start, int end) {
         return getIntervals(new Interval<>(start, end, null));
     }

@@ -27,13 +27,14 @@ import javafx.beans.property.*;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.collections.ObservableSet;
+import javafx.geometry.Point2D;
 import javafx.stage.Stage;
 import jloda.fx.util.ClosingLastDocument;
 import jloda.util.IteratorUtils;
 import jloda.util.ProgramProperties;
+import jloda.util.Single;
 import jloda.util.StringUtils;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
@@ -55,6 +56,11 @@ public class MainWindowManager {
 
     private static BooleanProperty useDarkTheme = null;
     private static MainWindowManager instance;
+
+    private static WindowGeometry defaultGeometry;
+
+    private static Single<Point2D> previousLocation = new Single<>(null);
+
 
     /**
      * constructor
@@ -129,7 +135,6 @@ public class MainWindowManager {
                 return false;
             }
         }
-        ProgramProperties.put("WindowGeometry", (new WindowGeometry(mainWindow.getStage())).toString());
         // mainWindow.getStage().close();
 
         mainWindow.close();
@@ -160,35 +165,30 @@ public class MainWindowManager {
      * @return the new window, or the existing window, if it is non-null and empty
      */
     public IMainWindow createAndShowWindow(IMainWindow existingWindow) {
-        if (existingWindow != null && existingWindow.isEmpty())
+        if (existingWindow != null && existingWindow.isEmpty()) {
             return existingWindow;
-		else {
-			try {
-				final WindowGeometry windowGeometry = new WindowGeometry();
+        } else {
+            final IMainWindow newWindow = getMainWindow(0).createNew();
+            final Stage stage = new Stage();
+            stage.setTitle("Untitled - " + ProgramProperties.getProgramName() + " [" + (++windowsCreated) + "]");
+            stage.focusedProperty().addListener((c, o, n) -> {
+                if (n)
+                    setLastFocusedMainWindow(newWindow);
+            });
 
-				if (existingWindow != null) {
-					windowGeometry.setFromStage(existingWindow.getStage());
-					windowGeometry.setX(windowGeometry.getX() + 50);
-					windowGeometry.setY(windowGeometry.getY() + 50);
-				} else {
-					windowGeometry.setFromString(ProgramProperties.get("WindowGeometry", "50 50 800 800"));
-				}
-				final IMainWindow newWindow = getMainWindow(0).createNew();
-				final Stage stage = new Stage();
-				stage.setTitle("Untitled - " + ProgramProperties.getProgramName() + " [" + (++windowsCreated) + "]");
-				stage.focusedProperty().addListener((c, o, n) -> {
-					if (n)
-                        setLastFocusedMainWindow(newWindow);
-                });
+            WindowGeometry.setToStage(stage);
+            previousLocation.setIfCurrentValueIsNull(new Point2D(stage.getX(), stage.getY()));
+            previousLocation.set(new Point2D(previousLocation.get().getX() + 20, previousLocation.get().getY() + 20));
+            stage.setX(previousLocation.get().getX());
+            stage.setY(previousLocation.get().getY());
+            WindowGeometry.listenToStage(stage);
 
-                newWindow.show(stage, windowGeometry.getX(), windowGeometry.getY(), windowGeometry.getWidth(), windowGeometry.getHeight());
-                if (!mainWindows.contains(newWindow))
-                    addMainWindow(newWindow);
+            newWindow.show(stage, stage.getX(), stage.getY(), stage.getWidth(), stage.getHeight());
 
-                return newWindow;
-            } catch (IOException ex) {
-                throw new RuntimeException(ex);
-            }
+            if (!mainWindows.contains(newWindow))
+                addMainWindow(newWindow);
+
+            return newWindow;
         }
     }
 
@@ -282,5 +282,11 @@ public class MainWindowManager {
 
     public static void setUseDarkTheme(boolean useDarkTheme) {
         useDarkThemeProperty().set(useDarkTheme);
+    }
+
+    public static WindowGeometry getDefaultGeometry() {
+        if (defaultGeometry == null)
+            defaultGeometry = WindowGeometry.loadFromProperties();
+        return defaultGeometry;
     }
 }

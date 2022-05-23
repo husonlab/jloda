@@ -23,7 +23,6 @@ package jloda.graph;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
-import java.util.List;
 import java.util.stream.Stream;
 import java.util.stream.StreamSupport;
 
@@ -121,7 +120,7 @@ public class Node extends NodeEdge implements Comparable<Node> {
                 array[newOrder.size() - (++i)] = e;
         }
 
-        for (Edge e : array) {
+        for (var e : array) {
             var pred = e.getPrevIncidentTo(this);
             var succ = e.getNextIncidentTo(this);
             if (pred != null) {
@@ -144,8 +143,8 @@ public class Node extends NodeEdge implements Comparable<Node> {
      * reverse the order of the adjacent adjacentEdges
      */
     public void reverseOrderAdjacentEdges() {
-        List<Edge> order = new ArrayList<>();
-        for (Edge e = getLastAdjacentEdge(); e != null; e = getPrevAdjacentEdge(e))
+        var order = new ArrayList<Edge>();
+        for (var e = getLastAdjacentEdge(); e != null; e = getPrevAdjacentEdge(e))
             order.add(e);
         rearrangeAdjacentEdges(order);
     }
@@ -154,10 +153,10 @@ public class Node extends NodeEdge implements Comparable<Node> {
      * rotate the order of the adjacent adjacentEdges
      */
     public void rotateOrderAdjacentEdges() {
-        List<Edge> order = new ArrayList<>();
-        for (Edge e = getFirstAdjacentEdge(); e != null; e = getNextAdjacentEdge(e))
+        var order = new ArrayList<Edge>();
+        for (var e = getFirstAdjacentEdge(); e != null; e = getNextAdjacentEdge(e))
             order.add(e);
-        Edge e = order.remove(0);
+        var e = order.remove(0);
         order.add(e);
         rearrangeAdjacentEdges(order);
     }
@@ -250,7 +249,7 @@ public class Node extends NodeEdge implements Comparable<Node> {
      */
     public Edge getNextAdjacentEdgeCyclic(Edge e) {
         checkOwner(e);
-        Edge f = getNextAdjacentEdge(e);
+        var f = getNextAdjacentEdge(e);
         if (f != null)
             return f;
         else
@@ -264,7 +263,7 @@ public class Node extends NodeEdge implements Comparable<Node> {
      */
     public Edge getPrevAdjacentEdgeCyclic(Edge e) {
         checkOwner(e);
-        Edge f = getPrevAdjacentEdge(e);
+        var f = getPrevAdjacentEdge(e);
         if (f != null)
             return f;
         else
@@ -277,7 +276,7 @@ public class Node extends NodeEdge implements Comparable<Node> {
      * @return first out edge or null
      */
     public Edge getFirstOutEdge() {
-        for (Edge e = getFirstAdjacentEdge(); e != null; e = getNextAdjacentEdge(e))
+        for (var e = getFirstAdjacentEdge(); e != null; e = getNextAdjacentEdge(e))
             if (e.getSource() == this)
                 return e;
         return null;
@@ -325,7 +324,7 @@ public class Node extends NodeEdge implements Comparable<Node> {
      * @return first in edge or null
      */
     public Edge getFirstInEdge() {
-        for (Edge e = getFirstAdjacentEdge(); e != null; e = getNextAdjacentEdge(e))
+        for (var e = getFirstAdjacentEdge(); e != null; e = getNextAdjacentEdge(e))
             if (e.getTarget() == this)
                 return e;
         return null;
@@ -349,7 +348,7 @@ public class Node extends NodeEdge implements Comparable<Node> {
      * @return last in edge or null
      */
     public Edge getLastInEdge() {
-        for (Edge e = getLastAdjacentEdge(); e != null; e = getPrevAdjacentEdge(e))
+        for (var e = getLastAdjacentEdge(); e != null; e = getPrevAdjacentEdge(e))
             if (e.getTarget() == this)
                 return e;
         return null;
@@ -374,7 +373,7 @@ public class Node extends NodeEdge implements Comparable<Node> {
      */
     public Edge getCommonEdge(Node w) {
         checkOwner(w);
-        for (Edge e = getFirstAdjacentEdge(); e != null; e = getNextAdjacentEdge(e)) {
+        for (var e = getFirstAdjacentEdge(); e != null; e = getNextAdjacentEdge(e)) {
             if (getOpposite(e) == w)
                 return e;
         }
@@ -388,7 +387,7 @@ public class Node extends NodeEdge implements Comparable<Node> {
      */
     public Edge getEdgeTo(Node w) {
         checkOwner(w);
-        for (Edge e : outEdges()) {
+        for (var e : outEdges()) {
             if (getOpposite(e) == w)
                 return e;
         }
@@ -402,7 +401,7 @@ public class Node extends NodeEdge implements Comparable<Node> {
      */
     public Edge getEdgeFrom(Node w) {
         checkOwner(w);
-        for (Edge e : inEdges()) {
+        for (var e : inEdges()) {
             if (getOpposite(e) == w)
                 return e;
         }
@@ -462,7 +461,7 @@ public class Node extends NodeEdge implements Comparable<Node> {
      */
     public Edge findDirectedEdge(Node w) throws NotOwnerException {
         checkOwner(w);
-        for (Edge e : outEdges()) {
+        for (var e : outEdges()) {
             if (getOpposite(e) == w)
                 return e;
         }
@@ -515,7 +514,7 @@ public class Node extends NodeEdge implements Comparable<Node> {
 
             @Override
             public Edge next() {
-                Edge result = e;
+                var result = e;
                 e = getNextOutEdge(e);
                 return result;
             }
@@ -537,7 +536,7 @@ public class Node extends NodeEdge implements Comparable<Node> {
 
             @Override
             public Edge next() {
-                Edge result = e;
+                var result = e;
                 e = getNextInEdge(e);
                 return result;
             }
@@ -560,7 +559,7 @@ public class Node extends NodeEdge implements Comparable<Node> {
 
             @Override
             public Edge next() {
-                Edge result = e;
+                var result = e;
                 e = getNextAdjacentEdge(e);
                 return result;
             }
@@ -582,7 +581,7 @@ public class Node extends NodeEdge implements Comparable<Node> {
 
             @Override
             public Node next() {
-                final Node result = e.getOpposite(Node.this);
+                final var result = e.getOpposite(Node.this);
                 e = getNextAdjacentEdge(e);
                 return result;
             }
@@ -604,7 +603,7 @@ public class Node extends NodeEdge implements Comparable<Node> {
 
 			@Override
 			public Node next() {
-				final Node result = e.getTarget();
+                final var result = e.getTarget();
 				e = getNextOutEdge(e);
 				return result;
 			}
@@ -630,7 +629,7 @@ public class Node extends NodeEdge implements Comparable<Node> {
 
             @Override
             public Node next() {
-                final Node result = e.getSource();
+                final var result = e.getSource();
                 e = getNextInEdge(e);
                 return result;
             }
@@ -654,12 +653,12 @@ public class Node extends NodeEdge implements Comparable<Node> {
     }
 
     public void deleteAllAdjacentEdges() {
-        for (Edge e : adjacentEdges())
+        for (var e : adjacentEdges())
             e.deleteEdge();
     }
 
     public boolean isChild(Node y) {
-        for (Node c : children()) {
+        for (var c : children()) {
             if (y == c)
                 return true;
         }
@@ -669,8 +668,7 @@ public class Node extends NodeEdge implements Comparable<Node> {
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (!(o instanceof Node)) return false;
-        final Node that = (Node) o;
+        if (!(o instanceof final Node that)) return false;
         return getOwner() == that.getOwner() && getId() == that.getId();
     }
 
