@@ -19,6 +19,7 @@
 
 package jloda.fx.util;
 
+import javafx.application.Platform;
 import javafx.concurrent.Service;
 import javafx.scene.layout.Pane;
 import jloda.fx.control.ProgressPane;
@@ -35,78 +36,81 @@ import java.util.concurrent.Callable;
  * @param <T>
  */
 public class AService<T> extends Service<T> {
-    private TaskWithProgressListener<T> task;
-    private Callable<T> callable;
-    private Pane progressParentPane;
-    private final ProgressPane progressPane;
+	private TaskWithProgressListener<T> task;
+	private Callable<T> callable;
+	private Pane progressParentPane;
+	private final ProgressPane progressPane;
 
-    public AService() {
-        this(null, null);
-    }
+	public AService() {
+		this(null, null);
+	}
 
-    public AService(Callable<T> callable) {
-        this(callable, null);
-    }
+	public AService(Callable<T> callable) {
+		this(callable, null);
+	}
 
-    public AService(final Pane progressParentPane) {
-        this(null, progressParentPane);
-    }
+	public AService(final Pane progressParentPane) {
+		this(null, progressParentPane);
+	}
 
-    public AService(Callable<T> callable, final Pane progressParentPane) {
-        super();
-        setExecutor(ProgramExecutorService.getInstance());
-        setCallable(callable);
-        setProgressParentPane(progressParentPane);
+	public AService(Callable<T> callable, final Pane progressParentPane) {
+		super();
+		setExecutor(ProgramExecutorService.getInstance());
+		setCallable(callable);
+		setProgressParentPane(progressParentPane);
 
-        progressPane = new ProgressPane(this);
-        progressPane.setVisible(true);
+		progressPane = new ProgressPane(this);
+		progressPane.setVisible(true);
 
-        this.runningProperty().addListener((c, o, n) -> {
-            if (getProgressParentPane() != null) {
-                if (n) {
-                    if (!getProgressParentPane().getChildren().contains(progressPane))
-                        getProgressParentPane().getChildren().add(progressPane);
-                } else {
-                    getProgressParentPane().getChildren().remove(progressPane);
-                }
-            }
-        });
-        setOnFailed(e -> NotificationManager.showError("Computation failed: " + Basic.getShortName(AService.this.getException().getClass())
-                + (AService.this.getException().getMessage() != null ? ": " + AService.this.getException().getMessage() : "")));
-    }
+		this.runningProperty().addListener((c, o, n) -> {
+			if (getProgressParentPane() != null) {
+				RunAfterAWhile.apply(progressPane, () ->
+						Platform.runLater(() -> {
+							if (n) {
+								if (!getProgressParentPane().getChildren().contains(progressPane))
+									getProgressParentPane().getChildren().add(progressPane);
+							} else {
+								getProgressParentPane().getChildren().remove(progressPane);
+							}
+						}));
+			}
+		});
+		setOnFailed(e -> NotificationManager.showError("Computation failed: " + Basic.getShortName(AService.this.getException().getClass())
+													   + (AService.this.getException().getMessage() != null ? ": " + AService.this.getException().getMessage() : "")));
+	}
 
-    @Override
-    protected TaskWithProgressListener<T> createTask() {
-        task = new TaskWithProgressListener<>() {
-            @Override
-            public T call() throws Exception {
-                return callable.call();
-            }
-        };
-        return task;
-    }
+	@Override
+	protected TaskWithProgressListener<T> createTask() {
+		task = new TaskWithProgressListener<>() {
+			@Override
+			public T call() throws Exception {
+				return callable.call();
+			}
+		};
+		return task;
+	}
 
-    public ProgressListener getProgressListener() {
-        return (task != null ? task.getProgressListener() : null);
-    }
+	public ProgressListener getProgressListener() {
+		return (task != null ? task.getProgressListener() : null);
+	}
 
-    public void setCallable(Callable<T> callable) {
-        this.callable = callable;
-    }
+	public void setCallable(Callable<T> callable) {
+		this.callable = callable;
+	}
 
-    public Callable<T> getCallable() {
-        return callable;
-    }
+	public Callable<T> getCallable() {
+		return callable;
+	}
 
-    public Pane getProgressParentPane() {
-        return progressParentPane;
-    }
+	public Pane getProgressParentPane() {
+		return progressParentPane;
+	}
 
-    public void setProgressParentPane(Pane progressParentPane) {
-        if (this.progressParentPane != null)
-            this.progressParentPane.getChildren().remove(progressPane);
-        this.progressParentPane = progressParentPane;
-        //   if(progressParentPane!=null)
-        //       progressParentPane.getChildren().add(progressPane);
-    }
+	public void setProgressParentPane(Pane progressParentPane) {
+		if (this.progressParentPane != null)
+			this.progressParentPane.getChildren().remove(progressPane);
+		this.progressParentPane = progressParentPane;
+		//   if(progressParentPane!=null)
+		//       progressParentPane.getChildren().add(progressPane);
+	}
 }

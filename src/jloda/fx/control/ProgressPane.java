@@ -61,7 +61,7 @@ public class ProgressPane extends StackPane {
      *
 	 */
     public ProgressPane(ReadOnlyStringProperty titleProperty, ReadOnlyStringProperty messageProperty, ReadOnlyDoubleProperty progressProperty, ReadOnlyBooleanProperty isRunning, Runnable cancelRunnable) {
-        setPrefHeight(30);
+        setPrefHeight(24);
         setMinHeight(Pane.USE_PREF_SIZE);
         setMaxHeight(Pane.USE_PREF_SIZE);
         setPadding(new Insets(0, 10, 0, 40));
