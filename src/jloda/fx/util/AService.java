@@ -28,6 +28,7 @@ import jloda.util.Basic;
 import jloda.util.progress.ProgressListener;
 
 import java.util.concurrent.Callable;
+import java.util.function.Consumer;
 
 /**
  * a generic service
@@ -112,5 +113,14 @@ public class AService<T> extends Service<T> {
 		this.progressParentPane = progressParentPane;
 		//   if(progressParentPane!=null)
 		//       progressParentPane.getChildren().add(progressPane);
+	}
+
+	public static <T> void run(Callable<T> callable, Consumer<T> runOnSucceeded, Consumer<Throwable> runOnFailed) {
+		var service = new AService<>(callable);
+		if (runOnSucceeded != null)
+			service.setOnSucceeded(e -> runOnSucceeded.accept(service.getValue()));
+		if (runOnFailed != null)
+			service.setOnFailed(e -> runOnFailed.accept(service.getException()));
+		service.start();
 	}
 }
