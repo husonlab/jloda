@@ -121,7 +121,8 @@ public class BitSetUtils {
     public static BitSet asBitSet(int... bits) {
         final var bitSet = new BitSet();
         for (var i : bits) {
-            bitSet.set(i);
+            if (i >= 0)
+                bitSet.set(i);
         }
         return bitSet;
     }
