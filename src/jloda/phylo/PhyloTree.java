@@ -812,13 +812,13 @@ public class PhyloTree extends PhyloSplitsGraph {
 		if (root != null && root.getDegree() == 2 && (getTaxa(root) == null || getNumberOfTaxa(root) == 0)) {
 			if (root == e.getSource()) {
 				var f = (root.getFirstAdjacentEdge() != e ? root.getFirstAdjacentEdge() : root.getLastAdjacentEdge());
-				setWeight(e, weightToSource);
-				setWeight(f, weightToTarget);
+				setWeight(e, weightToTarget);
+				setWeight(f, weightToSource);
 				return; // root stays root
 			} else if (root == e.getTarget()) {
 				var f = (root.getFirstAdjacentEdge() != e ? root.getFirstAdjacentEdge() : root.getLastAdjacentEdge());
-				setWeight(e, weightToTarget);
-				setWeight(f, weightToSource);
+				setWeight(e, weightToSource);
+				setWeight(f, weightToTarget);
 				return; // root stays root
 			}
 			eraseRoot(edgeLabels);
