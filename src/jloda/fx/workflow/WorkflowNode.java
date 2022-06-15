@@ -167,7 +167,7 @@ abstract public class WorkflowNode extends NamedBase {
 	public boolean equals(Object o) {
 		if (this == o) return true;
 		if (!(o instanceof WorkflowNode)) return false;
-		return id == ((WorkflowNode) o).id;
+		return owner == ((WorkflowNode) o).owner && id == ((WorkflowNode) o).id;
 	}
 
 	@Override

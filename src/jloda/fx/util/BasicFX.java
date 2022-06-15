@@ -23,7 +23,8 @@ import javafx.application.Platform;
 import javafx.beans.InvalidationListener;
 import javafx.beans.property.ReadOnlyProperty;
 import javafx.beans.property.StringProperty;
-import javafx.beans.value.ChangeListener;
+import javafx.collections.ListChangeListener;
+import javafx.collections.ObservableList;
 import javafx.geometry.Dimension2D;
 import javafx.geometry.Orientation;
 import javafx.scene.Node;
@@ -349,8 +350,23 @@ public class BasicFX {
      */
     public static <T> void reportChanges(String label, ReadOnlyProperty<T> property) {
         System.err.println((label != null ? label + ": " : "") + property.getValue());
-        ChangeListener<T> listener = (v, o, n) -> System.err.println((label != null ? label + ": " : "") + property.getName() + ": " + (o == null ? null : o.toString()) + " -> " + (n == null ? "null" : n.toString()));
-        property.addListener(listener);
+        property.addListener((v, o, n) -> System.err.println((label != null ? label + ": " : "") + property.getName() + ": " + (o == null ? null : o.toString()) + " -> " + (n == null ? "null" : n.toString())));
+    }
+
+    public static <T> void reportChanges(String label, ObservableList<T> list) {
+        System.err.println((label != null ? label + ":" : ":"));
+        list.addListener((ListChangeListener<? super T>) e -> {
+            while (e.next()) {
+                for (var v : e.getAddedSubList()) {
+                    System.err.print("\t+" + v);
+                }
+                for (var v : e.getRemoved()) {
+                    System.err.print("\t-" + v);
+                }
+            }
+            System.err.println();
+        });
+
     }
 
     /**
