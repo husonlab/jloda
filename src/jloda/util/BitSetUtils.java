@@ -227,10 +227,16 @@ public class BitSetUtils {
             bits.set(i);
     }
 
+    public static BitSet add(BitSet bits, int... values) {
+        var result = new BitSet();
+        result.or(bits);
+        addAll(result, values);
+        return result;
+    }
+
     /**
      * the set X - A
-     *
-	 */
+     */
     public static BitSet minus(BitSet setX, BitSet setA) {
         final var result = new BitSet();
         result.or(setX);

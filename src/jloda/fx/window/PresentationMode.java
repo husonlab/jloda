@@ -19,41 +19,21 @@
 
 package jloda.fx.window;
 
-import javafx.beans.property.BooleanProperty;
-import javafx.beans.property.SimpleBooleanProperty;
-import javafx.stage.Stage;
+import javafx.scene.control.CheckMenuItem;
 
+/**
+ * setup presentation mode menu item
+ */
 public class PresentationMode {
-	private final static BooleanProperty presentationMode = new SimpleBooleanProperty(false);
-
-	static {
-		presentationMode.addListener(e -> {
-			for (var window : MainWindowManager.getInstance().getMainWindows()) {
+	public static void setupPresentationModeMenuItem(IMainWindow window, CheckMenuItem menuItem) {
+		menuItem.selectedProperty().addListener((c, o, n) -> {
+			if (n) {
 				window.getStage().setFullScreen(true);
-				ensurePresentationMode(window.getStage());
-				for (var aux : MainWindowManager.getInstance().getAuxiliaryWindows(window)) {
-					ensurePresentationMode(aux);
-				}
-			}
+				if (!window.getStage().getScene().getStylesheets().contains("jloda/resources/css/presentation.css"))
+					window.getStage().getScene().getStylesheets().add("jloda/resources/css/presentation.css");
+			} else
+				window.getStage().getScene().getStylesheets().remove("jloda/resources/css/presentation.css");
+
 		});
-	}
-
-	public static void ensurePresentationMode(Stage stage) {
-		if (isPresentationMode())
-			stage.getScene().getStylesheets().add("jloda/resources/css/presentation.css");
-		else
-			stage.getScene().getStylesheets().remove("jloda/resources/css/presentation.css");
-	}
-
-	public static void setPresentationMode(boolean presentationMode) {
-		PresentationMode.presentationMode.set(presentationMode);
-	}
-
-	public static boolean isPresentationMode() {
-		return presentationMode.get();
-	}
-
-	public static BooleanProperty presentationModeProperty() {
-		return presentationMode;
 	}
 }
