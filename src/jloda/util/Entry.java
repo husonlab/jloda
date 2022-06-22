@@ -50,12 +50,7 @@ public class Entry<K, V> implements Map.Entry<K, V> {
     }
 
     public V setValue(V value) {
-        if (value == null)
-            throw new NullPointerException();
-
-        V oldValue = this.value;
-        this.value = value;
-        return oldValue;
+        throw new UnsupportedOperationException();
     }
 
     public boolean equals(Object o) {

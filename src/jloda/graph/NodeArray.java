@@ -254,9 +254,24 @@ public class NodeArray<T> extends GraphBase implements Iterable<T>, Map<Node, T>
 
     @Override
     public Set<Entry<Node, T>> entrySet() {
-        Set<Map.Entry<Node, T>> set = new HashSet<>();
+        var set = new HashSet<Map.Entry<Node, T>>();
         for (var k : keys()) {
-            set.add(new jloda.util.Entry<>(k, get(k)));
+            set.add(new Map.Entry<>() {
+                @Override
+                public Node getKey() {
+                    return k;
+                }
+
+                @Override
+                public T getValue() {
+                    return get(k);
+                }
+
+                @Override
+                public T setValue(T value) {
+                    return put(k, value);
+                }
+            });
         }
         return set;
     }

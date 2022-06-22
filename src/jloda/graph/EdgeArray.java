@@ -245,7 +245,22 @@ public class EdgeArray<T> extends GraphBase implements Iterable<T>, Map<Edge, T>
     public Set<Entry<Edge, T>> entrySet() {
         Set<Map.Entry<Edge, T>> set = new HashSet<>();
         for (var k : keys()) {
-            set.add(new jloda.util.Entry<>(k, get(k)));
+            set.add(new Map.Entry<>() {
+                @Override
+                public Edge getKey() {
+                    return k;
+                }
+
+                @Override
+                public T getValue() {
+                    return get(k);
+                }
+
+                @Override
+                public T setValue(T value) {
+                    return put(k, value);
+                }
+            });
         }
         return set;
     }
