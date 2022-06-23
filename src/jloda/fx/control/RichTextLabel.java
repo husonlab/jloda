@@ -97,6 +97,9 @@ public class RichTextLabel extends TextFlow {
     private Node _anchor;
     private ObjectProperty<Node> anchor;
 
+    private boolean _showMarks = true;
+    private BooleanProperty showMarks;
+
 
     /**
      * constructor
@@ -145,7 +148,6 @@ public class RichTextLabel extends TextFlow {
         }
         return text;
     }
-
 
     public void setText(String text) {
         if (text != null) {
@@ -489,7 +491,6 @@ public class RichTextLabel extends TextFlow {
                     } else if (fontSizeStack.size() > 0) {
                         fontSize = fontSizeStack.pop();
                     }
-
                 }
                 if (event.getChangeType().equals("color")) {
                     if (event.isStart()) {
@@ -540,7 +541,7 @@ public class RichTextLabel extends TextFlow {
                         } catch (IllegalArgumentException ignored) {
                         }
                     }
-                } else if (event.change() == Event.Change.mark) {
+                } else if (isShowMarks() && event.change() == Event.Change.mark) {
                     final var node = createMark(event.argument(), getScale(), getFontSize(), getTextFill());
                     if (node != null) {
                         node.setTranslateY(offset);
@@ -1047,6 +1048,25 @@ public class RichTextLabel extends TextFlow {
         return null;
     }
 
+    public boolean isShowMarks() {
+        if (showMarks == null)
+            return _showMarks;
+        else
+            return showMarks.get();
+    }
+
+    public BooleanProperty showMarksProperty() {
+        if (showMarks == null)
+            showMarks = new SimpleBooleanProperty(_showMarks);
+        return showMarks;
+    }
+
+    public void setShowMarks(boolean showMarks) {
+        if (this.showMarks == null)
+            _showMarks = showMarks;
+        else
+            this.showMarks.set(showMarks);
+    }
 
     public static String setImage(String text, String url, String alt, Double width, Double height) {
         var prefixElement = getPrefixElement(text, Event.Change.image.type());
