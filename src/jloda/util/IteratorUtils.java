@@ -357,6 +357,28 @@ public class IteratorUtils {
 		return iterator.hasNext() ? iterator.next() : null;
 	}
 
+	public static <T> Iterable<T> withAdditionalItems(Iterable<T> iterable, T... additional) {
+		return () -> new Iterator<T>() {
+			private final Iterator<T> it = iterable.iterator();
+			private int pos = 0;
+
+			@Override
+			public boolean hasNext() {
+				return it.hasNext() || pos < additional.length;
+			}
+
+			@Override
+			public T next() {
+				if (it.hasNext())
+					return it.next();
+				else if (pos < additional.length)
+					return additional[pos++];
+				else
+					throw new NoSuchElementException();
+			}
+		};
+	}
+
 	public static class LineIterator implements Iterator<String>, AutoCloseable {
 		private final BufferedReader br;
 		private String next;
