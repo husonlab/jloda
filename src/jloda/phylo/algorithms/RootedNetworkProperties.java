@@ -358,17 +358,21 @@ public class RootedNetworkProperties {
      *
      * @return true, if temporal
      */
-    public static boolean isTemporal(PhyloTree graph) {
-        var contractedGraph = new PhyloTree(graph);
+    public static boolean isTemporal(PhyloTree tree) {
+        try {
+            var contractedGraph = new PhyloTree(tree);
 
-        var reticulateEdges = contractedGraph.edgeStream().filter(e -> e.getTarget().getInDegree() > 1).collect(Collectors.toSet());
+            var reticulateEdges = contractedGraph.edgeStream().filter(e -> e.getTarget().getInDegree() > 1).collect(Collectors.toSet());
 
-        if (reticulateEdges.size() == 0)
-            return true;
-        else {
-            var selfEdgeEncountered = new Single<>(false);
-            contractedGraph.contractEdges(reticulateEdges, selfEdgeEncountered);
-            return !selfEdgeEncountered.get() && isNonEmptyDAG(contractedGraph);
+            if (reticulateEdges.size() == 0)
+                return true;
+            else {
+                var selfEdgeEncountered = new Single<>(false);
+                contractedGraph.contractEdges(reticulateEdges, selfEdgeEncountered);
+                return !selfEdgeEncountered.get() && isNonEmptyDAG(contractedGraph);
+            }
+        } catch (Exception ignored) {
+            return false;
         }
     }
 
