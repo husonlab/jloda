@@ -24,15 +24,13 @@ import jloda.fx.window.MainWindowManager;
 import jloda.util.NumberUtils;
 import jloda.util.ProgramProperties;
 
-import java.util.Optional;
-
 /**
  * get an integer value
  * Daniel Huson, 1.2010
  */
 public class SetIntegerParameterDialog {
     public static Integer apply(Stage parent, String message, int defaultValue) {
-        final TextInputDialog dialog = new TextInputDialog("" + defaultValue);
+        final var dialog = new TextInputDialog("" + defaultValue);
 
         if (MainWindowManager.isUseDarkTheme()) {
             dialog.getDialogPane().getScene().getWindow().getScene().getStylesheets().add("jloda/resources/css/dark.css");
@@ -43,7 +41,7 @@ public class SetIntegerParameterDialog {
         dialog.setHeaderText(message);
         dialog.setContentText("Please enter the new value:");
 
-        final Optional<String> result = dialog.showAndWait();
+        final var result = dialog.showAndWait();
 
         if (result.isPresent() && NumberUtils.isInteger(result.get())) {
             return NumberUtils.parseInt(result.get());

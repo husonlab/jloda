@@ -20,6 +20,7 @@
 package jloda.fx.dialog;
 
 import javafx.scene.control.ChoiceDialog;
+import javafx.scene.control.TextInputDialog;
 import javafx.stage.Stage;
 import jloda.fx.window.MainWindowManager;
 import jloda.util.ProgramProperties;
@@ -32,12 +33,12 @@ import java.util.Collection;
  */
 public class SetParameterDialog {
     /**
-     * quest parameter from user
+     * request parameter from user
      *
      * @return value or null
      */
     public static <S> S apply(Stage parent, String message, Collection<S> values, S defaultValue) {
-        final ChoiceDialog<S> dialog = new ChoiceDialog<>(defaultValue, values);
+        final var dialog = new ChoiceDialog<>(defaultValue, values);
         if (parent != null) {
             dialog.setX(Math.max(parent.getX(), parent.getX() + 0.5 * parent.getWidth() - 200));
             dialog.setY(Math.max(parent.getY(), parent.getY() + 0.5 * parent.getHeight() - 200));
@@ -51,5 +52,27 @@ public class SetParameterDialog {
         dialog.setContentText("Choose the value:");
 
         return dialog.showAndWait().orElse(null);
+    }
+
+    /**
+     * request parameter from user
+     *
+     * @return value or null
+     */
+    public static String apply(Stage parent, String message, String defaultValue) {
+        final var dialog = new TextInputDialog("" + defaultValue);
+
+        if (MainWindowManager.isUseDarkTheme()) {
+            dialog.getDialogPane().getScene().getWindow().getScene().getStylesheets().add("jloda/resources/css/dark.css");
+        }
+
+        dialog.initOwner(parent);
+        dialog.setTitle("Set Parameter - " + ProgramProperties.getProgramName());
+        dialog.setHeaderText(message);
+        dialog.setContentText("Please enter the new value:");
+
+        final var result = dialog.showAndWait();
+
+        return result.orElse(null);
     }
 }
