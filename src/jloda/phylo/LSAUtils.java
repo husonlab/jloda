@@ -132,7 +132,7 @@ public class LSAUtils {
 			computeReticulation2LSA(tree, reticulation2LSA);
 
 			for (var v : tree.nodes()) {
-				var children = v.outEdgesStream(false).filter(e -> !tree.isReticulatedEdge(e))
+				var children = v.outEdgesStream(false).filter(e -> !tree.isReticulateEdge(e))
 						.map(Edge::getTarget).collect(Collectors.toList());
 				tree.getLSAChildrenMap().put(v, children);
 			}

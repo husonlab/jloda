@@ -27,17 +27,20 @@ import java.util.*;
 import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 import java.util.function.Function;
-import java.util.stream.Collectors;
 
 /**
  * Phylogenetic tree, with support for rooted phylogenetic network
  * Daniel Huson, 2003
  */
 public class PhyloTree extends PhyloSplitsGraph {
+
 	public static final boolean ALLOW_WRITE_RETICULATE = true;
 	public static final boolean ALLOW_READ_RETICULATE = true;
 
+	public static boolean SUPPORT_RICH_NEWICK = false; // only SplitsTree6 should set this to true
+
 	public boolean allowMultiLabeledNodes = true;
+
 
 	Node root = null;
 	boolean inputHasMultiLabels = false;
@@ -47,8 +50,12 @@ public class PhyloTree extends PhyloSplitsGraph {
 
 	private final boolean cleanLabelsOnWrite;
 
-	private EdgeSet reticulatedEdges;
-	protected NodeArray<List<Node>> lsaChildrenMap; // keep track of children in LSA tree in network
+	private volatile EdgeSet reticulateEdges;
+	protected volatile NodeArray<List<Node>> lsaChildrenMap; // keep track of children in LSA tree in network
+
+	private volatile EdgeSet acceptorEdges;
+
+	private boolean inputMultiLabeled = false;
 
 	/**
 	 * Construct a new empty phylogenetic tree.
@@ -72,10 +79,10 @@ public class PhyloTree extends PhyloSplitsGraph {
 	public void clear() {
 		super.clear();
 		setRoot(null);
-		if (reticulatedEdges != null)
-			reticulatedEdges.clear();
-		if (lsaChildrenMap != null)
-			lsaChildrenMap.clear();
+		reticulateEdges = null;
+		acceptorEdges = null;
+		lsaChildrenMap = null;
+		inputMultiLabeled = false;
 	}
 
 	/**
@@ -114,9 +121,9 @@ public class PhyloTree extends PhyloSplitsGraph {
 				}
 			}
 		}
-		if (src.reticulatedEdges != null) {
-			for (var e : src.reticulatedEdges) {
-				setReticulated(oldEdge2NewEdge.get(e), true);
+		if (src.reticulateEdges != null) {
+			for (var e : src.reticulateEdges) {
+				setReticulate(oldEdge2NewEdge.get(e), true);
 			}
 		}
 		setName(src.getName());
@@ -164,13 +171,7 @@ public class PhyloTree extends PhyloSplitsGraph {
 	 * @return a string representation of the tree in bracket notation
 	 */
 	public String toBracketString(boolean showWeights) {
-		try (var sw = new StringWriter()) {
-			write(sw, showWeights);
-			return sw.toString();
-		} catch (Exception ex) {
-			Basic.caught(ex);
-			return "();";
-		}
+		return toBracketString(new NewickOutputFormat(showWeights));
 	}
 
 	/**
@@ -199,6 +200,16 @@ public class PhyloTree extends PhyloSplitsGraph {
 		} catch (Exception ex) {
 			Basic.caught(ex);
 			return "()";
+		}
+	}
+
+	public String toBracketString(NewickOutputFormat format) {
+		try (var sw = new StringWriter()) {
+			write(sw, format);
+			return sw.toString();
+		} catch (Exception ex) {
+			Basic.caught(ex);
+			return "();";
 		}
 	}
 
@@ -272,26 +283,26 @@ public class PhyloTree extends PhyloSplitsGraph {
 
 
 	/**
-	 * parse a tree in newick format, as a rooted tree, if desired.
+	 * parse a tree in Newick format, as a rooted tree, if desired.
 	 */
 	public void parseBracketNotation(String str, boolean rooted, boolean doClear) throws IOException {
 		if (doClear)
 			clear();
-		setInputHasMultiLabels(false);
+		inputMultiLabeled = false;
+
 		var seen = new HashMap<String, Node>();
 
-		var hasWeights = new Single<>(false);
 		try {
-			parseBracketNotationRecursively(seen, 0, null, 0, str, hasWeights);
+			parseBracketNotationRec(seen, 0, null, 0, str);
 		} catch (IOException ex) {
 			System.err.println(str);
 			throw ex;
 		}
-		final var v = getFirstNode();
-		if (v != null) {
+		if (getNumberOfNodes() > 0) {
+			final var v = getFirstNode();
 			if (rooted) {
 				setRoot(v);
-				if (!hasWeights.get() && isUnlabeledDiVertex(v)) {
+				if (!hasEdgeWeights() && isUnlabeledDiVertex(v)) {
 					setWeight(v.getFirstAdjacentEdge(), 0.5);
 					setWeight(v.getLastAdjacentEdge(), 0.5);
 				}
@@ -305,7 +316,34 @@ public class PhyloTree extends PhyloSplitsGraph {
 		if (ALLOW_READ_RETICULATE)
 			postProcessReticulate();
 
+		// if all internal nodes are labeled with numbers, then these are interpreted as confidence values
+		if (SUPPORT_RICH_NEWICK) {
+			if (nodeStream().filter(v -> !v.isLeaf() && v.getInDegree() == 1).allMatch(v -> NumberUtils.isDouble(getLabel(v)))) {
+				nodeStream().filter(v -> !v.isLeaf() && v.getInDegree() == 1)
+						.forEach(v -> {
+							setConfidence(v.getFirstInEdge(), NumberUtils.parseDouble(getLabel(v)));
+							setLabel(v, null);
+						});
+				var maxValue = nodeStream().filter(v -> !v.isLeaf() && v.getInDegree() == 1)
+						.mapToDouble(v -> NumberUtils.parseDouble(getLabel(v))).max();
+				if (maxValue.isPresent()) {
+					double leafValue = (maxValue.getAsDouble() > 1 && maxValue.getAsDouble() <= 100 ? 100 : 1);
+					nodeStream().filter(v -> v.isLeaf() && v.getInDegree() == 1)
+							.forEach(v -> setConfidence(v.getFirstInEdge(), leafValue));
+				}
+			}
+		}
+
 		// System.err.println("Multi-labeled nodes detected: " + getInputHasMultiLabels());
+
+
+		if (true) {
+			System.err.println("has edge weights: " + hasEdgeWeights());
+			System.err.println("has edge confidences: " + hasEdgeConfidences());
+			System.err.println("has edge probabilities: " + hasEdgeProbabilities());
+			System.err.println(toBracketString(new NewickOutputFormat(true, true, true, true, true)));
+		}
+
 	}
 
 	private static final String punctuationCharacters = "),;:";
@@ -320,12 +358,12 @@ public class PhyloTree extends PhyloSplitsGraph {
 	 * @param str   string
 	 * @return new current position
 	 */
-	private int parseBracketNotationRecursively(Map<String, Node> seen, int depth, Node v, int pos, String str, Single<Boolean> hasWeights) throws IOException {
+	private int parseBracketNotationRec(Map<String, Node> seen, int depth, Node v, int pos, String str) throws IOException {
 		for (pos = StringUtils.skipSpaces(str, pos); pos < str.length(); pos = StringUtils.skipSpaces(str, pos + 1)) {
 			var w = newNode();
 			String label = null;
 			if (str.charAt(pos) == '(') {
-				pos = parseBracketNotationRecursively(seen, depth + 1, w, pos + 1, str, hasWeights);
+				pos = parseBracketNotationRec(seen, depth + 1, w, pos + 1, str);
 				if (str.charAt(pos) != ')')
 					throw new IOException("Expected ')' at position " + pos);
 				pos = StringUtils.skipSpaces(str, pos + 1);
@@ -348,14 +386,14 @@ public class PhyloTree extends PhyloSplitsGraph {
 						{
 							if (label.startsWith("'") && label.endsWith("'") && label.length() > 1)
 								label = label.substring(1, label.length() - 1);
-							// give first occurence of this label the suffix .1
+							// give first occurrence of this label the suffix .1
 							final Node old = seen.get(label);
 							if (old != null) // change label of node
 							{
 								setLabel(old, label + ".1");
 								seen.put(label, null); // keep label in, but null indicates has changed
 								seen.put(label + ".1", old);
-								setInputHasMultiLabels(true);
+								inputMultiLabeled = true;
 							}
 
 							var t = 1;
@@ -399,7 +437,7 @@ public class PhyloTree extends PhyloSplitsGraph {
 							setLabel(old, label + ".1");
 							seen.put(label, null); // keep label in, but null indicates has changed
 							seen.put(label + ".1", old);
-							setInputHasMultiLabels(true);
+							inputMultiLabeled = true;
 							if (getWarnMultiLabeled())
 								System.err.println("multi-label: " + label);
 						}
@@ -427,22 +465,40 @@ public class PhyloTree extends PhyloSplitsGraph {
 			// read edge weights
 			var didReadWeight = false;
 
-			if (pos < str.length() && str.charAt(pos) == ':') { // edge weight is following
-				pos = StringUtils.skipSpaces(str, pos + 1);
-				var pos0 = pos;
-				var buf = new StringBuilder();
-				while (pos < str.length() && (punctuationCharacters.indexOf(str.charAt(pos)) == -1 && str.charAt(pos) != '['))
-					buf.append(str.charAt(pos++));
-				var number = buf.toString().trim();
-				try {
-					var weight = Math.max(0, Double.parseDouble(number));
-					if (e != null)
-						setWeight(e, weight);
-					didReadWeight = true;
-					hasWeights.set(true);
-				} catch (Exception ex) {
-					throw new IOException("Expected number at position " + pos0 + " (got: '" + number + "')");
+			for (var which = 0; which < 3; which++) {
+				if (pos < str.length() && str.charAt(pos) == ':') { // edge weight is following
+					pos = StringUtils.skipSpaces(str, pos + 1);
+					if (pos < str.length() && str.charAt(pos) == ':') {
+						continue;
+					}
+					var pos0 = pos;
+					var numberStr = StringUtils.getStringUptoDelimiter(str, pos0, punctuationCharacters);
+					if (!NumberUtils.isDouble(numberStr))
+						throw new IOException("Expected number at position " + pos0 + " (got: '" + numberStr + "')");
+					pos = pos0 + numberStr.length();
+					var value = Math.max(0, Double.parseDouble(numberStr));
+					switch (which) {
+						case 0 -> {
+							if (e != null) {
+								setWeight(e, value);
+								didReadWeight = true;
+							}
+						}
+						case 1 -> {
+							if (e != null) {
+								setConfidence(e, value);
+							}
+						}
+						case 2 -> {
+							if (e != null) {
+								setProbability(e, value);
+							}
+						}
+					}
+
 				}
+				if (!SUPPORT_RICH_NEWICK)
+					break; // don't allow confidence or probability
 			}
 
 			// adjust edge weights for reticulate edges
@@ -451,12 +507,19 @@ public class PhyloTree extends PhyloSplitsGraph {
 					if (label != null && PhyloTreeNetworkIOUtils.isReticulateNode(label)) {
 						// if an instance of a reticulate node is marked ##, then we will set the weight of the edge to the node to a number >0
 						// to indicate that edge should be drawn as a tree edge
-						if (PhyloTreeNetworkIOUtils.isReticulateAcceptorEdge(label)) {
-							if (!didReadWeight || getWeight(e) <= 0)
-								setWeight(e, 0.000001);
+						if (SUPPORT_RICH_NEWICK) {
+							if (PhyloTreeNetworkIOUtils.isReticulateAcceptorEdge(label)) {
+								setAcceptor(e, true);
+							}
 						} else {
-							if (getWeight(e) > 0)
-								setWeight(e, 0.0);
+							if (PhyloTreeNetworkIOUtils.isReticulateAcceptorEdge(label)) {
+								if (!didReadWeight || getWeight(e) <= 0) {
+									setWeight(e, 0.000001);
+								}
+							} else {
+								if (getWeight(e) > 0)
+									setWeight(e, 0.0);
+							}
 						}
 					}
 				} catch (IllegalSelfEdgeException e1) {
@@ -489,6 +552,10 @@ public class PhyloTree extends PhyloSplitsGraph {
 				throw new IOException("Unexpected '" + str.charAt(pos) + "' at position " + pos);
 		}
 		return -1;
+	}
+
+	public boolean isInputHasMultiLabels() {
+		return inputHasMultiLabels;
 	}
 
 	/**
@@ -540,7 +607,7 @@ public class PhyloTree extends PhyloSplitsGraph {
 	 * @param writeWeights write edge weights or not
 	 */
 	public void write(Writer w, boolean writeWeights) throws IOException {
-		write(w, writeWeights, false, null, null);
+		write(w, new NewickOutputFormat(writeWeights), null, null);
 	}
 
 	/**
@@ -549,8 +616,12 @@ public class PhyloTree extends PhyloSplitsGraph {
 	 * @param w            the writer
 	 * @param writeWeights write edge weights or not
 	 */
-	public void write(Writer w, boolean writeWeights, boolean writeEdgeLabels) throws IOException {
-		write(w, writeWeights, writeEdgeLabels, null, null);
+	public void write(Writer w, boolean writeWeights, boolean writeEdgeLabelsAsComments) throws IOException {
+		write(w, new NewickOutputFormat(writeWeights, false, false, false, writeEdgeLabelsAsComments), null, null);
+	}
+
+	public void write(Writer w, NewickOutputFormat newickOutputFormat) throws IOException {
+		write(w, newickOutputFormat, null, null);
 	}
 
 	private int outputNodeNumber = 0;
@@ -561,12 +632,11 @@ public class PhyloTree extends PhyloSplitsGraph {
 	/**
 	 * Writes a tree in bracket notation. Uses extended bracket notation to write reticulate network
 	 *
-	 * @param w                the writer
-	 * @param writeEdgeWeights write edge weights or not
-	 * @param nodeId2Number    if non-null, will contain node-id to number mapping after call
-	 * @param edgeId2Number    if non-null, will contain edge-id to number mapping after call
+	 * @param w             the writer
+	 * @param nodeId2Number if non-null, will contain node-id to number mapping after call
+	 * @param edgeId2Number if non-null, will contain edge-id to number mapping after call
 	 */
-	public void write(Writer w, boolean writeEdgeWeights, boolean writeEdgeLabels, Map<Integer, Integer> nodeId2Number, Map<Integer, Integer> edgeId2Number) throws IOException {
+	public void write(Writer w, NewickOutputFormat format, Map<Integer, Integer> nodeId2Number, Map<Integer, Integer> edgeId2Number) throws IOException {
 		outputNodeNumber = 0;
 		outputEdgeNumber = 0;
 		if (ALLOW_WRITE_RETICULATE) {
@@ -586,7 +656,7 @@ public class PhyloTree extends PhyloSplitsGraph {
 						root = v;
 				}
 			}
-			writeRec(w, root, null, writeEdgeWeights, writeEdgeLabels, nodeId2Number, edgeId2Number, getLabelForWriting(root));
+			writeRec(w, root, null, format, nodeId2Number, edgeId2Number, getLabelForWriting(root));
 		} else if (getNumberOfNodes() == 1) {
 			w.write("(" + getLabelForWriting(getFirstNode()) + ");");
 			if (nodeId2Number != null)
@@ -601,7 +671,7 @@ public class PhyloTree extends PhyloSplitsGraph {
 	/**
 	 * Recursively writes a tree in bracket notation
 	 */
-	private void writeRec(Writer outs, Node v, Edge e, boolean writeEdgeWeights, boolean writeEdgeLabels, Map<Integer, Integer> nodeId2Number, Map<Integer, Integer> edgeId2Number, String nodeLabel) throws IOException {
+	private void writeRec(Writer outs, Node v, Edge e, NewickOutputFormat format, Map<Integer, Integer> nodeId2Number, Map<Integer, Integer> edgeId2Number, String nodeLabel) throws IOException {
 		if (nodeId2Number != null)
 			nodeId2Number.put(v.getId(), ++outputNodeNumber);
 
@@ -621,7 +691,7 @@ public class PhyloTree extends PhyloSplitsGraph {
 					final Node w = f.getTarget();
 					boolean inEdgeHasWeight = (getWeight(f) > 0);
 
-					if (isReticulatedEdge(f)) {
+					if (isReticulateEdge(f)) {
 						if (outputNodeReticulationNumberMap.get(w) == null) {
 							outputNodeReticulationNumberMap.set(w, ++outputReticulationNumber);
 							final String label;
@@ -630,7 +700,7 @@ public class PhyloTree extends PhyloSplitsGraph {
 							else
 								label = PhyloTreeNetworkIOUtils.makeReticulateNodeLabel(inEdgeHasWeight, outputNodeReticulationNumberMap.get(w));
 
-							writeRec(outs, w, f, writeEdgeWeights, writeEdgeLabels, nodeId2Number, edgeId2Number, label);
+							writeRec(outs, w, f, format, nodeId2Number, edgeId2Number, label);
 						} else {
 							String label;
 							if (getLabel(w) != null)
@@ -639,15 +709,10 @@ public class PhyloTree extends PhyloSplitsGraph {
 								label = PhyloTreeNetworkIOUtils.makeReticulateNodeLabel(inEdgeHasWeight, outputNodeReticulationNumberMap.get(w));
 
 							outs.write(label);
-							if (writeEdgeWeights && getWeight(f) != 1.0 && getWeight(f) != -1.0) {
-								outs.write(StringUtils.removeTrailingZerosAfterDot(String.format(":%.8f", getWeight(f))));
-							}
-							if (writeEdgeLabels && getLabel(f) != null) {
-								outs.write("[" + getLabelForWriting(f) + "]");
-							}
+							outs.write(getEdgeString(format, f));
 						}
 					} else
-						writeRec(outs, w, f, writeEdgeWeights, writeEdgeLabels, nodeId2Number, edgeId2Number, getLabelForWriting(w));
+						writeRec(outs, w, f, format, nodeId2Number, edgeId2Number, getLabelForWriting(w));
 				}
 				outs.write(")");
 			}
@@ -655,19 +720,44 @@ public class PhyloTree extends PhyloSplitsGraph {
 				outs.write(nodeLabel);
 		}
 
-		if (writeEdgeWeights && e != null && (!isReticulatedEdge(e) || getWeight(e) != 1.0 && getWeight(e) != -1.0)) {
-			outs.write(StringUtils.removeTrailingZerosAfterDot(String.format(":%.8f", getWeight(e))));
-			if (writeEdgeLabels && getLabel(e) != null) {
-				outs.write("[" + getLabelForWriting(e) + "]");
-			}
+		if (e != null && !isReticulateEdge(e)) {
+			outs.write(getEdgeString(format, e));
 		}
+	}
+
+	public String getEdgeString(NewickOutputFormat format, Edge e) {
+		var buf = new StringBuilder();
+		var colons = 0;
+		if (format.weights() && getWeight(e) != -1.0) {
+			buf.append(StringUtils.removeTrailingZerosAfterDot(String.format(":%.8f", getWeight(e))));
+			colons++;
+		}
+		if (format.confidenceUsingColon()) {
+			while (colons < 2) {
+				buf.append(":");
+				colons++;
+			}
+			buf.append(StringUtils.removeTrailingZerosAfterDot(String.format("%.8f", getConfidence(e))));
+		}
+		if (format.probabilityUsingColon()) {
+			while (colons < 3) {
+				buf.append(":");
+				colons++;
+			}
+			buf.append(StringUtils.removeTrailingZerosAfterDot(String.format("%.8f", getProbability(e))));
+		}
+		if (format.edgeLabelsAsComments() && getLabel(e) != null) {
+			buf.append("[").append(getLabelForWriting(e)).append("]");
+		}
+		return buf.toString();
+
 	}
 
 	/**
 	 * get the label to be used for writing. Will have single quotes, if label contains punctuation character or white space
 	 */
 	public String getLabelForWriting(Node v) {
-		String label = cleanLabelsOnWrite ? getCleanLabel(v) : getLabel(v);
+		var label = cleanLabelsOnWrite ? StringUtils.getCleanLabelForNewick(getLabel(v)) : getLabel(v);
 		if (label != null) {
 			for (int i = 0; i < label.length(); i++) {
 				if (punctuationCharacters.indexOf(label.charAt(i)) != -1 || Character.isWhitespace(label.charAt(i)))
@@ -681,7 +771,7 @@ public class PhyloTree extends PhyloSplitsGraph {
 	 * get the label to be used for writing. Will have single quotes, if label contains punctuation character or white space
 	 */
 	public String getLabelForWriting(Edge e) {
-		String label = cleanLabelsOnWrite ? getCleanLabel(e) : getLabel(e);
+		var label = cleanLabelsOnWrite ? StringUtils.getCleanLabelForNewick(getLabel(e)) : getLabel(e);
 		if (label != null) {
 			for (int i = 0; i < label.length(); i++) {
 				if (punctuationCharacters.indexOf(label.charAt(i)) != -1 || Character.isWhitespace(label.charAt(i)))
@@ -689,25 +779,6 @@ public class PhyloTree extends PhyloSplitsGraph {
 			}
 		}
 		return label;
-	}
-
-	/**
-	 * gets a clean version of the label. This is a label that can be printed in a Newick string
-	 *
-	 * @return clean label
-	 */
-	private String getCleanLabel(Node v) {
-		var label = getLabel(v);
-		if (label == null)
-			return null;
-		else {
-			label = getLabel(v).trim();
-			label = label.replaceAll("[ \\[\\](),:;]+", "_");
-			if (label.length() > 0)
-				return label;
-			else
-				return "_";
-		}
 	}
 
 	/**
@@ -761,7 +832,7 @@ public class PhyloTree extends PhyloSplitsGraph {
 				}
 				var transferAcceptorEdge = new Single<Edge>();
 				for (var e : u.inEdges()) {
-					setReticulated(e, true);
+					setReticulate(e, true);
 					if (getWeight(e) > 0) {
 						if (transferAcceptorEdge.isNull())
 							transferAcceptorEdge.set(e);
@@ -874,21 +945,6 @@ public class PhyloTree extends PhyloSplitsGraph {
 		StringWriter st = new StringWriter();
 		write(st, wgts);
 		out.println(st);
-	}
-
-
-	/**
-	 * was last read tree multi-labeled? If so, the parser replaces instances of the same label
-	 * by label.1, label.2 ...
-	 *
-	 * @return true, if input was multi labeled
-	 */
-	public boolean getInputHasMultiLabels() {
-		return inputHasMultiLabels;
-	}
-
-	private void setInputHasMultiLabels(boolean inputHasMultiLabels) {
-		this.inputHasMultiLabels = inputHasMultiLabels;
 	}
 
 
@@ -1029,28 +1085,11 @@ public class PhyloTree extends PhyloSplitsGraph {
 	 * recursively does the work
 	 */
 	private void redirectEdgesAwayFromRootRec(Node v, Edge e) {
-		if (e != null && v != e.getTarget() && !isReticulatedEdge(e))
+		if (e != null && v != e.getTarget() && !isReticulateEdge(e))
 			e.reverse();
 		for (var f : IteratorUtils.asList(v.adjacentEdges())) {
 			if (f != e && this.okToDescendDownThisEdgeInTraversal(f, v))
 				redirectEdgesAwayFromRootRec(f.getOpposite(v), f);
-		}
-	}
-
-	/**
-	 * gets a clean version of the label. This is a label that can be printed in a Newick string
-	 */
-	private String getCleanLabel(Edge v) {
-		var label = getLabel(v);
-		if (label == null)
-			return null;
-		else {
-			label = getLabel(v).trim();
-			label = label.replaceAll("[ \\[\\](),:]+", "_");
-			if (label.length() > 0)
-				return label;
-			else
-				return "_";
 		}
 	}
 
@@ -1060,8 +1099,12 @@ public class PhyloTree extends PhyloSplitsGraph {
 	 * @return children of a node in the LSA tree
 	 */
 	public NodeArray<List<Node>> getLSAChildrenMap() {
-		if (lsaChildrenMap == null)
-			lsaChildrenMap = newNodeArray();
+		if (lsaChildrenMap == null) {
+			synchronized (this) {
+				if (lsaChildrenMap == null)
+					lsaChildrenMap = newNodeArray();
+			}
+		}
 
 		return lsaChildrenMap;
 	}
@@ -1142,109 +1185,9 @@ public class PhyloTree extends PhyloSplitsGraph {
 		return pos;
 	}
 
-	/**
-	 * iterates over all nodes of degree 1
-	 */
-	public Iterable<Node> leaves() {
-		return () -> new Iterator<>() {
-			private Node v = getFirstNode();
-
-			{
-				while (v != null && v.getDegree() > 1) {
-					v = v.getNext();
-				}
-			}
-
-			@Override
-			public boolean hasNext() {
-				return v != null;
-			}
-
-			@Override
-			public Node next() {
-				final var result = v;
-				{
-					v = v.getNext();
-					while (v != null) {
-						if (v.getDegree() == 1)
-							break;
-						else
-							v = v.getNext();
-					}
-				}
-				return result;
-			}
-		};
-	}
-
-	/**
-	 * counts all nodes of degree 1
-	 */
-	public int countLeaves() {
-		return IteratorUtils.count(leaves());
-	}
-
-	/**
-	 * returns a new tree in which all edges of length < min length have been contracted
-	 *
-	 * @return true, if anything contracted
-	 */
-	public boolean contractShortEdges(double minLength) {
-		return contractEdges(edgeStream().filter(e -> getWeight(e) < minLength).collect(Collectors.toSet()), null);
-	}
-
-	/**
-	 * returns a new tree in which all edges of length < min length have been contracted
-	 *
-	 * @return true, if anything contracted
-	 */
-	public boolean contractEdges(Set<Edge> edgesToContract, Single<Boolean> selfEdgeEncountered) {
-		boolean hasContractedOne = edgesToContract.size() > 0;
-
-		while (edgesToContract.size() > 0) {
-			final var e = edgesToContract.iterator().next();
-			edgesToContract.remove(e);
-
-			final var v = e.getSource();
-			final var w = e.getTarget();
-
-			for (Edge f : v.adjacentEdges()) { // will remove e from edgesToContract here
-				if (f != e) {
-					final var u = f.getOpposite(v);
-					final var needsContracting = edgesToContract.contains(f);
-					if (needsContracting)
-						edgesToContract.remove(f);
-
-					if (u != w) {
-						final Edge z;
-						if (u == f.getSource())
-							z = newEdge(u, w);
-						else
-							z = newEdge(w, u);
-						setWeight(z, getWeight(f));
-						setConfidence(z, getConfidence(f));
-						setLabel(z, getLabel(z));
-						if (needsContracting) {
-							edgesToContract.add(z);
-						}
-					} else if (selfEdgeEncountered != null)
-						selfEdgeEncountered.set(true);
-				}
-			}
-			for (var taxon : getTaxa(v))
-				addTaxon(w, taxon);
-
-			if (getRoot() == v)
-				setRoot(w);
-
-			deleteNode(v);
-		}
-
-		return hasContractedOne;
-	}
 
 	public boolean isTreeEdge(Edge e) {
-		return !isReticulatedEdge(e);
+		return !isReticulateEdge(e);
 	}
 
 	/**
@@ -1254,11 +1197,16 @@ public class PhyloTree extends PhyloSplitsGraph {
 	 * @return true if transfer edge
 	 */
 	public boolean isTransferEdge(Edge e) {
-		return isReticulatedEdge(e) && getWeight(e) < 0.0;
+		if (SUPPORT_RICH_NEWICK)
+			return isReticulateEdge(e) && !isAcceptorEdge(e);
+		else
+		return isReticulateEdge(e) && getWeight(e) < 0.0;
 	}
 
 	public boolean isTransferAcceptorEdge(Edge e) {
-		return isReticulatedEdge(e) && getWeight(e) > 0;
+		if (SUPPORT_RICH_NEWICK)
+			return isAcceptorEdge(e);
+		return isReticulateEdge(e) && getWeight(e) > 0;
 	}
 
 	/**
@@ -1354,8 +1302,8 @@ public class PhyloTree extends PhyloSplitsGraph {
 	 * @param e edge
 	 * @return true, if marked as reticulate
 	 */
-	public boolean isReticulatedEdge(Edge e) {
-		return e != null && reticulatedEdges != null && reticulatedEdges.contains(e);
+	public boolean isReticulateEdge(Edge e) {
+		return e != null && reticulateEdges != null && reticulateEdges.contains(e);
 	}
 
 	/**
@@ -1364,16 +1312,58 @@ public class PhyloTree extends PhyloSplitsGraph {
 	 * @param e          edge
 	 * @param reticulate is reticulate
 	 */
-	public void setReticulated(Edge e, boolean reticulate) {
-		if (reticulatedEdges == null) {
-			if (!reticulate)
-				return;
-			reticulatedEdges = newEdgeSet();
-		}
+	public void setReticulate(Edge e, boolean reticulate) {
 		if (reticulate)
-			reticulatedEdges.add(e);
-		else
-			reticulatedEdges.remove(e);
+			getReticulateEdges().add(e);
+		else if (reticulateEdges != null)
+			getReticulateEdges().remove(e);
+	}
+
+	public EdgeSet getReticulateEdges() {
+		if (reticulateEdges == null) {
+			synchronized (this) {
+				if (reticulateEdges == null) {
+					reticulateEdges = newEdgeSet();
+				}
+			}
+		}
+		return reticulateEdges;
+	}
+
+	public boolean hasReticulateEdges() {
+		return reticulateEdges != null && reticulateEdges.size() > 0;
+	}
+
+	/**
+	 * mark as acceptord or not
+	 *
+	 * @param e        edge
+	 * @param acceptor is acceptor
+	 */
+	public void setAcceptor(Edge e, boolean acceptor) {
+		if (acceptor)
+			getAcceptorEdges().add(e);
+		else if (acceptorEdges != null)
+			getAcceptorEdges().remove(e);
+	}
+
+	public boolean isAcceptorEdge(Edge e) {
+		return acceptorEdges == null ? false : acceptorEdges.contains(e);
+	}
+
+	public EdgeSet getAcceptorEdges() {
+		if (acceptorEdges == null) {
+			synchronized (this) {
+				if (acceptorEdges == null) {
+					acceptorEdges = newEdgeSet();
+				}
+			}
+		}
+		return acceptorEdges;
+	}
+
+	public boolean hasAcceptorEdges() {
+		return acceptorEdges != null && acceptorEdges.size() > 0;
 	}
 
 	/**
@@ -1382,14 +1372,14 @@ public class PhyloTree extends PhyloSplitsGraph {
 	 * @return number of reticulate edges
 	 */
 	public int getNumberReticulateEdges() {
-		return reticulatedEdges == null ? 0 : reticulatedEdges.size();
+		return reticulateEdges == null ? 0 : reticulateEdges.size();
 	}
 
 	/**
 	 * iterable over all reticulate edges
 	 */
-	public Iterable<Edge> reticulatedEdges() {
-		return reticulatedEdges != null ? reticulatedEdges : Collections.emptySet();
+	public Iterable<Edge> reticulateEdges() {
+		return reticulateEdges != null ? reticulateEdges : Collections.emptySet();
 	}
 
 	/**
@@ -1399,12 +1389,12 @@ public class PhyloTree extends PhyloSplitsGraph {
 	 * @return true, if we should descend this edge, false else
 	 */
 	public boolean okToDescendDownThisEdgeInTraversal(Edge e, Node v) {
-		if (!isReticulatedEdge(e))
+		if (!isReticulateEdge(e))
 			return true;
 		else {
 			if (v != e.getSource())
 				return false; // only go DOWN reticulate edges.
-			return e == e.getTarget().inEdgesStream(false).filter(this::isReticulatedEdge).findFirst().orElse(null);
+			return e == e.getTarget().inEdgesStream(false).filter(this::isReticulateEdge).findFirst().orElse(null);
 		}
 	}
 
@@ -1413,10 +1403,10 @@ public class PhyloTree extends PhyloSplitsGraph {
 	 * traverse of a tree. Use this to ensure that each node is visited only once
 	 */
 	public boolean okToDescendDownThisEdgeInTraversal(Edge e) {
-		if (!isReticulatedEdge(e))
+		if (!isReticulateEdge(e))
 			return true;
 		else {
-			return e == e.getTarget().inEdgesStream(false).filter(this::isReticulatedEdge).findFirst().orElse(null);
+			return e == e.getTarget().inEdgesStream(false).filter(this::isReticulateEdge).findFirst().orElse(null);
 		}
 	}
 
@@ -1469,6 +1459,22 @@ public class PhyloTree extends PhyloSplitsGraph {
 			return new Pair<>(v.getFirstInEdge(), here);
 		else
 			return new Pair<>(null, here);
+	}
+
+	public record NewickOutputFormat(boolean weights, boolean confidenceAsNodeLabel, boolean confidenceUsingColon,
+									 boolean probabilityUsingColon, boolean edgeLabelsAsComments) {
+
+		public NewickOutputFormat(boolean weights) {
+			this(weights, false, false, false, false);
+		}
+
+		public static NewickOutputFormat unweighted() {
+			return new NewickOutputFormat(false, false, false, false, false);
+		}
+
+		public static NewickOutputFormat weighted() {
+			return new NewickOutputFormat(true, false, false, false, false);
+		}
 	}
 }
 

@@ -19,10 +19,7 @@
 
 package jloda.phylo.algorithms;
 
-import jloda.graph.Graph;
-import jloda.graph.Node;
-import jloda.graph.NodeArray;
-import jloda.graph.NodeSet;
+import jloda.graph.*;
 import jloda.graph.algorithms.CutPoints;
 import jloda.phylo.PhyloTree;
 import jloda.util.BitSetUtils;
@@ -368,7 +365,7 @@ public class RootedNetworkProperties {
                 return true;
             else {
                 var selfEdgeEncountered = new Single<>(false);
-                contractedGraph.contractEdges(reticulateEdges, selfEdgeEncountered);
+                contractEdges(contractedGraph, reticulateEdges, selfEdgeEncountered);
                 return !selfEdgeEncountered.get() && isNonEmptyDAG(contractedGraph);
             }
         } catch (Exception ignored) {
@@ -414,5 +411,64 @@ public class RootedNetworkProperties {
             return String.format("%d nodes, %d edges, %d leaves", phyloTree.getNumberOfNodes(), phyloTree.getNumberOfEdges(),
                     phyloTree.nodeStream().filter(Node::isLeaf).count());
         }
+    }
+
+    /**
+     * contracts all edges below min length
+     *
+     * @return true, if anything contracted
+     */
+    public static boolean contractShortEdges(PhyloTree tree, double minLength) {
+        return contractEdges(tree, tree.edgeStream().filter(e -> tree.getWeight(e) < minLength).collect(Collectors.toSet()), null);
+    }
+
+    /**
+     * contracts a set of edges
+     *
+     * @return true, if anything contracted
+     */
+    public static boolean contractEdges(PhyloTree tree, Set<Edge> edgesToContract, Single<Boolean> selfEdgeEncountered) {
+        boolean hasContractedOne = edgesToContract.size() > 0;
+
+        while (edgesToContract.size() > 0) {
+            final var e = edgesToContract.iterator().next();
+            edgesToContract.remove(e);
+
+            final var v = e.getSource();
+            final var w = e.getTarget();
+
+            for (Edge f : v.adjacentEdges()) { // will remove e from edgesToContract here
+                if (f != e) {
+                    final var u = f.getOpposite(v);
+                    final var needsContracting = edgesToContract.contains(f);
+                    if (needsContracting)
+                        edgesToContract.remove(f);
+
+                    if (u != w) {
+                        final Edge z;
+                        if (u == f.getSource())
+                            z = tree.newEdge(u, w);
+                        else
+                            z = tree.newEdge(w, u);
+                        tree.setWeight(z, tree.getWeight(f));
+                        tree.setConfidence(z, tree.getConfidence(f));
+                        tree.setLabel(z, tree.getLabel(z));
+                        if (needsContracting) {
+                            edgesToContract.add(z);
+                        }
+                    } else if (selfEdgeEncountered != null)
+                        selfEdgeEncountered.set(true);
+                }
+            }
+            for (var taxon : tree.getTaxa(v))
+                tree.addTaxon(w, taxon);
+
+            if (tree.getRoot() == v)
+                tree.setRoot(w);
+
+            tree.deleteNode(v);
+        }
+
+        return hasContractedOne;
     }
 }

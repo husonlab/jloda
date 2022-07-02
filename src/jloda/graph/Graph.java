@@ -1856,16 +1856,58 @@ public class Graph extends GraphBase implements INamed {
 		}
 	}
 
-	void close(EdgeArray<?> array) {
-		synchronized (edgeArrays) {
-			for (var ref : edgeArrays) {
-				if (ref.get() == array) {
-					edgeArrays.remove(ref);
-					return;
-				}
-			}
-		}
-	}
+    void close(EdgeArray<?> array) {
+        synchronized (edgeArrays) {
+            for (var ref : edgeArrays) {
+                if (ref.get() == array) {
+                    edgeArrays.remove(ref);
+                    return;
+                }
+            }
+        }
+    }
+
+    /**
+     * iterates over all nodes of degree 1
+     */
+    public Iterable<Node> leaves() {
+        return () -> new Iterator<>() {
+            private Node v = getFirstNode();
+
+            {
+                while (v != null && v.getOutDegree() > 0) {
+                    v = v.getNext();
+                }
+            }
+
+            @Override
+            public boolean hasNext() {
+                return v != null;
+            }
+
+            @Override
+            public Node next() {
+                final var result = v;
+                {
+                    v = v.getNext();
+                    while (v != null) {
+                        if (v.getOutDegree() == 0)
+                            break;
+                        else
+                            v = v.getNext();
+                    }
+                }
+                return result;
+            }
+        };
+    }
+
+    /**
+     * counts all nodes of degree 1
+     */
+    public int countLeaves() {
+        return IteratorUtils.count(leaves());
+    }
 }
 
 // EOF

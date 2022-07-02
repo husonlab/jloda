@@ -30,28 +30,26 @@ import java.util.*;
  * Daniel Huson, 1.2018
  */
 public class PhyloSplitsGraph extends PhyloGraph {
-    final EdgeIntArray splits;
-    protected final EdgeDoubleArray edgeAngles;
-    final Vector<Integer> taxon2cycle;
+	private EdgeIntArray edgeSplitMap;
+	private EdgeDoubleArray edgeAngleMap;
+	private Vector<Integer> taxonCycleMap;
 
-    /**
-     * Construct a new empty phylogenetic tree.
-     */
-    public PhyloSplitsGraph() {
-        super();
-        splits = new EdgeIntArray(this);
-        edgeAngles = new EdgeDoubleArray(this);
-        taxon2cycle = new Vector<>();
-    }
+	/**
+	 * Construct a new empty phylogenetic tree.
+	 */
+	public PhyloSplitsGraph() {
+		super();
+	}
 
-    /**
-     * Clears the tree.
+	/**
+	 * Clears the tree.
      */
     public void clear() {
-        super.clear();
-        splits.clear();
-        taxon2cycle.clear();
-    }
+		super.clear();
+		edgeSplitMap = null;
+		edgeAngleMap = null;
+		taxonCycleMap = null;
+	}
 
     /**
      * copies a graph
@@ -97,11 +95,12 @@ public class PhyloSplitsGraph extends PhyloGraph {
     public Integer[] getSplitIds() {
         final Set<Integer> ids = new TreeSet<>();
         for (Edge e : edges()) {
-            if (splits.get(e) == null)
-                System.err.println("Split id is null!!!");
-            else
-                ids.add(splits.get(e));
-        }
+			var id = getSplit(e);
+			if (id == 0)
+				System.err.println("Split id is 0!!!");
+			else
+				ids.add(id);
+		}
         return ids.toArray(new Integer[0]);
     }
 
@@ -112,31 +111,38 @@ public class PhyloSplitsGraph extends PhyloGraph {
      * @param id the id
      */
     public void setSplit(Edge e, int id) {
-        splits.put(e, id);
+		getSplits().put(e, id);
     }
 
-    /**
-     * gets the split-id of an edge
-     *
-     * @param e the edge
-     * @return the split-id of the given edge
-     */
-    public int getSplit(Edge e) {
-        if (splits.get(e) == null)
-            return 0;
-        return splits.get(e);
-    }
+	/**
+	 * gets the split-id of an edge
+	 *
+	 * @param e the edge
+	 * @return the split-id of the given edge
+	 */
+	public int getSplit(Edge e) {
+		return edgeSplitMap == null ? 0 : getSplits().getOrDefault(e, 0);
+	}
 
+	public EdgeIntArray getSplits() {
+		if (edgeSplitMap == null) {
+			synchronized (this) {
+				if (edgeSplitMap == null)
+					edgeSplitMap = newEdgeIntArray();
+			}
+		}
+		return edgeSplitMap;
+	}
 
-    /**
-     * clones the current tree
-     *
-     * @return a clone of the current tree
-     */
-    public Object clone() {
-        final PhyloSplitsGraph phyloSplitsGraph = new PhyloSplitsGraph();
-        phyloSplitsGraph.copy(this);
-        return phyloSplitsGraph;
+	/**
+	 * clones the current tree
+	 *
+	 * @return a clone of the current tree
+	 */
+	public Object clone() {
+		final PhyloSplitsGraph phyloSplitsGraph = new PhyloSplitsGraph();
+		phyloSplitsGraph.copy(this);
+		return phyloSplitsGraph;
     }
 
     /**
@@ -299,36 +305,44 @@ public class PhyloSplitsGraph extends PhyloGraph {
      * @param d angle
      */
     public void setAngle(Edge e, double d) {
-        edgeAngles.put(e, d);
-    }
+		getAngles().put(e, d);
+	}
 
-    /**
-     * Gets the angle of an edge.
-     *
-     * @param e Edge
-     * @return angle
-     */
-    public double getAngle(Edge e) {
-        if (edgeAngles.get(e) == null)
-            return 0;
-        else
-            return edgeAngles.get(e);
-    }
+	/**
+	 * Gets the angle of an edge.
+	 *
+	 * @param e Edge
+	 * @return angle
+	 */
+	public double getAngle(Edge e) {
+		return edgeAngleMap == null ? 0 : edgeAngleMap.getOrDefault(e, 0.0);
+	}
 
-    /**
-     * find the position of a taxon in the cyclic ordering.
-     *
-     * @param taxId the taxon-id.
-     * @return the index of taxon with id <code>taxId</code> in the cyclic ordering.
-     */
-    public int getTaxon2Cycle(int taxId) {
-        if (taxId <= taxon2cycle.size())
-            return taxon2cycle.get(taxId - 1);
-        else {
-            System.err.println("getTaxon2Cycle: no cycle-index set for taxId " + taxId + " (taxon2cycle.size(): " + taxon2cycle.size() + ")");
-            return -1;
-        }
-    }
+	public EdgeDoubleArray getAngles() {
+		if (edgeAngleMap == null) {
+			synchronized (this) {
+				if (edgeAngleMap == null)
+					edgeAngleMap = newEdgeDoubleArray();
+			}
+		}
+		return edgeAngleMap;
+	}
+
+	/**
+	 * find the position of a taxon in the cyclic ordering.
+	 *
+	 * @param taxId the taxon-id.
+	 * @return the index of taxon with id <code>taxId</code> in the cyclic ordering.
+	 */
+	public int getTaxon2Cycle(int taxId) {
+		var taxon2cycle = getTaxon2Cycle();
+		if (taxId > 0 && taxId <= taxon2cycle.size())
+			return taxon2cycle.get(taxId - 1);
+		else {
+			System.err.println("getTaxon2Cycle: no cycle-index set for taxId " + taxId + " (taxon2cycle.size(): " + taxon2cycle.size() + ")");
+			return -1;
+		}
+	}
 
     /**
      * gets the cycle of taxa
@@ -349,24 +363,34 @@ public class PhyloSplitsGraph extends PhyloGraph {
      * @param taxId      the taxon-id.
      * @param cycleIndex the index of taxon with id <code>taxId</code> in the cyclic ordering.
      */
-    public void setTaxon2Cycle(int taxId, int cycleIndex) {
-        if (taxId <= taxon2cycle.size()) {
-            taxon2cycle.setElementAt(cycleIndex, taxId - 1);
-        } else {
-            taxon2cycle.setSize(taxId);
-            taxon2cycle.setElementAt(cycleIndex, taxId - 1);
-        }
-    }
+	public void setTaxon2Cycle(int taxId, int cycleIndex) {
+		var taxon2cycle = getTaxon2Cycle();
+		if (taxId <= taxon2cycle.size()) {
+			taxon2cycle.setElementAt(cycleIndex, taxId - 1);
+		} else {
+			taxon2cycle.setSize(taxId);
+			taxon2cycle.setElementAt(cycleIndex, taxId - 1);
+		}
+	}
 
-    /**
-     * returns the number of splits mentioned in this graph
-     *
-     * @return number of splits
-     */
-    public int countSplits() {
-        BitSet seen = new BitSet();
-        for (Edge e = getFirstEdge(); e != null; e = getNextEdge(e))
-            seen.set(getSplit(e));
+	public Vector<Integer> getTaxon2Cycle() {
+		if (taxonCycleMap == null) {
+			synchronized (this) {
+				taxonCycleMap = new Vector<>();
+			}
+		}
+		return taxonCycleMap;
+	}
+
+	/**
+	 * returns the number of splits mentioned in this graph
+	 *
+	 * @return number of splits
+	 */
+	public int countSplits() {
+		BitSet seen = new BitSet();
+		for (Edge e = getFirstEdge(); e != null; e = getNextEdge(e))
+			seen.set(getSplit(e));
         return seen.cardinality();
     }
 

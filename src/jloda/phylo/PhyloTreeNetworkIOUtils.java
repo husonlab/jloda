@@ -30,13 +30,13 @@ public class PhyloTreeNetworkIOUtils {
      * @return label or null
      */
     public static String findReticulateLabel(String label) {
-        int pos = label.lastIndexOf("#"); // look for last instance of '#',
-        // followed by H or L
-        if (pos >= 0 && pos < label.length() - 1 && "HLhl".indexOf(label.charAt(pos + 1)) != -1)
-            return label.substring(pos + 1);
-        else
-            return null;
-    }
+		int pos = label.lastIndexOf("#"); // look for last instance of '#',
+		// followed by H or R or L
+		if (pos >= 0 && pos < label.length() - 1 && "HhLlRr".indexOf(label.charAt(pos + 1)) != -1)
+			return label.substring(pos + 1);
+		else
+			return null;
+	}
 
     /**
      * determines whether this a reticulate node
@@ -60,7 +60,7 @@ public class PhyloTreeNetworkIOUtils {
      */
     public static boolean isReticulateAcceptorEdge(String label) {
         label = label.toUpperCase();
-        return label.contains("##H") || label.contains("##L");
+		return label.contains("##H") || label.contains("##L") || label.contains("##R");
     }
 
     /**

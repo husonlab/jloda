@@ -33,10 +33,12 @@ import java.util.*;
 public class PhyloGraph extends Graph {
     public static final double DEFAULT_WEIGHT = 1.0;
     public static final double DEFAULT_CONFIDENCE = 1.0;
-    private EdgeDoubleArray edgeWeights;
-    private EdgeDoubleArray edgeConfidences;
-    private Map<Integer, Node> taxon2node;
-    private NodeArray<List<Integer>> node2taxa;
+    public static final double DEFAULT_PROBABILITY = 1.0;
+    private volatile EdgeDoubleArray edgeWeights;
+    private volatile EdgeDoubleArray edgeConfidences;
+    private volatile EdgeDoubleArray edgeProbabilities;
+    private volatile Map<Integer, Node> taxon2node;
+    private volatile NodeArray<List<Integer>> node2taxa;
 
     // if you add anything here, make sure it gets added to copy, too!
 
@@ -49,8 +51,8 @@ public class PhyloGraph extends Graph {
 
         addGraphUpdateListener(new GraphUpdateAdapter() {
             public void deleteNode(Node v) {
-                if (node2taxa != null) {
-                    List<Integer> list = node2taxa.get(v);
+                if (node2taxa != null && taxon2node != null) {
+                    var list = node2taxa.get(v);
                     if (list != null) {
                         for (Integer t : list) {
                             taxon2node.put(t, null);
@@ -70,6 +72,7 @@ public class PhyloGraph extends Graph {
         node2taxa = null;
         edgeWeights = null;
         edgeConfidences = null;
+        edgeProbabilities = null;
     }
 
     /**
@@ -101,7 +104,7 @@ public class PhyloGraph extends Graph {
         setName(src.getName());
 
         if (src.taxon2node != null) {
-            for (Node v : src.taxon2node.values()) {
+            for (Node v : src.getTaxonNodeMap().values()) {
                 final var w = (oldNode2NewNode.get(v));
                 for (var tax : src.getTaxa(v)) {
                     addTaxon(w, tax);
@@ -118,6 +121,12 @@ public class PhyloGraph extends Graph {
         if (src.edgeConfidences != null) {
             for (var e : src.edgeConfidences.keys()) {
                 setConfidence(oldEdge2NewEdge.get(e), src.getConfidence(e));
+            }
+        }
+
+        if (src.edgeProbabilities != null) {
+            for (var e : src.edgeProbabilities.keys()) {
+                setProbability(oldEdge2NewEdge.get(e), src.getProbability(e));
             }
         }
     }
@@ -140,9 +149,23 @@ public class PhyloGraph extends Graph {
         if (edgeWeights == null) {
             if (value == DEFAULT_WEIGHT)
                 return;
-            edgeWeights = new EdgeDoubleArray(this);
         }
-        edgeWeights.put(e, value);
+        getEdgeWeights().put(e, value);
+    }
+
+    public EdgeDoubleArray getEdgeWeights() {
+        if (edgeWeights == null) {
+            synchronized (this) {
+                if (edgeWeights == null) {
+                    edgeWeights = newEdgeDoubleArray();
+                }
+            }
+        }
+        return edgeWeights;
+    }
+
+    public boolean hasEdgeWeights() {
+        return edgeWeights != null;
     }
 
     /**
@@ -152,12 +175,7 @@ public class PhyloGraph extends Graph {
      * @param value double
      */
     public void setConfidence(Edge e, double value) {
-        if (edgeConfidences == null) {
-            if (value == DEFAULT_CONFIDENCE)
-                return;
-            edgeConfidences = newEdgeDoubleArray();
-        }
-        edgeConfidences.put(e, value);
+        getEdgeConfidences().put(e, value);
     }
 
     /**
@@ -167,10 +185,57 @@ public class PhyloGraph extends Graph {
      * @return returns the edge confidence, or 1, if not set
      */
     public double getConfidence(Edge e) {
-        if (edgeConfidences == null)
-            return DEFAULT_CONFIDENCE;
-        else
-            return edgeConfidences.getOrDefault(e, DEFAULT_CONFIDENCE);
+        return getEdgeConfidences() == null ? DEFAULT_CONFIDENCE : getEdgeConfidences().getOrDefault(e, DEFAULT_CONFIDENCE);
+    }
+
+    public EdgeDoubleArray getEdgeConfidences() {
+        if (edgeConfidences == null) {
+            synchronized (this) {
+                if (edgeConfidences == null) {
+                    edgeConfidences = newEdgeDoubleArray();
+                }
+            }
+        }
+        return edgeConfidences;
+    }
+
+    public boolean hasEdgeConfidences() {
+        return edgeConfidences != null;
+    }
+
+    /**
+     * Sets the probability of an edge.
+     *
+     * @param e     Edge
+     * @param value double
+     */
+    public void setProbability(Edge e, double value) {
+        getEdgeProbabilities().put(e, value);
+    }
+
+    /**
+     * Gets the probability of an edge.
+     *
+     * @param e Edge
+     * @return returns the edge probability, or 1, if not set
+     */
+    public double getProbability(Edge e) {
+        return getEdgeProbabilities() == null ? DEFAULT_PROBABILITY : getEdgeProbabilities().getOrDefault(e, DEFAULT_PROBABILITY);
+    }
+
+    public EdgeDoubleArray getEdgeProbabilities() {
+        if (edgeProbabilities == null) {
+            synchronized (this) {
+                if (edgeProbabilities == null) {
+                    edgeProbabilities = newEdgeDoubleArray();
+                }
+            }
+        }
+        return edgeProbabilities;
+    }
+
+    public boolean hasEdgeProbabilities() {
+        return edgeProbabilities != null;
     }
 
     /**
@@ -180,10 +245,7 @@ public class PhyloGraph extends Graph {
      * @return the node associated with the given taxon
      */
     public Node getTaxon2Node(int taxId) {
-        if (taxon2node == null)
-            return null;
-        else
-            return taxon2node.get(taxId);
+        return taxon2node == null ? null : taxon2node.get(taxId);
     }
 
     /**
@@ -192,17 +254,36 @@ public class PhyloGraph extends Graph {
      * @return number of taxa
      */
     public int getNumberOfTaxa() {
-        if (taxon2node == null)
-            return 0;
-        else
-            return taxon2node.size();
+        return taxon2node == null ? 0 : taxon2node.size();
     }
 
     public Iterable<Integer> getTaxa() {
-        if (taxon2node == null)
+        if (getTaxonNodeMap() == null)
             return Collections.emptyList();
         else
-            return taxon2node.keySet();
+            return getTaxonNodeMap().keySet();
+    }
+
+    public Map<Integer, Node> getTaxonNodeMap() {
+        if (taxon2node == null) {
+            synchronized (this) {
+                if (taxon2node == null) {
+                    taxon2node = new HashMap<>();
+                }
+            }
+        }
+        return taxon2node;
+    }
+
+    public NodeArray<List<Integer>> getNodeTaxaMap() {
+        if (node2taxa == null) {
+            synchronized (this) {
+                if (node2taxa == null) {
+                    node2taxa = newNodeArray();
+                }
+            }
+        }
+        return node2taxa;
     }
 
     public boolean hasTaxa(Node v) {
@@ -225,12 +306,8 @@ public class PhyloGraph extends Graph {
      * @param taxId the id of the taxon to be added
      */
     public void addTaxon(Node v, int taxId) {
-        if (taxon2node == null) {
-            taxon2node = new HashMap<>();
-            node2taxa = newNodeArray();
-        }
-        taxon2node.put(taxId, v);
-        var list = node2taxa.get(v);
+        getTaxonNodeMap().put(taxId, v);
+        var list = getNodeTaxaMap().get(v);
         if (list == null) {
             list = new ArrayList<>();
             list.add(taxId);
@@ -247,7 +324,7 @@ public class PhyloGraph extends Graph {
 	* @param v the node
 	*/
     public void clearTaxa(Node v) {
-        if (taxon2node != null) {
+        if (taxon2node != null && node2taxa != null) {
             var list = node2taxa.get(v);
             if (list != null) {
                 for (var t : list) {
@@ -296,13 +373,15 @@ public class PhyloGraph extends Graph {
     public void removeTaxon(int taxonId) {
         if (taxon2node != null && taxonId > 0 && taxonId < taxon2node.size()) {
             taxon2node.put(taxonId, null);
-            for (var v : nodes()) {
-                var list = node2taxa.get(v);
-                if (list != null && list.contains(taxonId)) {
-                    list.remove((Integer) taxonId);
-                    if (list.size() == 0)
-                        node2taxa.put(v, null);
-                    return;
+            if (node2taxa != null) {
+                for (var v : nodes()) {
+                    var list = node2taxa.get(v);
+                    if (list != null && list.contains(taxonId)) {
+                        list.remove((Integer) taxonId);
+                        if (list.size() == 0)
+                            node2taxa.put(v, null);
+                        return;
+                    }
                 }
             }
         }
