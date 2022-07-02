@@ -50,12 +50,18 @@ public class ClosingLastDocument {
             alert.setTitle("Confirm Quit - " + ProgramProperties.getProgramName());
             alert.setHeaderText("Closing the last open document");
             alert.setContentText("Do you really want to quit?");
-            final ButtonType buttonTypeCancel = new ButtonType("No", ButtonBar.ButtonData.CANCEL_CLOSE);
-            final ButtonType buttonTypeYes = new ButtonType("Yes", ButtonBar.ButtonData.OK_DONE);
-            alert.getButtonTypes().setAll(buttonTypeCancel, buttonTypeYes);
+
+            final ButtonType yesAndNeverAskAgainType = new ButtonType("Yes, never ask again");
+
+            final ButtonType cancelType = new ButtonType("No", ButtonBar.ButtonData.CANCEL_CLOSE);
+            final ButtonType yesType = new ButtonType("Yes", ButtonBar.ButtonData.OK_DONE);
+            alert.getButtonTypes().setAll(yesAndNeverAskAgainType, cancelType, yesType);
 
             final var result = alert.showAndWait();
-            return result.isEmpty() || result.get() != buttonTypeCancel;
+            if (result.isPresent() && result.get() == yesAndNeverAskAgainType) {
+                ProgramProperties.setConfirmQuit(false);
+            }
+            return result.isEmpty() || result.get() != cancelType;
         }
     }
 }

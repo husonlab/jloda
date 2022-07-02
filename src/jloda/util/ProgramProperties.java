@@ -61,7 +61,6 @@ public class ProgramProperties {
 
 	private static final boolean macOS = (System.getProperty("os.name") != null && System.getProperty("os.name").toLowerCase().startsWith("mac"));
 	private static boolean useGUI = false;
-	private static boolean confirmQuit = true;
 
 
 	private static Runnable stateChecker = null;
@@ -553,11 +552,11 @@ public class ProgramProperties {
 	}
 
 	public static boolean isConfirmQuit() {
-		return confirmQuit;
+		return get("ConfirmQuit", true);
 	}
 
 	public static void setConfirmQuit(boolean confirmQuit) {
-		ProgramProperties.confirmQuit = confirmQuit;
+		put("ConfirmQuit", confirmQuit);
 	}
 
 	public static void checkState() {

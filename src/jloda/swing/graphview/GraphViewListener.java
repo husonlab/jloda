@@ -1018,7 +1018,7 @@ public class GraphViewListener implements IGraphViewListener {
 
         try {
             for (Edge e = graph.getFirstEdge(); e != null; e = graph.getNextEdge(e)) {
-                var isReticulate = (graph instanceof PhyloTree phyloTree && phyloTree.isReticulatedEdge(e));
+                var isReticulate = (graph instanceof PhyloTree phyloTree && phyloTree.isReticulateEdge(e));
                 if (!isReticulate) {
                     Node v = graph.getSource(e);
                     Node w = graph.getTarget(e);
@@ -1076,7 +1076,7 @@ public class GraphViewListener implements IGraphViewListener {
                     visited.add(v);
 
             for (Edge e = graph.getFirstEdge(); e != null; e = graph.getNextEdge(e)) {
-                var isReticulate = (graph instanceof PhyloTree phyloTree && phyloTree.isReticulatedEdge(e));
+				var isReticulate = (graph instanceof PhyloTree phyloTree && phyloTree.isReticulateEdge(e));
                 if (!isReticulate) {
                     Node v = graph.getSource(e);
                     Node w = graph.getTarget(e);

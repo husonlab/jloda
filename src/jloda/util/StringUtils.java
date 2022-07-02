@@ -2184,4 +2184,21 @@ public class StringUtils {
 		} else
 			return array;
 	}
+
+	public static String getStringUptoDelimiter(String str, int pos, String delimiters) {
+		var endPos = pos;
+		while (endPos < str.length() && delimiters.indexOf(str.charAt(endPos)) == -1)
+			endPos++;
+		return str.substring(pos, endPos);
+	}
+
+	/**
+	 * replaces all Newick tree format special characters by underscores
+	 *
+	 * @param label original label
+	 * @return new label with no special characters
+	 */
+	public static String getCleanLabelForNewick(String label) {
+		return label == null ? null : (label.isBlank() ? "_" : label.replaceAll("[ \\[\\](),:;]+", "_"));
+	}
 }

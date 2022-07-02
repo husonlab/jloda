@@ -582,7 +582,7 @@ public class PhyloGraphView extends GraphView {
         while (edges.size() > 0) {
 			final Edge e = edges.iterator().next();
 			edges.remove(e);
-			var isReticulateEdge = (graph instanceof PhyloTree phyloTree && phyloTree.isReticulatedEdge(e));
+			var isReticulateEdge = (graph instanceof PhyloTree phyloTree && phyloTree.isReticulateEdge(e));
 			if (!isReticulateEdge && e.getTarget().getOutDegree() > 0) {
 				final Node v = e.getSource();
 				final Node w = e.getTarget();

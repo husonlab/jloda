@@ -190,27 +190,27 @@ public class IteratorUtils {
 
             @Override
             public Q next() {
-                return it.next().getSecond();
-            }
+				return it.next().getSecond();
+			}
 
-            @Override
-            public void remove() {
-                it.remove();
-            }
-        };
-    }
+			@Override
+			public void remove() {
+				it.remove();
+			}
+		};
+	}
 
-    public static <T> Iterator<T> reverseIterator(ArrayList<T> list) {
-        return new Iterator<>() {
-            private int pos=list.size();
+	public static <T> Iterable<T> reverseIterator(ArrayList<T> list) {
+		return () -> new Iterator<T>() {
+			private int pos = list.size();
 
-            @Override
-            public boolean hasNext() {
-                return pos > 0;
-            }
+			@Override
+			public boolean hasNext() {
+				return pos > 0;
+			}
 
-            @Override
-            public T next() {
+			@Override
+			public T next() {
 				return list.get(--pos);
 			}
 		};
