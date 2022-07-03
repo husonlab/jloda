@@ -577,11 +577,11 @@ public class PhyloTree extends PhyloSplitsGraph {
 		if (v.getDegree() != 2)
 			throw new RuntimeException("v not di-vertex, degree is: " + v.getDegree());
 
-		Edge e = getFirstAdjacentEdge(v);
-		Edge f = getLastAdjacentEdge(v);
+		var e = getFirstAdjacentEdge(v);
+		var f = getLastAdjacentEdge(v);
 
-		Node x = getOpposite(v, e);
-		Node y = getOpposite(v, f);
+		var x = getOpposite(v, e);
+		var y = getOpposite(v, f);
 
 		Edge g = null;
 		try {
@@ -594,6 +594,10 @@ public class PhyloTree extends PhyloSplitsGraph {
 		}
 		if (getWeight(e) != Double.NEGATIVE_INFINITY && getWeight(f) != Double.NEGATIVE_INFINITY)
 			setWeight(g, getWeight(e) + getWeight(f));
+		if (hasEdgeConfidences())
+			setConfidence(g, Math.min(getConfidence(e), getConfidence(f)));
+		if (hasEdgeProbabilities())
+			setProbability(g, Math.min(getProbability(e), getProbability(f)));
 		if (root == v)
 			root = null;
 		deleteNode(v);
@@ -904,6 +908,14 @@ public class PhyloTree extends PhyloSplitsGraph {
 		if (edgeLabels != null) {
 			edgeLabels.put(vu, edgeLabels.get(e));
 			edgeLabels.put(uw, edgeLabels.get(e));
+		}
+		if (hasEdgeConfidences()) {
+			setConfidence(vu, getConfidence(e));
+			setConfidence(uw, getConfidence(e));
+		}
+		if (hasEdgeProbabilities()) {
+			setProbability(vu, getProbability(e));
+			setProbability(uw, getProbability(e));
 		}
 
 		deleteEdge(e);
