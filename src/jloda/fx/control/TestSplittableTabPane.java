@@ -41,8 +41,8 @@ public class TestSplittableTabPane extends Application {
     }
 
     @Override
-    public void start(Stage primaryStage) {
-        primaryStage.setTitle(ProgramProperties.getProgramName());
+    public void start(Stage stage) {
+        stage.setTitle(ProgramProperties.getProgramName());
 
 
         final BorderPane borderPane = new BorderPane();
@@ -97,12 +97,13 @@ public class TestSplittableTabPane extends Application {
 
         final StackPane root = new StackPane();
         root.getChildren().add(borderPane);
-        final Scene scene = new Scene(root, 800, 800);
-        primaryStage.setScene(scene);
-        primaryStage.sizeToScene();
-        primaryStage.setX(400);
-        primaryStage.setY(400);
-        primaryStage.show();
+        final Scene scene = new Scene(root);
+        stage.setScene(scene);
+        stage.setX(400);
+        stage.setY(400);
+        stage.setWidth(800);
+        stage.setHeight(800);
+        stage.show();
 
         tabPane.prefWidthProperty().bind(root.widthProperty());
         tabPane.prefHeightProperty().bind(root.heightProperty());

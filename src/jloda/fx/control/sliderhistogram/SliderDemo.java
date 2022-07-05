@@ -35,7 +35,7 @@ import java.util.Random;
 
 public class SliderDemo extends Application {
 	@Override
-	public void start(Stage primaryStage) throws Exception {
+	public void start(Stage stage) throws Exception {
 
 		ObservableList<Double> list = FXCollections.observableArrayList();
 
@@ -47,7 +47,7 @@ public class SliderDemo extends Application {
 		var threshold = new SimpleDoubleProperty(0.5);
 
 		var button = new Button("DEMO");
-		button.setOnAction(e -> new SliderHistogramView(primaryStage, Modality.WINDOW_MODAL, primaryStage.getX() + 20, primaryStage.getY() + 20,
+		button.setOnAction(e -> new SliderHistogramView(stage, Modality.WINDOW_MODAL, stage.getX() + 20, stage.getY() + 20,
 				"Demo", list, threshold, new SimpleDoubleProperty(0), new SimpleDoubleProperty(1)));
 
 		var label1 = new Label(String.valueOf(threshold.get()));
@@ -61,7 +61,7 @@ public class SliderDemo extends Application {
 		var slider = new SliderHistogramView(list, threshold, new SimpleDoubleProperty(0), new SimpleDoubleProperty(1));
 		root.setCenter(slider.getRoot());
 
-		primaryStage.setScene(new Scene(root, 300, 200));
-		primaryStage.show();
+		stage.setScene(new Scene(root, 300, 200));
+		stage.show();
 	}
 }

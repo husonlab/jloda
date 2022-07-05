@@ -724,12 +724,16 @@ public class SplittableTabPane extends Pane {
             stage.setTitle("Untitled");
         stage.getIcons().addAll(ProgramProperties.getProgramIconsFX());
 
-        stage.setScene(new Scene(root, width, height));
-        tab.getContent().getStyleClass().add("viewer-background");
+        final var scene = new Scene(root);
 
-        stage.sizeToScene();
+        stage.setScene(scene);
         stage.setX(screenX);
         stage.setY(screenY);
+        stage.setWidth(width);
+        stage.setHeight(height);
+
+        tab.getContent().getStyleClass().add("viewer-background");
+
         return new AuxiliaryWindow(stage, tab);
     }
 
