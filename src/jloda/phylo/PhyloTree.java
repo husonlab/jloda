@@ -41,7 +41,6 @@ public class PhyloTree extends PhyloSplitsGraph {
 
 	public boolean allowMultiLabeledNodes = true;
 
-
 	Node root = null;
 	boolean inputHasMultiLabels = false;
 	static boolean warnMultiLabeled = true;
@@ -736,14 +735,14 @@ public class PhyloTree extends PhyloSplitsGraph {
 			buf.append(StringUtils.removeTrailingZerosAfterDot(String.format(":%.8f", getWeight(e))));
 			colons++;
 		}
-		if (format.confidenceUsingColon()) {
+		if (format.confidenceUsingColon() && hasEdgeConfidences()) {
 			while (colons < 2) {
 				buf.append(":");
 				colons++;
 			}
 			buf.append(StringUtils.removeTrailingZerosAfterDot(String.format("%.8f", getConfidence(e))));
 		}
-		if (format.probabilityUsingColon()) {
+		if (format.probabilityUsingColon() && hasEdgeProbabilities()) {
 			while (colons < 3) {
 				buf.append(":");
 				colons++;
