@@ -177,10 +177,12 @@ public class MainWindowManager {
             });
 
             WindowGeometry.setToStage(stage);
+
             previousLocation.setIfCurrentValueIsNull(new Point2D(stage.getX(), stage.getY()));
             previousLocation.set(new Point2D(previousLocation.get().getX() + 20, previousLocation.get().getY() + 20));
             stage.setX(previousLocation.get().getX());
             stage.setY(previousLocation.get().getY());
+
             WindowGeometry.listenToStage(stage);
 
             newWindow.show(stage, stage.getX(), stage.getY(), stage.getWidth(), stage.getHeight());

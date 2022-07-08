@@ -76,8 +76,6 @@ public class WindowGeometry {
         stage.setY(wg.getY());
         stage.setWidth(wg.getWidth());
         stage.setHeight(wg.getHeight());
-
-
     }
 
     public double getX() {

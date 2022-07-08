@@ -110,6 +110,22 @@ public class BasicFX {
     }
 
     /**
+     * recursively finds one node
+     */
+    public static <T extends Node> T findOneRecursively(Node node, Class<T> clazz) {
+        final var queue = new LinkedList<Node>();
+        queue.add(node);
+        while (queue.size() > 0) {
+            node = queue.pop();
+            if (clazz.isAssignableFrom(node.getClass()))
+                return (T) node;
+            if (node instanceof Parent parent)
+                queue.addAll(parent.getChildrenUnmodifiable());
+        }
+        return null;
+    }
+
+    /**
      * recursively gets node and all nodes below it
      */
     public static Collection<Node> getAllRecursively(Node node, Predicate<Node> nodePredicate) {

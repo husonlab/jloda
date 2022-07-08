@@ -336,7 +336,7 @@ public class PhyloTree extends PhyloSplitsGraph {
 		// System.err.println("Multi-labeled nodes detected: " + getInputHasMultiLabels());
 
 
-		if (true) {
+		if (false) {
 			System.err.println("has edge weights: " + hasEdgeWeights());
 			System.err.println("has edge confidences: " + hasEdgeConfidences());
 			System.err.println("has edge probabilities: " + hasEdgeProbabilities());
