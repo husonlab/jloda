@@ -52,7 +52,7 @@ public class PhyloTree extends PhyloSplitsGraph {
 	private volatile EdgeSet reticulateEdges;
 	protected volatile NodeArray<List<Node>> lsaChildrenMap; // keep track of children in LSA tree in network
 
-	private volatile EdgeSet acceptorEdges;
+	private volatile EdgeSet transferAcceptorEdges;
 
 	private boolean inputMultiLabeled = false;
 
@@ -79,7 +79,7 @@ public class PhyloTree extends PhyloSplitsGraph {
 		super.clear();
 		setRoot(null);
 		reticulateEdges = null;
-		acceptorEdges = null;
+		transferAcceptorEdges = null;
 		lsaChildrenMap = null;
 		inputMultiLabeled = false;
 	}
@@ -123,6 +123,11 @@ public class PhyloTree extends PhyloSplitsGraph {
 		if (src.reticulateEdges != null) {
 			for (var e : src.reticulateEdges) {
 				setReticulate(oldEdge2NewEdge.get(e), true);
+			}
+		}
+		if (src.transferAcceptorEdges != null) {
+			for (var e : src.transferAcceptorEdges) {
+				setTransferAcceptor(oldEdge2NewEdge.get(e), true);
 			}
 		}
 		setName(src.getName());
@@ -234,6 +239,239 @@ public class PhyloTree extends PhyloSplitsGraph {
 			tmpTree.write(writer, showWeights);
 		}
 	}
+	/**
+	 * is v an unlabeled node of degree 2?
+	 *
+	 * @return true, if v is an unlabeled node of degree 2
+	 */
+	private boolean isUnlabeledDiVertex(Node v) {
+		return v.getDegree() == 2 && (getLabel(v) == null || getLabel(v).length() == 0);
+	}
+
+	/**
+	 * deletes divertex
+	 *
+	 * @param v Node
+	 * @return the new edge
+	 */
+	public Edge delDivertex(Node v) {
+		if (v.getDegree() != 2)
+			throw new RuntimeException("v not di-vertex, degree is: " + v.getDegree());
+
+		var e = getFirstAdjacentEdge(v);
+		var f = getLastAdjacentEdge(v);
+
+		var x = getOpposite(v, e);
+		var y = getOpposite(v, f);
+
+		Edge g = null;
+		try {
+			if (x == e.getSource())
+				g = newEdge(x, y);
+			else
+				g = newEdge(y, x);
+		} catch (IllegalSelfEdgeException e1) {
+			Basic.caught(e1);
+		}
+		if (getWeight(e) != Double.NEGATIVE_INFINITY && getWeight(f) != Double.NEGATIVE_INFINITY)
+			setWeight(g, getWeight(e) + getWeight(f));
+		if (hasEdgeConfidences())
+			setConfidence(g, Math.min(getConfidence(e), getConfidence(f)));
+		if (hasEdgeProbabilities())
+			setProbability(g, Math.min(getProbability(e), getProbability(f)));
+		if (root == v)
+			root = null;
+		deleteNode(v);
+		return g;
+	}
+
+	/**
+	 * Writes a tree in bracket notation
+	 *
+	 * @param w            the writer
+	 * @param writeWeights write edge weights or not
+	 */
+	public void write(Writer w, boolean writeWeights) throws IOException {
+		write(w, new NewickOutputFormat(writeWeights), null, null);
+	}
+
+	/**
+	 * Writes a tree in bracket notation
+	 *
+	 * @param w            the writer
+	 * @param writeWeights write edge weights or not
+	 */
+	public void write(Writer w, boolean writeWeights, boolean writeEdgeLabelsAsComments) throws IOException {
+		write(w, new NewickOutputFormat(writeWeights, false, false, false, writeEdgeLabelsAsComments), null, null);
+	}
+
+	public void write(Writer w, NewickOutputFormat newickOutputFormat) throws IOException {
+		write(w, newickOutputFormat, null, null);
+	}
+
+	private int outputNodeNumber = 0;
+	private int outputEdgeNumber = 0;
+	private NodeIntArray outputNodeReticulationNumberMap;  // global number of the reticulate node
+	private int outputReticulationNumber;
+
+	private static final String punctuationCharacters = "),;:";
+
+	/**
+	 * Writes a tree in bracket notation. Uses extended bracket notation to write reticulate network
+	 *
+	 * @param w             the writer
+	 * @param nodeId2Number if non-null, will contain node-id to number mapping after call
+	 * @param edgeId2Number if non-null, will contain edge-id to number mapping after call
+	 */
+	public void write(Writer w, NewickOutputFormat format, Map<Integer, Integer> nodeId2Number, Map<Integer, Integer> edgeId2Number) throws IOException {
+		outputNodeNumber = 0;
+		outputEdgeNumber = 0;
+		if (ALLOW_WRITE_RETICULATE) {
+			// following two lines enable us to write cluster networks and reticulate networks in Newick format
+			if (outputNodeReticulationNumberMap == null)
+				outputNodeReticulationNumberMap = newNodeIntArray();
+			else
+				outputNodeReticulationNumberMap.clear();
+			outputReticulationNumber = 0;
+		}
+
+		if (getNumberOfEdges() > 0) {
+			if (getRoot() == null) {
+				root = getFirstNode();
+				for (Node v = root; v != null; v = v.getNext()) {
+					if (v.getDegree() > root.getDegree())
+						root = v;
+				}
+			}
+			writeRec(w, root, null, format, nodeId2Number, edgeId2Number, getLabelForWriting(root));
+		} else if (getNumberOfNodes() == 1) {
+			w.write("(" + getLabelForWriting(getFirstNode()) + ");");
+			if (nodeId2Number != null)
+				nodeId2Number.put(getFirstNode().getId(), 1);
+		} else
+			w.write("();");
+
+		if (outputNodeReticulationNumberMap != null)
+			outputNodeReticulationNumberMap.clear();
+	}
+
+	/**
+	 * Recursively writes a tree in bracket notation
+	 */
+	private void writeRec(Writer outs, Node v, Edge e, NewickOutputFormat format, Map<Integer, Integer> nodeId2Number, Map<Integer, Integer> edgeId2Number, String nodeLabel) throws IOException {
+		if (nodeId2Number != null)
+			nodeId2Number.put(v.getId(), ++outputNodeNumber);
+
+		if (!isHideCollapsedSubTreeOnWrite() || getLabel(v) == null || !getLabel(v).endsWith(PhyloTree.COLLAPSED_NODE_SUFFIX)) {
+			if (v.getOutDegree() > 0) {
+				outs.write("(");
+				boolean first = true;
+				for (Edge f : v.outEdges()) {
+					if (edgeId2Number != null)
+						edgeId2Number.put(f.getId(), ++outputEdgeNumber);
+
+					if (first)
+						first = false;
+					else
+						outs.write(",");
+
+					final Node w = f.getTarget();
+
+					if (isReticulateEdge(f)) {
+						boolean isAcceptorEdge = isTransferAcceptorEdge(e);
+
+						if (outputNodeReticulationNumberMap.get(w) == null) {
+							outputNodeReticulationNumberMap.set(w, ++outputReticulationNumber);
+							final String label;
+							if (getLabel(w) != null)
+								label = getLabelForWriting(w) + PhyloTreeNetworkIOUtils.makeReticulateNodeLabel(isAcceptorEdge, outputNodeReticulationNumberMap.get(w));
+							else
+								label = PhyloTreeNetworkIOUtils.makeReticulateNodeLabel(isAcceptorEdge, outputNodeReticulationNumberMap.get(w));
+
+							writeRec(outs, w, f, format, nodeId2Number, edgeId2Number, label);
+						} else {
+							String label;
+							if (getLabel(w) != null)
+								label = getLabelForWriting(w) + PhyloTreeNetworkIOUtils.makeReticulateNodeLabel(isAcceptorEdge, outputNodeReticulationNumberMap.get(w));
+							else
+								label = PhyloTreeNetworkIOUtils.makeReticulateNodeLabel(isAcceptorEdge, outputNodeReticulationNumberMap.get(w));
+
+							outs.write(label);
+							outs.write(getEdgeString(format, f));
+						}
+					} else
+						writeRec(outs, w, f, format, nodeId2Number, edgeId2Number, getLabelForWriting(w));
+				}
+				outs.write(")");
+			}
+			if (nodeLabel != null && nodeLabel.length() > 0)
+				outs.write(nodeLabel);
+		}
+
+		if (e != null) {
+			outs.write(getEdgeString(format, e));
+		}
+	}
+
+	public String getEdgeString(NewickOutputFormat format, Edge e) {
+		var buf = new StringBuilder();
+		var colons = 0;
+		if (format.weights() && getWeight(e) != -1.0) {
+			if (getEdgeWeights().containsKey(e)) {
+				buf.append(StringUtils.removeTrailingZerosAfterDot(String.format(":%.8f", getWeight(e))));
+				colons++;
+			}
+		}
+		if (format.confidenceUsingColon() && hasEdgeConfidences()) {
+			while (colons < 2) {
+				buf.append(":");
+				colons++;
+			}
+			if (getEdgeConfidences().containsKey(e))
+				buf.append(StringUtils.removeTrailingZerosAfterDot(String.format("%.8f", getConfidence(e))));
+		}
+		if (format.probabilityUsingColon() && hasEdgeProbabilities() && getEdgeProbabilities().containsKey(e)) {
+			while (colons < 3) {
+				buf.append(":");
+				colons++;
+			}
+			buf.append(StringUtils.removeTrailingZerosAfterDot(String.format("%.8f", getProbability(e))));
+		}
+		if (format.edgeLabelsAsComments() && getLabel(e) != null) {
+			buf.append("[").append(getLabelForWriting(e)).append("]");
+		}
+		return buf.toString();
+
+	}
+
+	/**
+	 * get the label to be used for writing. Will have single quotes, if label contains punctuation character or white space
+	 */
+	public String getLabelForWriting(Node v) {
+		var label = cleanLabelsOnWrite ? StringUtils.getCleanLabelForNewick(getLabel(v)) : getLabel(v);
+		if (label != null) {
+			for (int i = 0; i < label.length(); i++) {
+				if (punctuationCharacters.indexOf(label.charAt(i)) != -1 || Character.isWhitespace(label.charAt(i)))
+					return "'" + label + "'";
+			}
+		}
+		return label;
+	}
+
+	/**
+	 * get the label to be used for writing. Will have single quotes, if label contains punctuation character or white space
+	 */
+	public String getLabelForWriting(Edge e) {
+		var label = cleanLabelsOnWrite ? StringUtils.getCleanLabelForNewick(getLabel(e)) : getLabel(e);
+		if (label != null) {
+			for (int i = 0; i < label.length(); i++) {
+				if (punctuationCharacters.indexOf(label.charAt(i)) != -1 || Character.isWhitespace(label.charAt(i)))
+					return "'" + label + "'";
+			}
+		}
+		return label;
+	}
+
 
 	/**
 	 * Given a string representation of a tree, returns the tree.
@@ -315,7 +553,8 @@ public class PhyloTree extends PhyloSplitsGraph {
 		if (ALLOW_READ_RETICULATE)
 			postProcessReticulate();
 
-		// if all internal nodes are labeled with numbers, then these are interpreted as confidence values
+		// if all internal nodes are labeled with numbers, then these are interpreted as confidence values and put on the edges
+		// In dendroscope and splitstree5, these are left on the nodes
 		if (SUPPORT_RICH_NEWICK) {
 			if (nodeStream().filter(v -> !v.isLeaf() && v.getInDegree() == 1).allMatch(v -> NumberUtils.isDouble(getLabel(v)))) {
 				nodeStream().filter(v -> !v.isLeaf() && v.getInDegree() == 1)
@@ -337,15 +576,15 @@ public class PhyloTree extends PhyloSplitsGraph {
 
 
 		if (false) {
+			System.err.println("has acceptor edges: " + hasTransferAcceptorEdges());
+
 			System.err.println("has edge weights: " + hasEdgeWeights());
 			System.err.println("has edge confidences: " + hasEdgeConfidences());
 			System.err.println("has edge probabilities: " + hasEdgeProbabilities());
 			System.err.println(toBracketString(new NewickOutputFormat(true, true, true, true, true)));
 		}
-
 	}
 
-	private static final String punctuationCharacters = "),;:";
 
 	/**
 	 * recursively do the work
@@ -502,15 +741,19 @@ public class PhyloTree extends PhyloSplitsGraph {
 
 			// adjust edge weights for reticulate edges
 			if (e != null) {
-				try {
+				if (SUPPORT_RICH_NEWICK) {
 					if (label != null && PhyloTreeNetworkIOUtils.isReticulateNode(label)) {
-						// if an instance of a reticulate node is marked ##, then we will set the weight of the edge to the node to a number >0
-						// to indicate that edge should be drawn as a tree edge
-						if (SUPPORT_RICH_NEWICK) {
-							if (PhyloTreeNetworkIOUtils.isReticulateAcceptorEdge(label)) {
-								setAcceptor(e, true);
-							}
+						if (PhyloTreeNetworkIOUtils.isReticulateAcceptorEdge(label)) {
+							setTransferAcceptor(e, true);
 						} else {
+							setReticulate(e, true);
+						}
+					}
+				} else {
+					try {
+						if (label != null && PhyloTreeNetworkIOUtils.isReticulateNode(label)) {
+							// if an instance of a reticulate node is marked ##, then we will set the weight of the edge to the node to a number >0
+							// to indicate that edge should be drawn as a tree edge
 							if (PhyloTreeNetworkIOUtils.isReticulateAcceptorEdge(label)) {
 								if (!didReadWeight || getWeight(e) <= 0) {
 									setWeight(e, 0.000001);
@@ -520,9 +763,9 @@ public class PhyloTree extends PhyloSplitsGraph {
 									setWeight(e, 0.0);
 							}
 						}
+					} catch (IllegalSelfEdgeException e1) {
+						Basic.caught(e1);
 					}
-				} catch (IllegalSelfEdgeException e1) {
-					Basic.caught(e1);
 				}
 			}
 
@@ -553,237 +796,6 @@ public class PhyloTree extends PhyloSplitsGraph {
 		return -1;
 	}
 
-	public boolean isInputHasMultiLabels() {
-		return inputHasMultiLabels;
-	}
-
-	/**
-	 * is v an unlabeled node of degree 2?
-	 *
-	 * @return true, if v is an unlabeled node of degree 2
-	 */
-	private boolean isUnlabeledDiVertex(Node v) {
-		return v.getDegree() == 2 && (getLabel(v) == null || getLabel(v).length() == 0);
-	}
-
-	/**
-	 * deletes divertex
-	 *
-	 * @param v Node
-	 * @return the new edge
-	 */
-	public Edge delDivertex(Node v) {
-		if (v.getDegree() != 2)
-			throw new RuntimeException("v not di-vertex, degree is: " + v.getDegree());
-
-		var e = getFirstAdjacentEdge(v);
-		var f = getLastAdjacentEdge(v);
-
-		var x = getOpposite(v, e);
-		var y = getOpposite(v, f);
-
-		Edge g = null;
-		try {
-			if (x == e.getSource())
-				g = newEdge(x, y);
-			else
-				g = newEdge(y, x);
-		} catch (IllegalSelfEdgeException e1) {
-			Basic.caught(e1);
-		}
-		if (getWeight(e) != Double.NEGATIVE_INFINITY && getWeight(f) != Double.NEGATIVE_INFINITY)
-			setWeight(g, getWeight(e) + getWeight(f));
-		if (hasEdgeConfidences())
-			setConfidence(g, Math.min(getConfidence(e), getConfidence(f)));
-		if (hasEdgeProbabilities())
-			setProbability(g, Math.min(getProbability(e), getProbability(f)));
-		if (root == v)
-			root = null;
-		deleteNode(v);
-		return g;
-	}
-
-	/**
-	 * Writes a tree in bracket notation
-	 *
-	 * @param w            the writer
-	 * @param writeWeights write edge weights or not
-	 */
-	public void write(Writer w, boolean writeWeights) throws IOException {
-		write(w, new NewickOutputFormat(writeWeights), null, null);
-	}
-
-	/**
-	 * Writes a tree in bracket notation
-	 *
-	 * @param w            the writer
-	 * @param writeWeights write edge weights or not
-	 */
-	public void write(Writer w, boolean writeWeights, boolean writeEdgeLabelsAsComments) throws IOException {
-		write(w, new NewickOutputFormat(writeWeights, false, false, false, writeEdgeLabelsAsComments), null, null);
-	}
-
-	public void write(Writer w, NewickOutputFormat newickOutputFormat) throws IOException {
-		write(w, newickOutputFormat, null, null);
-	}
-
-	private int outputNodeNumber = 0;
-	private int outputEdgeNumber = 0;
-	private NodeIntArray outputNodeReticulationNumberMap;  // global number of the reticulate node
-	private int outputReticulationNumber;
-
-	/**
-	 * Writes a tree in bracket notation. Uses extended bracket notation to write reticulate network
-	 *
-	 * @param w             the writer
-	 * @param nodeId2Number if non-null, will contain node-id to number mapping after call
-	 * @param edgeId2Number if non-null, will contain edge-id to number mapping after call
-	 */
-	public void write(Writer w, NewickOutputFormat format, Map<Integer, Integer> nodeId2Number, Map<Integer, Integer> edgeId2Number) throws IOException {
-		outputNodeNumber = 0;
-		outputEdgeNumber = 0;
-		if (ALLOW_WRITE_RETICULATE) {
-			// following two lines enable us to write cluster networks and reticulate networks in Newick format
-			if (outputNodeReticulationNumberMap == null)
-				outputNodeReticulationNumberMap = newNodeIntArray();
-			else
-				outputNodeReticulationNumberMap.clear();
-			outputReticulationNumber = 0;
-		}
-
-		if (getNumberOfEdges() > 0) {
-			if (getRoot() == null) {
-				root = getFirstNode();
-				for (Node v = root; v != null; v = v.getNext()) {
-					if (v.getDegree() > root.getDegree())
-						root = v;
-				}
-			}
-			writeRec(w, root, null, format, nodeId2Number, edgeId2Number, getLabelForWriting(root));
-		} else if (getNumberOfNodes() == 1) {
-			w.write("(" + getLabelForWriting(getFirstNode()) + ");");
-			if (nodeId2Number != null)
-				nodeId2Number.put(getFirstNode().getId(), 1);
-		} else
-			w.write("();");
-
-		if (outputNodeReticulationNumberMap != null)
-			outputNodeReticulationNumberMap.clear();
-	}
-
-	/**
-	 * Recursively writes a tree in bracket notation
-	 */
-	private void writeRec(Writer outs, Node v, Edge e, NewickOutputFormat format, Map<Integer, Integer> nodeId2Number, Map<Integer, Integer> edgeId2Number, String nodeLabel) throws IOException {
-		if (nodeId2Number != null)
-			nodeId2Number.put(v.getId(), ++outputNodeNumber);
-
-		if (!isHideCollapsedSubTreeOnWrite() || getLabel(v) == null || !getLabel(v).endsWith(PhyloTree.COLLAPSED_NODE_SUFFIX)) {
-			if (v.getOutDegree() > 0) {
-				outs.write("(");
-				boolean first = true;
-				for (Edge f : v.outEdges()) {
-					if (edgeId2Number != null)
-						edgeId2Number.put(f.getId(), ++outputEdgeNumber);
-
-					if (first)
-						first = false;
-					else
-						outs.write(",");
-
-					final Node w = f.getTarget();
-					boolean inEdgeHasWeight = (getWeight(f) > 0);
-
-					if (isReticulateEdge(f)) {
-						if (outputNodeReticulationNumberMap.get(w) == null) {
-							outputNodeReticulationNumberMap.set(w, ++outputReticulationNumber);
-							final String label;
-							if (getLabel(w) != null)
-								label = getLabelForWriting(w) + PhyloTreeNetworkIOUtils.makeReticulateNodeLabel(inEdgeHasWeight, outputNodeReticulationNumberMap.get(w));
-							else
-								label = PhyloTreeNetworkIOUtils.makeReticulateNodeLabel(inEdgeHasWeight, outputNodeReticulationNumberMap.get(w));
-
-							writeRec(outs, w, f, format, nodeId2Number, edgeId2Number, label);
-						} else {
-							String label;
-							if (getLabel(w) != null)
-								label = getLabelForWriting(w) + PhyloTreeNetworkIOUtils.makeReticulateNodeLabel(inEdgeHasWeight, outputNodeReticulationNumberMap.get(w));
-							else
-								label = PhyloTreeNetworkIOUtils.makeReticulateNodeLabel(inEdgeHasWeight, outputNodeReticulationNumberMap.get(w));
-
-							outs.write(label);
-							outs.write(getEdgeString(format, f));
-						}
-					} else
-						writeRec(outs, w, f, format, nodeId2Number, edgeId2Number, getLabelForWriting(w));
-				}
-				outs.write(")");
-			}
-			if (nodeLabel != null && nodeLabel.length() > 0)
-				outs.write(nodeLabel);
-		}
-
-		if (e != null && !isReticulateEdge(e)) {
-			outs.write(getEdgeString(format, e));
-		}
-	}
-
-	public String getEdgeString(NewickOutputFormat format, Edge e) {
-		var buf = new StringBuilder();
-		var colons = 0;
-		if (format.weights() && getWeight(e) != -1.0) {
-			buf.append(StringUtils.removeTrailingZerosAfterDot(String.format(":%.8f", getWeight(e))));
-			colons++;
-		}
-		if (format.confidenceUsingColon() && hasEdgeConfidences()) {
-			while (colons < 2) {
-				buf.append(":");
-				colons++;
-			}
-			buf.append(StringUtils.removeTrailingZerosAfterDot(String.format("%.8f", getConfidence(e))));
-		}
-		if (format.probabilityUsingColon() && hasEdgeProbabilities()) {
-			while (colons < 3) {
-				buf.append(":");
-				colons++;
-			}
-			buf.append(StringUtils.removeTrailingZerosAfterDot(String.format("%.8f", getProbability(e))));
-		}
-		if (format.edgeLabelsAsComments() && getLabel(e) != null) {
-			buf.append("[").append(getLabelForWriting(e)).append("]");
-		}
-		return buf.toString();
-
-	}
-
-	/**
-	 * get the label to be used for writing. Will have single quotes, if label contains punctuation character or white space
-	 */
-	public String getLabelForWriting(Node v) {
-		var label = cleanLabelsOnWrite ? StringUtils.getCleanLabelForNewick(getLabel(v)) : getLabel(v);
-		if (label != null) {
-			for (int i = 0; i < label.length(); i++) {
-				if (punctuationCharacters.indexOf(label.charAt(i)) != -1 || Character.isWhitespace(label.charAt(i)))
-					return "'" + label + "'";
-			}
-		}
-		return label;
-	}
-
-	/**
-	 * get the label to be used for writing. Will have single quotes, if label contains punctuation character or white space
-	 */
-	public String getLabelForWriting(Edge e) {
-		var label = cleanLabelsOnWrite ? StringUtils.getCleanLabelForNewick(getLabel(e)) : getLabel(e);
-		if (label != null) {
-			for (int i = 0; i < label.length(); i++) {
-				if (punctuationCharacters.indexOf(label.charAt(i)) != -1 || Character.isWhitespace(label.charAt(i)))
-					return "'" + label + "'";
-			}
-		}
-		return label;
-	}
-
 	/**
 	 * post processes a tree that really describes a reticulate network
 	 */
@@ -797,7 +809,7 @@ public class PhyloTree extends PhyloSplitsGraph {
 				var reticulateLabel = PhyloTreeNetworkIOUtils.findReticulateLabel(label);
 				if (reticulateLabel != null) {
 					setLabel(v, PhyloTreeNetworkIOUtils.removeReticulateNodeSuffix(label));
-					List<Node> list = reticulateNumber2Nodes.computeIfAbsent(reticulateLabel, k -> new LinkedList<>());
+					var list = reticulateNumber2Nodes.computeIfAbsent(reticulateLabel, k -> new LinkedList<>());
 					list.add(v);
 				}
 			}
@@ -808,6 +820,7 @@ public class PhyloTree extends PhyloSplitsGraph {
 			final var list = reticulateNumber2Nodes.get(reticulateNumber);
 			if (list.size() > 0) {
 				Node u = null;
+
 				for (var v : list) {
 					if (u == null) {
 						u = v;
@@ -821,35 +834,51 @@ public class PhyloTree extends PhyloSplitsGraph {
 
 						for (var e : v.adjacentEdges()) {
 							final Edge f;
-							if (e.getSource() == v) { /// move child of v to u
+							if (e.getSource() == v) { /// attach child of v below u
 								f = newEdge(u, e.getTarget());
-							} else { // move parent of v to u
+							} else { // attach parent of v above u
 								f = newEdge(e.getSource(), u);
 							}
-							setSplit(f, getSplit(e));
-							setWeight(f, getWeight(e));
+							if (hasEdgeWeights() && getEdgeWeights().containsKey(e))
+								setWeight(f, getWeight(e));
+							if (hasEdgeConfidences() && getEdgeConfidences().containsKey(e))
+								setConfidence(f, getConfidence(e));
+							if (hasEdgeProbabilities() && getEdgeProbabilities().containsKey(e))
+								setProbability(f, getProbability(e));
+							if (isTransferAcceptorEdge(e)) {
+								setTransferAcceptor(f, true);
+							}
+							setReticulate(f, true);
 							setLabel(f, getLabel(e));
 						}
 						deleteNode(v);
 					}
 				}
-				var transferAcceptorEdge = new Single<Edge>();
-				for (var e : u.inEdges()) {
-					setReticulate(e, true);
-					if (getWeight(e) > 0) {
-						if (transferAcceptorEdge.isNull())
-							transferAcceptorEdge.set(e);
-						else {
-							setWeight(e, 0.0);
-							System.err.println("Warning: node has more than one transfer-acceptor edge, will only use first");
+
+				if (!SUPPORT_RICH_NEWICK) {
+					var transferAcceptorEdge = new Single<Edge>();
+					for (var e : u.inEdges()) {
+						setReticulate(e, true);
+						if (getWeight(e) > 0) {
+							if (transferAcceptorEdge.isNull())
+								transferAcceptorEdge.set(e);
+							else {
+								setWeight(e, 0.0);
+								System.err.println("Warning: node has more than one transfer-acceptor edge, will only use first");
+							}
 						}
 					}
-				}
-				if (transferAcceptorEdge.isNotNull()) {
-					u.inEdgesStream(false).filter(e -> e != transferAcceptorEdge.get()).forEach(e -> setWeight(e, -1.0));
+					if (transferAcceptorEdge.isNotNull()) {
+						u.inEdgesStream(false).filter(e -> e != transferAcceptorEdge.get()).forEach(e -> setWeight(e, -1.0));
+					}
 				}
 			}
 		}
+	}
+
+
+	public boolean isInputHasMultiLabels() {
+		return inputHasMultiLabels;
 	}
 
 	/**
@@ -1060,7 +1089,7 @@ public class PhyloTree extends PhyloSplitsGraph {
 		if (oldNode2newNode != null)
 			toDelete.remove(oldNode2newNode.get(v));
 		if (!collapsedNodes.contains(v)) {
-			for (Edge f = v.getFirstAdjacentEdge(); f != null; f = v.getNextAdjacentEdge(f)) {
+			for (var f : v.adjacentEdges()) {
 				if (f != e && this.okToDescendDownThisEdgeInTraversal(f, v)) {
 					extractTreeRec(f.getOpposite(v), f, collapsedNodes, oldNode2newNode, toDelete);
 				}
@@ -1209,15 +1238,9 @@ public class PhyloTree extends PhyloSplitsGraph {
 	 */
 	public boolean isTransferEdge(Edge e) {
 		if (SUPPORT_RICH_NEWICK)
-			return isReticulateEdge(e) && !isAcceptorEdge(e);
+			return isReticulateEdge(e) && !isTransferAcceptorEdge(e) && e.getTarget().inEdgesStream(false).anyMatch(this::isTransferAcceptorEdge);
 		else
-		return isReticulateEdge(e) && getWeight(e) < 0.0;
-	}
-
-	public boolean isTransferAcceptorEdge(Edge e) {
-		if (SUPPORT_RICH_NEWICK)
-			return isAcceptorEdge(e);
-		return isReticulateEdge(e) && getWeight(e) > 0;
+			return isReticulateEdge(e) && getWeight(e) < 0.0;
 	}
 
 	/**
@@ -1351,30 +1374,34 @@ public class PhyloTree extends PhyloSplitsGraph {
 	 * @param e        edge
 	 * @param acceptor is acceptor
 	 */
-	public void setAcceptor(Edge e, boolean acceptor) {
+	public void setTransferAcceptor(Edge e, boolean acceptor) {
+		setReticulate(e, acceptor);
 		if (acceptor)
-			getAcceptorEdges().add(e);
-		else if (acceptorEdges != null)
-			getAcceptorEdges().remove(e);
+			getTransferAcceptorEdges().add(e);
+		else if (transferAcceptorEdges != null)
+			getTransferAcceptorEdges().remove(e);
 	}
 
-	public boolean isAcceptorEdge(Edge e) {
-		return acceptorEdges == null ? false : acceptorEdges.contains(e);
+	public boolean isTransferAcceptorEdge(Edge e) {
+		if (SUPPORT_RICH_NEWICK)
+			return transferAcceptorEdges != null && transferAcceptorEdges.contains(e);
+		else
+			return isReticulateEdge(e) && getWeight(e) > 0;
 	}
 
-	public EdgeSet getAcceptorEdges() {
-		if (acceptorEdges == null) {
+	public EdgeSet getTransferAcceptorEdges() {
+		if (transferAcceptorEdges == null) {
 			synchronized (this) {
-				if (acceptorEdges == null) {
-					acceptorEdges = newEdgeSet();
+				if (transferAcceptorEdges == null) {
+					transferAcceptorEdges = newEdgeSet();
 				}
 			}
 		}
-		return acceptorEdges;
+		return transferAcceptorEdges;
 	}
 
-	public boolean hasAcceptorEdges() {
-		return acceptorEdges != null && acceptorEdges.size() > 0;
+	public boolean hasTransferAcceptorEdges() {
+		return transferAcceptorEdges != null && transferAcceptorEdges.size() > 0;
 	}
 
 	/**

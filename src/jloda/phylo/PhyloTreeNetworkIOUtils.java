@@ -46,7 +46,7 @@ public class PhyloTreeNetworkIOUtils {
      */
     public static boolean isReticulateNode(String label) {
         label = label.toUpperCase();
-        return label.contains("#H") || label.contains("#L");
+        return label.contains("#H") || label.contains("#L") || label.contains("#R");
     }
 
     /**
@@ -59,8 +59,7 @@ public class PhyloTreeNetworkIOUtils {
      * @return true, if label contains ## followed by H L h or l
      */
     public static boolean isReticulateAcceptorEdge(String label) {
-        label = label.toUpperCase();
-		return label.contains("##H") || label.contains("##L") || label.contains("##R");
+		return label.startsWith("##");
     }
 
     /**
