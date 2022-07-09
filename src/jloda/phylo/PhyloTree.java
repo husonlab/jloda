@@ -101,7 +101,6 @@ public class PhyloTree extends PhyloSplitsGraph {
 		if (oldEdge2NewEdge == null)
 			oldEdge2NewEdge = new EdgeArray<>(src);
 		oldNode2NewNode = super.copy(src, oldNode2NewNode, oldEdge2NewEdge);
-		// super.copy(src, oldNode2NewNode, oldEdge2NewEdge);
 		if (src.getRoot() != null) {
 			var root = src.getRoot();
 			setRoot(oldNode2NewNode.get(root));
@@ -143,16 +142,6 @@ public class PhyloTree extends PhyloSplitsGraph {
 	}
 
 	/**
-	 * Sets the label of an edge.
-	 *
-	 * @param e Edge
-	 * @param a String
-	 */
-	public void setLabel(Edge e, String a) throws NotOwnerException {
-		super.setLabel(e, a);
-	}
-
-	/**
 	 * Produces a string representation of the tree in bracket notation.
 	 *
 	 * @return a string representation of the tree in bracket notation
@@ -173,7 +162,10 @@ public class PhyloTree extends PhyloSplitsGraph {
 	 * @return a string representation of the tree in bracket notation
 	 */
 	public String toBracketString(boolean showWeights) {
-		return toBracketString(new NewickOutputFormat(showWeights));
+		if (SUPPORT_RICH_NEWICK)
+			return toBracketString(new NewickOutputFormat(showWeights, false, hasEdgeConfidences(), hasEdgeProbabilities(), false));
+		else
+			return toBracketString(new NewickOutputFormat(showWeights, false, false, false, false));
 	}
 
 	/**
@@ -237,51 +229,6 @@ public class PhyloTree extends PhyloSplitsGraph {
 			tmpTree.write(writer, showWeights);
 		}
 	}
-	/**
-	 * is v an unlabeled node of degree 2?
-	 *
-	 * @return true, if v is an unlabeled node of degree 2
-	 */
-	private boolean isUnlabeledDiVertex(Node v) {
-		return v.getDegree() == 2 && (getLabel(v) == null || getLabel(v).length() == 0);
-	}
-
-	/**
-	 * deletes divertex
-	 *
-	 * @param v Node
-	 * @return the new edge
-	 */
-	public Edge delDivertex(Node v) {
-		if (v.getDegree() != 2)
-			throw new RuntimeException("v not di-vertex, degree is: " + v.getDegree());
-
-		var e = getFirstAdjacentEdge(v);
-		var f = getLastAdjacentEdge(v);
-
-		var x = getOpposite(v, e);
-		var y = getOpposite(v, f);
-
-		Edge g = null;
-		try {
-			if (x == e.getSource())
-				g = newEdge(x, y);
-			else
-				g = newEdge(y, x);
-		} catch (IllegalSelfEdgeException e1) {
-			Basic.caught(e1);
-		}
-		if (getWeight(e) != Double.NEGATIVE_INFINITY && getWeight(f) != Double.NEGATIVE_INFINITY)
-			setWeight(g, getWeight(e) + getWeight(f));
-		if (hasEdgeConfidences())
-			setConfidence(g, Math.min(getConfidence(e), getConfidence(f)));
-		if (hasEdgeProbabilities())
-			setProbability(g, Math.min(getProbability(e), getProbability(f)));
-		if (root == v)
-			root = null;
-		deleteNode(v);
-		return g;
-	}
 
 	/**
 	 * Writes a tree in bracket notation
@@ -290,7 +237,7 @@ public class PhyloTree extends PhyloSplitsGraph {
 	 * @param writeWeights write edge weights or not
 	 */
 	public void write(Writer w, boolean writeWeights) throws IOException {
-		write(w, new NewickOutputFormat(writeWeights), null, null);
+		write(w, writeWeights, false);
 	}
 
 	/**
@@ -300,7 +247,11 @@ public class PhyloTree extends PhyloSplitsGraph {
 	 * @param writeWeights write edge weights or not
 	 */
 	public void write(Writer w, boolean writeWeights, boolean writeEdgeLabelsAsComments) throws IOException {
-		write(w, new NewickOutputFormat(writeWeights, false, false, false, writeEdgeLabelsAsComments), null, null);
+		if (SUPPORT_RICH_NEWICK) {
+			write(w, new NewickOutputFormat(writeWeights, false, hasEdgeConfidences(), hasEdgeProbabilities(), writeEdgeLabelsAsComments), null, null);
+		} else {
+			write(w, new NewickOutputFormat(writeWeights, false, false, false, writeEdgeLabelsAsComments), null, null);
+		}
 	}
 
 	public void write(Writer w, NewickOutputFormat newickOutputFormat) throws IOException {
@@ -421,13 +372,12 @@ public class PhyloTree extends PhyloSplitsGraph {
 				colons++;
 			}
 		}
-		if (format.confidenceUsingColon() && hasEdgeConfidences()) {
+		if (format.confidenceUsingColon() && hasEdgeConfidences() && getEdgeConfidences().containsKey(e)) {
 			while (colons < 2) {
 				buf.append(":");
 				colons++;
 			}
-			if (getEdgeConfidences().containsKey(e))
-				buf.append(StringUtils.removeTrailingZerosAfterDot(String.format("%.8f", getConfidence(e))));
+			buf.append(StringUtils.removeTrailingZerosAfterDot(String.format("%.8f", getConfidence(e))));
 		}
 		if (format.probabilityUsingColon() && hasEdgeProbabilities() && getEdgeProbabilities().containsKey(e)) {
 			while (colons < 3) {
@@ -860,6 +810,51 @@ public class PhyloTree extends PhyloSplitsGraph {
 		}
 	}
 
+	/**
+	 * is v an unlabeled node of degree 2?
+	 *
+	 * @return true, if v is an unlabeled node of degree 2
+	 */
+	private boolean isUnlabeledDiVertex(Node v) {
+		return v.getDegree() == 2 && (getLabel(v) == null || getLabel(v).length() == 0);
+	}
+
+	/**
+	 * deletes divertex
+	 *
+	 * @param v Node
+	 * @return the new edge
+	 */
+	public Edge delDivertex(Node v) {
+		if (v.getDegree() != 2)
+			throw new RuntimeException("v not di-vertex, degree is: " + v.getDegree());
+
+		var e = getFirstAdjacentEdge(v);
+		var f = getLastAdjacentEdge(v);
+
+		var x = getOpposite(v, e);
+		var y = getOpposite(v, f);
+
+		Edge g = null;
+		try {
+			if (x == e.getSource())
+				g = newEdge(x, y);
+			else
+				g = newEdge(y, x);
+		} catch (IllegalSelfEdgeException e1) {
+			Basic.caught(e1);
+		}
+		if (getWeight(e) != Double.NEGATIVE_INFINITY && getWeight(f) != Double.NEGATIVE_INFINITY)
+			setWeight(g, getWeight(e) + getWeight(f));
+		if (hasEdgeConfidences())
+			setConfidence(g, Math.min(getConfidence(e), getConfidence(f)));
+		if (hasEdgeProbabilities())
+			setProbability(g, Math.min(getProbability(e), getProbability(f)));
+		if (root == v)
+			root = null;
+		deleteNode(v);
+		return g;
+	}
 
 	public boolean isInputHasMultiLabels() {
 		return inputHasMultiLabels;
@@ -921,11 +916,11 @@ public class PhyloTree extends PhyloSplitsGraph {
 			edgeLabels.put(vu, edgeLabels.get(e));
 			edgeLabels.put(uw, edgeLabels.get(e));
 		}
-		if (hasEdgeConfidences()) {
+		if (hasEdgeConfidences() && getEdgeConfidences().containsKey(e)) {
 			setConfidence(vu, getConfidence(e));
 			setConfidence(uw, getConfidence(e));
 		}
-		if (hasEdgeProbabilities()) {
+		if (hasEdgeProbabilities() && getEdgeProbabilities().containsKey(e)) {
 			setProbability(vu, getProbability(e));
 			setProbability(uw, getProbability(e));
 		}
@@ -1469,18 +1464,6 @@ public class PhyloTree extends PhyloSplitsGraph {
 
 	public record NewickOutputFormat(boolean weights, boolean confidenceAsNodeLabel, boolean confidenceUsingColon,
 									 boolean probabilityUsingColon, boolean edgeLabelsAsComments) {
-
-		public NewickOutputFormat(boolean weights) {
-			this(weights, false, false, false, false);
-		}
-
-		public static NewickOutputFormat unweighted() {
-			return new NewickOutputFormat(false, false, false, false, false);
-		}
-
-		public static NewickOutputFormat weighted() {
-			return new NewickOutputFormat(true, false, false, false, false);
-		}
 	}
 }
 

@@ -112,20 +112,20 @@ public class PhyloGraph extends Graph {
             }
         }
 
-        if (src.edgeWeights != null) {
-            for (var e : src.edgeWeights.keys()) {
+        if (src.hasEdgeWeights()) {
+            for (var e : src.getEdgeWeights().keys()) {
                 setWeight(oldEdge2NewEdge.get(e), src.getWeight(e));
             }
         }
 
-        if (src.edgeConfidences != null) {
-            for (var e : src.edgeConfidences.keys()) {
+        if (src.hasEdgeConfidences()) {
+            for (var e : src.getEdgeConfidences().keys()) {
                 setConfidence(oldEdge2NewEdge.get(e), src.getConfidence(e));
             }
         }
 
-        if (src.edgeProbabilities != null) {
-            for (var e : src.edgeProbabilities.keys()) {
+        if (src.hasEdgeProbabilities()) {
+            for (var e : src.getEdgeProbabilities().keys()) {
                 setProbability(oldEdge2NewEdge.get(e), src.getProbability(e));
             }
         }
