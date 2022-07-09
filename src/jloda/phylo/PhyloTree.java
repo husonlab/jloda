@@ -33,28 +33,26 @@ import java.util.function.Function;
  * Daniel Huson, 2003
  */
 public class PhyloTree extends PhyloSplitsGraph {
-
-	public static final boolean ALLOW_WRITE_RETICULATE = true;
 	public static final boolean ALLOW_READ_RETICULATE = true;
 
 	public static boolean SUPPORT_RICH_NEWICK = false; // only SplitsTree6 should set this to true
 
+	public static boolean WARN_HAS_MULTILABELS = true;
+	public static final String COLLAPSED_NODE_SUFFIX = "{+}";
+
 	public boolean allowMultiLabeledNodes = true;
 
-	Node root = null;
-	boolean inputHasMultiLabels = false;
-	static boolean warnMultiLabeled = true;
+	private Node root = null;
+
+	private boolean inputHasMultiLabels = false;
 	private boolean hideCollapsedSubTreeOnWrite = false;
-	public static final String COLLAPSED_NODE_SUFFIX = "{+}";
+
 
 	private final boolean cleanLabelsOnWrite;
 
 	private volatile EdgeSet reticulateEdges;
-	protected volatile NodeArray<List<Node>> lsaChildrenMap; // keep track of children in LSA tree in network
-
+	private volatile NodeArray<List<Node>> lsaChildrenMap; // keep track of children in LSA tree in network
 	private volatile EdgeSet transferAcceptorEdges;
-
-	private boolean inputMultiLabeled = false;
 
 	/**
 	 * Construct a new empty phylogenetic tree.
@@ -81,7 +79,7 @@ public class PhyloTree extends PhyloSplitsGraph {
 		reticulateEdges = null;
 		transferAcceptorEdges = null;
 		lsaChildrenMap = null;
-		inputMultiLabeled = false;
+		inputHasMultiLabels = false;
 	}
 
 	/**
@@ -311,7 +309,7 @@ public class PhyloTree extends PhyloSplitsGraph {
 
 	private int outputNodeNumber = 0;
 	private int outputEdgeNumber = 0;
-	private NodeIntArray outputNodeReticulationNumberMap;  // global number of the reticulate node
+	private NodeIntArray outputNodeReticulationNumberMap;  // global number of the reticulate nodes
 	private int outputReticulationNumber;
 
 	private static final String punctuationCharacters = "),;:";
@@ -326,8 +324,9 @@ public class PhyloTree extends PhyloSplitsGraph {
 	public void write(Writer w, NewickOutputFormat format, Map<Integer, Integer> nodeId2Number, Map<Integer, Integer> edgeId2Number) throws IOException {
 		outputNodeNumber = 0;
 		outputEdgeNumber = 0;
-		if (ALLOW_WRITE_RETICULATE) {
-			// following two lines enable us to write cluster networks and reticulate networks in Newick format
+
+		if (hasReticulateEdges()) {
+			// following two lines enable us to write reticulate networks in Newick format
 			if (outputNodeReticulationNumberMap == null)
 				outputNodeReticulationNumberMap = newNodeIntArray();
 			else
@@ -441,7 +440,6 @@ public class PhyloTree extends PhyloSplitsGraph {
 			buf.append("[").append(getLabelForWriting(e)).append("]");
 		}
 		return buf.toString();
-
 	}
 
 	/**
@@ -472,47 +470,34 @@ public class PhyloTree extends PhyloSplitsGraph {
 		return label;
 	}
 
-
 	/**
 	 * Given a string representation of a tree, returns the tree.
 	 *
-	 * @param str      String
-	 * @param keepRoot Boolean. Set the root as the top level node and remove deg 2 nodes
+	 * @param str String
 	 * @return tree PhyloTree
 	 */
-	static public PhyloTree valueOf(String str, boolean keepRoot) throws IOException {
+	static public PhyloTree valueOf(String str) throws IOException {
 		var tree = new PhyloTree();
-		tree.parseBracketNotation(str, keepRoot);
+		tree.parseBracketNotation(str, true);
 		return tree;
 	}
 
 	/**
-	 * Read a tree in Newick notation as unrooted tree
+	 * reads a line and then parses it as a rooted tree or network in Newick format
 	 *
 	 * @param r the reader
 	 */
 	public void read(Reader r) throws IOException {
-		read(r, false);
-
-	}
-
-	/**
-	 * Read a tree in Newick notation, as rooted tree, if desired
-	 *
-	 * @param r      the reader
-	 * @param rooted read as rooted tree
-	 */
-	public void read(final Reader r, final boolean rooted) throws IOException {
 		final BufferedReader br;
 		if (r instanceof BufferedReader)
 			br = (BufferedReader) r;
 		else
 			br = new BufferedReader(r);
-		parseBracketNotation(br.readLine(), rooted);
+		parseBracketNotation(br.readLine(), true, true);
 	}
 
 	/**
-	 * parse a tree in newick format, as a rooted tree, if desired.
+	 * Parses a tree or network in Newick notation, and sets the root, if desired
 	 */
 	public void parseBracketNotation(String str, boolean rooted) throws IOException {
 		parseBracketNotation(str, rooted, true);
@@ -520,12 +505,12 @@ public class PhyloTree extends PhyloSplitsGraph {
 
 
 	/**
-	 * parse a tree in Newick format, as a rooted tree, if desired.
+	 * Parses a tree or network in Newick notation, and sets the root, if desired
 	 */
 	public void parseBracketNotation(String str, boolean rooted, boolean doClear) throws IOException {
 		if (doClear)
 			clear();
-		inputMultiLabeled = false;
+		inputHasMultiLabels = false;
 
 		var seen = new HashMap<String, Node>();
 
@@ -550,8 +535,8 @@ public class PhyloTree extends PhyloSplitsGraph {
 			}
 		}
 
-		if (ALLOW_READ_RETICULATE)
-			postProcessReticulate();
+		// post process any reticulate nodes
+		postProcessReticulate();
 
 		// if all internal nodes are labeled with numbers, then these are interpreted as confidence values and put on the edges
 		// In dendroscope and splitstree5, these are left on the nodes
@@ -572,8 +557,7 @@ public class PhyloTree extends PhyloSplitsGraph {
 			}
 		}
 
-		// System.err.println("Multi-labeled nodes detected: " + getInputHasMultiLabels());
-
+		// System.err.println("Multi-labeled nodes detected: " + isInputHasMultiLabels());
 
 		if (false) {
 			System.err.println("has acceptor edges: " + hasTransferAcceptorEdges());
@@ -631,7 +615,7 @@ public class PhyloTree extends PhyloSplitsGraph {
 								setLabel(old, label + ".1");
 								seen.put(label, null); // keep label in, but null indicates has changed
 								seen.put(label + ".1", old);
-								inputMultiLabeled = true;
+								inputHasMultiLabels = true;
 							}
 
 							var t = 1;
@@ -675,8 +659,8 @@ public class PhyloTree extends PhyloSplitsGraph {
 							setLabel(old, label + ".1");
 							seen.put(label, null); // keep label in, but null indicates has changed
 							seen.put(label + ".1", old);
-							inputMultiLabeled = true;
-							if (getWarnMultiLabeled())
+							inputHasMultiLabels = true;
+							if (WARN_HAS_MULTILABELS)
 								System.err.println("multi-label: " + label);
 						}
 
@@ -809,7 +793,7 @@ public class PhyloTree extends PhyloSplitsGraph {
 				var reticulateLabel = PhyloTreeNetworkIOUtils.findReticulateLabel(label);
 				if (reticulateLabel != null) {
 					setLabel(v, PhyloTreeNetworkIOUtils.removeReticulateNodeSuffix(label));
-					var list = reticulateNumber2Nodes.computeIfAbsent(reticulateLabel, k -> new LinkedList<>());
+					var list = reticulateNumber2Nodes.computeIfAbsent(reticulateLabel, k -> new ArrayList<>());
 					list.add(v);
 				}
 			}
@@ -1040,22 +1024,6 @@ public class PhyloTree extends PhyloSplitsGraph {
 	 */
 	public double computeTotalWeight() {
 		return edgeStream().filter(e -> getWeight(e) > 0).mapToDouble(this::getWeight).sum();
-	}
-
-	/**
-	 * warn about multi-labeled trees in input?
-	 *
-	 * @return true, if warnings are given
-	 */
-	static public boolean getWarnMultiLabeled() {
-		return warnMultiLabeled;
-	}
-
-	/**
-	 * warn about multi-labeled trees in input?
-	 */
-	static public void setWarnMultiLabeled(boolean warnMultiLabeled) {
-		PhyloTree.warnMultiLabeled = warnMultiLabeled;
 	}
 
 	/**
