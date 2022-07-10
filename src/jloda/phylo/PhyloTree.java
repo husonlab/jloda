@@ -474,7 +474,7 @@ public class PhyloTree extends PhyloSplitsGraph {
 			final var v = getFirstNode();
 			if (rooted) {
 				setRoot(v);
-				if (!hasEdgeWeights() && isUnlabeledDiVertex(v)) {
+				if (false && !hasEdgeWeights() && isUnlabeledDiVertex(v)) {
 					setWeight(v.getFirstAdjacentEdge(), 0.5);
 					setWeight(v.getLastAdjacentEdge(), 0.5);
 				}

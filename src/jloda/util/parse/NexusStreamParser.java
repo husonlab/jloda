@@ -317,7 +317,7 @@ public class NexusStreamParser extends NexusStreamTokenizer implements Closeable
      * @return true, if begin of named block
      */
     public boolean peekMatchBeginBlock(String blockName) {
-        return peekMatchIgnoreCase("begin " + blockName + ";") || peekMatchIgnoreCase("Beginblock " + blockName + ";");
+        return peekMatchIgnoreCase("begin " + blockName + ";") || peekMatchIgnoreCase("BeginBlock " + blockName + ";");
     }
 
     /**
