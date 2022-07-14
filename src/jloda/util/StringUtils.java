@@ -755,15 +755,16 @@ public class StringUtils {
 	 * @return first line1
 	 */
 	public static String getFirstLine(String text) {
-		if (text == null)
-			return "";
-		var pos = text.indexOf("\r");
-		if (pos != -1)
-			return text.substring(0, pos);
-		pos = text.indexOf("\n");
-		if (pos != -1)
-			return text.substring(0, pos);
-		return text;
+		return text.lines().findFirst().orElse("");
+	}
+
+	/**
+	 * returns the first line of a text
+	 *
+	 * @return first line1
+	 */
+	public static String getFirstLine(String text,boolean notBlank) {
+		return text.lines().filter(ln->!notBlank || !ln.isBlank()).findFirst().orElse("");
 	}
 
 	/**
