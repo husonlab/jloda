@@ -19,6 +19,7 @@
 
 package jloda.fx.util;
 
+import javafx.application.Platform;
 import jloda.util.Pair;
 
 import java.util.*;
@@ -68,6 +69,18 @@ public class RunAfterAWhile {
 	public static void apply(Object key, Runnable runnable) {
 		synchronized (instance.keyTimeRunnableMap) {
 			instance.keyTimeRunnableMap.put(key, new Pair<>(System.currentTimeMillis(), runnable));
+		}
+	}
+
+	/**
+	 * apply to a given key and runnable pair. The runnable will be executed after a delay, unless the same key is submitted again
+	 *
+	 * @param key      the key
+	 * @param runnable the runnable
+	 */
+	public static void applyInFXThread(Object key, Runnable runnable) {
+		synchronized (instance.keyTimeRunnableMap) {
+			instance.keyTimeRunnableMap.put(key, new Pair<>(System.currentTimeMillis(), () -> Platform.runLater(runnable)));
 		}
 	}
 }
