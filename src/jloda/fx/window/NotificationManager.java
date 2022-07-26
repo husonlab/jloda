@@ -21,7 +21,6 @@ package jloda.fx.window;
 
 import javafx.animation.*;
 import javafx.application.Platform;
-import javafx.beans.property.DoubleProperty;
 import javafx.beans.property.SimpleDoubleProperty;
 import javafx.geometry.Insets;
 import javafx.geometry.Rectangle2D;
@@ -29,7 +28,6 @@ import javafx.scene.Node;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.effect.DropShadow;
-import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
@@ -190,11 +188,11 @@ public class NotificationManager {
                     notification2slot.remove(notification);
                 });
 
-                final AnchorPane anchorPane = new AnchorPane();
+                final var anchorPane = new AnchorPane();
                 notification.getContent().add(anchorPane);
                 notification.setUserData(anchorPane);
 
-                final BorderPane mainPanel = new BorderPane();
+                final var mainPanel = new BorderPane();
                 {
                     var backgroundColor=(ProgramProperties.get("UseDarkTheme",false)?Color.BLACK:Color.WHITE).deriveColor(1, 1, 1, 0.8);
                         mainPanel.setBackground(new Background(new BackgroundFill(backgroundColor, null, null)));
@@ -212,7 +210,7 @@ public class NotificationManager {
                 }
 
                 {
-                    final Label messageLabel = new Label(" " + message);
+                    final var messageLabel = new Label(" " + message);
                     messageLabel.setFont(new Font(messageLabel.getFont().getName(), 12));
                     mainPanel.setCenter(messageLabel);
                 }
@@ -252,33 +250,33 @@ public class NotificationManager {
                 }
 
                 {
-                    final Image icon = switch (mode) {
-                        case confirmation -> ResourceManagerFX.getIcon("dialog/dialog-confirmation.png");
-                        case warning -> ResourceManagerFX.getIcon("dialog/dialog-warning.png");
-                        case information -> ResourceManagerFX.getIcon("dialog/dialog-information.png");
-                        case error -> ResourceManagerFX.getIcon("dialog/dialog-error.png");
+                    final ImageView icon = switch (mode) {
+                        case confirmation -> ResourceManagerFX.getIconAsImageView("dialog/dialog-confirmation.png", 32);
+                        case warning -> ResourceManagerFX.getIconAsImageView("dialog/dialog-warning.png", 32);
+                        case information -> ResourceManagerFX.getIconAsImageView("dialog/dialog-information.png", 32);
+                        case error -> ResourceManagerFX.getIconAsImageView("dialog/dialog-error.png", 32);
                     };
-
-                    final ImageView imageView = new ImageView(icon);
-                    imageView.setFitWidth(32);
-                    imageView.setFitHeight(32);
                     mainPanel.setPadding(new Insets(1, 5, 1, 5));
-                    mainPanel.setLeft(new StackPane(imageView));
+                    mainPanel.setLeft(new StackPane(icon));
                 }
-
 
                 //notificationPopup.sizeToScene();
 
-                Rectangle2D primaryScreenBounds = Screen.getPrimary().getVisualBounds();
+                var screenBounds = Screen.getPrimary().getVisualBounds();
 
-                notification.setX(primaryScreenBounds.getMinX() + 5);
-                notification.setY(primaryScreenBounds.getMaxY() - notificationHeight - vGap);
+                for (var screen : Screen.getScreensForRectangle(new Rectangle2D(window.getX(), window.getY(), window.getWidth(), window.getHeight()))) {
+                    if (screen.getBounds().contains(window.getX(), window.getY()))
+                        screenBounds = screen.getVisualBounds();
+                }
 
-                final Transition removeAfterShowing = createFadeTransition(notification, 1, 0, notification::hide);
+                notification.setX(screenBounds.getMinX() + 5);
+                notification.setY(screenBounds.getMaxY() - notificationHeight - vGap);
+
+                final var removeAfterShowing = createFadeTransition(notification, 1, 0, notification::hide);
                 removeAfterShowing.setDelay(Duration.millis(milliseconds));
                 removeAfterShowing.play();
 
-                addToShowingNotifications(notification, primaryScreenBounds.getMaxY());
+                addToShowingNotifications(notification, screenBounds.getMaxY());
 
                 Platform.runLater(() -> {
                     notification.show(window);
@@ -307,7 +305,7 @@ public class NotificationManager {
     }
 
     private static void addToShowingNotifications(Popup newNotification, double maxY) {
-        int firstEmptySlot = 0;
+        var firstEmptySlot = 0;
         while (firstEmptySlot < MAX_NUMBER_MESSAGES && slot2notification[firstEmptySlot] != null) {
             firstEmptySlot++;
         }
@@ -325,7 +323,7 @@ public class NotificationManager {
     }
 
     private static Animation createChangeYAnimation(Popup notification, double oldValue, double newValue) {
-        final DoubleProperty y = new SimpleDoubleProperty();
+        final var y = new SimpleDoubleProperty();
         y.addListener((c, o, n) -> notification.setY(n.doubleValue()));
         final KeyFrame beginKeyFrame = new KeyFrame(Duration.ZERO, new KeyValue(y, oldValue));
         final KeyFrame endKeyFrame = new KeyFrame(Duration.millis(200), new KeyValue(y, newValue));

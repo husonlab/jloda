@@ -19,6 +19,10 @@
 
 package jloda.fx.find;
 
+import javafx.collections.FXCollections;
+import javafx.collections.ListChangeListener;
+import javafx.collections.ObservableList;
+import javafx.collections.WeakListChangeListener;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.scene.layout.AnchorPane;
@@ -77,6 +81,61 @@ public class FindToolBarController {
 
     @FXML
     private CheckBox inSelectionOnlyCheckBox;
+
+    private static ObservableList<String> findList;
+    private ListChangeListener<String> findListChangeListener;
+
+    private static ObservableList<String> replaceList;
+    private ListChangeListener<String> replaceListChangeListener;
+
+    @FXML
+    private void initialize() {
+        if (findList == null)
+            findList = FXCollections.observableArrayList();
+        findListChangeListener = e -> {
+            while (e.next()) {
+                for (var item : e.getAddedSubList()) {
+                    if (!searchComboBox.getItems().contains(item))
+                        searchComboBox.getItems().add(item);
+                }
+            }
+        };
+        findList.addListener(new WeakListChangeListener<>(findListChangeListener));
+        searchComboBox.getItems().addListener((ListChangeListener<? super String>) e -> {
+            while (e.next()) {
+                for (var item : e.getAddedSubList()) {
+                    if (!findList.contains(item))
+                        findList.add(item);
+                }
+            }
+        });
+        searchComboBox.getItems().addAll(findList);
+
+        if (replaceList == null)
+            replaceList = FXCollections.observableArrayList();
+        replaceListChangeListener = e -> {
+            while (e.next()) {
+                for (var item : e.getAddedSubList()) {
+                    if (!replaceComboBox.getItems().contains(item))
+                        replaceComboBox.getItems().add(item);
+                    if (replaceComboBox.getItems().size() >= 100)
+                        break;
+                }
+            }
+        };
+        replaceList.addListener(new WeakListChangeListener<>(replaceListChangeListener));
+        replaceComboBox.getItems().addListener((ListChangeListener<? super String>) e -> {
+            while (e.next()) {
+                for (var item : e.getAddedSubList()) {
+                    if (!replaceList.contains(item))
+                        replaceList.add(item);
+                    if (replaceList.size() >= 100)
+                        break;
+                }
+            }
+        });
+        replaceComboBox.getItems().addAll(replaceList);
+    }
 
     public AnchorPane getAnchorPane() {
         return anchorPane;

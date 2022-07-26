@@ -362,9 +362,11 @@ public class PhyloGraph extends Graph {
      * Clears all taxa
      */
     public void clearTaxa() {
-        node2taxa.clear();
-        taxon2node.clear();
-    }
+		if (node2taxa != null)
+			node2taxa.clear();
+		if (taxon2node != null)
+			taxon2node.clear();
+	}
 
     /**
      * removes a taxon from the graph, but leaves the corresponding node label, if any

@@ -23,6 +23,7 @@ import javafx.application.Platform;
 import javafx.beans.property.*;
 import jloda.fx.util.AService;
 import jloda.fx.util.ProgramExecutorService;
+import jloda.fx.window.NotificationManager;
 import jloda.util.CanceledException;
 import jloda.util.progress.ProgressListener;
 
@@ -185,39 +186,39 @@ public class SearchManager {
             return false;
 
         boolean changed = false;
-        getSearcher().selectAll(false);
-        if (getSearcher() instanceof IObjectSearcher) {
-            IObjectSearcher searcher = (IObjectSearcher) getSearcher();
-            boolean ok = isForwardDirection() ? searcher.gotoFirst() : searcher.gotoLast();
+		try {
+			getSearcher().selectAll(false);
+			if (getSearcher() instanceof IObjectSearcher searcher) {
+				var ok = isForwardDirection() ? searcher.gotoFirst() : searcher.gotoLast();
 
+				final var regexp = prepareRegularExpression(getSearchText());
+				final var pattern = Pattern.compile(regexp);
 
-            final String regexp = prepareRegularExpression(getSearchText());
-            final Pattern pattern = Pattern.compile(regexp);
+				progress.setMaximum(searcher.numberOfObjects());
+				progress.setProgress(0);
 
-            progress.setMaximum(searcher.numberOfObjects());
-            progress.setProgress(0);
-
-            while (ok) {
-                if (isGlobalScope() || searcher.isCurrentSelected()) {
-                    String label = searcher.getCurrentLabel();
-                    if (label == null)
-                        label = "";
-                    if (matches(pattern, label)) {
-                        searcher.setCurrentSelected(true);
-                        changed = true;
-                        break;
-                    }
-                }
-                ok = isForwardDirection() ? searcher.gotoNext() : searcher.gotoPrevious();
-                progress.incrementProgress();
-            }
-        } else if (getSearcher() instanceof ITextSearcher) {
-            ITextSearcher searcher = (ITextSearcher) getSearcher();
-            searcher.setGlobalScope(isGlobalScope());
-
-            final String regexp = prepareRegularExpression(getSearchText());
-            changed = searcher.findFirst(regexp);
-        }
+				while (ok) {
+					if (isGlobalScope() || searcher.isCurrentSelected()) {
+						var label = searcher.getCurrentLabel();
+						if (label == null)
+							label = "";
+						if (matches(pattern, label)) {
+							searcher.setCurrentSelected(true);
+							changed = true;
+							break;
+						}
+					}
+					ok = isForwardDirection() ? searcher.gotoNext() : searcher.gotoPrevious();
+					progress.incrementProgress();
+				}
+			} else if (getSearcher() instanceof ITextSearcher searcher) {
+				searcher.setGlobalScope(isGlobalScope());
+				final var regexp = prepareRegularExpression(getSearchText());
+				changed = searcher.findFirst(regexp);
+			}
+		} catch (PatternSyntaxException ex) {
+			NotificationManager.showError("Syntax error: " + ex.getMessage());
+		}
         return changed;
     }
 
@@ -225,42 +226,44 @@ public class SearchManager {
      * find the next occurrence of the query
      */
     private boolean doFindNext(ProgressListener progressListener) throws CanceledException {
-        if (isDisabled())
-            return false;
+		if (isDisabled())
+			return false;
 
-        boolean changed = false;
-        if (getSearcher() instanceof IObjectSearcher) {
-            IObjectSearcher searcher = (IObjectSearcher) getSearcher();
-            boolean ok = isForwardDirection() ? searcher.gotoNext() : searcher.gotoPrevious();
+		boolean changed = false;
+		try {
+			if (getSearcher() instanceof IObjectSearcher searcher) {
+				boolean ok = isForwardDirection() ? searcher.gotoNext() : searcher.gotoPrevious();
 
-            progressListener.setMaximum(-1);
+				progressListener.setMaximum(-1);
 
-            final String regexp = prepareRegularExpression(getSearchText());
-            final Pattern pattern = Pattern.compile(regexp);
-            while (ok) {
-                if (isGlobalScope() || searcher.isCurrentSelected()) {
-                    String label = searcher.getCurrentLabel();
-                    if (label == null)
-                        label = "";
-                    if (matches(pattern, label)) {
-                        searcher.setCurrentSelected(true);
-                        changed = true;
-                        break;
-                    }
-                }
-                ok = isForwardDirection() ? searcher.gotoNext() : searcher.gotoPrevious();
-                progressListener.checkForCancel();
-            }
-        } else if (getSearcher() instanceof ITextSearcher) {
-            ITextSearcher searcher = (ITextSearcher) getSearcher();
-            searcher.setGlobalScope(isGlobalScope());
+				final var regexp = prepareRegularExpression(getSearchText());
+				final var pattern = Pattern.compile(regexp);
+				while (ok) {
+					if (isGlobalScope() || searcher.isCurrentSelected()) {
+						String label = searcher.getCurrentLabel();
+						if (label == null)
+							label = "";
+						if (matches(pattern, label)) {
+							searcher.setCurrentSelected(true);
+							changed = true;
+							break;
+						}
+					}
+					ok = isForwardDirection() ? searcher.gotoNext() : searcher.gotoPrevious();
+					progressListener.checkForCancel();
+				}
+			} else if (getSearcher() instanceof ITextSearcher searcher) {
+				searcher.setGlobalScope(isGlobalScope());
 
-            final String regexp = prepareRegularExpression(getSearchText());
-            if (isForwardDirection()) {
-                changed = searcher.findNext(regexp);
-            } else
-                changed = searcher.findPrevious(regexp);
-        }
+				final var regexp = prepareRegularExpression(getSearchText());
+				if (isForwardDirection()) {
+					changed = searcher.findNext(regexp);
+				} else
+					changed = searcher.findPrevious(regexp);
+			}
+		} catch (PatternSyntaxException ex) {
+			NotificationManager.showError("Syntax error: " + ex.getMessage());
+		}
         return changed;
     }
 
@@ -268,38 +271,41 @@ public class SearchManager {
      * select all occurrences of the query string
      */
     private int doFindAll(ProgressListener progressListener) throws CanceledException {
-        if (isDisabled())
-            return 0;
+		if (isDisabled())
+			return 0;
 
-        int count = 0;
-        if (getSearcher() instanceof IObjectSearcher) {
-            IObjectSearcher searcher = (IObjectSearcher) getSearcher();
-            boolean ok = searcher.gotoFirst();
+		int count = 0;
+		try {
+			if (getSearcher() instanceof IObjectSearcher searcher) {
+				boolean ok = searcher.gotoFirst();
 
-            progressListener.setMaximum(searcher.numberOfObjects());
+				progressListener.setMaximum(searcher.numberOfObjects());
 
-            final String regexp = prepareRegularExpression(getSearchText());
-            final Pattern pattern = Pattern.compile(regexp);
-            while (ok) {
-                if (isGlobalScope() || searcher.isCurrentSelected()) {
-                    String label = searcher.getCurrentLabel();
-                    if (label == null)
-                        label = "";
-                    boolean select = matches(pattern, label);
-                    if (select) {
-                        searcher.setCurrentSelected(true);
-                        count++;
-                    }
-                }
-                ok = searcher.gotoNext();
-                progressListener.incrementProgress();
-            }
-        } else if (getSearcher() instanceof ITextSearcher) {
-            ITextSearcher searcher = (ITextSearcher) getSearcher();
-            searcher.setGlobalScope(isGlobalScope());
-            final String regexp = prepareRegularExpression(getSearchText());
-            count = searcher.findAll(regexp);
-        }
+				final var regexp = prepareRegularExpression(getSearchText());
+				final var pattern = Pattern.compile(regexp);
+				while (ok) {
+					if (isGlobalScope() || searcher.isCurrentSelected()) {
+						String label = searcher.getCurrentLabel();
+						if (label == null)
+							label = "";
+						var select = matches(pattern, label);
+						if (select) {
+							searcher.setCurrentSelected(true);
+							count++;
+						}
+					}
+					ok = searcher.gotoNext();
+					progressListener.incrementProgress();
+				}
+			} else if (getSearcher() instanceof ITextSearcher searcher) {
+				searcher.setGlobalScope(isGlobalScope());
+				final var regexp = prepareRegularExpression(getSearchText());
+
+				count = searcher.findAll(regexp);
+			}
+		} catch (PatternSyntaxException ex) {
+			NotificationManager.showError("Syntax error: " + ex.getMessage());
+		}
         return count;
     }
 
@@ -307,46 +313,49 @@ public class SearchManager {
      * replace current or next occurrence of the query string
      */
     private boolean doFindAndReplace(ProgressListener progressListener) throws CanceledException {
-        if (isDisabled())
-            return false;
+		if (isDisabled())
+			return false;
 
-        boolean changed = false;
-        if (getSearcher() instanceof IObjectSearcher<?> searcher) {
-            progressListener.setMaximum(-1);
+		var changed = false;
+		try {
+			if (getSearcher() instanceof IObjectSearcher<?> searcher) {
+				progressListener.setMaximum(-1);
 
-            boolean ok = searcher.isCurrentSet();
-            if (!ok)
-                ok = isForwardDirection() ? searcher.gotoFirst() : searcher.gotoLast();
+				var ok = searcher.isCurrentSet();
+				if (!ok)
+					ok = isForwardDirection() ? searcher.gotoFirst() : searcher.gotoLast();
 
-            final String regexp = prepareRegularExpression(getSearchText());
-            final Pattern pattern = Pattern.compile(regexp);
+				final var regexp = prepareRegularExpression(getSearchText());
+				final var pattern = Pattern.compile(regexp);
 
-            while (ok) {
-                if (isGlobalScope() || searcher.isCurrentSelected()) {
-                    String label = searcher.getCurrentLabel();
-                    if (label == null)
-                        label = "";
-                    if (searcher.getPrepareTextForReplaceFunction() != null)
-                        label = searcher.getPrepareTextForReplaceFunction().apply(label);
-                    String replace = getReplacement(pattern, getReplaceText(), label);
-                    if (replace != null && !label.equals(replace)) {
-                        searcher.setCurrentSelected(true);
-                        searcher.setCurrentLabel(replace);
-                        changed = true;
-                        break;
-                    }
-                }
+				while (ok) {
+					if (isGlobalScope() || searcher.isCurrentSelected()) {
+						var label = searcher.getCurrentLabel();
+						if (label == null)
+							label = "";
+						if (searcher.getPrepareTextForReplaceFunction() != null)
+							label = searcher.getPrepareTextForReplaceFunction().apply(label);
+						var replace = getReplacement(pattern, getReplaceText(), label);
+						if (replace != null && !label.equals(replace)) {
+							searcher.setCurrentSelected(true);
+							searcher.setCurrentLabel(replace);
+							changed = true;
+							break;
+						}
+					}
 
-                ok = isForwardDirection() ? searcher.gotoNext() : searcher.gotoPrevious();
-                progressListener.checkForCancel();
-            }
-        } else if (getSearcher() instanceof ITextSearcher) {
-            ITextSearcher searcher = (ITextSearcher) getSearcher();
-            searcher.setGlobalScope(isGlobalScope());
+					ok = isForwardDirection() ? searcher.gotoNext() : searcher.gotoPrevious();
+					progressListener.checkForCancel();
+				}
+			} else if (getSearcher() instanceof ITextSearcher searcher) {
+				searcher.setGlobalScope(isGlobalScope());
 
-            final String regexp = prepareRegularExpression(getSearchText());
-            changed = searcher.replaceNext(regexp, getReplaceText());
-        }
+				final var regexp = prepareRegularExpression(getSearchText());
+				changed = searcher.replaceNext(regexp, getReplaceText());
+			}
+		} catch (PatternSyntaxException ex) {
+			NotificationManager.showError("Syntax error: " + ex.getMessage());
+		}
         return changed;
     }
 
@@ -359,36 +368,40 @@ public class SearchManager {
 
         int count = 0;
 
-        if (getSearcher() instanceof IObjectSearcher<?> searcher) {
-            boolean ok = isForwardDirection() ? searcher.gotoFirst() : searcher.gotoLast();
-            progressListener.setMaximum(searcher.numberOfObjects());
+		try {
+			if (getSearcher() instanceof IObjectSearcher<?> searcher) {
+				var ok = isForwardDirection() ? searcher.gotoFirst() : searcher.gotoLast();
+				progressListener.setMaximum(searcher.numberOfObjects());
 
-            final String regexp = prepareRegularExpression(getSearchText());
-            final Pattern pattern = Pattern.compile(regexp);
+				final var regexp = prepareRegularExpression(getSearchText());
+				final var pattern = Pattern.compile(regexp);
 
-            while (ok) {
-                if (isGlobalScope() || searcher.isCurrentSelected()) {
-                    String label = searcher.getCurrentLabel();
-                    if (label == null)
-                        label = "";
-                    if (searcher.getPrepareTextForReplaceFunction() != null)
-                        label = searcher.getPrepareTextForReplaceFunction().apply(label);
-                    String replace = getReplacement(pattern, getReplaceText(), label);
-                    if (replace != null && !replace.equals(label)) {
-                        searcher.setCurrentSelected(true);
-                        searcher.setCurrentLabel(replace);
-                        count++;
-                    }
-                }
-                ok = isForwardDirection() ? searcher.gotoNext() : searcher.gotoPrevious();
-                progressListener.incrementProgress();
-            }
-        } else if (getSearcher() instanceof ITextSearcher searcher) {
-            searcher.setGlobalScope(isGlobalScope());
+				while (ok) {
+					if (isGlobalScope() || searcher.isCurrentSelected()) {
+						var label = searcher.getCurrentLabel();
+						if (label == null)
+							label = "";
+						if (searcher.getPrepareTextForReplaceFunction() != null)
+							label = searcher.getPrepareTextForReplaceFunction().apply(label);
+						var replace = getReplacement(pattern, getReplaceText(), label);
+						if (replace != null && !replace.equals(label)) {
+							searcher.setCurrentSelected(true);
+							searcher.setCurrentLabel(replace);
+							count++;
+						}
+					}
+					ok = isForwardDirection() ? searcher.gotoNext() : searcher.gotoPrevious();
+					progressListener.incrementProgress();
+				}
+			} else if (getSearcher() instanceof ITextSearcher searcher) {
+				searcher.setGlobalScope(isGlobalScope());
 
-            final String regexp = prepareRegularExpression(getSearchText());
-            count = searcher.replaceAll(regexp, getReplaceText(), !isGlobalScope());
-        }
+				final var regexp = prepareRegularExpression(getSearchText());
+				count = searcher.replaceAll(regexp, getReplaceText(), !isGlobalScope());
+			}
+		} catch (PatternSyntaxException ex) {
+			NotificationManager.showError("Syntax error: " + ex.getMessage());
+		}
         return count;
     }
 

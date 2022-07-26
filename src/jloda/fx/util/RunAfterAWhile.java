@@ -49,9 +49,12 @@ public class RunAfterAWhile {
 					var time = System.currentTimeMillis();
 					var toDelete = new ArrayList<>();
 					for (var entry : keyTimeRunnableMap.entrySet()) {
-						if (time > entry.getValue().getFirst() + DELAY) {
+						var entryTime = entry.getValue().getFirst();
+						if (time > entryTime + DELAY) {
 							toDelete.add(entry.getKey());
-							ProgramExecutorService.submit(entry.getValue().getSecond());
+							var entryJob = entry.getValue().getSecond();
+							if (entryJob != null)
+								ProgramExecutorService.submit(entryJob);
 						}
 					}
 					toDelete.forEach(keyTimeRunnableMap.keySet()::remove);
@@ -61,7 +64,7 @@ public class RunAfterAWhile {
 	}
 
 	/**
-	 * apply to a given key and runnable pair. The runnable will be executed after a delay, unless the same key is submitted again
+	 * The runnable will be executed after a delay, unless the same key is submitted again
 	 *
 	 * @param key      the key
 	 * @param runnable the runnable
@@ -73,14 +76,32 @@ public class RunAfterAWhile {
 	}
 
 	/**
-	 * apply to a given key and runnable pair. The runnable will be executed after a delay, unless the same key is submitted again
+	 * The runnable will be executed after a delay, unless the same key is waiting, in which case nothing is run
+	 *
+	 * @param key
+	 * @param runnable
+	 */
+	public static void applyOrClearIfAlreadyWaiting(Object key, Runnable runnable) {
+		synchronized (instance.keyTimeRunnableMap) {
+			var pair = instance.keyTimeRunnableMap.get(key);
+			if (pair != null)
+				instance.keyTimeRunnableMap.put(key, new Pair<>(pair.getFirst(), null));
+			else
+				instance.keyTimeRunnableMap.put(key, new Pair<>(System.currentTimeMillis(), runnable));
+		}
+	}
+
+	/**
+	 * The runnable will be executed in the FX thread after a delay, unless the same key is submitted again
 	 *
 	 * @param key      the key
 	 * @param runnable the runnable
 	 */
 	public static void applyInFXThread(Object key, Runnable runnable) {
-		synchronized (instance.keyTimeRunnableMap) {
-			instance.keyTimeRunnableMap.put(key, new Pair<>(System.currentTimeMillis(), () -> Platform.runLater(runnable)));
-		}
+		apply(key, () -> Platform.runLater(runnable));
+	}
+
+	public static void applyInFXThreadOrClearIfAlreadyWaiting(Object key, Runnable runnable) {
+		applyOrClearIfAlreadyWaiting(key, () -> Platform.runLater(runnable));
 	}
 }

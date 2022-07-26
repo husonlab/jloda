@@ -37,6 +37,7 @@ import javafx.scene.input.TransferMode;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.StackPane;
 import javafx.stage.Stage;
+import jloda.fx.window.MainWindowManager;
 import jloda.util.Basic;
 import jloda.util.ProgramProperties;
 import jloda.util.Single;
@@ -715,7 +716,8 @@ public class SplittableTabPane extends Pane {
         root.getChildren().add(tab.getContent());
         //root.getChildren().add(new TabPane(tab)); // need to disable drop targets for this to work
 
-        final Stage stage = new Stage();
+        final var stage = new Stage();
+
         if (tab.getText().length() > 0)
             stage.setTitle(tab.getText());
         else if (tab.getGraphic() instanceof Labeled)
@@ -725,6 +727,10 @@ public class SplittableTabPane extends Pane {
         stage.getIcons().addAll(ProgramProperties.getProgramIconsFX());
 
         final var scene = new Scene(root);
+
+        scene.getStylesheets().add("jloda/resources/css/white_pane.css");
+        if (MainWindowManager.isUseDarkTheme())
+            scene.getStylesheets().add("jloda/resources/css/dark.css");
 
         stage.setScene(scene);
         stage.setX(screenX);
