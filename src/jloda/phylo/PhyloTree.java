@@ -1464,7 +1464,7 @@ public class PhyloTree extends PhyloSplitsGraph {
 
 	public record NewickOutputFormat(boolean weights, boolean confidenceAsNodeLabel, boolean confidenceUsingColon,
 									 boolean probabilityUsingColon, boolean edgeLabelsAsComments) {
-	}
+		}
 }
 
 // EOF

@@ -116,7 +116,13 @@ public class AService<T> extends Service<T> {
 	}
 
 	public static <T> void run(Callable<T> callable, Consumer<T> runOnSucceeded, Consumer<Throwable> runOnFailed) {
+		run(callable, runOnSucceeded, runOnFailed, null);
+	}
+
+	public static <T> void run(Callable<T> callable, Consumer<T> runOnSucceeded, Consumer<Throwable> runOnFailed, Pane progressParentPane) {
 		var service = new AService<>(callable);
+		if (progressParentPane != null)
+			service.setProgressParentPane(progressParentPane);
 		if (runOnSucceeded != null)
 			service.setOnSucceeded(e -> runOnSucceeded.accept(service.getValue()));
 		if (runOnFailed != null)
