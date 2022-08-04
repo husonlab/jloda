@@ -108,10 +108,10 @@ public class Node extends NodeEdge implements Comparable<Node> {
     }
 
     /**
-	 * rearrange the adjacent adjacentEdges
-	 *
-	 * @param newOrder new order in which edges should occur
-	 */
+     * rearrange the adjacent edge
+     *
+     * @param newOrder new order in which edges should occur
+     */
     public void rearrangeAdjacentEdges(Collection<Edge> newOrder) {
         final var array = new Edge[newOrder.size()];
         {

@@ -246,29 +246,31 @@ public class ZoomableScrollPane extends ScrollPane {
      *
      */
     public void ensureVisible(Node node) {
-        final Bounds viewportBounds = getViewportBounds();
-        final Bounds contentBounds = getContent().localToScene(getContent().getBoundsInLocal());
-        Bounds nodeBounds = node.localToScene(node.getBoundsInLocal());
+        if (node != null) {
+            final Bounds viewportBounds = getViewportBounds();
+            final Bounds contentBounds = getContent().localToScene(getContent().getBoundsInLocal());
+            Bounds nodeBounds = node.localToScene(node.getBoundsInLocal());
 
-        // this adjusts for the fact that the scrollpane might not fill out the whole scene:
-        final double offsetH = (getContent().getScene().getWidth() - viewportBounds.getWidth());
-        final double offsetV = (getContent().getScene().getHeight() - viewportBounds.getHeight());
-        nodeBounds = new BoundingBox(nodeBounds.getMinX() - offsetH, nodeBounds.getMinY() - offsetV, nodeBounds.getWidth(), nodeBounds.getHeight());
+            // this adjusts for the fact that the scrollpane might not fill out the whole scene:
+            final double offsetH = (getContent().getScene().getWidth() - viewportBounds.getWidth());
+            final double offsetV = (getContent().getScene().getHeight() - viewportBounds.getHeight());
+            nodeBounds = new BoundingBox(nodeBounds.getMinX() - offsetH, nodeBounds.getMinY() - offsetV, nodeBounds.getWidth(), nodeBounds.getHeight());
 
-        if (nodeBounds.getMaxX() < 0) {
-            final double hValueDelta = (nodeBounds.getMinX() - viewportBounds.getWidth()) / contentBounds.getWidth();
-            setHvalue(getHvalue() + hValueDelta);
-        } else if (nodeBounds.getMinX() > viewportBounds.getWidth()) {
-            final double hValueDelta = (nodeBounds.getMinX() + viewportBounds.getWidth()) / contentBounds.getWidth();
-            setHvalue(getHvalue() + hValueDelta);
-        }
+            if (nodeBounds.getMaxX() < 0) {
+                final double hValueDelta = (nodeBounds.getMinX() - viewportBounds.getWidth()) / contentBounds.getWidth();
+                setHvalue(getHvalue() + hValueDelta);
+            } else if (nodeBounds.getMinX() > viewportBounds.getWidth()) {
+                final double hValueDelta = (nodeBounds.getMinX() + viewportBounds.getWidth()) / contentBounds.getWidth();
+                setHvalue(getHvalue() + hValueDelta);
+            }
 
-        if (nodeBounds.getMaxY() < 0) {
-            final double vValueDelta = (nodeBounds.getMinY() - viewportBounds.getHeight()) / contentBounds.getHeight();
-            setVvalue(getVvalue() + vValueDelta);
-        } else if (nodeBounds.getMinY() > viewportBounds.getHeight()) {
-            final double vValueDelta = (nodeBounds.getMinY() + viewportBounds.getHeight()) / contentBounds.getHeight();
-            setVvalue(getVvalue() + vValueDelta);
+            if (nodeBounds.getMaxY() < 0) {
+                final double vValueDelta = (nodeBounds.getMinY() - viewportBounds.getHeight()) / contentBounds.getHeight();
+                setVvalue(getVvalue() + vValueDelta);
+            } else if (nodeBounds.getMinY() > viewportBounds.getHeight()) {
+                final double vValueDelta = (nodeBounds.getMinY() + viewportBounds.getHeight()) / contentBounds.getHeight();
+                setVvalue(getVvalue() + vValueDelta);
+            }
         }
     }
 
