@@ -1026,7 +1026,6 @@ public class PQTree {
 	}
 
 	public static void test(Collection<BitSet> sets) {
-		var all = BitSetUtils.union(sets);
 		var pqTree = new PQTree();
 		var fails = 0;
 		for (var set : sets) {
