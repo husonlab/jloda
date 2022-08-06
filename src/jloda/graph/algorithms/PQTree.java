@@ -39,34 +39,20 @@ public class PQTree {
 
 	private final BitSet all;
 	private final PhyloTree tree;
-	private final Node[] leaves;
+	private final Map<Integer, Node> leafMap;
 
 	private final Set<String> reductionsUsed = new TreeSet<>();
 
 	/**
-	 * construct empty PQ-tree for given items
-	 *
-	 * @param all
-	 * @throws IllegalArgumentException if given set is empty
+	 * constructor
 	 */
-	public PQTree(BitSet all) {
-		if (all.cardinality() == 0)
-			throw new IllegalArgumentException("empty set");
-
-		leaves = new Node[all.stream().max().orElse(0) + 1];
-		this.all = all;
-
+	public PQTree() {
+		leafMap = new HashMap<>();
+		this.all = new BitSet();
 		tree = new PhyloTree();
 		var root = tree.newNode();
 		setType(root, Type.P);
 		tree.setRoot(root);
-		all.stream().forEach(t -> {
-			var v = tree.newNode();
-			tree.addTaxon(v, t);
-			setType(v, Type.Leaf);
-			leaves[t] = v;
-			tree.newEdge(root, v);
-		});
 	}
 
 	/**
@@ -80,92 +66,110 @@ public class PQTree {
 		if (set.cardinality() <= 1)
 			return true;
 
-		var string = StringUtils.toString(set);
+		for (var t : BitSetUtils.members(set)) {
+			if (!leafMap.containsKey(t)) {
+				var v = tree.newNode();
+				tree.addTaxon(v, t);
+				setType(v, Type.Leaf);
+				tree.newEdge(tree.getRoot(), v);
+				all.set(t);
+				leafMap.put(t, v);
+			}
+		}
 
 		if (verbose) {
 			System.err.println("======= set: " + StringUtils.toString(set));
+			System.err.println("Tree: " + toBracketString());
 		}
 
 		if (!BitSetUtils.contains(all, set))
 			throw new IllegalArgumentException("set not contained");
 
-		var copy = new PhyloTree(); // keep a copy in case we have to roll-back
-		var leavesCopy = new Node[leaves.length];
+		// todo: copy only the pertinent tree
+		var treeCopy = new PhyloTree(); // keep a copy in case we have to roll-back
+		var leafMapCopy = new HashMap<Integer, Node>();
 		{
-			var oldNewMap = copy.copy(tree);
-			for (int i = 0; i < leaves.length; i++) {
-				if (leaves[i] != null)
-					leavesCopy[i] = oldNewMap.get(leaves[i]);
+			var oldNewMap = treeCopy.copy(tree);
+			for (var entru : leafMap.entrySet()) {
+				leafMapCopy.put(entru.getKey(), oldNewMap.get(entru.getValue()));
 			}
 		}
 
 		var ok = new Single<>(true);
+		var changed = new Single<>(false);
 
 		try {
 			final var belowMap = new HashMap<Node, Integer>();
-
-			final var pertinentRoot = computePertinent(set, belowMap);
+			final var pertinentRoot = computePertinentRoot(set, belowMap);
 			final var stateMap = new HashMap<Node, State>();
 
-			if (false) {
-				tree.postorderTraversal(v -> {
-					if (belowMap.get(v) != null)
-						System.err.println("below<" + toBracketString(v) + ">: " + belowMap.get(v));
-				});
-			}
+			tree.postorderTraversal(pertinentRoot,
+					v -> ok.get() && belowMap.containsKey(v),
+					v -> {
+						if (ok.get()) { // need to check, as well
+							if (verbose)
+								System.err.println("v=" + (v == tree.getRoot() ? "root" : toBracketString(v)));
 
-			tree.postorderTraversal(pertinentRoot, v -> {
-				if (belowMap.getOrDefault(v, 0) > 0 && ok.get()) {
-					if (verbose)
-						System.err.println("v=" + (v == tree.getRoot() ? "root" : toBracketString(v)));
+							if (isLeaf(v)) {
+								reduceLeaf(v, stateMap);
+							} else if (isP0(v, stateMap)) {
+								reduceP0(v, stateMap);
+							} else if (isP1(v, stateMap)) {
+								reduceP1(v, stateMap);
+							} else if (isP2(v, pertinentRoot, stateMap)) {
+								reduceP2(v, stateMap);
+								changed.set(true);
+							} else if (isP3(v, pertinentRoot, stateMap)) {
+								reduceP3(v, stateMap);
+								changed.set(true);
+							} else if (isP4_0(v, pertinentRoot, stateMap)) {
+								reduceP4_0(v, stateMap);
+								changed.set(true);
+							} else if (isP4(v, pertinentRoot, stateMap)) {
+								reduceP4(v, stateMap);
+							} else if (isP5(v, pertinentRoot, stateMap)) {
+								reduceP5(v, stateMap);
+								changed.set(true);
+							} else if (isP6(v, pertinentRoot, stateMap)) {
+								reduceP6(v, stateMap);
+								changed.set(true);
+							} else if (isQ0(v, stateMap)) {
+								reduceQ0(v, stateMap);
+								changed.set(true);
+							} else if (isQ1(v, stateMap)) {
+								reduceQ1(v, stateMap);
+								changed.set(true);
+							} else if (isQ2_0(v, stateMap)) {
+								reduceQ2_0(v, stateMap);
+								changed.set(true);
+							} else if (isQ2_1(v, stateMap)) {
+								reduceQ2_1(v, stateMap);
+								changed.set(true);
+							} else if (isQ3_0(v, pertinentRoot, stateMap)) {
+								reduceQ3_0(v, stateMap);
+								changed.set(true);
+							} else if (isQ3_1a(v, pertinentRoot, stateMap)) {
+								reduceQ3_1a(v, stateMap);
+								changed.set(true);
+							} else if (isQ3_1b(v, pertinentRoot, stateMap)) {
+								reduceQ3_1b(v, stateMap);
+								changed.set(true);
+							} else if (isQ3_2(v, pertinentRoot, stateMap)) {
+								reduceQ3_2(v, stateMap);
+								changed.set(true);
+							} else {
+								ok.set(false);
+							}
+							if (verbose && !isLeaf(v))
+								System.err.println(" -> " + toBracketString(v));
 
-					if (isLeaf(v)) {
-						reduceLeaf(v, stateMap);
-					} else if (isP0(v, stateMap)) {
-						reduceP0(v, stateMap);
-					} else if (isP1(v, stateMap)) {
-						reduceP1(v, stateMap);
-					} else if (isP2(v, pertinentRoot, stateMap)) {
-						reduceP2(v, stateMap);
-					} else if (isP3(v, pertinentRoot, stateMap)) {
-						reduceP3(v, stateMap);
-					} else if (isP4_0(v, pertinentRoot, stateMap)) {
-						reduceP4_0(v, stateMap);
-					} else if (isP4(v, pertinentRoot, stateMap)) {
-						reduceP4(v, stateMap);
-					} else if (isP5(v, pertinentRoot, stateMap)) {
-						reduceP5(v, stateMap);
-					} else if (isP6(v, pertinentRoot, stateMap)) {
-						reduceP6(v, stateMap);
-					} else if (isQ0(v, stateMap)) {
-						reduceQ0(v, stateMap);
-					} else if (isQ1(v, stateMap)) {
-						reduceQ1(v, stateMap);
-					} else if (isQ2_0(v, stateMap)) {
-						reduceQ2_0(v, stateMap);
-					} else if (isQ2_1(v, stateMap)) {
-						reduceQ2_1(v, stateMap);
-					} else if (isQ3_0(v, pertinentRoot, stateMap)) {
-						reduceQ3_0(v, stateMap);
-					} else if (isQ3_1a(v, pertinentRoot, stateMap)) {
-						reduceQ3_1a(v, stateMap);
-					} else if (isQ3_1b(v, pertinentRoot, stateMap)) {
-						reduceQ3_1b(v, stateMap);
-					} else if (isQ3_2(v, pertinentRoot, stateMap)) {
-						reduceQ3_2(v, stateMap);
-					} else {
-						ok.set(false);
-					}
-					if (verbose && !isLeaf(v))
-						System.err.println(" -> " + toBracketString(v));
-
-					if (true) {
-						if (!IsTree.apply(tree)) {
-							System.err.println("Not tree!");
+							if (true) {
+								if (!IsTree.apply(tree)) {
+									System.err.println("Not tree!");
+								}
+							}
 						}
-					}
-				}
-			});
+					});
 			if (verbose) {
 				System.err.println("result: " + ok.get());
 				System.err.println("order:  " + StringUtils.toString(extractAnOrdering(), ", "));
@@ -179,14 +183,52 @@ public class PQTree {
 				System.err.println("set: " + StringUtils.toString(set));
 				System.err.println("Algorithms reports not ok, but is ok");
 			}
-			if (!ok.get()) { // roll back
-				var oldNewMap = tree.copy(copy);
-				for (int i = 0; i < leaves.length; i++) {
-					if (leaves[i] != null)
-						leaves[i] = oldNewMap.get(leavesCopy[i]);
+			if (!ok.get() && changed.get()) { // roll back
+				var oldNewMap = tree.copy(treeCopy);
+				leafMap.clear();
+				for (var entru : leafMapCopy.entrySet()) {
+					leafMap.put(entru.getKey(), oldNewMap.get(entru.getValue()));
 				}
 			}
 		}
+	}
+
+	/**
+	 * computes for each node, how many members are below it and determines the root of the pertinent tree
+	 *
+	 * @param set the current set
+	 * @return pertinent tree
+	 */
+	private Node computePertinentRoot(BitSet set, Map<Node, Integer> belowMap) {
+		Node pertinentRoot = null;
+
+		for (var t : BitSetUtils.members(set)) {
+			var v = leafMap.get(t);
+			while (v != null) {
+				var value = belowMap.getOrDefault(v, 0) + 1;
+				belowMap.put(v, value);
+				if (value < set.cardinality()) {
+					v = v.getParent();
+				} else {
+					pertinentRoot = v;
+					break;
+				}
+			}
+		}
+
+		if (pertinentRoot == null) {
+			throw new RuntimeException("computePertinentRoot(): failed");
+		}
+
+		var v = pertinentRoot;
+		while (v.getInDegree() > 0) {
+			v = v.getParent();
+			belowMap.remove(v);
+		}
+
+		if (verbose)
+			System.err.println("Pertinent: " + (pertinentRoot == tree.getRoot() ? "root" : toBracketString(pertinentRoot)));
+		return pertinentRoot;
 	}
 
 	private static boolean isLeaf(Node v) {
@@ -881,48 +923,6 @@ public class PQTree {
 	}
 
 	/**
-	 * computes for each node, how many members are below it and determines the root of the pertinent tree
-	 *
-	 * @param set      the current set
-	 * @param belowMap counts of set members on or below this node
-	 * @return pertinent tree
-	 */
-	private Node computePertinent(BitSet set, HashMap<Node, Integer> belowMap) {
-		Node pertinentRoot = null;
-
-		if (verbose)
-			System.err.println("Tree: " + toBracketString());
-
-		for (var t : BitSetUtils.members(set)) {
-			var v = leaves[t];
-			while (v != null) {
-				var value = belowMap.getOrDefault(v, 0) + 1;
-				belowMap.put(v, value);
-				if (value < set.cardinality()) {
-					v = v.getParent();
-				} else {
-					pertinentRoot = v;
-					break;
-				}
-			}
-		}
-
-		if (pertinentRoot == null) {
-			throw new RuntimeException("computePertinent(): failed");
-		}
-
-		var v = pertinentRoot;
-		while (v.getInDegree() > 0) {
-			v = v.getParent();
-			belowMap.remove(v);
-		}
-
-		if (verbose)
-			System.err.println("Pertinent: " + (pertinentRoot == tree.getRoot() ? "root" : toBracketString(pertinentRoot)));
-		return pertinentRoot;
-	}
-
-	/**
 	 * extracts an ordering that is compatible with all accepted sets
 	 *
 	 * @return ordering
@@ -1027,7 +1027,7 @@ public class PQTree {
 
 	public static void test(Collection<BitSet> sets) {
 		var all = BitSetUtils.union(sets);
-		var pqTree = new PQTree(all);
+		var pqTree = new PQTree();
 		var fails = 0;
 		for (var set : sets) {
 			if (!pqTree.accept(set)) {
