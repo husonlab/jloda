@@ -646,7 +646,7 @@ public class PQTree {
 		for (var child : v.children()) {
 			if (child == partialChild) {
 				var below = IteratorUtils.asList(child.children());
-				if (emptyFirst && isEmpty(below.get(0), stateMap))
+				if (emptyFirst == isEmpty(below.get(0), stateMap))
 					list.addAll(below);
 				else
 					list.addAll(CollectionUtils.reverse(below));
