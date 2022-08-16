@@ -31,7 +31,7 @@ import java.util.stream.Collectors;
  * This is not linear time, however, as we use a full tree implementation, including all parent nodes
  */
 public class PQTree {
-	private static boolean verbose = true;
+	private static boolean verbose = false;
 
 	private enum Type {P, Q, Leaf}
 
@@ -128,6 +128,9 @@ public class PQTree {
 							} else if (isP4(v, pertinentRoot, stateMap)) {
 								reduceP4(v, stateMap);
 							} else if (isP5(v, pertinentRoot, stateMap)) {
+								if (StringUtils.toString(set).equals("95,96"))
+									System.err.println(set);
+
 								reduceP5(v, stateMap);
 								changed.set(true);
 							} else if (isP6(v, pertinentRoot, stateMap)) {
@@ -460,8 +463,15 @@ public class PQTree {
 			list.add(empty);
 		}
 
-		list.addAll(getEmptyChildren(partialChild, stateMap));
-		list.addAll(getFullChildren(partialChild, stateMap));
+		if (getType(partialChild) == Type.P) {
+			list.addAll(getEmptyChildren(partialChild, stateMap));
+			list.addAll(getFullChildren(partialChild, stateMap));
+		} else {
+			if (stateMap.get(partialChild.getFirstOutEdge().getTarget()) == State.Full)
+				list.addAll(CollectionUtils.reverse(IteratorUtils.asList(partialChild.children())));
+			else
+				list.addAll(IteratorUtils.asList(partialChild.children()));
+		}
 
 		tree.deleteNode(partialChild);
 
@@ -503,8 +513,15 @@ public class PQTree {
 		var partialChild1 = partialChildren.get(0);
 
 		var below = new ArrayList<Node>();
-		below.addAll(getEmptyChildren(partialChild1, stateMap));
-		below.addAll(getFullChildren(partialChild1, stateMap));
+		if (getType(partialChild1) == Type.P) {
+			below.addAll(getEmptyChildren(partialChild1, stateMap));
+			below.addAll(getFullChildren(partialChild1, stateMap));
+		} else {
+			if (stateMap.get(partialChild1.getFirstOutEdge().getTarget()) == State.Full)
+				below.addAll(CollectionUtils.reverse(IteratorUtils.asList(partialChild1.children())));
+			else
+				below.addAll(IteratorUtils.asList(partialChild1.children()));
+		}
 		tree.deleteNode(partialChild1);
 
 		var fullChildren = getFullChildren(v, stateMap);
@@ -524,17 +541,28 @@ public class PQTree {
 		}
 
 		var partialChild2 = partialChildren.get(1);
-		below.addAll(getFullChildren(partialChild2, stateMap));
-		below.addAll(getEmptyChildren(partialChild2, stateMap));
+		if (getType(partialChild2) == Type.P) {
+			below.addAll(getFullChildren(partialChild2, stateMap));
+			below.addAll(getEmptyChildren(partialChild2, stateMap));
+		} else {
+			if (stateMap.get(partialChild2.getFirstOutEdge().getTarget()) == State.Full)
+				below.addAll(IteratorUtils.asList(partialChild2.children()));
+			else
+				below.addAll(CollectionUtils.reverse(IteratorUtils.asList(partialChild2.children())));
+		}
 		tree.deleteNode(partialChild2);
 
-		var doublyPartialChild = tree.newNode();
-		below.forEach(w -> tree.newEdge(doublyPartialChild, w));
-		setType(doublyPartialChild, Type.Q);
-		stateMap.put(doublyPartialChild, State.DoublyPartial);
-
-		list.add(doublyPartialChild);
-		replaceChildren(v, list);
+		if (list.size() == 0) {
+			replaceChildren(v, below);
+			setType(v, Type.Q);
+		} else {
+			var doublyPartialChild = tree.newNode();
+			below.forEach(w -> tree.newEdge(doublyPartialChild, w));
+			setType(doublyPartialChild, Type.Q);
+			stateMap.put(doublyPartialChild, State.DoublyPartial);
+			list.add(doublyPartialChild);
+			replaceChildren(v, list);
+		}
 		stateMap.put(v, State.DoublyPartial);
 		// is pertinent root, no need to set state
 	}
@@ -955,8 +983,7 @@ public class PQTree {
 			min = Math.min(min, index);
 			max = Math.max(max, index);
 		}
-		var contained = (max - min + 1) == set.cardinality();
-		return contained;
+		return (max - min + 1) == set.cardinality();
 	}
 
 	public void check(BitSet... sets) {
@@ -964,15 +991,7 @@ public class PQTree {
 		var ordering = extractAnOrdering();
 		System.err.println("Ordering: " + ordering);
 		for (var set : sets) {
-			var min = Integer.MAX_VALUE;
-			var max = Integer.MIN_VALUE;
-			for (var t : BitSetUtils.members(set)) {
-				var index = ordering.indexOf(t);
-				min = Math.min(min, index);
-				max = Math.max(max, index);
-			}
-			var contained = (max - min + 1) == set.cardinality();
-			System.err.println(set + ": " + (contained ? "contained" : "NOT contained"));
+			System.err.println(set + ": " + (check(set) ? "contained" : "NOT contained"));
 		}
 	}
 
