@@ -31,13 +31,12 @@ import java.util.stream.Collectors;
  * This is not linear time, however, as we use a full tree implementation, including all parent nodes
  */
 public class PQTree {
-	private static boolean verbose = false;
+	public boolean verbose = false;
 
 	private enum Type {P, Q, Leaf}
 
-	private enum State {Full, Empty, Partial, DoublyPartial, PertinentRoot}
+	private enum State {Full, Empty, Partial, DoublyPartial}
 
-	private final BitSet all;
 	private final PhyloTree tree;
 	private final Map<Integer, Node> leafMap;
 
@@ -48,11 +47,8 @@ public class PQTree {
 	 */
 	public PQTree() {
 		leafMap = new HashMap<>();
-		this.all = new BitSet();
 		tree = new PhyloTree();
-		var root = tree.newNode();
-		setType(root, Type.P);
-		tree.setRoot(root);
+		tree.setRoot(tree.newNode());
 	}
 
 	/**
@@ -66,14 +62,30 @@ public class PQTree {
 		if (set.cardinality() <= 1)
 			return true;
 
-		for (var t : BitSetUtils.members(set)) {
-			if (!leafMap.containsKey(t)) {
-				var v = tree.newNode();
-				tree.addTaxon(v, t);
-				setType(v, Type.Leaf);
-				tree.newEdge(tree.getRoot(), v);
-				all.set(t);
-				leafMap.put(t, v);
+		{
+			var newLeaves = new ArrayList<Node>();
+			for (var t : BitSetUtils.members(set)) {
+				if (!leafMap.containsKey(t)) {
+					var v = tree.newNode();
+					tree.addTaxon(v, t);
+					setType(v, Type.Leaf);
+					newLeaves.add(v);
+					leafMap.put(t, v);
+				}
+			}
+			if (newLeaves.size() > 0) {
+				if (tree.getRoot().getOutDegree() == 0) {
+					replaceChildren(tree.getRoot(), newLeaves);
+				} else {
+					var oldRoot = tree.getRoot();
+					var newRoot = tree.newNode();
+					tree.newEdge(newRoot, oldRoot);
+					for (var leaf : newLeaves) {
+						tree.newEdge(newRoot, leaf);
+					}
+					tree.setRoot(newRoot);
+				}
+				setType(tree.getRoot(), Type.P);
 			}
 		}
 
@@ -82,10 +94,7 @@ public class PQTree {
 			System.err.println("Tree: " + toBracketString());
 		}
 
-		if (!BitSetUtils.contains(all, set))
-			throw new IllegalArgumentException("set not contained");
-
-		// todo: copy only the pertinent tree
+		// todo: modify so that we only copy the pertinent tree
 		var treeCopy = new PhyloTree(); // keep a copy in case we have to roll-back
 		var leafMapCopy = new HashMap<Integer, Node>();
 		{
@@ -128,9 +137,6 @@ public class PQTree {
 							} else if (isP4(v, pertinentRoot, stateMap)) {
 								reduceP4(v, stateMap);
 							} else if (isP5(v, pertinentRoot, stateMap)) {
-								if (StringUtils.toString(set).equals("95,96"))
-									System.err.println(set);
-
 								reduceP5(v, stateMap);
 								changed.set(true);
 							} else if (isP6(v, pertinentRoot, stateMap)) {
@@ -256,7 +262,6 @@ public class PQTree {
 			reductionsUsed.add(getMethodName());
 		}
 		stateMap.put(v, State.Empty);
-
 	}
 
 	private static boolean isP1(Node v, HashMap<Node, State> stateMap) {
@@ -293,7 +298,7 @@ public class PQTree {
 		}
 		tree.newEdge(v, fullParent);
 		stateMap.put(fullParent, State.Full);
-		// v is pertinent root, no need to set its state
+		// v is pertinent root, no need to set its type
 	}
 
 	private static boolean isP3(Node v, Node pertinentNode, HashMap<Node, State> stateMap) {
@@ -365,7 +370,7 @@ public class PQTree {
 
 		assert (partialChild != null);
 
-		var below = IteratorUtils.asList(partialChild.children());
+		var below = getChildren(partialChild);
 		if (isEmpty(below.get(0), stateMap))
 			list.addAll(below);
 		else
@@ -384,9 +389,8 @@ public class PQTree {
 			list.add(full);
 		}
 		replaceChildren(v, list);
-
-		stateMap.put(v, State.Partial);
 		setType(v, Type.Q);
+		// v is pertinent root, no need to set state
 	}
 
 	private static boolean isP4(Node v, Node pertinentNode, HashMap<Node, State> stateMap) {
@@ -418,7 +422,7 @@ public class PQTree {
 				}
 				stateMap.put(full, State.Full);
 			}
-			var below = IteratorUtils.asList(partialChild.children());
+			var below = getChildren(partialChild);
 			if (!isEmpty(below.get(0), stateMap)) {
 				CollectionUtils.reverseInPlace(below);
 			}
@@ -427,7 +431,8 @@ public class PQTree {
 		}
 		replaceChildren(v, list);
 		stateMap.put(partialChild, State.Partial);
-		stateMap.put(v, State.Partial);
+		setType(v, Type.Q);
+		// v is pertinent root, no need to set state for v
 	}
 
 	private static boolean isP5(Node v, Node pertinentNode, HashMap<Node, State> stateMap) {
@@ -463,16 +468,13 @@ public class PQTree {
 			list.add(empty);
 		}
 
-		if (getType(partialChild) == Type.P) {
-			list.addAll(getEmptyChildren(partialChild, stateMap));
-			list.addAll(getFullChildren(partialChild, stateMap));
-		} else {
-			if (stateMap.get(partialChild.getFirstOutEdge().getTarget()) == State.Full)
-				list.addAll(CollectionUtils.reverse(IteratorUtils.asList(partialChild.children())));
+		{
+			var partialChildren = getChildren(partialChild);
+			if (isEmpty(partialChildren.get(0), stateMap))
+				list.addAll(partialChildren);
 			else
-				list.addAll(IteratorUtils.asList(partialChild.children()));
+				list.addAll(CollectionUtils.reverse(partialChildren));
 		}
-
 		tree.deleteNode(partialChild);
 
 		if (fullChildren.size() > 0) {
@@ -513,15 +515,14 @@ public class PQTree {
 		var partialChild1 = partialChildren.get(0);
 
 		var below = new ArrayList<Node>();
-		if (getType(partialChild1) == Type.P) {
-			below.addAll(getEmptyChildren(partialChild1, stateMap));
-			below.addAll(getFullChildren(partialChild1, stateMap));
-		} else {
-			if (stateMap.get(partialChild1.getFirstOutEdge().getTarget()) == State.Full)
-				below.addAll(CollectionUtils.reverse(IteratorUtils.asList(partialChild1.children())));
+		{
+			var partialChildren1 = getChildren(partialChild1);
+			if (isEmpty(partialChildren1.get(0), stateMap))
+				below.addAll(partialChildren1);
 			else
-				below.addAll(IteratorUtils.asList(partialChild1.children()));
+				below.addAll(CollectionUtils.reverse(partialChildren1));
 		}
+
 		tree.deleteNode(partialChild1);
 
 		var fullChildren = getFullChildren(v, stateMap);
@@ -541,14 +542,13 @@ public class PQTree {
 		}
 
 		var partialChild2 = partialChildren.get(1);
-		if (getType(partialChild2) == Type.P) {
-			below.addAll(getFullChildren(partialChild2, stateMap));
-			below.addAll(getEmptyChildren(partialChild2, stateMap));
-		} else {
-			if (stateMap.get(partialChild2.getFirstOutEdge().getTarget()) == State.Full)
-				below.addAll(IteratorUtils.asList(partialChild2.children()));
+		{
+			var partialChildren2 = getChildren(partialChild2);
+			if (isEmpty(partialChildren2.get(0), stateMap))
+				below.addAll(CollectionUtils.reverse(partialChildren2));
 			else
-				below.addAll(CollectionUtils.reverse(IteratorUtils.asList(partialChild2.children())));
+				below.addAll(partialChildren2);
+
 		}
 		tree.deleteNode(partialChild2);
 
@@ -563,8 +563,7 @@ public class PQTree {
 			list.add(doublyPartialChild);
 			replaceChildren(v, list);
 		}
-		stateMap.put(v, State.DoublyPartial);
-		// is pertinent root, no need to set state
+		// is pertinent root, no need to set type
 	}
 
 	private static boolean isQ0(Node v, HashMap<Node, State> stateMap) {
@@ -594,21 +593,33 @@ public class PQTree {
 	private static boolean isQ2_0(Node v, HashMap<Node, State> stateMap) {
 		if (getType(v) != Type.Q)
 			return false;
-		if (hasPartialChild(v, stateMap) || hasDoublePartialChild(v, stateMap) ||
-			!hasEmptyChild(v, stateMap) || !hasFullChild(v, stateMap))
-			return false;
-
-		var emptyFirst = isEmpty(v.getFirstOutEdge().getTarget(), stateMap);
-		var after = false;
-		for (var child : v.children()) {
-			if (isEmpty(child, stateMap) == emptyFirst) {
-				if (after)
+		var children = getChildren(v);
+		var emptyFirst = isEmpty(children.get(0), stateMap);
+		var doingEmpty = emptyFirst;
+		for (var child : children) {
+			switch (stateMap.getOrDefault(child, State.Empty)) {
+				case Partial, DoublyPartial -> {
 					return false;
-			} else {
-				after = true;
+				}
+				case Full -> {
+					if (doingEmpty) {
+						if (emptyFirst)
+							doingEmpty = false;
+						else
+							return false;
+					}
+				}
+				case Empty -> {
+					if (!doingEmpty) {
+						if (emptyFirst)
+							return false;
+						else
+							doingEmpty = true;
+					}
+				}
 			}
 		}
-		return true;
+		return emptyFirst != doingEmpty;
 	}
 
 	private void reduceQ2_0(Node v, HashMap<Node, State> stateMap) {
@@ -624,40 +635,54 @@ public class PQTree {
 			return false;
 		if (hasDoublePartialChild(v, stateMap))
 			return false;
-		var partialChildren = getPartialChildren(v, stateMap);
-		if (partialChildren.size() != 1)
-			return false;
-		var partialChild = partialChildren.get(0);
-		var after = false;
 
-		var emptyFirst = isEmpty(v.getFirstOutEdge().getTarget(), stateMap);
+		var emptyBefore = false;
+		var emptyAfter = false;
+		var fullBefore = false;
+		var fullAfter = false;
 
-		if (emptyFirst) {
-			for (var child : v.children()) {
-				if (isEmpty(child, stateMap)) {
-					if (after)
-						return false;
-				} else {
-					if (child == partialChild)
-						after = true;
-					if (!after)
-						return false;
+		var foundPartial = false;
+		for (var child : getChildren(v)) {
+			switch (stateMap.getOrDefault(child, State.Empty)) {
+				case DoublyPartial -> {
+					return false;
 				}
-			}
-		} else { // empty last
-			for (var child : v.children()) {
-				if (isEmpty(child, stateMap)) {
-					if (!after)
-						return false;
-				} else {
-					if (after)
-						return false;
-					if (child == partialChild)
-						after = true;
+				case Partial -> {
+					if (foundPartial)
+						return false; // found another partial
+					else {
+						foundPartial = true;
+					}
+				}
+				case Full -> {
+					if (foundPartial) {
+						if (fullBefore || emptyAfter)
+							return false;
+						else
+							fullAfter = true;
+					} else {
+						if (emptyBefore)
+							return false;
+						else
+							fullBefore = true;
+					}
+				}
+				case Empty -> {
+					if (foundPartial) {
+						if (emptyBefore || fullAfter)
+							return false;
+						else
+							emptyAfter = true;
+					} else {
+						if (fullBefore)
+							return false;
+						else
+							emptyBefore = true;
+					}
 				}
 			}
 		}
-		return true;
+		return foundPartial && v.getOutDegree() > 1;
 	}
 
 	private void reduceQ2_1(Node v, HashMap<Node, State> stateMap) {
@@ -666,14 +691,34 @@ public class PQTree {
 			reductionsUsed.add(getMethodName());
 		}
 
-		var partialChild = getPartialChildren(v, stateMap).get(0);
+		Node partialChild = null;
+		var emptyBefore = false;
+		var fullBefore = false;
+
+		for (var child : getChildren(v)) {
+			switch (stateMap.getOrDefault(child, State.Empty)) {
+				case Partial -> {
+					partialChild = child;
+				}
+				case Full -> {
+					if (partialChild == null)
+						fullBefore = true;
+				}
+				case Empty -> {
+					if (partialChild == null)
+						emptyBefore = true;
+				}
+			}
+		}
+		assert (partialChild != null);
 
 		var list = new ArrayList<Node>();
 
-		var emptyFirst = (isEmpty(v.getFirstOutEdge().getTarget(), stateMap));
-		for (var child : v.children()) {
+		var children = getChildren(v);
+		var emptyFirst = (emptyBefore || !fullBefore);
+		for (var child : children) {
 			if (child == partialChild) {
-				var below = IteratorUtils.asList(child.children());
+				var below = getChildren(child);
 				if (emptyFirst == isEmpty(below.get(0), stateMap))
 					list.addAll(below);
 				else
@@ -684,10 +729,10 @@ public class PQTree {
 		}
 		tree.deleteNode(partialChild);
 		replaceChildren(v, list);
-		if (isEmpty(list.get(0), stateMap) != isEmpty(list.get(list.size() - 1), stateMap))
-			stateMap.put(v, State.Partial);
-		else
+		if (isEmpty(list.get(0), stateMap) && isEmpty(list.get(list.size() - 1), stateMap))
 			stateMap.put(v, State.DoublyPartial);
+		else
+			stateMap.put(v, State.Partial);
 	}
 
 	private static boolean isQ3_0(Node v, Node pertinentRoot, HashMap<Node, State> stateMap) {
@@ -773,7 +818,7 @@ public class PQTree {
 			if (child != partialChild) {
 				list.add(child);
 			} else {
-				var below = IteratorUtils.asList(child.children());
+				var below = getChildren(child);
 				if (isEmpty(below.get(0), stateMap)) {
 					list.addAll(below);
 				} else
@@ -782,7 +827,7 @@ public class PQTree {
 		}
 		tree.deleteNode(partialChild);
 		replaceChildren(v, list);
-		stateMap.put(v, State.PertinentRoot);
+		// v is pertinent root, don't need to set its state
 	}
 
 	private static boolean isQ3_1b(Node v, Node pertinentRoot, HashMap<Node, State> stateMap) {
@@ -833,7 +878,7 @@ public class PQTree {
 			if (child != partialChild) {
 				list.add(child);
 			} else {
-				var below = IteratorUtils.asList(child.children());
+				var below = getChildren(child);
 				if (isEmpty(below.get(0), stateMap)) {
 					list.addAll(CollectionUtils.reverse(below));
 				} else
@@ -842,7 +887,7 @@ public class PQTree {
 		}
 		tree.deleteNode(partialChild);
 		replaceChildren(v, list);
-		stateMap.put(v, State.PertinentRoot);
+		// v is pertinent root, don't need to set its state
 	}
 
 
@@ -885,13 +930,13 @@ public class PQTree {
 		var list = new ArrayList<Node>();
 		for (var child : v.children()) {
 			if (child == partialChild1) {
-				var below = IteratorUtils.asList(child.children());
+				var below = getChildren(child);
 				if (isEmpty(below.get(0), stateMap)) {
 					list.addAll(below);
 				} else
 					list.addAll(CollectionUtils.reverse(below));
 			} else if (child == partialChild2) {
-				var below = IteratorUtils.asList(child.children());
+				var below = getChildren(child);
 				if (isEmpty(below.get(0), stateMap)) {
 					list.addAll(CollectionUtils.reverse(below));
 				} else
@@ -903,8 +948,7 @@ public class PQTree {
 		tree.deleteNode(partialChild1);
 		tree.deleteNode(partialChild2);
 		replaceChildren(v, list);
-
-		stateMap.put(v, State.PertinentRoot);
+		// v is pertinent root, don't need to set its state
 	}
 
 	private static ArrayList<Node> getFullChildren(Node v, HashMap<Node, State> stateMap) {
@@ -937,6 +981,10 @@ public class PQTree {
 
 	private static boolean hasDoublePartialChild(Node v, HashMap<Node, State> stateMap) {
 		return v.childrenStream().anyMatch(w -> stateMap.getOrDefault(w, State.Empty) == State.DoublyPartial);
+	}
+
+	private static ArrayList<Node> getChildren(Node v) {
+		return IteratorUtils.asList(v.children());
 	}
 
 	private static void replaceChildren(Node v, Collection<Node> list) {
