@@ -40,8 +40,6 @@ public class PQTree {
 	private final PhyloTree tree;
 	private final Map<Integer, Node> leafMap;
 
-	private final Set<String> reductionsUsed = new TreeSet<>();
-
 	/**
 	 * constructor
 	 */
@@ -49,6 +47,7 @@ public class PQTree {
 		leafMap = new HashMap<>();
 		tree = new PhyloTree();
 		tree.setRoot(tree.newNode());
+		setType(tree.getRoot(), Type.P);
 	}
 
 	/**
@@ -247,7 +246,6 @@ public class PQTree {
 	private void reduceLeaf(Node v, HashMap<Node, State> stateMap) {
 		if (verbose) {
 			//System.err.print(getMethodName() + ": " + toBracketString(v));
-			reductionsUsed.add(getMethodName());
 		}
 		stateMap.put(v, State.Full);
 	}
@@ -258,8 +256,7 @@ public class PQTree {
 
 	private void reduceP0(Node v, HashMap<Node, State> stateMap) {
 		if (verbose) {
-			System.err.print(getMethodName() + ": " + toBracketString(v));
-			reductionsUsed.add(getMethodName());
+			System.err.print(Basic.getMethodName() + ": " + toBracketString(v));
 		}
 		stateMap.put(v, State.Empty);
 	}
@@ -270,8 +267,7 @@ public class PQTree {
 
 	private void reduceP1(Node v, HashMap<Node, State> stateMap) {
 		if (verbose) {
-			System.err.print(getMethodName() + ": " + toBracketString(v));
-			reductionsUsed.add(getMethodName());
+			System.err.print(Basic.getMethodName() + ": " + toBracketString(v));
 		}
 		stateMap.put(v, State.Full);
 	}
@@ -286,8 +282,7 @@ public class PQTree {
 
 	private void reduceP2(Node v, HashMap<Node, State> stateMap) {
 		if (verbose) {
-			System.err.print(getMethodName() + ": " + toBracketString(v));
-			reductionsUsed.add(getMethodName());
+			System.err.print(Basic.getMethodName() + ": " + toBracketString(v));
 		}
 		var fullParent = tree.newNode();
 		setType(fullParent, Type.P);
@@ -311,8 +306,7 @@ public class PQTree {
 
 	private void reduceP3(Node v, HashMap<Node, State> stateMap) {
 		if (verbose) {
-			System.err.print(getMethodName() + ": " + toBracketString(v));
-			reductionsUsed.add(getMethodName());
+			System.err.print(Basic.getMethodName() + ": " + toBracketString(v));
 		}
 		var fullChildren = getFullChildren(v, stateMap);
 		Node fullParent;
@@ -353,8 +347,7 @@ public class PQTree {
 
 	private void reduceP4_0(Node v, HashMap<Node, State> stateMap) {
 		if (verbose) {
-			System.err.print(getMethodName() + ": " + toBracketString(v));
-			reductionsUsed.add(getMethodName());
+			System.err.print(Basic.getMethodName() + ": " + toBracketString(v));
 		}
 
 		Node partialChild = null;
@@ -401,8 +394,7 @@ public class PQTree {
 
 	private void reduceP4(Node v, HashMap<Node, State> stateMap) {
 		if (verbose) {
-			System.err.print(getMethodName() + ": " + toBracketString(v));
-			reductionsUsed.add(getMethodName());
+			System.err.print(Basic.getMethodName() + ": " + toBracketString(v));
 		}
 		var partialChild = getPartialChildren(v, stateMap).get(0);
 		var fullChildren = getFullChildren(v, stateMap);
@@ -442,8 +434,7 @@ public class PQTree {
 
 	private void reduceP5(Node v, HashMap<Node, State> stateMap) {
 		if (verbose) {
-			System.err.print(getMethodName() + ": " + toBracketString(v));
-			reductionsUsed.add(getMethodName());
+			System.err.print(Basic.getMethodName() + ": " + toBracketString(v));
 		}
 		var partialChild = getPartialChildren(v, stateMap).get(0);
 		var emptyChildren = getEmptyChildren(v, stateMap);
@@ -505,8 +496,7 @@ public class PQTree {
 
 	private void reduceP6(Node v, HashMap<Node, State> stateMap) {
 		if (verbose) {
-			System.err.print(getMethodName() + ": " + toBracketString(v));
-			reductionsUsed.add(getMethodName());
+			System.err.print(Basic.getMethodName() + ": " + toBracketString(v));
 		}
 
 		var list = new ArrayList<>(getEmptyChildren(v, stateMap));
@@ -572,8 +562,7 @@ public class PQTree {
 
 	private void reduceQ0(Node v, HashMap<Node, State> stateMap) {
 		if (verbose) {
-			System.err.print(getMethodName() + ": " + toBracketString(v));
-			reductionsUsed.add(getMethodName());
+			System.err.print(Basic.getMethodName() + ": " + toBracketString(v));
 		}
 		stateMap.put(v, State.Empty);
 	}
@@ -584,8 +573,7 @@ public class PQTree {
 
 	private void reduceQ1(Node v, HashMap<Node, State> stateMap) {
 		if (verbose) {
-			System.err.print(getMethodName() + ": " + toBracketString(v));
-			reductionsUsed.add(getMethodName());
+			System.err.print(Basic.getMethodName() + ": " + toBracketString(v));
 		}
 		stateMap.put(v, State.Full);
 	}
@@ -624,8 +612,7 @@ public class PQTree {
 
 	private void reduceQ2_0(Node v, HashMap<Node, State> stateMap) {
 		if (verbose) {
-			System.err.print(getMethodName() + ": " + toBracketString(v));
-			reductionsUsed.add(getMethodName());
+			System.err.print(Basic.getMethodName() + ": " + toBracketString(v));
 		}
 		stateMap.put(v, State.Partial);
 	}
@@ -687,8 +674,7 @@ public class PQTree {
 
 	private void reduceQ2_1(Node v, HashMap<Node, State> stateMap) {
 		if (verbose) {
-			System.err.print(getMethodName() + ": " + toBracketString(v));
-			reductionsUsed.add(getMethodName());
+			System.err.print(Basic.getMethodName() + ": " + toBracketString(v));
 		}
 
 		Node partialChild = null;
@@ -775,8 +761,7 @@ public class PQTree {
 
 	private void reduceQ3_0(Node v, HashMap<Node, State> stateMap) {
 		if (verbose) {
-			System.err.print(getMethodName() + ": " + toBracketString(v));
-			reductionsUsed.add(getMethodName());
+			System.err.print(Basic.getMethodName() + ": " + toBracketString(v));
 		}
 		stateMap.put(v, State.DoublyPartial);
 	}
@@ -809,8 +794,7 @@ public class PQTree {
 
 	private void reduceQ3_1a(Node v, HashMap<Node, State> stateMap) {
 		if (verbose) {
-			System.err.print(getMethodName() + ": " + toBracketString(v));
-			reductionsUsed.add(getMethodName());
+			System.err.print(Basic.getMethodName() + ": " + toBracketString(v));
 		}
 		var partialChild = getPartialChildren(v, stateMap).get(0);
 		var list = new ArrayList<Node>();
@@ -867,8 +851,7 @@ public class PQTree {
 
 	private void reduceQ3_1b(Node v, HashMap<Node, State> stateMap) {
 		if (verbose) {
-			System.err.print(getMethodName() + ": " + toBracketString(v));
-			reductionsUsed.add(getMethodName());
+			System.err.print(Basic.getMethodName() + ": " + toBracketString(v));
 		}
 		var partialChildren = getPartialChildren(v, stateMap);
 		var partialChild = partialChildren.get(0);
@@ -920,8 +903,7 @@ public class PQTree {
 
 	private void reduceQ3_2(Node v, HashMap<Node, State> stateMap) {
 		if (verbose) {
-			System.err.print(getMethodName() + ": " + toBracketString(v));
-			reductionsUsed.add(getMethodName());
+			System.err.print(Basic.getMethodName() + ": " + toBracketString(v));
 		}
 		var partialChildren = getPartialChildren(v, stateMap);
 		var partialChild1 = partialChildren.get(0);
@@ -1087,42 +1069,4 @@ public class PQTree {
 		});
 	}
 
-	public String getMethodName() {
-		var stackTrace = Thread.currentThread().getStackTrace();
-		return stackTrace[2].getMethodName();
-	}
-
-	public static void test(Collection<BitSet> sets) {
-		var pqTree = new PQTree();
-		var fails = 0;
-		for (var set : sets) {
-			if (!pqTree.accept(set)) {
-				System.err.println("pqTree: " + pqTree.toBracketString());
-				System.err.println("Failed to accept: " + StringUtils.toString(set));
-				fails++;
-			}
-		}
-		System.err.println("pqTree test: " + fails + " fails");
-
-		if (fails > 0 && pqTree.reductionsUsed.size() > 0) {
-			pqTree.reportReductionsUsed();
-		}
-	}
-
-	public void reportReductionsUsed() {
-		System.err.println("Reductions used: " + StringUtils.toString(reductionsUsed, ", "));
-	}
-
-	public static void main(String[] args) {
-		var a = BitSetUtils.asBitSet(1, 2, 3);
-		var b = BitSetUtils.asBitSet(2, 3, 5);
-		var c = BitSetUtils.asBitSet(4, 5, 6);
-		var d = BitSetUtils.asBitSet(4, 8);
-		var e = BitSetUtils.asBitSet(1, 7, 8, 9);
-		var f = BitSetUtils.asBitSet(2, 3, 4, 5, 6);
-		var g = BitSetUtils.asBitSet(1, 3, 7);
-		var h = BitSetUtils.asBitSet(2, 3, 5);
-
-		test(List.of(a, b, c, d, e, f, g, h));
-	}
 }

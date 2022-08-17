@@ -356,6 +356,11 @@ public class Basic {
     public static <T> T getAnyMostFrequent(ArrayList<T> list) {
         return list.stream().reduce(BinaryOperator.maxBy(Comparator.comparingInt(o -> Collections.frequency(list, o)))).orElse(null);
     }
+
+    public static String getMethodName() {
+        var stackTrace = Thread.currentThread().getStackTrace();
+        return stackTrace[2].getMethodName();
+    }
 }
 
 /**
