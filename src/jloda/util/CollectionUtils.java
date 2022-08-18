@@ -209,7 +209,7 @@ public class CollectionUtils {
 	}
 
 	/**
-	 * computes the intersection different of two hash sets
+	 * computes the intersection different of two collections
 	 *
 	 * @return symmetric different
 	 */
@@ -239,10 +239,9 @@ public class CollectionUtils {
 	}
 
 	public static <T> ArrayList<T> difference(Collection<T> a, Collection<T> b) {
-		final ArrayList<T> result = new ArrayList<>();
-		for (T t : a) {
-			if (!b.contains(t))
-				result.add(t);
+		final ArrayList<T> result = new ArrayList<>(a);
+		for (var t : b) {
+			result.remove(t);
 		}
 		return result;
 	}

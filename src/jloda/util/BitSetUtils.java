@@ -20,6 +20,7 @@
 package jloda.util;
 
 import java.util.*;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 /**
@@ -256,23 +257,27 @@ public class BitSetUtils {
      * @return list of integers
      */
     public static List<Integer> asList(BitSet bits) {
-        var result = new ArrayList<Integer>();
-        if (bits != null) {
-            for(var i:members(bits))
-                result.add(i);
-        }
-        return result;
+        return asStream(bits).collect(Collectors.toList());
+    }
+
+    /**
+     * get bits as list of integers
+     *
+     * @return list of integers
+     */
+    public static Set<Integer> asSet(BitSet bits) {
+        return asStream(bits).collect(Collectors.toSet());
     }
 
     /**
      * get list of integers as bit set
      *
      * @return bits
-	 */
-	public static BitSet asBitSet(List<Integer> integers) {
-		var bits = new BitSet();
-		if (integers != null) {
-			for (var i : integers) {
+     */
+    public static BitSet asBitSet(List<Integer> integers) {
+        var bits = new BitSet();
+        if (integers != null) {
+            for (var i : integers) {
 				bits.set(i);
 			}
 		}
