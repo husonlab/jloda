@@ -37,17 +37,26 @@ public class PQTree {
 
 	private enum State {Full, Empty, Partial, DoublyPartial}
 
+	private final BitSet all;
 	private final PhyloTree tree;
 	private final Map<Integer, Node> leafMap;
 
 	/**
 	 * constructor
 	 */
-	public PQTree() {
+	public PQTree(BitSet all) {
+		this.all = BitSetUtils.copy(all);
 		leafMap = new HashMap<>();
 		tree = new PhyloTree();
 		tree.setRoot(tree.newNode());
 		setType(tree.getRoot(), Type.P);
+		for (var t : BitSetUtils.members(all)) {
+			var v = tree.newNode();
+			leafMap.put(t, v);
+			tree.addTaxon(v, t);
+			setType(v, Type.Leaf);
+			tree.newEdge(tree.getRoot(), v);
+		}
 	}
 
 	/**
@@ -61,32 +70,8 @@ public class PQTree {
 		if (set.cardinality() <= 1)
 			return true;
 
-		{
-			var newLeaves = new ArrayList<Node>();
-			for (var t : BitSetUtils.members(set)) {
-				if (!leafMap.containsKey(t)) {
-					var v = tree.newNode();
-					tree.addTaxon(v, t);
-					setType(v, Type.Leaf);
-					newLeaves.add(v);
-					leafMap.put(t, v);
-				}
-			}
-			if (newLeaves.size() > 0) {
-				if (tree.getRoot().getOutDegree() == 0) {
-					replaceChildren(tree.getRoot(), newLeaves);
-				} else {
-					var oldRoot = tree.getRoot();
-					var newRoot = tree.newNode();
-					tree.newEdge(newRoot, oldRoot);
-					for (var leaf : newLeaves) {
-						tree.newEdge(newRoot, leaf);
-					}
-					tree.setRoot(newRoot);
-				}
-				setType(tree.getRoot(), Type.P);
-			}
-		}
+		if (!BitSetUtils.contains(all, set))
+			throw new IllegalArgumentException("Set not contained in ground set");
 
 		if (verbose) {
 			System.err.println("======= set: " + StringUtils.toString(set));
@@ -679,7 +664,7 @@ public class PQTree {
 
 		Node partialChild = null;
 		var emptyBefore = false;
-		var fullBefore = false;
+		var fullAfter =false;
 
 		for (var child : getChildren(v)) {
 			switch (stateMap.getOrDefault(child, State.Empty)) {
@@ -687,8 +672,8 @@ public class PQTree {
 					partialChild = child;
 				}
 				case Full -> {
-					if (partialChild == null)
-						fullBefore = true;
+					if (partialChild != null)
+						fullAfter = true;
 				}
 				case Empty -> {
 					if (partialChild == null)
@@ -701,7 +686,7 @@ public class PQTree {
 		var list = new ArrayList<Node>();
 
 		var children = getChildren(v);
-		var emptyFirst = (emptyBefore || !fullBefore);
+		var emptyFirst = emptyBefore || fullAfter;
 		for (var child : children) {
 			if (child == partialChild) {
 				var below = getChildren(child);
