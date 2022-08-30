@@ -27,7 +27,6 @@ import javafx.collections.FXCollections;
 import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
 import javafx.concurrent.Worker;
-import javafx.util.Pair;
 import jloda.util.IteratorUtils;
 
 import java.util.*;
@@ -200,23 +199,16 @@ public class Workflow extends WorkerBase implements Worker<Boolean> {
 	}
 
 	public void addNode(WorkflowNode node) {
-		addNodes(Collections.singleton(node), null);
+		addNodes(Collections.singleton(node));
 	}
 
-	public void addNodes(Collection<WorkflowNode> toAdd, Collection<Pair<WorkflowNode, WorkflowNode>> directedEdges) {
+	public void addNodes(Collection<WorkflowNode> toAdd) {
 		WorkflowNode first = null;
 		for (var node : toAdd) {
 			if (first == null)
 				first = node;
 			checkOwner(node.getOwner());
 			nodes.add(node);
-		}
-		if (directedEdges != null) {
-			for (var parentChild : directedEdges) {
-				if (nodes.contains(parentChild.getKey()) && nodes.contains(parentChild.getValue())) {
-					parentChild.getKey().getChildren().add(parentChild.getValue());
-				}
-			}
 		}
 		if (!isConnected() && first != null)
 			connected.set(determineIsConnected(first));

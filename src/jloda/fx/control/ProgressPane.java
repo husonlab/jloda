@@ -50,9 +50,8 @@ public class ProgressPane extends StackPane {
 
     /**
      * a progress pane with cancel button
-     *
-	 */
-    public ProgressPane(Service service) {
+     */
+    public ProgressPane(Service<?> service) {
         this(service.titleProperty(), service.messageProperty(), service.progressProperty(), service.runningProperty(), service::cancel);
     }
 
