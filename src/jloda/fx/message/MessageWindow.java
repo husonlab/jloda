@@ -140,7 +140,7 @@ public class MessageWindow {
     public void saveAs() {
 
         final FileChooser fileChooser = new FileChooser();
-        fileChooser.setTitle("Save SplitsTree5 messages");
+        fileChooser.setTitle("Save SplitsTree6 messages");
 
         final File previousFile = new File(ProgramProperties.get("SaveMessagesFile", "messages.txt"));
 
