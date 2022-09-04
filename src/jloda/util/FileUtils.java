@@ -223,17 +223,19 @@ public class FileUtils {
 
 	public static void checkFileReadableNonEmpty(String... fileNames) throws IOException {
 		for (var fileName : fileNames) {
-			final File file = new File(fileName);
-			if (!file.exists())
-				throw new IOException("No such file: " + fileName);
-			if (file.length() == 0)
-				throw new IOException("File is empty: " + fileName);
-			if (!file.canRead())
-				throw new IOException("File not readable: " + fileName);
-			if (file.getName().endsWith(".gz")) {
-				try (InputStream ins = new GZIPInputStream(new FileInputStream(file))) {
-					if ((ins.read() == -1))
-						throw new IOException("File is empty: " + fileName);
+			if(!fileName.equals("stdin")) {
+				final File file = new File(fileName);
+				if (!file.exists())
+					throw new IOException("No such file: " + fileName);
+				if (file.length() == 0)
+					throw new IOException("File is empty: " + fileName);
+				if (!file.canRead())
+					throw new IOException("File not readable: " + fileName);
+				if (file.getName().endsWith(".gz")) {
+					try (InputStream ins = new GZIPInputStream(new FileInputStream(file))) {
+						if ((ins.read() == -1))
+							throw new IOException("File is empty: " + fileName);
+					}
 				}
 			}
 		}
@@ -601,10 +603,10 @@ public class FileUtils {
 	}
 
 	/**
-	 * checks that no two of the given files are equals
+	 * checks that no two of the given files are equal
 	 *
 	 * @param fileNames (can be null or "")
-	 * @return true, if no two files are equals (using File.equals())
+	 * @return true, if no two files are equal (using File.equals())
 	 */
 	public static boolean checkAllFilesDifferent(String... fileNames) {
 		final File[] files = new File[fileNames.length];

@@ -2202,4 +2202,8 @@ public class StringUtils {
 	public static String getCleanLabelForNewick(String label) {
 		return label == null ? null : (label.isBlank() ? "_" : label.replaceAll("[ \\[\\](),:;]+", "_"));
 	}
+
+	public static boolean containsIgnoreCase(String[] array, String query) {
+		return Arrays.stream(array).anyMatch(item->item.equalsIgnoreCase(query));
+	}
 }
