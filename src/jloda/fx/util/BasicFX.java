@@ -526,12 +526,24 @@ public class BasicFX {
     /**
      * determines whether a scroll-bar is visible
      *
-     * @param scrollPane
-     * @param orientation
      * @return true, if visible
      */
     public static boolean isScrollBarVisible(ScrollPane scrollPane, Orientation orientation) {
         var scrollBar = getScrollBar(scrollPane, orientation);
         return scrollBar != null && scrollBar.isVisible();
+    }
+
+    /**
+     * fill the given rectangle with the given color
+     */
+    public static void fillRectangle(WritableImage image, double x0, double y0, double w, double h, Color color) {
+        w = Math.min(image.getWidth(), (int) Math.round(x0 + w)); // use max, not width
+        h = Math.min(image.getHeight(), (int) Math.round(y0 + h)); // use max, not height
+        var pixelWriter = image.getPixelWriter();
+        for (var x = Math.max(0, (int) Math.round(x0)); x < w; x++) {
+            for (var y = Math.max(0, (int) Math.round(y0)); y < h; y++) {
+                pixelWriter.setColor(x, y, color);
+            }
+        }
     }
 }
