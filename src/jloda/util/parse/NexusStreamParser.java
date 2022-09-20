@@ -26,8 +26,10 @@ import jloda.util.StringUtils;
 
 import java.awt.*;
 import java.io.*;
+import java.util.ArrayList;
+import java.util.BitSet;
+import java.util.Collection;
 import java.util.List;
-import java.util.*;
 
 /**
  * Parser for NexusBlock files
@@ -339,10 +341,10 @@ public class NexusStreamParser extends NexusStreamTokenizer implements Closeable
      * @return a list of strings containing all tokens between 'first'
      * and 'last'
      */
-    public List<String> getTokensLowerCase(String first, String last) throws IOExceptionWithLineNumber {
+    public ArrayList<String> getTokensLowerCase(String first, String last) throws IOExceptionWithLineNumber {
         if (first != null)
             matchIgnoreCase(first);
-        final LinkedList<String> list = new LinkedList<>();
+        final ArrayList<String> list = new ArrayList<>();
         try {
             nextToken();
             while (last == null || !toString().equals(last)) {
@@ -370,11 +372,11 @@ public class NexusStreamParser extends NexusStreamTokenizer implements Closeable
      * @return a list of strings containing all tokens between 'first'
      * and 'last'
      */
-    public List<String> getTokensRespectCase(String first, String last) throws IOExceptionWithLineNumber {
+    public ArrayList<String> getTokensRespectCase(String first, String last) throws IOExceptionWithLineNumber {
         return getTokensRespectCase(first, last, false);
     }
 
-    public List<String> getTokensRespectCase(String first, String last, boolean surroundWithQuotes) throws IOExceptionWithLineNumber {
+    public ArrayList<String> getTokensRespectCase(String first, String last, boolean surroundWithQuotes) throws IOExceptionWithLineNumber {
         if (first != null)
             matchIgnoreCase(first);
         final var list = new ArrayList<String>();
@@ -415,7 +417,6 @@ public class NexusStreamParser extends NexusStreamTokenizer implements Closeable
 
         return toString();
     }
-
 
     /**
      * Gets the next token as an absolute file name. If word is relative file name, prepends current user.dir

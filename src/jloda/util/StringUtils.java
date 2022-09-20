@@ -2204,6 +2204,21 @@ public class StringUtils {
 	}
 
 	public static boolean containsIgnoreCase(String[] array, String query) {
-		return Arrays.stream(array).anyMatch(item->item.equalsIgnoreCase(query));
+		return Arrays.stream(array).anyMatch(item -> item.equalsIgnoreCase(query));
+	}
+
+	public static String[] splitFurther(String[] tokens, String separator) {
+		var result = new ArrayList<String>();
+		for (var str : tokens) {
+			var first = true;
+			for (var sub : str.split(separator)) {
+				if (first)
+					first = false;
+				else
+					result.add(separator);
+				result.add(sub);
+			}
+		}
+		return result.toArray(new String[0]);
 	}
 }

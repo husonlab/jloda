@@ -359,4 +359,8 @@ public class CollectionUtils {
 				return i;
 		return -1;
 	}
+
+	public static <T> boolean equalsAsSets(Collection<T> aList, Collection<T> bList) {
+		return aList.size() == bList.size() && (new HashSet<>(aList)).containsAll(bList) && (new HashSet<>(bList)).containsAll(aList);
+	}
 }
