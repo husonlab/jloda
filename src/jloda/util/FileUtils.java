@@ -448,9 +448,9 @@ public class FileUtils {
 			zipSuffix = getFileSuffix(name);
 			name = getFileNameWithoutZipOrGZipSuffix(name);
 		}
-		final String suffix = getFileSuffix(name);
+		final var suffix = getFileSuffix(name);
 		name = getFileBaseName(name);
-		final int number = (int) (System.currentTimeMillis() & ((1 << 20) - 1));
+		final var number = (int) (System.currentTimeMillis() & ((1 << 20) - 1));
 		return String.format("%s-tmp%d.%s%s", name, number, suffix, zipSuffix != null ? "." + zipSuffix : "");
 	}
 
