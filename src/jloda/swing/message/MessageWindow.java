@@ -22,8 +22,8 @@ package jloda.swing.message;
 
 import jloda.swing.find.SearchManager;
 import jloda.swing.util.Alert;
+import jloda.swing.util.ProgramProperties;
 import jloda.util.Basic;
-import jloda.util.ProgramProperties;
 import jloda.util.StringUtils;
 
 import javax.swing.*;

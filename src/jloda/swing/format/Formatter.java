@@ -26,8 +26,9 @@ import jloda.swing.director.IDirectableViewer;
 import jloda.swing.director.IDirector;
 import jloda.swing.graphview.*;
 import jloda.swing.util.ChooseColorDialog;
+import jloda.swing.util.ProgramProperties;
 import jloda.swing.window.WindowListenerAdapter;
-import jloda.util.ProgramProperties;
+import jloda.util.NodeShape;
 
 import javax.swing.*;
 import java.awt.*;

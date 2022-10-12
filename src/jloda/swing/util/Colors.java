@@ -690,14 +690,24 @@ public class Colors {
     }
 
     /**
-     * parse a color
-     *
-     * @return color or null
-     */
-    public static Color parseColor(String name) {
-        if (table.size() == 0)
-            init();
-        return table.get(name.toLowerCase());
-    }
+	 * parse a color
+	 *
+	 * @return color or null
+	 */
+	public static Color parseColor(String name) {
+		if (table.size() == 0)
+			init();
+		return table.get(name.toLowerCase());
+	}
 
+	public static Color convert(javafx.scene.paint.Color fx) {
+		return new java.awt.Color((float) fx.getRed(),
+				(float) fx.getGreen(),
+				(float) fx.getBlue(),
+				(float) fx.getOpacity());
+	}
+
+	public static javafx.scene.paint.Color convert(Color fx) {
+		return new javafx.scene.paint.Color(fx.getRed(), fx.getGreen(), fx.getBlue(), fx.getAlpha());
+	}
 }

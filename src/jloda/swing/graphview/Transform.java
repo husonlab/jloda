@@ -187,8 +187,7 @@ public class Transform {
 
     /**
      * read the object
-     *
-	 */
+     */
     public void read(NexusStreamParser np) throws IOException {
         java.util.List<String> tokens = np.getTokensLowerCase(null, ";");
         angle = np.findIgnoreCase(tokens, "angle:", (float) angle);

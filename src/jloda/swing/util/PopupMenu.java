@@ -23,7 +23,6 @@ import jloda.swing.commands.CommandManager;
 import jloda.swing.commands.ICommand;
 import jloda.swing.commands.TeXGenerator;
 import jloda.swing.window.IPopMenuModifier;
-import jloda.util.ProgramProperties;
 
 import javax.swing.*;
 

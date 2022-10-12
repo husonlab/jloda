@@ -20,11 +20,11 @@
 package jloda.swing.commands;
 
 import jloda.swing.util.AppleSystemMenuItems;
+import jloda.swing.util.ProgramProperties;
 import jloda.swing.util.ResourceManager;
 import jloda.swing.util.lang.Translator;
 import jloda.swing.window.IMenuModifier;
 import jloda.swing.window.MenuMnemonics;
-import jloda.util.ProgramProperties;
 
 import javax.swing.*;
 import java.awt.*;

@@ -19,8 +19,6 @@
 
 package jloda.swing.util;
 
-import jloda.util.ProgramProperties;
-
 import javax.swing.*;
 import javax.swing.event.ChangeListener;
 import java.awt.*;

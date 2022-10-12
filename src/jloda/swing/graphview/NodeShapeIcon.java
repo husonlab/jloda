@@ -19,6 +19,8 @@
 
 package jloda.swing.graphview;
 
+import jloda.util.NodeShape;
+
 import javax.swing.*;
 import java.awt.*;
 import java.awt.image.BufferedImage;

@@ -22,6 +22,7 @@ package jloda.swing.graphview;
 import jloda.graph.*;
 import jloda.phylo.PhyloTree;
 import jloda.swing.util.Geometry;
+import jloda.util.NodeShape;
 import jloda.util.Pair;
 
 import java.util.*;

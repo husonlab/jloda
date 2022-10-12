@@ -29,9 +29,8 @@ import javafx.scene.paint.PhongMaterial;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.shape.Shape3D;
 import javafx.stage.Window;
-import jloda.fx.util.FXSwingUtilities;
 import jloda.fx.util.SelectionEffect;
-import jloda.swing.graphview.NodeShape;
+import jloda.util.NodeShape;
 
 /**
  * A shape that has a text
@@ -77,9 +76,9 @@ public class Body3D extends TransformableGroup {
      *
      * @return body
      */
-    public static Body3D makeBody(String name, String text, Point3D vector, java.awt.Color color, NodeShape nodeShape, Object userData) {
+    public static Body3D makeBody(String name, String text, Point3D vector, Color color, NodeShape nodeShape, Object userData) {
         final Shape3D shape = ShapeFactory.makeShape(2, nodeShape);
-        final Body3D body3D = new Body3D(name, text, shape, FXSwingUtilities.getColorFX(color), userData);
+        final Body3D body3D = new Body3D(name, text, shape, color, userData);
         body3D.setCoordinates((float) vector.getX(), (float) vector.getY(), (float) vector.getZ());
         return body3D;
     }

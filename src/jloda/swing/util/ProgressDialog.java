@@ -22,7 +22,6 @@ package jloda.swing.util;
 import javafx.application.Platform;
 import jloda.util.Basic;
 import jloda.util.CanceledException;
-import jloda.util.ProgramProperties;
 import jloda.util.progress.ProgressListener;
 
 import javax.swing.*;

@@ -136,8 +136,7 @@ public abstract class CommandBase {
 
     /**
      * parses the given command and executes it
-     *
-	 */
+     */
     abstract public void apply(NexusStreamParser np) throws Exception;
 
     /**
@@ -165,7 +164,7 @@ public abstract class CommandBase {
         if (syntax == null)
             return null;
         else {
-            NexusStreamParser np = new NexusStreamParser(new StringReader(syntax));
+            var np = new NexusStreamParser(new StringReader(syntax));
             np.setSquareBracketsSurroundComments(false);
 
             StringBuilder startsWith = new StringBuilder();

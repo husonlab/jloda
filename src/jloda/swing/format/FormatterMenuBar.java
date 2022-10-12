@@ -20,8 +20,8 @@
 package jloda.swing.format;
 
 import jloda.swing.director.IDirector;
+import jloda.swing.util.ProgramProperties;
 import jloda.swing.window.MenuMnemonics;
-import jloda.util.ProgramProperties;
 
 import javax.swing.*;
 

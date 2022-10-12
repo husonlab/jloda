@@ -127,8 +127,7 @@ public interface ICommand {
 
     /**
      * parses the given command and executes it
-     *
-	 */
+     */
     void apply(NexusStreamParser np) throws Exception;
 
     /**

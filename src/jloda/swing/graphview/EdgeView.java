@@ -20,8 +20,9 @@
 package jloda.swing.graphview;
 
 import jloda.swing.util.BasicSwing;
+import jloda.swing.util.Colors;
 import jloda.swing.util.Geometry;
-import jloda.util.ProgramProperties;
+import jloda.swing.util.ProgramProperties;
 import jloda.util.parse.NexusStreamParser;
 
 import java.awt.*;
@@ -935,9 +936,9 @@ final public class EdgeView extends ViewBase { //, IEdgeView {
      *
      */
     public void read(String src) throws IOException {
-        NexusStreamParser np = new NexusStreamParser(new StringReader(src));
-        java.util.List<String> tokens = np.getTokensRespectCase(null, ";");
-        read(np, tokens, this);
+        try (var np = new NexusStreamParser(new StringReader(src))) {
+            read(np, np.getTokensRespectCase(null, ";"), this);
+        }
     }
 
     /**
@@ -945,9 +946,9 @@ final public class EdgeView extends ViewBase { //, IEdgeView {
      *
      */
     public void read(String src, EdgeView prevEV) throws IOException {
-        NexusStreamParser np = new NexusStreamParser(new StringReader(src));
-        java.util.List<String> tokens = np.getTokensRespectCase(null, ";");
-        read(np, tokens, prevEV != null ? prevEV : this);
+        try (var np = new NexusStreamParser(new StringReader(src))) {
+            read(np, np.getTokensRespectCase(null, ";"), prevEV != null ? prevEV : this);
+        }
     }
 
     /**
@@ -959,7 +960,7 @@ final public class EdgeView extends ViewBase { //, IEdgeView {
         if (prevEV == null)
             throw new IOException("prevEV=null");
 
-        fgColor = np.findIgnoreCase(tokens, "fg=", prevEV.fgColor);
+        fgColor = Colors.convert(np.findIgnoreCase(tokens, "fg=", Colors.convert(prevEV.fgColor)));
         linewidth = (byte) np.findIgnoreCase(tokens, "w=", prevEV.linewidth);
         shape = (byte) np.findIgnoreCase(tokens, "sh=", prevEV.shape);
 
@@ -984,14 +985,14 @@ final public class EdgeView extends ViewBase { //, IEdgeView {
                 setInternalPoints(list);
             } catch (Exception ex) {
                 throw new IOException("line " + np.lineno() + ": error parsing internal points: " + internalPointsStr
-                        + ": " + ex);
+                                      + ": " + ex);
             }
         }
 
         direction = (byte) np.findIgnoreCase(tokens, "dr=", prevEV.direction);
 
-        labelColor = np.findIgnoreCase(tokens, "lc=", prevEV.labelColor);
-        labelBackgroundColor = np.findIgnoreCase(tokens, "lk=", prevEV.labelBackgroundColor);
+        labelColor = Colors.convert(np.findIgnoreCase(tokens, "lc=", Colors.convert(prevEV.labelColor)));
+        labelBackgroundColor = Colors.convert(np.findIgnoreCase(tokens, "lk=", Colors.convert(prevEV.labelBackgroundColor)));
 
         String fontName = np.findIgnoreCase(tokens, "ft=", null, "");
         if (fontName != null && fontName.length() > 0)

@@ -20,8 +20,10 @@
 package jloda.swing.graphview;
 
 import jloda.swing.util.BasicSwing;
+import jloda.swing.util.Colors;
 import jloda.swing.util.Geometry;
-import jloda.util.ProgramProperties;
+import jloda.swing.util.ProgramProperties;
+import jloda.util.NodeShape;
 import jloda.util.parse.NexusStreamParser;
 
 import java.awt.*;
@@ -856,9 +858,9 @@ final public class NodeView extends ViewBase {
      *
 	 */
     public void read(String src, NodeView prevNV) throws IOException {
-        NexusStreamParser np = new NexusStreamParser(new StringReader(src));
-        java.util.List<String> tokens = np.getTokensRespectCase(null, ";");
-        read(np, tokens, prevNV != null ? prevNV : this);
+        try (var np = new NexusStreamParser(new StringReader(src))) {
+            read(np, np.getTokensRespectCase(null, ";"), prevNV != null ? prevNV : this);
+        }
     }
 
     /**
@@ -871,9 +873,9 @@ final public class NodeView extends ViewBase {
             throw new IOException("prevNV=null");
         height = (byte) np.findIgnoreCase(tokens, "nh=", prevNV.height);
         width = (byte) np.findIgnoreCase(tokens, "nw=", prevNV.width);
-        fgColor = np.findIgnoreCase(tokens, "fg=", prevNV.fgColor);
-        bgColor = np.findIgnoreCase(tokens, "bg=", prevNV.bgColor);
-        borderColor = np.findIgnoreCase(tokens, "bd=", prevNV.borderColor);
+        fgColor = Colors.convert(np.findIgnoreCase(tokens, "fg=", Colors.convert(prevNV.fgColor)));
+        bgColor = Colors.convert(np.findIgnoreCase(tokens, "bg=", Colors.convert(prevNV.bgColor)));
+        borderColor = Colors.convert(np.findIgnoreCase(tokens, "bd=", Colors.convert(prevNV.borderColor)));
         linewidth = (byte) np.findIgnoreCase(tokens, "w=", prevNV.linewidth);
         setShape((byte) np.findIgnoreCase(tokens, "sh=", prevNV.getShape()));
 
@@ -885,8 +887,8 @@ final public class NodeView extends ViewBase {
 
         fixedSize = (np.findIgnoreCase(tokens, "fx=", prevNV.fixedSize ? 1 : 0) != 0);
 
-        labelColor = np.findIgnoreCase(tokens, "lc=", prevNV.labelColor);
-        labelBackgroundColor = np.findIgnoreCase(tokens, "lk=", prevNV.labelBackgroundColor);
+        labelColor = Colors.convert(np.findIgnoreCase(tokens, "lc=", Colors.convert(prevNV.labelColor)));
+        labelBackgroundColor = Colors.convert(np.findIgnoreCase(tokens, "lk=", Colors.convert(prevNV.labelBackgroundColor)));
 
         String fontName = np.findIgnoreCase(tokens, "ft=", null, "");
         if (fontName != null && fontName.length() > 0)

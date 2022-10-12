@@ -19,9 +19,9 @@
 
 package jloda.swing.message;
 
+import jloda.swing.util.ProgramProperties;
 import jloda.swing.util.ResourceManager;
 import jloda.swing.util.TextPrinter;
-import jloda.util.ProgramProperties;
 
 import javax.swing.*;
 import javax.swing.text.DefaultEditorKit;

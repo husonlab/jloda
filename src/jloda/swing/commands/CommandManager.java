@@ -176,14 +176,13 @@ public class CommandManager {
 	 */
     public void execute(String commandString) throws IOException, CanceledException {
 		commandString = StringUtils.protectBackSlashes(commandString);  // need this for windows paths
-        NexusStreamParser np = new NexusStreamParser(new StringReader(commandString));
+        var np = new NexusStreamParser(new StringReader(commandString));
         execute(np);
     }
 
     /**
      * execute a stream of commands
-     *
-	 */
+     */
     public void execute(NexusStreamParser np) throws IOException {
         while (np.peekNextToken() != NexusStreamParser.TT_EOF) {
             if (np.peekMatchIgnoreCase(";")) {

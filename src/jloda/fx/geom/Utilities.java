@@ -31,8 +31,7 @@ import javafx.scene.shape.Mesh;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.shape.TriangleMesh;
 import javafx.stage.Window;
-import jloda.fx.util.FXSwingUtilities;
-import jloda.util.ProgramProperties;
+import jloda.fx.util.SelectionEffect;
 
 /**
  * Some geometry related utilities
@@ -159,8 +158,8 @@ public class Utilities {
      */
     public static Rectangle createBoundingBoxWithBinding(Node node, boolean visible, final ReadOnlyProperty... properties) {
         final Rectangle boundingBox = new Rectangle();
-        boundingBox.setStroke(FXSwingUtilities.getColorFX(ProgramProperties.SELECTION_COLOR_DARKER));
-        boundingBox.setFill(Color.TRANSPARENT);
+		boundingBox.setStroke(SelectionEffect.getInstance().getColor());
+		boundingBox.setFill(Color.TRANSPARENT);
         boundingBox.setMouseTransparent(true);
         boundingBox.setVisible(visible);
 

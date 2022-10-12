@@ -25,8 +25,9 @@ import jloda.swing.export.ExportManager;
 import jloda.swing.util.BasicSwing;
 import jloda.swing.util.Cursors;
 import jloda.swing.util.Geometry;
+import jloda.swing.util.ProgramProperties;
 import jloda.util.Basic;
-import jloda.util.ProgramProperties;
+import jloda.util.NodeShape;
 
 import javax.swing.*;
 import java.awt.*;

@@ -20,7 +20,7 @@ package jloda.fx.geom;
 
 import javafx.scene.shape.Shape3D;
 import javafx.scene.shape.Sphere;
-import jloda.swing.graphview.NodeShape;
+import jloda.util.NodeShape;
 
 import java.util.Random;
 

@@ -23,9 +23,9 @@ import jloda.swing.director.IDirector;
 import jloda.swing.export.TransferableGraphic;
 import jloda.swing.graphview.EdgeView;
 import jloda.swing.graphview.INodeEdgeFormatable;
-import jloda.swing.graphview.NodeShape;
 import jloda.swing.util.Alert;
 import jloda.swing.util.ResourceManager;
+import jloda.util.NodeShape;
 
 import javax.swing.*;
 import java.awt.*;

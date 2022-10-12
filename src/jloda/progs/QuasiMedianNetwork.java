@@ -23,9 +23,9 @@ import jloda.graph.*;
 import jloda.phylo.PhyloSplitsGraph;
 import jloda.swing.export.PDFExportType;
 import jloda.swing.graphview.GraphView;
-import jloda.swing.graphview.NodeShape;
 import jloda.swing.graphview.PhyloGraphView;
 import jloda.util.Basic;
+import jloda.util.NodeShape;
 import jloda.util.Pair;
 
 import javax.swing.*;

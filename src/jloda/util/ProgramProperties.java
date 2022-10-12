@@ -24,13 +24,13 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.scene.image.Image;
 
-import javax.swing.*;
-import java.awt.*;
-import java.awt.print.PageFormat;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
-import java.util.*;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.Map;
 import java.util.function.Function;
 
 /**
@@ -40,17 +40,11 @@ import java.util.function.Function;
  * Date: 08-Nov-2004
  */
 public class ProgramProperties {
-    static private final java.util.Properties props = new java.util.Properties();
+    static protected final java.util.Properties props = new java.util.Properties();
 
     static private final ObservableList<Image> programIconsFX = FXCollections.observableArrayList();
 
-    private static final ArrayList<ImageIcon> programIcons = new ArrayList<>();
-
     private static final Map<String, Object> presets = new HashMap<>();
-
-    public static final Color SELECTION_COLOR = new Color(252, 208, 102);
-    public static final Color SELECTION_COLOR_DARKER = new Color(210, 190, 95);
-    public static final Color SELECTION_COLOR_ADDITIONAL_TEXT = new Color(93, 155, 206);
 
 	static private String programName = "";
 	static private String programVersion = "";
@@ -75,12 +69,9 @@ public class ProgramProperties {
     public static final String LASTCOMMAND = "LastCommand";
     public static final String MAIN_WINDOW_GEOMETRY = "MainWindowGeometry";
     public static final String MULTI_WINDOW_GEOMETRY = "MultiWindowGeometry";
-    public static PageFormat pageFormat = null;
     public static final String DEFAULT_FONT = "DefaultFont";
     public static final String SEARCH_URL = "SearchURL";
     public static final String defaultSearchURL = "http://www.google.com/search?q=%s";
-
-    static private final Font defaultFont = new Font("Arial", Font.PLAIN, 12);
 
     static private javafx.scene.text.Font defaultFontFX = null;
 
@@ -168,29 +159,6 @@ public class ProgramProperties {
     }
 
     /**
-     * gets a color property
-     *
-     * @return set property or default
-     */
-    public static Color get(Object name, Color def) {
-        String value = (String) props.get(name);
-        if (value == null || value.equalsIgnoreCase("null"))
-            return def;
-        else
-            return Color.decode(value);
-    }
-
-    /**
-     * put a property
-     */
-    public static void put(String key, Color value) {
-        if (value == null)
-            props.setProperty(key, "null");
-        else
-            props.setProperty(key, "" + value.getRGB());
-    }
-
-    /**
      * gets a double property
      *
      * @return set property or default
@@ -224,21 +192,6 @@ public class ProgramProperties {
      */
     public static String get(String name, String def) {
         return props.getProperty(name, def);
-    }
-
-    /**
-     * gets a font property
-     *
-     * @return font or default
-     */
-    public static Font get(String name, Font def) {
-        String value = (String) props.get(name);
-        if (value == null)
-            return def;
-        else {
-            value = value.replaceAll(" ", "\\ ");
-            return Font.decode(value);
-        }
     }
 
     /**
@@ -354,38 +307,6 @@ public class ProgramProperties {
     /**
      * put a property
      */
-    public static void put(String key, Font value) {
-        put(key, value.getFamily(), value.getStyle(), value.getSize());
-    }
-
-    /**
-     * put a property
-     */
-    public static void put(String key, String family, Integer style0, Integer size0) {
-        Font def = get(key, defaultFont);
-        String name;
-        if (family == null)
-            name = def.getFamily();
-        else
-            name = family;
-        int style;
-        style = Objects.requireNonNullElseGet(style0, def::getStyle);
-        int size;
-        size = Objects.requireNonNullElseGet(size0, def::getSize);
-
-        switch (style) {
-            case Font.BOLD + Font.ITALIC -> name += "-BOLDITALIC";
-            case Font.BOLD -> name += "-BOLD";
-            case Font.ITALIC -> name += "-ITALIC";
-            case Font.PLAIN -> name += "-PLAIN";
-        }
-        name += "-" + size;
-        props.setProperty(key, name);
-    }
-
-    /**
-     * put a property
-     */
     public static void put(String key, Collection<Pair<String, String>> value) {
         StringBuilder buf = new StringBuilder();
         for (Pair<String, String> pair : value) {
@@ -487,48 +408,6 @@ public class ProgramProperties {
      */
     public static boolean isMacOS() {
         return macOS;
-    }
-
-    public static PageFormat getPageFormat() {
-        return pageFormat;
-    }
-
-    public static ArrayList<ImageIcon> getProgramIcons() {
-        return programIcons;
-    }
-
-    public static void setProgramIcons(Collection<ImageIcon> icons) {
-        programIcons.clear();
-        for (ImageIcon icon : icons) {
-            if (icon != null)
-                programIcons.add(icon);
-        }
-    }
-
-    public static ArrayList<java.awt.Image> getProgramIconImages() {
-        final ArrayList<java.awt.Image> images = new ArrayList<>();
-        for (ImageIcon icon : getProgramIcons()) {
-            images.add(icon.getImage());
-        }
-        return images;
-    }
-
-    /**
-     * gets the program icon
-     *
-     * @return program icon
-     */
-    public static ImageIcon getProgramIcon() {
-        ImageIcon result = null;
-        for (ImageIcon imageIcon : getProgramIcons()) {
-            if (result == null || imageIcon.getIconHeight() < 128 && imageIcon.getIconHeight() > result.getIconHeight()) // 64 preferred
-                result = imageIcon;
-        }
-        return result;
-    }
-
-    public static void setPageFormat(PageFormat pageFormat) {
-        ProgramProperties.pageFormat = pageFormat;
     }
 
     /**

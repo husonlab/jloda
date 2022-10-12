@@ -19,8 +19,8 @@
 
 package jloda.swing.find;
 
+import jloda.swing.util.ProgramProperties;
 import jloda.swing.util.RememberingComboBox;
-import jloda.util.ProgramProperties;
 
 import javax.swing.*;
 import java.awt.*;

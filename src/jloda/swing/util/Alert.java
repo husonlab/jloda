@@ -19,7 +19,6 @@
 
 package jloda.swing.util;
 
-import jloda.util.ProgramProperties;
 import jloda.util.StringUtils;
 
 import javax.swing.*;

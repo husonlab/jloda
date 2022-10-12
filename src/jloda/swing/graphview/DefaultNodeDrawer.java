@@ -21,7 +21,8 @@ package jloda.swing.graphview;
 
 import jloda.graph.Node;
 import jloda.swing.util.Geometry;
-import jloda.util.ProgramProperties;
+import jloda.swing.util.ProgramProperties;
+import jloda.util.NodeShape;
 import jloda.util.Shapes;
 
 import java.awt.*;

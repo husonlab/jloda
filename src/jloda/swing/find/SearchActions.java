@@ -19,12 +19,8 @@
 
 package jloda.swing.find;
 
-import jloda.swing.util.Alert;
-import jloda.swing.util.ChooseFileDialog;
-import jloda.swing.util.ResourceManager;
-import jloda.swing.util.TextFileFilter;
+import jloda.swing.util.*;
 import jloda.util.Basic;
-import jloda.util.ProgramProperties;
 
 import javax.swing.*;
 import java.awt.*;

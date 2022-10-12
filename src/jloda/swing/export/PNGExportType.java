@@ -19,8 +19,8 @@
 
 package jloda.swing.export;
 
+import jloda.swing.util.ProgramProperties;
 import jloda.util.FileUtils;
-import jloda.util.ProgramProperties;
 
 import javax.imageio.ImageIO;
 import javax.swing.*;
