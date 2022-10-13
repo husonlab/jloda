@@ -19,11 +19,6 @@
 
 package jloda.util;
 
-import javafx.beans.property.*;
-import javafx.collections.FXCollections;
-import javafx.collections.ObservableList;
-import javafx.scene.image.Image;
-
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
@@ -31,18 +26,14 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.Map;
-import java.util.function.Function;
 
 /**
- * track program properties
- *
- * @author huson
- * Date: 08-Nov-2004
+ * Basic program properties
+ * <p>
+ * Daniel Huson, 2004, 2022
  */
 public class ProgramProperties {
     static protected final java.util.Properties props = new java.util.Properties();
-
-    static private final ObservableList<Image> programIconsFX = FXCollections.observableArrayList();
 
     private static final Map<String, Object> presets = new HashMap<>();
 
@@ -55,7 +46,6 @@ public class ProgramProperties {
 
 	private static final boolean macOS = (System.getProperty("os.name") != null && System.getProperty("os.name").toLowerCase().startsWith("mac"));
 	private static boolean useGUI = false;
-
 
 	private static Runnable stateChecker = null;
 	public static final String OPENFILE = "OpenFile";
@@ -73,15 +63,6 @@ public class ProgramProperties {
     public static final String SEARCH_URL = "SearchURL";
     public static final String defaultSearchURL = "http://www.google.com/search?q=%s";
 
-    static private javafx.scene.text.Font defaultFontFX = null;
-
-    static {
-        try {
-
-            defaultFontFX = javafx.scene.text.Font.font("Arial", 12);
-        } catch (Exception ignored) {
-        }
-    }
 
     /**
      * load properties from default file
@@ -447,32 +428,6 @@ public class ProgramProperties {
 		ProgramProperties.stateChecker = stateChecker;
 	}
 
-    public static ObservableList<javafx.scene.image.Image> getProgramIconsFX() {
-        return programIconsFX;
-    }
-
-    public static javafx.scene.paint.Color get(Object name, javafx.scene.paint.Color defaultColorFX) {
-        String value = (String) props.get(name);
-        if (value == null || value.equalsIgnoreCase("null"))
-            return defaultColorFX;
-        else
-            return javafx.scene.paint.Color.valueOf(value);
-    }
-
-    public static void put(String key, javafx.scene.paint.Color colorFX) {
-        if (colorFX == null)
-            props.setProperty(key, "null");
-        else
-            props.setProperty(key, "" + colorFX);
-    }
-
-    public static javafx.scene.text.Font getDefaultFontFX() {
-        return defaultFontFX;
-    }
-
-    public static void setDefaultFontFX(javafx.scene.text.Font defaultFontFX) {
-        ProgramProperties.defaultFontFX = defaultFontFX;
-    }
 
     public static void preset(String key, Object value) {
         presets.put(key, value);
@@ -482,60 +437,5 @@ public class ProgramProperties {
         for (String key : presets.keySet()) {
             props.put(key, presets.get(key).toString());
         }
-    }
-
-    public static void track(IntegerProperty property, Integer defaultValue) {
-        var label = property.getBean().getClass().getName() + property.getName();
-        if (!property.isBound()) {
-            property.set(get(label, defaultValue));
-        }
-        property.addListener((v, o, n) -> put(label, property.get()));
-    }
-
-    public static void track(DoubleProperty property, Double defaultValue) {
-        var label = property.getBean().getClass().getName() + property.getName();
-        if (!property.isBound()) {
-            property.set(get(label, defaultValue));
-        }
-        property.addListener((v, o, n) -> put(label, property.get()));
-    }
-
-    public static void track(BooleanProperty property, Boolean defaultValue) {
-        var label = property.getBean().getClass().getName() + property.getName();
-        if (!property.isBound()) {
-            property.set(get(label, defaultValue));
-        }
-        property.addListener((v, o, n) -> put(label, property.get()));
-	}
-
-    public static void track(StringProperty property, String defaultValue) {
-        var label = property.getBean().getClass().getName() + property.getName();
-        if (!property.isBound()) {
-            property.set(get(label, defaultValue));
-        }
-        property.addListener((v, o, n) -> put(label, property.get()));
-    }
-
-    public static void track(ObjectProperty<javafx.scene.paint.Color> property, javafx.scene.paint.Color defaultValue) {
-        track(property.getBean().getClass().getName() + property.getName(), property, defaultValue);
-    }
-
-    public static void track(String label, ObjectProperty<javafx.scene.paint.Color> property, javafx.scene.paint.Color defaultValue) {
-        if (!property.isBound()) {
-            property.set(get(label, defaultValue));
-        }
-        property.addListener((v, o, n) -> put(label, property.get()));
-    }
-
-
-    public static <T> void track(ObjectProperty<T> property, Function<String, T> valueOf, T defaultValue) {
-        track(property.getBean().getClass().getName() + property.getName(), property, valueOf, defaultValue);
-    }
-
-    public static <T> void track(String label, ObjectProperty<T> property, Function<String, T> valueOf, T defaultValue) {
-        if (!property.isBound()) {
-            property.set(valueOf.apply(get(label, defaultValue.toString())));
-        }
-        property.addListener((v, o, n) -> put(label, property.get() != null ? property.get().toString() : ""));
     }
 }

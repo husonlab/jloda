@@ -19,8 +19,8 @@
 
 package jloda.graph.algorithms;
 
-import javafx.util.Pair;
 import jloda.graph.*;
+import jloda.util.Pair;
 
 import java.util.ArrayList;
 import java.util.HashSet;

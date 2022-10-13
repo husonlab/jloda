@@ -37,9 +37,9 @@ import javafx.scene.input.TransferMode;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.StackPane;
 import javafx.stage.Stage;
+import jloda.fx.util.ProgramProperties;
 import jloda.fx.window.MainWindowManager;
 import jloda.util.Basic;
-import jloda.util.ProgramProperties;
 import jloda.util.Single;
 
 import java.io.Closeable;

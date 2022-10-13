@@ -25,7 +25,6 @@ import javafx.collections.ObservableList;
 import javafx.collections.ObservableMap;
 import javafx.scene.chart.PieChart;
 import javafx.scene.paint.Color;
-import jloda.swing.util.ColorUtilsFX;
 import jloda.util.ProgramProperties;
 import jloda.util.StringUtils;
 

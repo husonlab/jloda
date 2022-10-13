@@ -19,10 +19,12 @@
 
 package jloda.util;
 
-import javafx.collections.ObservableList;
-
 import java.util.*;
 
+/**
+ * some utilities for collections
+ * Daniel Huson, 2020
+ */
 public class CollectionUtils {
 	/**
 	 * given a list, returns a new collection in random order
@@ -326,7 +328,7 @@ public class CollectionUtils {
 	/**
 	 * find a element in the list for which clazz is assignable from
 	 */
-	public static <T> T findByClass(ObservableList<T> list, Class<?> clazz) {
+	public static <T> T findByClass(Collection<T> list, Class<?> clazz) {
 		for (T t : list) {
 			if (clazz.isAssignableFrom(t.getClass()))
 				return t;
