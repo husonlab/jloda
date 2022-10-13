@@ -38,6 +38,7 @@ import jloda.fx.util.BasicFX;
 import jloda.fx.util.GeometryUtilsFX;
 import jloda.fx.util.ProgramExecutorService;
 import jloda.fx.window.NotificationManager;
+import jloda.swing.util.ColorUtilsFX;
 import jloda.util.*;
 
 import java.util.*;
@@ -497,7 +498,7 @@ public class RichTextLabel extends TextFlow {
                         final var argument = event.argument();
                         if (argument != null) {
                             try {
-                                final Color newColor = BasicFX.parseColor(argument);
+								final Color newColor = ColorUtilsFX.parseColor(argument);
                                 colorStack.push(textFill);
                                 textFill = newColor;
                             } catch (IllegalArgumentException ignored) {
@@ -536,7 +537,7 @@ public class RichTextLabel extends TextFlow {
                     final var argument = event.argument();
                     if (argument != null) {
                         try {
-                            final Color color = BasicFX.parseColor(argument);
+							final Color color = ColorUtilsFX.parseColor(argument);
                             setBackground(new Background(new BackgroundFill(color, null, null)));
                         } catch (IllegalArgumentException ignored) {
                         }
@@ -626,19 +627,19 @@ public class RichTextLabel extends TextFlow {
 
     private static Shape createMark(String specification, double defaultScale, double defaultSize, Paint defaultFill) {
         if (specification != null) {
-            final var map = getMap(specification);
-            final var shape = map.containsKey("shape") && StringUtils.valueOfIgnoreCase(NodeShape.class, map.get("shape")) != null ? StringUtils.valueOfIgnoreCase(NodeShape.class, map.get("shape")) : NodeShape.Square;
-            final var width = defaultScale * (map.containsKey("width") && NumberUtils.isDouble(map.get("width")) ? NumberUtils.parseDouble(map.get("width")) : defaultSize);
-            final var height = defaultScale * (map.containsKey("height") && NumberUtils.isDouble(map.get("height")) ? NumberUtils.parseDouble(map.get("height")) : defaultSize);
+			final var map = getMap(specification);
+			final var shape = map.containsKey("shape") && StringUtils.valueOfIgnoreCase(NodeShape.class, map.get("shape")) != null ? StringUtils.valueOfIgnoreCase(NodeShape.class, map.get("shape")) : NodeShape.Square;
+			final var width = defaultScale * (map.containsKey("width") && NumberUtils.isDouble(map.get("width")) ? NumberUtils.parseDouble(map.get("width")) : defaultSize);
+			final var height = defaultScale * (map.containsKey("height") && NumberUtils.isDouble(map.get("height")) ? NumberUtils.parseDouble(map.get("height")) : defaultSize);
 
-            final var fill = (map.containsKey("fill") && BasicFX.isColor(map.get("fill")) ? BasicFX.parseColor(map.get("fill")) : defaultFill);
-            final var stroke = (map.containsKey("stroke") && BasicFX.isColor(map.get("stroke")) ? BasicFX.parseColor(map.get("stroke")) : null);
+			final var fill = (map.containsKey("fill") && ColorUtilsFX.isColor(map.get("fill")) ? ColorUtilsFX.parseColor(map.get("fill")) : defaultFill);
+			final var stroke = (map.containsKey("stroke") && ColorUtilsFX.isColor(map.get("stroke")) ? ColorUtilsFX.parseColor(map.get("stroke")) : null);
 
-            var rectangle = NodeShape.create(shape, shape == NodeShape.Oval ? 0.5 * width : width, height);
-            rectangle.setFill(shape == None ? Color.TRANSPARENT : fill);
-            rectangle.setStroke(shape == None ? Color.TRANSPARENT : stroke);
-            return rectangle;
-        }
+			var rectangle = NodeShape.create(shape, shape == NodeShape.Oval ? 0.5 * width : width, height);
+			rectangle.setFill(shape == None ? Color.TRANSPARENT : fill);
+			rectangle.setStroke(shape == None ? Color.TRANSPARENT : stroke);
+			return rectangle;
+		}
         return null;
     }
 
@@ -861,7 +862,7 @@ public class RichTextLabel extends TextFlow {
             final var argument = prefixElement.argument();
             if (argument != null) {
                 try {
-                    return BasicFX.parseColor(argument);
+					return ColorUtilsFX.parseColor(argument);
                 } catch (IllegalArgumentException ignored) {
                 }
             }
@@ -978,7 +979,7 @@ public class RichTextLabel extends TextFlow {
             final var argument = prefixElement.argument();
             if (argument != null) {
                 try {
-                    return BasicFX.parseColor(argument);
+					return ColorUtilsFX.parseColor(argument);
                 } catch (IllegalArgumentException ignored) {
                 }
             }

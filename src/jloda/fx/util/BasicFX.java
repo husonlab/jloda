@@ -486,31 +486,6 @@ public class BasicFX {
         }
     }
 
-    public static boolean isColor(String text) {
-        if (text.equals("random"))
-            return true;
-        {
-            try {
-                javafx.scene.paint.Color.web(text);
-                return true;
-            } catch (Exception ignored) {
-                return false;
-            }
-        }
-    }
-
-    public static Color parseColor(String text) {
-        if (text.equals("random")) {
-            var random = new Random();
-            return new Color(random.nextDouble(), random.nextDouble(), random.nextDouble(), 1);
-        } else
-            return javafx.scene.paint.Color.web(text);
-    }
-
-    public static String toStringCSS(Color color) {
-        return color.toString().replace("0x", "#");
-    }
-
 
     public static ScrollBar getScrollBar(Node scrollable, Orientation orientation) {
         var nodes = scrollable.lookupAll(".scroll-bar");
@@ -546,4 +521,5 @@ public class BasicFX {
             }
         }
     }
+
 }

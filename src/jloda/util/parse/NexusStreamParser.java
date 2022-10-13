@@ -19,7 +19,7 @@
 
 package jloda.util.parse;
 
-import javafx.scene.paint.Color;
+import jloda.util.AColor;
 import jloda.util.IOExceptionWithLineNumber;
 import jloda.util.NumberUtils;
 import jloda.util.StringUtils;
@@ -898,7 +898,7 @@ public class NexusStreamParser extends NexusStreamTokenizer implements Closeable
 	 * @param defaultValue the return value, if token not found
 	 * @return the value
 	 */
-	public Color findIgnoreCase(List<String> tokens, String token, Color defaultValue) throws IOException {
+	public AColor findIgnoreCase(List<String> tokens, String token, AColor defaultValue) throws IOException {
 		if (tokens.size() == 0)
 			return defaultValue;
 
@@ -1520,7 +1520,7 @@ public class NexusStreamParser extends NexusStreamTokenizer implements Closeable
 	 *
 	 * @return color
 	 */
-	public Color getColor() throws IOException {
+	public AColor getColor() throws IOException {
 
 		try {
 			int r = 0, g = 0, b = 0, a = 0;
@@ -1533,7 +1533,7 @@ public class NexusStreamParser extends NexusStreamTokenizer implements Closeable
 						if (word.startsWith("#")) // format #rrggbb
 						{
 							javafx.scene.paint.Color fx = javafx.scene.paint.Color.web(word);
-							return new Color((float) fx.getRed(),
+							return new AColor((float) fx.getRed(),
 									(float) fx.getGreen(),
 									(float) fx.getBlue(),
 									(float) fx.getOpacity());
@@ -1544,24 +1544,24 @@ public class NexusStreamParser extends NexusStreamTokenizer implements Closeable
 							g = (value >> 8) & 0xFF;
 							b = (value) & 0xFF;
 							a = (value >> 24) & 0xff;
-							return new Color(r, g, b, a);
+							return new AColor(r, g, b, a);
 						} else if (NumberUtils.isInteger(word)) {
 							r = Integer.parseInt(word);
 						} else {
-							return Color.web(word);
+							return AColor.parseColor(word);
 						}
 					}
 					case 1 -> g = Integer.parseInt(word);
 					case 2 -> {
 						b = Integer.parseInt(word);
 						if (!NumberUtils.isInteger(peekNextWord())) {
-							return new Color(r, g, b, 1.0);
+							return new AColor(r, g, b);
 						}
 					}
 					case 3 -> a = Integer.parseInt(word);
 				}
 			}
-			return new Color(r, g, b, a);
+			return new AColor(r, g, b, a);
 		} catch (Exception ex) {
 			throw new IOException("line " + lineno() + ": color expected, either X11-name or value (c, r g b, or r g b a)");
 		}

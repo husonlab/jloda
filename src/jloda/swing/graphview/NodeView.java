@@ -20,7 +20,7 @@
 package jloda.swing.graphview;
 
 import jloda.swing.util.BasicSwing;
-import jloda.swing.util.Colors;
+import jloda.swing.util.ColorUtilsSwing;
 import jloda.swing.util.Geometry;
 import jloda.swing.util.ProgramProperties;
 import jloda.util.NodeShape;
@@ -802,11 +802,11 @@ final public class NodeView extends ViewBase {
         if (previousNV == null || width != previousNV.width)
             buf.append(" nw=").append(width);
         if (fgColor != null && (previousNV == null || previousNV.fgColor == null || !fgColor.equals(previousNV.fgColor)))
-            buf.append(" fg=").append(BasicSwing.toString3Int(fgColor));
+			buf.append(" fg=").append(ColorUtilsSwing.toString3Int(fgColor));
         if (bgColor != null && (previousNV == null || previousNV.bgColor == null || !bgColor.equals(previousNV.bgColor)))
-            buf.append(" bg=").append(BasicSwing.toString3Int(bgColor));
+			buf.append(" bg=").append(ColorUtilsSwing.toString3Int(bgColor));
         if (borderColor != null && (previousNV == null || previousNV.borderColor == null || !borderColor.equals(previousNV.borderColor)))
-            buf.append(" bd=").append(BasicSwing.toString3Int(borderColor));
+			buf.append(" bd=").append(ColorUtilsSwing.toString3Int(borderColor));
         if (previousNV == null || linewidth != previousNV.linewidth)
             buf.append(" w=").append(linewidth);
         if (previousNV == null || nodeShape != previousNV.nodeShape)
@@ -819,11 +819,11 @@ final public class NodeView extends ViewBase {
             buf.append(" fx=").append(fixedSize ? 1 : 0);
 
         if (labelColor != null && (previousNV == null || previousNV.labelColor == null || !labelColor.equals(previousNV.labelColor)))
-            buf.append(" lc=").append(BasicSwing.toString3Int(labelColor));
+			buf.append(" lc=").append(ColorUtilsSwing.toString3Int(labelColor));
         if (previousNV == null || ((previousNV.labelBackgroundColor == null) != (labelBackgroundColor == null))
                 ||
                 (previousNV.labelBackgroundColor != null && labelBackgroundColor != null && !previousNV.labelBackgroundColor.equals(labelBackgroundColor))) {
-            buf.append(" lk=").append(BasicSwing.toString3Int(labelBackgroundColor));
+			buf.append(" lk=").append(ColorUtilsSwing.toString3Int(labelBackgroundColor));
         }
 
         if (font != null && (previousNV == null || previousNV.font == null || !font.equals(previousNV.font)))
@@ -869,36 +869,36 @@ final public class NodeView extends ViewBase {
      * @param prevNV this must be !=null, for example can be set to graphView.defaultNodeView
      */
     public void read(NexusStreamParser np, java.util.List<String> tokens, NodeView prevNV) throws IOException {
-        if (prevNV == null)
-            throw new IOException("prevNV=null");
-        height = (byte) np.findIgnoreCase(tokens, "nh=", prevNV.height);
-        width = (byte) np.findIgnoreCase(tokens, "nw=", prevNV.width);
-        fgColor = Colors.convert(np.findIgnoreCase(tokens, "fg=", Colors.convert(prevNV.fgColor)));
-        bgColor = Colors.convert(np.findIgnoreCase(tokens, "bg=", Colors.convert(prevNV.bgColor)));
-        borderColor = Colors.convert(np.findIgnoreCase(tokens, "bd=", Colors.convert(prevNV.borderColor)));
-        linewidth = (byte) np.findIgnoreCase(tokens, "w=", prevNV.linewidth);
-        setShape((byte) np.findIgnoreCase(tokens, "sh=", prevNV.getShape()));
+		if (prevNV == null)
+			throw new IOException("prevNV=null");
+		height = (byte) np.findIgnoreCase(tokens, "nh=", prevNV.height);
+		width = (byte) np.findIgnoreCase(tokens, "nw=", prevNV.width);
+		fgColor = ColorUtilsSwing.convert(np.findIgnoreCase(tokens, "fg=", ColorUtilsSwing.convert(prevNV.fgColor)));
+		bgColor = ColorUtilsSwing.convert(np.findIgnoreCase(tokens, "bg=", ColorUtilsSwing.convert(prevNV.bgColor)));
+		borderColor = ColorUtilsSwing.convert(np.findIgnoreCase(tokens, "bd=", ColorUtilsSwing.convert(prevNV.borderColor)));
+		linewidth = (byte) np.findIgnoreCase(tokens, "w=", prevNV.linewidth);
+		setShape((byte) np.findIgnoreCase(tokens, "sh=", prevNV.getShape()));
 
-        if (prevNV != this || (tokens.contains("x=") && tokens.contains("y="))) {
-            double x = np.findIgnoreCase(tokens, "x=", prevNV.getLocation() != null ? (float) prevNV.getLocation().getX() : 0);
-            double y = np.findIgnoreCase(tokens, "y=", prevNV.getLocation() != null ? (float) prevNV.getLocation().getY() : 0);
-            setLocation(new Point2D.Double(x, y));
-        }
+		if (prevNV != this || (tokens.contains("x=") && tokens.contains("y="))) {
+			double x = np.findIgnoreCase(tokens, "x=", prevNV.getLocation() != null ? (float) prevNV.getLocation().getX() : 0);
+			double y = np.findIgnoreCase(tokens, "y=", prevNV.getLocation() != null ? (float) prevNV.getLocation().getY() : 0);
+			setLocation(new Point2D.Double(x, y));
+		}
 
-        fixedSize = (np.findIgnoreCase(tokens, "fx=", prevNV.fixedSize ? 1 : 0) != 0);
+		fixedSize = (np.findIgnoreCase(tokens, "fx=", prevNV.fixedSize ? 1 : 0) != 0);
 
-        labelColor = Colors.convert(np.findIgnoreCase(tokens, "lc=", Colors.convert(prevNV.labelColor)));
-        labelBackgroundColor = Colors.convert(np.findIgnoreCase(tokens, "lk=", Colors.convert(prevNV.labelBackgroundColor)));
+		labelColor = ColorUtilsSwing.convert(np.findIgnoreCase(tokens, "lc=", ColorUtilsSwing.convert(prevNV.labelColor)));
+		labelBackgroundColor = ColorUtilsSwing.convert(np.findIgnoreCase(tokens, "lk=", ColorUtilsSwing.convert(prevNV.labelBackgroundColor)));
 
-        String fontName = np.findIgnoreCase(tokens, "ft=", null, "");
-        if (fontName != null && fontName.length() > 0)
-            font = Font.decode(fontName);
-        else if (prevNV.getFont() != null && prevNV != this)
-            font = prevNV.getFont(); // will use default font
-        else
-            font = GraphView.defaultNodeView.getFont();
+		String fontName = np.findIgnoreCase(tokens, "ft=", null, "");
+		if (fontName != null && fontName.length() > 0)
+			font = Font.decode(fontName);
+		else if (prevNV.getFont() != null && prevNV != this)
+			font = prevNV.getFont(); // will use default font
+		else
+			font = GraphView.defaultNodeView.getFont();
 
-        dxLabel = (int) np.findIgnoreCase(tokens, "lx=", prevNV.dxLabel);
+		dxLabel = (int) np.findIgnoreCase(tokens, "lx=", prevNV.dxLabel);
         dyLabel = (int) np.findIgnoreCase(tokens, "ly=", prevNV.dyLabel);
         setLabelAngle(np.findIgnoreCase(tokens, "la=", 0));
         labelLayout = (byte) np.findIgnoreCase(tokens, "ll=", prevNV.labelLayout);

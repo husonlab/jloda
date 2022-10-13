@@ -246,20 +246,6 @@ public class BasicSwing {
     }
 
     /**
-     * gets color as 'r g b' or 'r g b a' string  or string "null"
-     *
-     * @return r g b a
-     */
-    public static String toString3Int(Color color) {
-        if (color == null)
-            return "null";
-        final StringBuilder buf = new StringBuilder().append(color.getRed()).append(" ").append(color.getGreen()).append(" ").append(color.getBlue());
-        if (color.getAlpha() < 255)
-            buf.append(" ").append(color.getAlpha());
-        return buf.toString();
-    }
-
-    /**
      * gets the memory usage string in MB
      *
      * @param warnLevel warn when less than this amount of memory available
@@ -275,15 +261,6 @@ public class BasicSwing {
             memoryWarned = true;
         }
         return used + " of " + available + "M";
-    }
-
-    /**
-     * gets a color as a background color
-     *
-     * @return color
-     */
-    static public String getBackgroundColorHTML(Color color) {
-        return String.format("<font bgcolor=#%x>", (color.getRGB() & 0xFFFFFF));
     }
 
     /**
@@ -337,4 +314,5 @@ public class BasicSwing {
             e.printStackTrace();
         }
     }
+
 }

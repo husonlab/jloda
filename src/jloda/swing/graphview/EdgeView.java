@@ -20,7 +20,7 @@
 package jloda.swing.graphview;
 
 import jloda.swing.util.BasicSwing;
-import jloda.swing.util.Colors;
+import jloda.swing.util.ColorUtilsSwing;
 import jloda.swing.util.Geometry;
 import jloda.swing.util.ProgramProperties;
 import jloda.util.parse.NexusStreamParser;
@@ -885,7 +885,7 @@ final public class EdgeView extends ViewBase { //, IEdgeView {
         StringBuilder buf = new StringBuilder();
 
         if (fgColor != null && (previousEV == null || previousEV.fgColor == null || !fgColor.equals(previousEV.fgColor)))
-            buf.append(" fg=").append(BasicSwing.toString3Int(fgColor));
+			buf.append(" fg=").append(ColorUtilsSwing.toString3Int(fgColor));
 
         if (previousEV == null || linewidth != previousEV.linewidth)
             buf.append(" w=").append(linewidth);
@@ -905,11 +905,11 @@ final public class EdgeView extends ViewBase { //, IEdgeView {
         buf.append(" dr=").append(direction);
 
         if (labelColor != null && (previousEV == null || previousEV.labelColor == null || !labelColor.equals(previousEV.labelColor)))
-            buf.append(" lc=").append(BasicSwing.toString3Int(labelColor));
+			buf.append(" lc=").append(ColorUtilsSwing.toString3Int(labelColor));
 
         if (previousEV == null || ((previousEV.labelBackgroundColor == null) != (labelBackgroundColor == null))
                 || (previousEV.labelBackgroundColor != null && labelBackgroundColor != null && !previousEV.labelBackgroundColor.equals(labelBackgroundColor)))
-            buf.append(" lk=").append(BasicSwing.toString3Int(labelBackgroundColor));
+			buf.append(" lk=").append(ColorUtilsSwing.toString3Int(labelBackgroundColor));
 
         if (font != null && (previousEV == null || previousEV.font == null || !font.equals(previousEV.font)))
             buf.append(" ft='").append(BasicSwing.getCode(font)).append("'");
@@ -960,8 +960,8 @@ final public class EdgeView extends ViewBase { //, IEdgeView {
         if (prevEV == null)
             throw new IOException("prevEV=null");
 
-        fgColor = Colors.convert(np.findIgnoreCase(tokens, "fg=", Colors.convert(prevEV.fgColor)));
-        linewidth = (byte) np.findIgnoreCase(tokens, "w=", prevEV.linewidth);
+		fgColor = ColorUtilsSwing.convert(np.findIgnoreCase(tokens, "fg=", ColorUtilsSwing.convert(prevEV.fgColor)));
+		linewidth = (byte) np.findIgnoreCase(tokens, "w=", prevEV.linewidth);
         shape = (byte) np.findIgnoreCase(tokens, "sh=", prevEV.shape);
 
         int x = (int) np.findIgnoreCase(tokens, "rx=",
@@ -981,28 +981,28 @@ final public class EdgeView extends ViewBase { //, IEdgeView {
                     double iy = Double.parseDouble(st.nextToken());
                     list.add(new Point2D.Double(ix, iy));
 
-                }
-                setInternalPoints(list);
-            } catch (Exception ex) {
-                throw new IOException("line " + np.lineno() + ": error parsing internal points: " + internalPointsStr
-                                      + ": " + ex);
-            }
-        }
+				}
+				setInternalPoints(list);
+			} catch (Exception ex) {
+				throw new IOException("line " + np.lineno() + ": error parsing internal points: " + internalPointsStr
+									  + ": " + ex);
+			}
+		}
 
-        direction = (byte) np.findIgnoreCase(tokens, "dr=", prevEV.direction);
+		direction = (byte) np.findIgnoreCase(tokens, "dr=", prevEV.direction);
 
-        labelColor = Colors.convert(np.findIgnoreCase(tokens, "lc=", Colors.convert(prevEV.labelColor)));
-        labelBackgroundColor = Colors.convert(np.findIgnoreCase(tokens, "lk=", Colors.convert(prevEV.labelBackgroundColor)));
+		labelColor = ColorUtilsSwing.convert(np.findIgnoreCase(tokens, "lc=", ColorUtilsSwing.convert(prevEV.labelColor)));
+		labelBackgroundColor = ColorUtilsSwing.convert(np.findIgnoreCase(tokens, "lk=", ColorUtilsSwing.convert(prevEV.labelBackgroundColor)));
 
-        String fontName = np.findIgnoreCase(tokens, "ft=", null, "");
-        if (fontName != null && fontName.length() > 0)
-            font = Font.decode(fontName);
-        else
-            font = GraphView.defaultEdgeView.getFont(); // will use default font
-        dxLabel = (int) np.findIgnoreCase(tokens, "lx=", prevEV.dxLabel);
-        dyLabel = (int) np.findIgnoreCase(tokens, "ly=", prevEV.dyLabel);
-        setLabelAngle(np.findIgnoreCase(tokens, "la=", 0));
-        labelLayout = (byte) np.findIgnoreCase(tokens, "ll=", prevEV.labelLayout);
+		String fontName = np.findIgnoreCase(tokens, "ft=", null, "");
+		if (fontName != null && fontName.length() > 0)
+			font = Font.decode(fontName);
+		else
+			font = GraphView.defaultEdgeView.getFont(); // will use default font
+		dxLabel = (int) np.findIgnoreCase(tokens, "lx=", prevEV.dxLabel);
+		dyLabel = (int) np.findIgnoreCase(tokens, "ly=", prevEV.dyLabel);
+		setLabelAngle(np.findIgnoreCase(tokens, "la=", 0));
+		labelLayout = (byte) np.findIgnoreCase(tokens, "ll=", prevEV.labelLayout);
         labelVisible = (np.findIgnoreCase(tokens, "lv=", prevEV.labelVisible ? 1 : 0) != 0);
         label = (np.findIgnoreCase(tokens, "lb=", null, ""));
         if (label != null && label.length() == 0)
