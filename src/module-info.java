@@ -30,7 +30,6 @@ module jloda {
     exports jloda.graph.fmm;
 
     exports jloda.phylo;
-    exports jloda.progs;
     exports jloda.swing.commands;
     exports jloda.swing.director;
     exports jloda.swing.export;

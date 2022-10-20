@@ -1516,7 +1516,7 @@ public class NexusStreamParser extends NexusStreamTokenizer implements Closeable
 
 
 	/**
-	 * get a color, either from a name or from r g b
+	 * get a color, either from a name or from r g b (a) or from #rrggbb or #rrggbbaa
 	 *
 	 * @return color
 	 */
@@ -1532,11 +1532,21 @@ public class NexusStreamParser extends NexusStreamTokenizer implements Closeable
 							return null;
 						if (word.startsWith("#")) // format #rrggbb
 						{
-							javafx.scene.paint.Color fx = javafx.scene.paint.Color.web(word);
-							return new AColor((float) fx.getRed(),
-									(float) fx.getGreen(),
-									(float) fx.getBlue(),
-									(float) fx.getOpacity());
+							if (word.startsWith("#")) {
+								word = word.substring(1);
+								if (word.length() == 6) {
+									r = Integer.parseInt(word.substring(0, 2), 16);
+									g = Integer.parseInt(word.substring(2, 4), 16);
+									b = Integer.parseInt(word.substring(4, 6), 16);
+									return new AColor(r, g, b);
+								} else if (word.length() == 8) {
+									r = Integer.parseInt(word.substring(0, 2), 16);
+									g = Integer.parseInt(word.substring(2, 4), 16);
+									b = Integer.parseInt(word.substring(4, 6), 16);
+									a = Integer.parseInt(word.substring(6, 8), 16);
+									return new AColor(r, g, b, a);
+								}
+							}
 						}
 						if (isHexInt(word)) {
 							var value = parseHexInt(word);
