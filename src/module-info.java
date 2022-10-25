@@ -1,5 +1,4 @@
 module jloda {
-
     requires transitive javafx.controls;
     requires transitive javafx.graphics;
     requires transitive javafx.fxml;
@@ -67,5 +66,4 @@ module jloda {
     exports jloda.kmers.mash;
     exports jloda.fx.workflow;
     exports jloda.phylo.algorithms;
-
 }

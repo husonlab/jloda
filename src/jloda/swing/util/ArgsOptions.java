@@ -703,7 +703,7 @@ public class ArgsOptions {
 
         JDialog dialog = pane.createDialog(null, "Input " + ProgramProperties.getProgramName());
         dialog.setResizable(true);
-        dialog.setSize(600, 150);
+        dialog.setSize(600, 175);
         dialog.setVisible(true);
 
         if ((Integer) pane.getValue() == JOptionPane.CANCEL_OPTION)
