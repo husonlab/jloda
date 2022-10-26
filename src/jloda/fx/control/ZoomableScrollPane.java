@@ -246,7 +246,7 @@ public class ZoomableScrollPane extends ScrollPane {
      *
      */
     public void ensureVisible(Node node) {
-        if (node != null) {
+        if (node != null && getContent().getScene() != null) {
             final Bounds viewportBounds = getViewportBounds();
             final Bounds contentBounds = getContent().localToScene(getContent().getBoundsInLocal());
             Bounds nodeBounds = node.localToScene(node.getBoundsInLocal());

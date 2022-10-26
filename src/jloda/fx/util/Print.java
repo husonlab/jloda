@@ -55,7 +55,7 @@ public class Print {
 		final PrinterJob job = PrinterJob.createPrinterJob();
 		if (job != null) {
 			if (job.showPrintDialog(owner)) {
-				//System.err.println(job.getJobSettings());
+				System.err.println(job.getJobSettings());
 
 				final PageLayout pageLayout = (pageLayoutSelected != null ? pageLayoutSelected : job.getJobSettings().getPageLayout());
 
@@ -114,6 +114,7 @@ public class Print {
 						Platform.runLater(() -> node.getTransforms().remove(scale));
 					}
 				});
+				job.setPrinter(job.getPrinter());
 				if (job.printPage(pageLayout, node))
 					job.endJob();
 			}
