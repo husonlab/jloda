@@ -35,6 +35,7 @@ import java.util.stream.Collectors;
  * Daniel Huson, 10.2021
  */
 public class AlgorithmNode extends WorkflowNode {
+	public static boolean verbose = false;
 	private final AService<Boolean> service = new AService<>();
 	private final ObjectProperty<Algorithm> algorithm = new SimpleObjectProperty<>(null);
 
@@ -52,7 +53,7 @@ public class AlgorithmNode extends WorkflowNode {
 			return false;
 		});
 		service.stateProperty().addListener((v, o, n) -> {
-			if (false)
+			if (verbose)
 				System.err.println("Service (" + getName() + ") " + o + " -> " + n);
 
 			if (n.equals(Worker.State.SCHEDULED)) {
