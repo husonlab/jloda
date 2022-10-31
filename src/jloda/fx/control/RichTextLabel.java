@@ -71,7 +71,7 @@ public class RichTextLabel extends TextFlow {
                "<img src=\"url\" alt=\"text\" width=\"value\" height=\"value\"> adds an image. Supports HTML numeric codes.";
     }
 
-    public final static Font DEFAULT_FONT = Font.font("Arial", 14);
+    public static Font DEFAULT_FONT = Font.font("Arial", 14);
     private static final Map<String, Image> file2image = new ConcurrentHashMap<>();
 
     @Deprecated // want to remove this
