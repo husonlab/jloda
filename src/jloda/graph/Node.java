@@ -373,7 +373,7 @@ public class Node extends NodeEdge implements Comparable<Node> {
      */
     public Edge getCommonEdge(Node w) {
         checkOwner(w);
-        for (var e = getFirstAdjacentEdge(); e != null; e = getNextAdjacentEdge(e)) {
+        for(var e:adjacentEdges()) {
             if (getOpposite(e) == w)
                 return e;
         }
@@ -658,8 +658,8 @@ public class Node extends NodeEdge implements Comparable<Node> {
     }
 
     public boolean isChild(Node y) {
-        for (var c : children()) {
-            if (y == c)
+        for(var c:children()) {
+            if(c==y)
                 return true;
         }
         return false;

@@ -32,16 +32,11 @@ import jloda.fx.window.IMainWindow;
 import jloda.fx.window.MainWindowManager;
 import jloda.fx.window.NotificationManager;
 import jloda.util.Basic;
-import jloda.util.StringUtils;
 
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintStream;
-import java.util.concurrent.BlockingQueue;
-import java.util.concurrent.Executors;
-import java.util.concurrent.LinkedBlockingQueue;
-import java.util.concurrent.TimeUnit;
 
 public class MessageWindow {
     private static MessageWindow instance;
@@ -70,7 +65,7 @@ public class MessageWindow {
         stage.setTitle("Message Window - " + ProgramProperties.getProgramName());
         stage.setOnCloseRequest((c) -> setVisible(false));
 
-        printStream = createPrintStream(controller.getTextArea());
+        printStream = new PrintStreamForTextArea(controller.getTextArea());
 
         controller.getCloseMenuItem().setOnAction((e) -> setVisible(false));
         controller.getSaveAsMenuItem().setOnAction((e) -> saveAs());
@@ -156,113 +151,5 @@ public class MessageWindow {
                 NotificationManager.showError("Save messages failed: " + e.getMessage());
             }
         }
-    }
-
-    private PrintStream createPrintStream(TextArea textArea) {
-        // will queue lines and print out sparingly
-        final BlockingQueue<String> lines = new LinkedBlockingQueue<>();
-        Executors.newSingleThreadScheduledExecutor().scheduleAtFixedRate(() -> {
-            if (lines.size() > 0) {
-                Platform.runLater(() -> {
-                    final long start = System.currentTimeMillis();
-                    while (lines.size() > 0) {
-                        final String line = lines.remove();
-                        MessageWindow.this.append(textArea, line);
-                        if (System.currentTimeMillis() - start > 100)
-                            break;
-                    }
-                });
-            }
-        }, 0, 100, TimeUnit.MILLISECONDS);
-
-        return new PrintStream(System.out) {
-            public void println(String x) {
-                lines.add(x);
-                lines.add("\n");
-            }
-
-            public void print(String x) {
-                lines.add(x);
-            }
-
-            public void println(Object x) {
-                lines.add(x + "\n");
-            }
-
-            public void print(Object x) {
-                lines.add(x.toString());
-            }
-
-            public void println(boolean x) {
-                lines.add(x + "\n");
-            }
-
-            public void print(boolean x) {
-                lines.add("" + x);
-            }
-
-            public void println(int x) {
-                lines.add(x + "\n");
-            }
-
-            public void print(int x) {
-                lines.add("" + x);
-            }
-
-            public void println(float x) {
-                lines.add(x + "\n");
-            }
-
-            public void print(float x) {
-                lines.add("" + x);
-            }
-
-            public void println(char x) {
-                lines.add(x + "\n");
-            }
-
-            public void print(char x) {
-                lines.add("" + x);
-            }
-
-            public void println(double x) {
-                lines.add(x + "\n");
-            }
-
-            public void print(double x) {
-                lines.add("" + x);
-            }
-
-            public void println(long x) {
-                lines.add(x + "\n");
-            }
-
-            public void print(long x) {
-                lines.add("" + x);
-            }
-
-
-            public void println(char[] x) {
-                lines.add(StringUtils.toString(x) + "\n");
-            }
-
-            public void print(char[] x) {
-                lines.add(StringUtils.toString(x));
-            }
-
-            public void write(byte[] buf, int off, int len) {
-                lines.add(new String(buf, off, len));
-            }
-
-            public void setError() {
-            }
-
-            public boolean checkError() {
-                return false;
-            }
-
-            public void flush() {
-            }
-        };
     }
 }
