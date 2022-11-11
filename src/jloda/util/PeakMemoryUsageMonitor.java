@@ -29,38 +29,26 @@ import static java.util.concurrent.TimeUnit.SECONDS;
  * Daniel Huson, 5.2015
  */
 public class PeakMemoryUsageMonitor {
-    private static PeakMemoryUsageMonitor instance;
-    private final long start;
-    private long peak = ((Runtime.getRuntime().totalMemory() - Runtime.getRuntime().freeMemory()) / 1048576);
-
-    /**
-     * constructor
-     */
-    private PeakMemoryUsageMonitor() {
-        start = System.currentTimeMillis();
-        Executors.newScheduledThreadPool(1).scheduleAtFixedRate(() -> {
-            long used = ((Runtime.getRuntime().totalMemory() - Runtime.getRuntime().freeMemory()) / 1048576);
-            if (used > peak)
-                peak = used;
-        }, 0, 5, SECONDS);
-    }
-
-    private static PeakMemoryUsageMonitor getInstance() {
-        if (instance == null) {
-            instance = new PeakMemoryUsageMonitor();
-        }
-        return instance;
-    }
+    private static long start;
+    private static long peak;
 
     /**
      * start recording memory and time
      */
     public static void start() {
-        getInstance();
+       if(start==0L) {
+           Executors.newScheduledThreadPool(1).scheduleAtFixedRate(() -> {
+               long used = ((Runtime.getRuntime().totalMemory() - Runtime.getRuntime().freeMemory()) / 1048576);
+               if (used > peak)
+                   peak = used;
+           }, 0, 5, SECONDS);
+       }
+        peak = ((Runtime.getRuntime().totalMemory() - Runtime.getRuntime().freeMemory()) / 1048576);
+        start = System.currentTimeMillis();
     }
 
     /**
-     * report the recorded memory and time
+     * report the recorded memory and time to stderr
      */
     public static void report() {
         System.err.println("Total time:  " + PeakMemoryUsageMonitor.getSecondsSinceStartString());
@@ -75,9 +63,9 @@ public class PeakMemoryUsageMonitor {
     public static String getPeakUsageString() {
         long available = (Runtime.getRuntime().maxMemory() / 1048576);
         if (available < 1024) {
-            return String.format("%d of %dM", getInstance().peak, available);
+            return String.format("%d of %dM", peak, available);
         } else {
-            return StringUtils.removeTrailingZerosAfterDot(String.format("%.1f of %.1f", (double) getInstance().peak / 1024.0, (double) available / 1024.0)) + "G";
+            return StringUtils.removeTrailingZerosAfterDot(String.format("%.1f of %.1f", (double)peak / 1024.0, (double) available / 1024.0)) + "G";
         }
     }
 
@@ -87,7 +75,6 @@ public class PeakMemoryUsageMonitor {
      * @return seconds since start
      */
     public static String getSecondsSinceStartString() {
-        return String.format("%,ds", (System.currentTimeMillis() - getInstance().start) / 1000);
+        return String.format("%,.1fs", (System.currentTimeMillis() - start) / 1000.0);
     }
-
 }
