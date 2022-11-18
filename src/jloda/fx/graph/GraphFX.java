@@ -26,8 +26,6 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import jloda.graph.*;
 
-import java.util.concurrent.atomic.AtomicBoolean;
-
 /**
  * provides observable list of nodes and adjacentEdges, and label properties
  * Daniel Huson, 1.20020
@@ -46,7 +44,7 @@ public class GraphFX<G extends Graph> {
     private NodeArray<StringProperty> node2LabelProperty;
     private EdgeArray<StringProperty> edge2LabelProperty;
 
-    private final AtomicBoolean updatingProperties = new AtomicBoolean(false);
+    private final LongProperty lastUpdate = new SimpleLongProperty(0L);
 
     public GraphFX() {
     }
@@ -71,6 +69,7 @@ public class GraphFX<G extends Graph> {
                     Platform.runLater(() -> {
                         try {
                             nodeList.add(v);
+                            lastUpdate.set(lastUpdate.get() + 1);
                         } catch (NotOwnerException ignored) {
                         }
                     });
@@ -81,6 +80,7 @@ public class GraphFX<G extends Graph> {
                     Platform.runLater(() -> {
                         try {
                             nodeList.remove(v);
+                            lastUpdate.set(lastUpdate.get() + 1);
                         } catch (NotOwnerException ignored) {
                         }
                     });
@@ -91,6 +91,7 @@ public class GraphFX<G extends Graph> {
                     Platform.runLater(() -> {
                         try {
                             edgeList.add(e);
+                            lastUpdate.set(lastUpdate.get() + 1);
                         } catch (NotOwnerException ignored) {
                         }
                     });
@@ -101,6 +102,7 @@ public class GraphFX<G extends Graph> {
                     Platform.runLater(() -> {
                         try {
                             edgeList.remove(e);
+                            lastUpdate.set(lastUpdate.get() + 1);
                         } catch (NotOwnerException ignored) {
                         }
                     });
@@ -109,9 +111,10 @@ public class GraphFX<G extends Graph> {
                 @Override
                 public void nodeLabelChanged(Node v, String newLabel) {
                     try {
-                        StringProperty stringProperty = node2LabelProperty.get(v);
+                        var stringProperty = node2LabelProperty.get(v);
                         if (stringProperty != null) {
                             Platform.runLater(() -> stringProperty.set(newLabel));
+                            lastUpdate.set(lastUpdate.get() + 1);
                         }
                     } catch (NotOwnerException ignored) {
                     }
@@ -120,9 +123,10 @@ public class GraphFX<G extends Graph> {
                 @Override
                 public void edgeLabelChanged(Edge e, String newLabel) {
                     try {
-                        StringProperty stringProperty = edge2LabelProperty.get(e);
+                        var stringProperty = edge2LabelProperty.get(e);
                         if (stringProperty != null) {
                             Platform.runLater(() -> stringProperty.set(newLabel));
+                            lastUpdate.set(lastUpdate.get() + 1);
                         }
                     } catch (NotOwnerException ignored) {
                     }
@@ -148,7 +152,7 @@ public class GraphFX<G extends Graph> {
     }
 
     public StringProperty nodeLabelProperty(Node v) {
-        StringProperty stringProperty = node2LabelProperty.get(v);
+        var stringProperty = node2LabelProperty.get(v);
         if (stringProperty == null) {
             stringProperty = new SimpleStringProperty(graph.getLabel(v));
             node2LabelProperty.put(v, stringProperty);
@@ -157,7 +161,7 @@ public class GraphFX<G extends Graph> {
     }
 
     public StringProperty edgeLabelProperty(Edge e) {
-        StringProperty stringProperty = edge2LabelProperty.get(e);
+        var stringProperty = edge2LabelProperty.get(e);
         if (stringProperty == null) {
             stringProperty = new SimpleStringProperty(graph.getLabel(e));
             edge2LabelProperty.put(e, stringProperty);
@@ -173,16 +177,12 @@ public class GraphFX<G extends Graph> {
         return empty;
     }
 
-    public boolean isUpdatingProperties() {
-        return updatingProperties.get();
+    public double getLastUpdate() {
+        return lastUpdate.get();
     }
 
-    public void setUpdatingProperties(boolean updating) {
-        updatingProperties.set(updating);
-    }
-
-    public boolean isNotUpdatingPropertiesAndSet() {
-        return updatingProperties.compareAndSet(false, true);
+    public LongProperty lastUpdateProperty() {
+        return lastUpdate;
     }
 }
 

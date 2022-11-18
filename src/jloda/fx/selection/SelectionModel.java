@@ -35,13 +35,13 @@ public interface SelectionModel<T> {
 
 	boolean setSelected(T t, boolean select);
 
-	boolean selectAll(Collection<T> list);
+	boolean selectAll(Collection<? extends T> list);
 
 	void clearSelection();
 
 	boolean clearSelection(T t);
 
-	boolean clearSelection(Collection<T> list);
+	boolean clearSelection(Collection<? extends T> list);
 
 	ObservableSet<T> getSelectedItems();
 

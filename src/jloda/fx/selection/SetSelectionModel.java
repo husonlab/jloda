@@ -54,7 +54,7 @@ public class SetSelectionModel<T> implements SelectionModel<T> {
 	}
 
 	@Override
-	public boolean selectAll(Collection<T> list) {
+	public boolean selectAll(Collection<? extends T> list) {
 		var result = false;
 		for (var item : list) {
 			if (item != null && select(item))
@@ -74,7 +74,7 @@ public class SetSelectionModel<T> implements SelectionModel<T> {
 	}
 
 	@Override
-	public boolean clearSelection(Collection<T> list) {
+	public boolean clearSelection(Collection<? extends T> list) {
 		var result = false;
 		for (var item : list) {
 			if (item != null && clearSelection(item))
