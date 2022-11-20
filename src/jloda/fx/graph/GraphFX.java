@@ -44,7 +44,8 @@ public class GraphFX<G extends Graph> {
     private NodeArray<StringProperty> node2LabelProperty;
     private EdgeArray<StringProperty> edge2LabelProperty;
 
-    private final LongProperty lastUpdate = new SimpleLongProperty(0L);
+    private long _lastUpdate = 0L;
+    private LongProperty lastUpdate;
 
     public GraphFX() {
     }
@@ -69,10 +70,10 @@ public class GraphFX<G extends Graph> {
                     Platform.runLater(() -> {
                         try {
                             nodeList.add(v);
-                            lastUpdate.set(lastUpdate.get() + 1);
                         } catch (NotOwnerException ignored) {
                         }
                     });
+                    incrementLastUpdate();
                 }
 
                 @Override
@@ -80,10 +81,10 @@ public class GraphFX<G extends Graph> {
                     Platform.runLater(() -> {
                         try {
                             nodeList.remove(v);
-                            lastUpdate.set(lastUpdate.get() + 1);
                         } catch (NotOwnerException ignored) {
                         }
                     });
+                    incrementLastUpdate();
                 }
 
                 @Override
@@ -91,10 +92,10 @@ public class GraphFX<G extends Graph> {
                     Platform.runLater(() -> {
                         try {
                             edgeList.add(e);
-                            lastUpdate.set(lastUpdate.get() + 1);
                         } catch (NotOwnerException ignored) {
                         }
                     });
+                    incrementLastUpdate();
                 }
 
                 @Override
@@ -102,22 +103,23 @@ public class GraphFX<G extends Graph> {
                     Platform.runLater(() -> {
                         try {
                             edgeList.remove(e);
-                            lastUpdate.set(lastUpdate.get() + 1);
                         } catch (NotOwnerException ignored) {
                         }
                     });
+                    incrementLastUpdate();
                 }
 
                 @Override
                 public void nodeLabelChanged(Node v, String newLabel) {
                     try {
                         var stringProperty = node2LabelProperty.get(v);
-                        if (stringProperty != null) {
-                            Platform.runLater(() -> stringProperty.set(newLabel));
-                            lastUpdate.set(lastUpdate.get() + 1);
-                        }
+                        Platform.runLater(() -> {
+                            if (stringProperty != null)
+                                stringProperty.set(newLabel);
+                        });
                     } catch (NotOwnerException ignored) {
                     }
+                    incrementLastUpdate();
                 }
 
                 @Override
@@ -126,10 +128,10 @@ public class GraphFX<G extends Graph> {
                         var stringProperty = edge2LabelProperty.get(e);
                         if (stringProperty != null) {
                             Platform.runLater(() -> stringProperty.set(newLabel));
-                            lastUpdate.set(lastUpdate.get() + 1);
                         }
                     } catch (NotOwnerException ignored) {
                     }
+                    incrementLastUpdate();
                 }
             };
             graph.addGraphUpdateListener(graphUpdateListener);
@@ -177,11 +179,24 @@ public class GraphFX<G extends Graph> {
         return empty;
     }
 
+    private void incrementLastUpdate() {
+        if (lastUpdate != null) {
+            Platform.runLater(() -> lastUpdate.set(lastUpdate.get() + 1));
+        } else
+            _lastUpdate++;
+    }
+
     public double getLastUpdate() {
-        return lastUpdate.get();
+        if (lastUpdate != null)
+            return lastUpdate.get();
+        else
+            return _lastUpdate;
     }
 
     public LongProperty lastUpdateProperty() {
+        if (lastUpdate == null) {
+            lastUpdate = new SimpleLongProperty(_lastUpdate);
+        }
         return lastUpdate;
     }
 }

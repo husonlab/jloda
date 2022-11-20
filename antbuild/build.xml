@@ -18,7 +18,7 @@
 -->
 
 	<project name="JLODA" default="jar" basedir=".">
-		<property name="jfxDir" value="../../javafx/lib"/>
+		<property name="jfxDir" value="/Users/huson/lib/javafx/lib"/>
 		<property name="buildSrcDir" value="../antbuild/src"/>
 		<property name="buildModulesDir" value="../antbuild/modules"/>
 
