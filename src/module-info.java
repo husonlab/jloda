@@ -66,4 +66,5 @@ module jloda {
     exports jloda.kmers.mash;
     exports jloda.fx.workflow;
     exports jloda.phylo.algorithms;
+    exports jloda.fx.selection.rubberband;
 }
