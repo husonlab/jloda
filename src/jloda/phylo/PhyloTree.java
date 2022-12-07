@@ -98,7 +98,6 @@ public class PhyloTree extends PhyloSplitsGraph {
 	 * copies a phylogenetic tree
 	 */
 	public void copy(PhyloTree src, NodeArray<Node> oldNode2NewNode, EdgeArray<Edge> oldEdge2NewEdge) {
-		setName(src.getName());
 		if (oldEdge2NewEdge == null)
 			oldEdge2NewEdge = new EdgeArray<>(src);
 		oldNode2NewNode = super.copy(src, oldNode2NewNode, oldEdge2NewEdge);
@@ -106,9 +105,9 @@ public class PhyloTree extends PhyloSplitsGraph {
 			var root = src.getRoot();
 			setRoot(oldNode2NewNode.get(root));
 		}
-		if (src.lsaChildrenMap != null) {
+		if (src.hasLSAChildrenMap()) {
 			for (var v : src.nodes()) {
-				var children = src.lsaChildrenMap.get(v);
+				var children = src.getLSAChildrenMap().get(v);
 				if (children != null) {
 					var newChildren = new ArrayList<Node>();
 					for (var w : children) {
@@ -118,13 +117,15 @@ public class PhyloTree extends PhyloSplitsGraph {
 				}
 			}
 		}
-		if (src.reticulateEdges != null) {
-			for (var e : src.reticulateEdges) {
+		reticulateEdges = null;
+		if (src.hasReticulateEdges()) {
+			for (var e : src.getReticulateEdges()) {
 				setReticulate(oldEdge2NewEdge.get(e), true);
 			}
 		}
-		if (src.transferAcceptorEdges != null) {
-			for (var e : src.transferAcceptorEdges) {
+		transferAcceptorEdges = null;
+		if (src.hasTransferAcceptorEdges()) {
+			for (var e : src.getTransferAcceptorEdges()) {
 				setTransferAcceptor(oldEdge2NewEdge.get(e), true);
 			}
 		}
@@ -468,7 +469,7 @@ public class PhyloTree extends PhyloSplitsGraph {
 		try {
 			parseBracketNotationRec(seen, 0, null, 0, str);
 		} catch (IOException ex) {
-			System.err.println(str);
+			//System.err.println(str);
 			throw ex;
 		}
 		if (getNumberOfNodes() > 0) {
@@ -511,11 +512,12 @@ public class PhyloTree extends PhyloSplitsGraph {
 		// System.err.println("Multi-labeled nodes detected: " + isInputHasMultiLabels());
 
 		if (false) {
-			System.err.println("has acceptor edges: " + hasTransferAcceptorEdges());
+			System.err.println("has reticulate edges: " + (hasReticulateEdges() ? getReticulateEdges().size() : 0));
+			System.err.println("has acceptor edges: " + (hasTransferAcceptorEdges() ? getTransferAcceptorEdges().size() : 0));
 
-			System.err.println("has edge weights: " + hasEdgeWeights());
-			System.err.println("has edge confidences: " + hasEdgeConfidences());
-			System.err.println("has edge probabilities: " + hasEdgeProbabilities());
+			System.err.println("has edge weights: " + (hasReticulateEdges() ? getEdgeWeights().size() : 0));
+			System.err.println("has edge confidences: " + (hasEdgeConfidences() ? getEdgeConfidences().size() : 0));
+			System.err.println("has edge probabilities: " + (hasEdgeProbabilities() ? getEdgeProbabilities().size() : 0));
 			System.err.println(toBracketString(new NewickOutputFormat(true, true, true, true, true)));
 		}
 	}
@@ -783,7 +785,8 @@ public class PhyloTree extends PhyloSplitsGraph {
 							if (isTransferAcceptorEdge(e)) {
 								setTransferAcceptor(f, true);
 							}
-							setReticulate(f, true);
+							if (isReticulateEdge(e))
+								setReticulate(f, true);
 							setLabel(f, getLabel(e));
 						}
 						deleteNode(v);
@@ -1109,8 +1112,11 @@ public class PhyloTree extends PhyloSplitsGraph {
 					lsaChildrenMap = newNodeArray();
 			}
 		}
-
 		return lsaChildrenMap;
+	}
+
+	public boolean hasLSAChildrenMap() {
+		return lsaChildrenMap != null;
 	}
 
 	/**
@@ -1333,7 +1339,7 @@ public class PhyloTree extends PhyloSplitsGraph {
 	}
 
 	/**
-	 * mark as acceptord or not
+	 * mark as acceptor or not
 	 *
 	 * @param e        edge
 	 * @param acceptor is acceptor
@@ -1465,7 +1471,7 @@ public class PhyloTree extends PhyloSplitsGraph {
 
 	public record NewickOutputFormat(boolean weights, boolean confidenceAsNodeLabel, boolean confidenceUsingColon,
 									 boolean probabilityUsingColon, boolean edgeLabelsAsComments) {
-		}
+	}
 }
 
 // EOF
