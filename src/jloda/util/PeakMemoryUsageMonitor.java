@@ -77,4 +77,12 @@ public class PeakMemoryUsageMonitor {
     public static String getSecondsSinceStartString() {
         return String.format("%,.1fs", (System.currentTimeMillis() - start) / 1000.0);
     }
+
+    public static String getMaxMemoryString() {
+        var total=Runtime.getRuntime().maxMemory()/1048576L;
+        if (total < 1024L)
+            return "%dM".formatted(total);
+        else
+            return StringUtils.removeTrailingZerosAfterDot("%.1f",total / 1024.0)+"G";
+    }
 }

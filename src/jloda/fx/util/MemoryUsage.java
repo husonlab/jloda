@@ -60,9 +60,10 @@ public class MemoryUsage {
                     if (currentMemoryUsage.get() > peakMemoryUsage.get())
                         peakMemoryUsage.set(currentMemoryUsage.get());
                     if (availableMemory.get() < 1024)
-						memoryUsageString.set(StringUtils.removeTrailingZerosAfterDot(String.format("%d of %d", currentMemoryUsage.get(), availableMemory.get())) + "M");
+						memoryUsageString.set("%d of %dM".formatted(currentMemoryUsage.get(), availableMemory.get()));
                     else
-						memoryUsageString.set(StringUtils.removeTrailingZerosAfterDot(String.format("%.1f of %.1f", currentMemoryUsage.get() / 1024.0, availableMemory.get() / 1024.0)) + "G");
+                        memoryUsageString.set(StringUtils.removeTrailingZerosAfterDot("%.1f",currentMemoryUsage.get() / 1024.0)+" of "+
+                                              StringUtils.removeTrailingZerosAfterDot("%.1f",availableMemory.get() / 1024.0) + "G");
                 });
             }
         }, 0, 5, SECONDS);
@@ -88,5 +89,13 @@ public class MemoryUsage {
 
     public StringProperty memoryUsageStringProperty() {
         return memoryUsageString;
+    }
+
+    public static String getMaxMemoryString() {
+        var total=Runtime.getRuntime().maxMemory()/1048576L;
+        if (total < 1024L)
+            return "%dM".formatted(total);
+        else
+            return StringUtils.removeTrailingZerosAfterDot("%.1f",total / 1024.0)+"G";
     }
 }
