@@ -330,7 +330,7 @@ public class PhyloTree extends PhyloSplitsGraph {
 					final Node w = f.getTarget();
 
 					if (isReticulateEdge(f)) {
-						boolean isAcceptorEdge = isTransferAcceptorEdge(e);
+						boolean isAcceptorEdge = isTransferAcceptorEdge(f);
 
 						if (outputNodeReticulationNumberMap.get(w) == null) {
 							outputNodeReticulationNumberMap.set(w, ++outputReticulationNumber);
