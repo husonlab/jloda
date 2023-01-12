@@ -1185,7 +1185,7 @@ public class PhyloTree extends PhyloSplitsGraph {
 	 * recursively compute a cycle
 	 */
 	private int computeCycleRec(Node v, Edge e, int pos) {
-		for (Integer t : getTaxa(v)) {
+		for (int t : getTaxa(v)) {
 			setTaxon2Cycle(t, ++pos);
 		}
 		for (var f : v.adjacentEdges()) {
