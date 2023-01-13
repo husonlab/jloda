@@ -59,6 +59,6 @@ public class ColorUtilsFX {
 	}
 
 	public static Color convert(AColor color) {
-		return new Color(color.getRed(), color.getGreen(), color.getBlue(), color.getAlpha());
+		return new Color(color.getRed()/255.0, color.getGreen()/255.0, color.getBlue()/255.0, color.getAlpha()/255.0);
 	}
 }
