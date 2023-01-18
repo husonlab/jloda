@@ -32,6 +32,10 @@ import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 import java.util.zip.*;
 
+/**
+ * file utilities
+ * Daniel Huson, 2022
+ */
 public class FileUtils {
 	private static final Set<File> usedFiles = new HashSet<>();
 
@@ -43,9 +47,9 @@ public class FileUtils {
 	 * @return file with new and unique name
 	 */
 	public static File getFileWithNewUniqueName(String name) {
-		final String suffix = getFileSuffix(name);
-		File result = new File(name);
-		int count = 0;
+		final var suffix = getFileSuffix(name);
+		var result = new File(name);
+		var count = 0;
 		synchronized (usedFiles) {
 			while (usedFiles.contains(result) || result.exists()) {
 				result = new File(replaceFileSuffix(name, "-" + (++count) + suffix));
@@ -122,7 +126,7 @@ public class FileUtils {
 	 * get the lines of a files as a list of strings
 	 */
 	public static ArrayList<String> getLinesFromFile(String file) throws IOException {
-		final ArrayList<String> result = new ArrayList<>();
+		final var result = new ArrayList<String>();
 		try (var it = new FileLineIterator(file)) {
 			while (it.hasNext()) {
 				result.add(it.next());
@@ -235,7 +239,7 @@ public class FileUtils {
 				if (!file.canRead())
 					throw new IOException("File not readable: " + fileName);
 				if (file.getName().endsWith(".gz")) {
-					try (InputStream ins = new GZIPInputStream(new FileInputStream(file))) {
+					try (var ins = new GZIPInputStream(new FileInputStream(file))) {
 						if ((ins.read() == -1))
 							throw new IOException("File is empty: " + fileName);
 					}
