@@ -2207,6 +2207,9 @@ public class StringUtils {
 		return Arrays.stream(array).anyMatch(item -> item.equalsIgnoreCase(query));
 	}
 
+	public static boolean containsIgnoreCase(Collection<String> list, String query) {
+		return list.stream().anyMatch(item -> item.equalsIgnoreCase(query));
+	}
 	public static String[] splitFurther(String[] tokens, String separator) {
 		var result = new ArrayList<String>();
 		for (var str : tokens) {

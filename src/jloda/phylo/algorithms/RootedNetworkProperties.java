@@ -286,6 +286,7 @@ public class RootedNetworkProperties {
                     labelByDescendantsRec(root, query, below);
                     if (below.get(root) != null) {
                         remainingQuery.clear();
+                        remainingQuery.setAll(query);
                         computeAllStableAncestorsRec(root, remainingQuery, below, result);
                     }
                 }
