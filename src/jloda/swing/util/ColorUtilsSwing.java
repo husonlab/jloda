@@ -54,7 +54,7 @@ public class ColorUtilsSwing {
 	}
 
 	public static AColor convert(Color color) {
-		return new AColor(color.getRGB());
+		return color != null ? new AColor(color.getRGB()) : null;
 	}
 
 	public static Color convert(AColor color) {

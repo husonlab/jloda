@@ -119,16 +119,18 @@ public class ColorTable {
         int row = 0;
         int col = 0;
         for (Color color : getColors()) {
-            for (int y = 0; y < patchSize; y++) {
+            if (color != null) {
+                for (int y = 0; y < patchSize; y++) {
 
-                if (row + patchSize >= 16) {
-                    row = 0;
-                    col += patchSize;
-                }
+                    if (row + patchSize >= 16) {
+                        row = 0;
+                        col += patchSize;
+                    }
 
-                for (int x = 0; x < patchSize; x++) {
-                    if (row + x < 16 && col + y < 16)
-                        image.setRGB(row + x, col + y, color.getRGB());
+                    for (int x = 0; x < patchSize; x++) {
+                        if (row + x < 16 && col + y < 16)
+                            image.setRGB(row + x, col + y, color.getRGB());
+                    }
                 }
             }
             row += patchSize;
