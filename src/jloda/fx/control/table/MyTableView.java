@@ -390,7 +390,7 @@ public class MyTableView extends Pane {
                     final String newValue = t.getNewValue();
                     if (!newValue.equals(oldValue)) {
                         t.getTableView().getItems().get(t.getTablePosition().getRow()).valueProperty(tableColumn.getText()).set(newValue);
-                        if (!downKey)
+                        if (false && !downKey)
                             Platform.runLater(this::postUpdate);
                     }
             Platform.runLater(() -> {

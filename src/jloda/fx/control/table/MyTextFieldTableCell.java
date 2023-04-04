@@ -98,8 +98,10 @@ public class MyTextFieldTableCell<S, T> extends TableCell<S, T> {
 	}
 
 	public void cancelEdit() {
-		super.cancelEdit();
-		cancelEdit(this, this.getConverter(), null);
+		if(isFocused()) {
+			super.cancelEdit();
+			cancelEdit(this, this.getConverter(), null);
+		}
 	}
 
 	public void updateItem(T var1, boolean var2) {
