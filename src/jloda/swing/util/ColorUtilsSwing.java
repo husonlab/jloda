@@ -54,10 +54,10 @@ public class ColorUtilsSwing {
 	}
 
 	public static AColor convert(Color color) {
-		return color != null ? new AColor(color.getRGB()) : null;
+		return color == null ? null : new AColor(color.getRGB());
 	}
 
 	public static Color convert(AColor color) {
-		return new Color(color.getRed(), color.getGreen(), color.getBlue(), color.getAlpha());
+		return color == null ? null : new Color(color.getRed(), color.getGreen(), color.getBlue(), color.getAlpha());
 	}
 }
