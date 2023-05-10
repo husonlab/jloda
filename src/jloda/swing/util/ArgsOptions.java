@@ -216,6 +216,8 @@ public class ArgsOptions {
             message.append("\n");
             throw new UsageException(message.toString());
         }
+
+        System.err.println("Java version: " + System.getProperty("java.version")+"; max memory: "+PeakMemoryUsageMonitor.getMaxMemoryString());
     }
 
     public boolean isVerbose() {
