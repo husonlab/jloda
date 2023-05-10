@@ -869,6 +869,24 @@ public class StringUtils {
 	}
 
 	/**
+	 * gets the remaining text after the previous workd
+	 *
+	 * @return word (delimited by a white space)
+	 */
+	public static String getAllAfter(String previousWord, String text) {
+		var i = text.indexOf(previousWord);
+		if (i != -1) {
+			i += previousWord.length();
+			while (i < text.length() && Character.isWhitespace(text.charAt(i)))
+				i++;
+		}
+		if (i > 0 && i < text.length())
+			return text.substring(i);
+		else
+			return "";
+	}
+
+	/**
 	 * gets the last word in the given text
 	 *
 	 * @return word (delimited by a white space) or empty string, if the last character is a white space
