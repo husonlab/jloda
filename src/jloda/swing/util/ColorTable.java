@@ -164,7 +164,7 @@ public class ColorTable {
      * @return color
      */
     public Color getColor(int count, int maxCount) {
-        int index = Math.min(colors.length - 1, (count * colors.length) / maxCount);
+        int index = Math.min(colors.length - 1, (int)Math.round(((double)count * colors.length) / (double)maxCount));
         return get(index);
     }
 }
