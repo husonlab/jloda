@@ -22,7 +22,7 @@ package jloda.fx.shapes;
 import javafx.scene.shape.Circle;
 
 /**
- * diamond shape
+ * circle shape
  * Daniel Huson, 1.2018
  */
 public class CircleShape extends Circle implements ISized {
