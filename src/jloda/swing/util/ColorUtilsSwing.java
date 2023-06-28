@@ -24,7 +24,7 @@ import jloda.util.AColor;
 import java.awt.*;
 
 /**
- * color utilies for swing (awt) colors
+ * color utilities for swing (awt) colors
  * Daniel Huson, 11.2011, 10.2022
  */
 public class ColorUtilsSwing {
