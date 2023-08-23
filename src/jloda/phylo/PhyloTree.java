@@ -265,7 +265,7 @@ public class PhyloTree extends PhyloSplitsGraph {
 	private NodeIntArray outputNodeReticulationNumberMap;  // global number of the reticulate nodes
 	private int outputReticulationNumber;
 
-	private static final String punctuationCharacters = "),;:";
+	private static final String punctuationCharacters = "),;:[";
 
 	/**
 	 * Writes a tree in bracket notation. Uses extended bracket notation to write reticulate network
