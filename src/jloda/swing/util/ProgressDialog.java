@@ -532,14 +532,17 @@ public class ProgressDialog implements ProgressListener {
     }
 
     public void setCancelButtonText(String text) {
+        if (cancelButton != null)
         cancelButton.setText(text);
     }
 
     public void resetCancelButtonText() {
-        if (ProgramProperties.isMacOS())
-            cancelButton.setText("Stop");
-        else
-            cancelButton.setText("Cancel");
+        if (cancelButton != null) {
+            if (ProgramProperties.isMacOS())
+                cancelButton.setText("Stop");
+            else
+                cancelButton.setText("Cancel");
+        }
     }
 
     public boolean isCloseOnCancel() {
