@@ -41,7 +41,7 @@ public class IntervalNode<Type> {
      *
 	 */
     IntervalNode(Collection<Interval<Type>> intervals) {
-        if (intervals.size() == 0) {
+        if (intervals.isEmpty()) {
             this.intervals = new TreeMap<>();
             center = 0;
             leftNode = null;
@@ -79,9 +79,9 @@ public class IntervalNode<Type> {
                 }
             }
 
-            if (left.size() > 0)
+            if (!left.isEmpty())
                 leftNode = new IntervalNode<>(left);
-            if (right.size() > 0)
+            if (!right.isEmpty())
                 rightNode = new IntervalNode<>(right);
         }
     }

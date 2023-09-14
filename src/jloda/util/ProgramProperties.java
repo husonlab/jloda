@@ -37,6 +37,7 @@ public class ProgramProperties {
 
     private static final Map<String, Object> presets = new HashMap<>();
 
+    static private String authors = "";
 	static private String programName = "";
 	static private String programVersion = "";
 	static private String programTitle = "";
@@ -372,6 +373,14 @@ public class ProgramProperties {
      */
     public static String getProgramTitle() {
         return programTitle;
+    }
+
+    public static String getAuthors() {
+        return authors;
+    }
+
+    public static void setAuthors(String authors) {
+        ProgramProperties.authors = authors;
     }
 
     public static String getProgramLicence() {
