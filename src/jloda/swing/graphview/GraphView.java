@@ -2074,8 +2074,8 @@ public class GraphView extends JPanel implements Printable, Scrollable, INodeEdg
                 nv.setLabelBackgroundColor(saveColor);
             }
         }
-        drawScaleBar(gc, inPrint ? totalRect : frameRect);
-        drawPoweredBy(gc, inPrint ? totalRect : frameRect);
+        drawScaleBar(gc, inPrint || !inDrawOnScreen ? totalRect : frameRect);
+        drawPoweredBy(gc, inPrint || !inDrawOnScreen ? totalRect : frameRect);
     }
 
     /**
