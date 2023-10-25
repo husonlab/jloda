@@ -295,7 +295,7 @@ public class ArgsOptions {
 
         final String command;
         if (!isDoHelp()) {
-            if (arguments.size() == 0)
+            if (arguments.isEmpty())
 				throw new UsageException("Command expected, must be one of: " + StringUtils.toString(legalValues, ", "));
             command = arguments.remove(0);
             if (!CollectionUtils.contains(legalValues, command))
@@ -595,7 +595,7 @@ public class ArgsOptions {
             if (mandatory && !doHelp)
 				throw new UsageException("Mandatory option '" + longKey + "' not specified" + (legalValues != null ? ", legal values: " + StringUtils.toString(legalValues, ", ") : "."));
         }
-        if (!hide && verbose && result.length() > 0)
+        if (!hide && verbose && !result.isEmpty())
             System.err.println("\t" + longKey + ": " + result);
         return result;
     }
@@ -620,7 +620,7 @@ public class ArgsOptions {
         else
             longKeys.add(longKey);
 
-		String defaultValueString = (defaultValue.size() == 0 ? "" : "Default value(s): '" + StringUtils.toString(defaultValue, "' '") + "'");
+		var defaultValueString = (defaultValue.isEmpty() ? "" : "Default value(s): '" + StringUtils.toString(defaultValue, "' '") + "'");
 
         if (!hide) {
             if (mandatory)
@@ -645,7 +645,7 @@ public class ArgsOptions {
                 boolean done = false;
                 while (it.hasNext()) {
                     String value = it.next();
-                    if (value.length() > 0 && (value.startsWith("-") || value.startsWith("+"))) {
+                    if (!value.isEmpty() && (value.startsWith("-") || value.startsWith("+"))) {
                         done = true;
                         break;
                     }
@@ -665,8 +665,8 @@ public class ArgsOptions {
             else
                 result = defaultValue;
         }
-        if (!hide && verbose && result.size() > 0)
-			System.err.println("\t" + longKey + ": " + StringUtils.toString(result, " "));
+        if (!hide && verbose && !result.isEmpty())
+			System.err.println("\t" + longKey + ": '" + StringUtils.toString(result, "' '")+"'");
         return result;
     }
 
