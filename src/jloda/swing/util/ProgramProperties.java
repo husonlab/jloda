@@ -25,6 +25,7 @@ import java.awt.*;
 import java.awt.print.PageFormat;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Locale;
 import java.util.Objects;
 
 public class ProgramProperties extends jloda.util.ProgramProperties {
@@ -36,9 +37,12 @@ public class ProgramProperties extends jloda.util.ProgramProperties {
 	static private final Font defaultFont = new Font("Arial", Font.PLAIN, 12);
 	public static PageFormat pageFormat = null;
 
-
 	public static ArrayList<ImageIcon> getProgramIcons() {
 		return programIcons;
+	}
+
+	static {
+		Locale.setDefault(new Locale("en", "US"));
 	}
 
 	public static void setProgramIcons(Collection<ImageIcon> icons) {
