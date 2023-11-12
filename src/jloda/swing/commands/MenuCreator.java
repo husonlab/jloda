@@ -240,9 +240,9 @@ public class MenuCreator {
             return menu;
         if (mayBeSubmenu) {
             for (int j = 0; j < menu.getItemCount(); j++) {
-                JMenuItem item = menu.getItem(j);
+                var item = menu.getItem(j);
                 if (item != null) {
-                    Component comp = item.getComponent();
+                    var comp = item.getComponent();
                     if (comp instanceof JMenu) {
                         JMenu result = findMenu(name, (JMenu) comp, true);
                         if (result != null)
@@ -262,7 +262,7 @@ public class MenuCreator {
 	 */
     static public List<String> getTokens(String str) throws Exception {
         try {
-            int pos = str.indexOf("=");
+            var pos = str.indexOf("=");
             str = str.substring(pos + 1).trim();
             StringTokenizer tokenizer = new StringTokenizer(str, ";");
             List<String> result = new LinkedList<>();
