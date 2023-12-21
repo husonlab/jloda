@@ -327,8 +327,9 @@ public class ProgramProperties {
     /**
      * sets the name of the program generating these properties
      */
-    public static void setProgramName(String programName) {
-        ProgramProperties.programName = programName;
+    public static void setProgramName(String name) {
+        if (programName == null || programName.isEmpty())
+            ProgramProperties.programName = name;
     }
 
     /**
@@ -344,7 +345,7 @@ public class ProgramProperties {
      * sets the program version string, if not already set...
      */
     public static void setProgramVersion(String version) {
-        if (programVersion == null || programVersion.length() == 0)
+        if (programVersion == null || programVersion.isEmpty())
             ProgramProperties.programVersion = version;
     }
 
