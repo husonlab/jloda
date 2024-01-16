@@ -102,7 +102,7 @@ public class ExportImageDialog extends JDialog {
                 fileNameChangedByText = true;
                 if (!inUpdate) {
 					String extension = FileUtils.getFileSuffix(fileField.getText());
-                    if (extension != null && extension.length() > 0) {
+                    if (extension != null && !extension.isEmpty()) {
                         extension = extension.trim();
                         if (extension.startsWith(".")) {
                             extension = extension.substring(1);
@@ -221,7 +221,7 @@ public class ExportImageDialog extends JDialog {
             public void actionPerformed(ActionEvent actionEvent) {
 				String fileName = getFileName();
 				String suffix = FileUtils.getFileSuffix(fileName);
-                if (suffix == null || suffix.length() == 0) {
+                if (suffix == null || suffix.isEmpty()) {
                     fileName += getFileExtension();
                     fileField.setText(fileName);
                 }
