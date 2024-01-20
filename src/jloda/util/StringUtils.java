@@ -1265,7 +1265,7 @@ public class StringUtils {
 	 */
 	public static String[] split(String aLine, char splitChar, int maxTokens, boolean skipEmptyTokens) {
 		aLine = aLine.trim();
-		if (aLine.length() == 0 || maxTokens <= 0)
+		if (aLine.isEmpty() || maxTokens <= 0)
 			return new String[0];
 
 		// need to ignore last position if it is the split character
