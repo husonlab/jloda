@@ -159,7 +159,7 @@ public class ResourceManager {
             }
             {
                 final String filesDirectory = ProgramProperties.get("FilesDirectory", "");
-                if (filesDirectory.length() > 0 && new File(filesDirectory, name).canRead()) {
+                if (!filesDirectory.isEmpty() && new File(filesDirectory, name).canRead()) {
                     try {
 						return FileUtils.getInputStreamPossiblyZIPorGZIP(new File(filesDirectory, name).getAbsolutePath());
                     } catch (IOException ignored) {
