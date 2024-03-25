@@ -244,6 +244,11 @@ public class RootedNetworkProperties {
             for (var root : findRoots(graph))
                 computeAllCompletelyStableInternalRec(root, new HashSet<>(), new HashSet<>(), result);
         }
+        for (var v : new ArrayList<>(result)) {
+            if (v.getInDegree() == 1 && v.getParent().getOutDegree() == 1) {
+                result.remove(v.getParent());
+            }
+        }
         return result;
     }
 
