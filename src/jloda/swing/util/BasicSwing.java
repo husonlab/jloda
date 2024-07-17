@@ -54,7 +54,7 @@ public class BasicSwing {
         File[] list = rootDirectory.listFiles();
         if (list != null) {
             Collections.addAll(queue, list);
-            while (queue.size() > 0) {
+            while (!queue.isEmpty()) {
                 File file = queue.poll();
                 if (file.isDirectory()) {
                     if (recursively) {
